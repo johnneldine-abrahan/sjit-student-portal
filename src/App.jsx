@@ -7,6 +7,10 @@ import Explore from './assets/pages/Explore'
 import Admin_Dashboard from './assets/pages/Admin/Admin_Dashboard'
 import Admin_Students from './assets/pages/Admin/Admin_Students'
 import Admin_Enroll_Students from './assets/pages/Admin/Admin_Enroll_Students'
+import Admin_FacultyMembers from './assets/pages/Admin/Admin_FacultyMembers'
+import Admin_ManageSchedule from './assets/pages/Admin/Admin_ManageSchedule'
+import Admin_Archive from './assets/pages/Admin/Admin_Archive'
+
 
 const App = () => {
   return (
@@ -18,6 +22,9 @@ const App = () => {
         <Route path="/admin/dashboard" element={<Admin_Dashboard />} />
         <Route path="/admin/student-list" element={<Admin_Students />} />
         <Route path="/admin/enroll-students" element={<Admin_Enroll_Students />} />
+        <Route path="/admin/faculty-members" element={<Admin_FacultyMembers />} />
+        <Route path="/admin/manage-schedule" element={<Admin_ManageSchedule />} />
+        <Route path="/admin/archive" element={<Admin_Archive />} />
 
       </Routes>
     </Router>

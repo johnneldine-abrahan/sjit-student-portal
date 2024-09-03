@@ -20,7 +20,7 @@ const Students_Sidebar = () => {
         <div className='menu-list'>
             <a href='/admin/dashboard' className='item'><BiHome size={18}/>Dashboard</a>
             <a href='/admin/student-list' className='item active'><PiStudentBold size={18}/>Students</a>
-            <a href='#' className='item'><GiArchiveRegister size={18}/>Enroll Student</a>
+            <a href='/admin/enroll-students' className='item'><GiArchiveRegister size={18}/>Enroll Student</a>
             <a href='#' className='item'><FaChalkboardTeacher size={18}/>Faculty Members</a>
             <a href='#' className='item'><AiFillSchedule size={18} />Manage Schedule</a>
             <a href='#' className='item'><BiArchiveIn size={18}/>Archive</a>

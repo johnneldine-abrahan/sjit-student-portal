@@ -18,9 +18,9 @@ const Enroll_Students_Sidebar = () => {
             <a href='/admin/dashboard' className='item'><BiHome size={18}/>Dashboard</a>
             <a href='/admin/student-list' className='item'><PiStudentBold size={18}/>Students</a>
             <a href='/admin/enroll-students' className='item active'><GiArchiveRegister size={18}/>Enroll Student</a>
-            <a href='#' className='item'><FaChalkboardTeacher size={18}/>Faculty Members</a>
-            <a href='#' className='item'><AiFillSchedule size={18} />Manage Schedule</a>
-            <a href='#' className='item'><BiArchiveIn size={18}/>Archive</a>
+            <a href='/admin/faculty-members' className='item'><FaChalkboardTeacher size={18}/>Faculty Members</a>
+            <a href='/admin/manage-schedule' className='item'><AiFillSchedule size={18} />Manage Schedule</a>
+            <a href='/admin/archive' className='item'><BiArchiveIn size={18}/>Archive</a>
         </div>
       
     </div>

@@ -8,13 +8,13 @@ const info_details = [
   },
 
   {
-    title: 'Not Found',
-    number: '404'
+    title: 'Faculty Members',
+    number: '69'
   },
 
   {
-    title: 'Siniraang Tao',
-    number: '1000'
+    title: 'Active Users',
+    number: '78'
   }
 
   

@@ -1,0 +1,65 @@
+.admissions{
+    margin: 100px auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 90%;
+}
+
+.admissions-right{
+    flex-basis: 40%;
+    position: relative;
+}
+
+.admissions-left{
+    flex-basis: 56%;
+}
+
+.admissions-img{
+    width: 100%;
+}
+
+.admissions h3{
+    font-weight: 600;
+    font-weight: 16px;
+    color: #7B8BBC;
+}
+
+.admissions h2{
+    font-size: 35px;
+    color: #150f57;
+    margin: 10px 0;
+    max-width: 400px;
+}
+
+.admissions-left ul li{
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    font-weight: 500;
+}
+
+.admissions-left ul li img{
+    width: 25px;
+    margin-right: 10px;
+}
+
+.admissions p{
+    color: #000;
+    margin-bottom: 20px;
+}
+
+/*------------Media Query-------------*/
+@media (max-width: 800px){
+    .admissions{
+        flex-direction: column;
+    }
+    .admissions-right{
+        flex-basis: 100%;
+        margin: 20px;
+        order: 2;
+    }
+    .admissions-left{
+        flex-basis: 100%;
+    }
+}

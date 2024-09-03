@@ -23,6 +23,11 @@
     transition: 0.5s ease-in-out;
 }
 
+.edit-icon:hover{
+    transform: scale(1.3);
+    cursor: pointer;
+}
+
 .profile-title{
     color: #150f57;
 }

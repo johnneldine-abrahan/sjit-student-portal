@@ -1,0 +1,35 @@
+.announcement-list{
+    display: flex;
+    margin: 2rem 0;
+    justify-content: space-between;
+}
+
+.announcement-list h2{
+    color: #150f57
+}
+
+.list{
+    display: flex;
+    padding-right: 10px;
+    align-items: center;
+    justify-content: space-between;
+    transition: 0.3s ease-in-out;
+}
+
+.list-container{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.announcement-details{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: #000;
+}
+
+.list:hover{
+    background-color: #dde6ed;
+    border-radius: 10px;
+}

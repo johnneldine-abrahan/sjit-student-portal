@@ -38,6 +38,7 @@
     background: #dde6ed;
     border-radius: 10px;
     padding: 10px;
+    display: flex;
     flex-direction: column;
 }
 
@@ -58,4 +59,13 @@
 
 .user-details .admin-fullname{
     color: #150f57;
+}
+
+.calendar{
+    background: #fff;
+    flex: 1;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }

@@ -1,4 +1,5 @@
 import React from 'react'
+import './Admin_Profile.css'
 import Admin_ProfileHeader from './Admin_ProfileHeader'
 
 const Admin_Profile = () => {
@@ -11,6 +12,9 @@ const Admin_Profile = () => {
 
           <h3 className='admin-fullname'>Juan Dela Cruz</h3>
           <span className='position'>Admin</span>
+        </div>
+        <div className='calendar'>
+          
         </div>
       </div>
     </div>

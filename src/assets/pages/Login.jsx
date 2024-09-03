@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom'
 import login_logo from '../img/Login/login-logo.png'
 import welcome_img from '../img/Login/welcome-img.png'
 
-
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -43,7 +42,7 @@ const Login = () => {
         <h1>Welcome to</h1>
         <h2>San Juan Institute of Technology</h2>
         <p>Turning your dreams into reality</p>
-        <img src={welcome_img} alt="" className='welcome_img'/>
+        <img src={welcome_img} className='welcome_img' alt="" />
       </div>
     </div>
   )

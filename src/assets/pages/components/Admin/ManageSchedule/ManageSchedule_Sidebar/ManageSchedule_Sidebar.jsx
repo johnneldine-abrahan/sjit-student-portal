@@ -26,3 +26,5 @@ const ManageSchedule_Sidebar = () => {
     </div>
   )
 }
+
+export default ManageSchedule_Sidebar

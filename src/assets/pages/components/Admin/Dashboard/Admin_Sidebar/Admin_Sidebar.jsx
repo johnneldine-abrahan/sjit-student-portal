@@ -15,7 +15,7 @@ const Admin_Sidebar = () => {
             <h2>SJIT</h2>
         </div>
         <div className='menu-list'>
-            <a href='#' className='item'><BiHome size={18}/>Dashboard</a>
+            <a href='#' className='item active'><BiHome size={18}/>Dashboard</a>
             <a href='#' className='item'><PiStudentBold size={18}/>Students</a>
             <a href='#' className='item'><GiArchiveRegister size={18}/>Enroll Student</a>
             <a href='#' className='item'><FaChalkboardTeacher size={18}/>Faculty Members</a>

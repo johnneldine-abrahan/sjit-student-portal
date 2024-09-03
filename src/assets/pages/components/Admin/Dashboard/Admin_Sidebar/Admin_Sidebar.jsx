@@ -20,6 +20,7 @@ const Admin_Sidebar = () => {
             <a href='#' className='item'><GiArchiveRegister size={18}/>Enroll Student</a>
             <a href='#' className='item'><FaChalkboardTeacher size={18}/>Faculty Members</a>
             <a href='#' className='item'><AiFillSchedule size={18} />Manage Schedule</a>
+            <a href='#' className='item'>Archive</a>
         </div>
       
     </div>

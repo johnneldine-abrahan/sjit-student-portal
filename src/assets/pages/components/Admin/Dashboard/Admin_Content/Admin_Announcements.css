@@ -43,6 +43,7 @@
     background-color: #7B8BBC;
     border-radius: 10px;
     gap: 5px;
+    cursor: pointer;
 }
 
 .card-body {

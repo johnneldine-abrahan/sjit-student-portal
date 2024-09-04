@@ -1,6 +1,8 @@
 import React from 'react'
 import './Admin_Announcements.css'
 import { BiEditAlt } from "react-icons/bi";
+import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
+
 
 const announcements = [
     {
@@ -38,6 +40,14 @@ const Admin_Announcements = () => {
     <div className='admin-announcements'>
         <div className='announcement-list'>
             <h2>Announcements</h2>
+            <div className='announcement-action'>
+                <div className='icon-act'>
+                    <RiAddLargeFill className='announcement-icon' />
+                </div>
+                <div className='icon-act'>
+                    <RiDeleteBin6Line className='announcement-icon' />
+                </div>
+            </div>
         </div>
         <div className='list-container'>
             {announcements.map((announcement) => (

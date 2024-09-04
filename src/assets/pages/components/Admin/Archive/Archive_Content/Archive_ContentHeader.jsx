@@ -7,10 +7,13 @@ const Archive_ContentHeader = () => {
     <div className='archive-header'>
         <h1 className='header-title'>Archive</h1>
         <div className='archive-activity'>
-            <div className='search-box'>
+          <div className='search-box'>
             <input type="text" placeholder='Search...' />
-            <BiSearch className='search-icon'/>
-            </div>
+            <BiSearch className='search-icon' />
+          </div>
+          
+          
+          
         </div>
     </div>
   )

@@ -1,33 +1,34 @@
 import React from 'react'
 import './Admin_Announcements.css'
+import { BiEditAlt } from "react-icons/bi";
 
 const announcements = [
     {
         title: 'Announcement1',
         details: 'The new policy will be implemented starting next month to improve the overall efficiency of the company. All employees are required to attend a training session to learn about the changes and how to adapt to them. The management team is confident that this new policy will bring positive results and increase productivity.',
         view: 'View Details',
-        edit: '!'
+        edit: <BiEditAlt />
     },
 
     {
         title: 'Announcement2',
         details: 'Genshin Impact is an open-world action role-playing game developed and published by miHoYo. It is a fantasy game where you play as a character called the Traveller, exploring a vast world called Teyvat. ',
         view: 'View Details',
-        edit: '!'
+        edit: <BiEditAlt />
     },
 
     {
         title: 'Announcement3',
         details: 'We are thrilled to announce that enrollment for [Program/Course Name] is now open!',
         view: 'View Details',
-        edit: '!'
+        edit: <BiEditAlt />
     },
 
     {
         title: 'Announcement4',
         details: 'We are thrilled to announce that enrollment for [Program/Course Name] is now open!',
         view: 'View Details',
-        edit: '!'
+        edit: <BiEditAlt />
     },
 
 ]

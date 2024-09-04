@@ -1,6 +1,7 @@
 import React from 'react'
 import './Admin_Profile.css'
 import Admin_ProfileHeader from './Admin_ProfileHeader'
+import Profile from '../../../../../img/Profile/ProfileSample.jpg'
 
 const Admin_Profile = () => {
   return (
@@ -9,7 +10,7 @@ const Admin_Profile = () => {
 
       <div className='user-profile'>
         <div className='user-details'>
-
+          <img src={Profile} alt="" />
           <h3 className='admin-fullname'>Juan Dela Cruz</h3>
           <span className='position'>Admin</span>
         </div>

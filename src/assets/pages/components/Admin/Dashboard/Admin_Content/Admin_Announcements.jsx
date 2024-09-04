@@ -4,38 +4,32 @@ import './Admin_Announcements.css'
 const announcements = [
     {
         title: 'Announcement1',
-        details: 'lorem ipsum dolor...',
+        details: 'The new policy will be implemented starting next month to improve the overall efficiency of the company. All employees are required to attend a training session to learn about the changes and how to adapt to them. The management team is confident that this new policy will bring positive results and increase productivity.',
         view: 'View Details',
-        edit: ''
+        edit: '!'
     },
 
     {
         title: 'Announcement2',
-        details: 'lorem ipsum dolor...',
+        details: 'Genshin Impact is an open-world action role-playing game developed and published by miHoYo. It is a fantasy game where you play as a character called the Traveller, exploring a vast world called Teyvat. ',
         view: 'View Details',
-        edit: ''
+        edit: '!'
     },
 
     {
         title: 'Announcement3',
-        details: 'lorem ipsum dolor...',
+        details: 'We are thrilled to announce that enrollment for [Program/Course Name] is now open!',
         view: 'View Details',
-        edit: ''
+        edit: '!'
     },
 
     {
         title: 'Announcement4',
-        details: 'lorem ipsum dolor...',
+        details: 'We are thrilled to announce that enrollment for [Program/Course Name] is now open!',
         view: 'View Details',
-        edit: ''
+        edit: '!'
     },
 
-    {
-        title: 'Announcement5',
-        details: 'lorem ipsum dolor...',
-        view: 'View Details',
-        edit: ''
-    },
 ]
 
 const Admin_Announcements = () => {
@@ -47,13 +41,13 @@ const Admin_Announcements = () => {
         <div className='list-container'>
             {announcements.map((announcement) => (
                 <div className='list'>
-                    <div className='announcement-details'>
-                        <h3>{announcement.title}</h3>
-                    </div>
-                    <span>{announcement.details}</span>
-                    <span>{announcement.view}</span>
-                    <span>{announcement.edit}</span>
+                <div className='announcement-details'>
+                  <h3>{announcement.title}</h3>
                 </div>
+                <span className='details'>{announcement.details}</span>
+                <span>{announcement.view}</span>
+                <span>{announcement.edit}</span>
+              </div>
             ))}
         </div>
       

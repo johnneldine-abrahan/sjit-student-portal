@@ -2,10 +2,14 @@
     display: flex;
     margin: 2rem 0;
     justify-content: space-between;
+    align-items: center;
+
+    
 }
 
 .announcement-list h2{
     color: #150f57
+
 }
 
 .list{
@@ -14,12 +18,17 @@
     align-items: center;
     justify-content: space-between;
     transition: 0.3s ease-in-out;
+    border-bottom: 1px solid #383737;
+    margin-bottom: 15px;
 }
 
 .list-container{
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 5px;
+    background-color: #dde6ed;
+    border-radius: 10px;
+    padding: 20px;
 }
 
 .announcement-details{
@@ -27,9 +36,21 @@
     align-items: center;
     gap: 20px;
     color: #000;
+    
 }
 
 .list:hover{
-    background-color: #dde6ed;
+    background-color: #7B8BBC;
     border-radius: 10px;
+    gap: 5px;
+}
+
+.card-body {
+  padding: 20px;
+}
+.details {
+    max-width: 300px; /* adjust the max width to your liking */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

@@ -1,9 +1,10 @@
-.admin-s_content{
+.FacultyMembers_content{
     width: 75%;
 }
 
-.admin-student-header{
+.facultymembers-header{
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
+

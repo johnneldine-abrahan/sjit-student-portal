@@ -5,6 +5,7 @@ import stem_logo from '../../../../img/LandingPage/Strand/stem_logo.png'
 import stem from '../../../../img/LandingPage/Strand/stem.jpg'
 import abm_logo from '../../../../img/LandingPage/Strand/abm_logo.png'
 import abm from '../../../../img/LandingPage/Strand/abm.jpg'
+import humss from '../../../../img/LandingPage/Strand/humss.jpg'
 import humss_logo from '../../../../img/LandingPage/Strand/humss_logo.png'
 import ict_logo from '../../../../img/LandingPage/Strand/ict_logo.png'
 import ict from '../../../../img/LandingPage/Strand/ict.jpg'
@@ -18,14 +19,14 @@ const Strand = () => {
       {/* First Row */}
       <div className='strand_container'>
         <div className='strand'>
-          <img src={stem} alt="" />
+          <img src={placeholder} alt="" />
           <div className='caption_strand'>
             <img src={stem_logo} alt="" />
             <p>Science and Technology, Engineering and Mathematics (STEM)</p>
           </div>
         </div>
         <div className='strand'>
-          <img src={abm} alt="" />
+          <img src={placeholder} alt="" />
           <div className='caption_strand'>
             <img src={abm_logo} alt="" />
             <p>Accoutancy, Business and Mathematics (ABM)</p>

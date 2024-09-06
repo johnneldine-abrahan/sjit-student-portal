@@ -1,13 +1,13 @@
-.admin-students-body{
+.admin-body{
     padding: 20px;
 }
 
-.students_admin{
+.admin-display{
     display: flex;
     gap: 20px;
 }
 
-.admin_students_content{
+.admin-main-content{
     background: #fff;
     flex: 1;
     border-radius: 20px;

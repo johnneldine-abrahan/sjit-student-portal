@@ -1,5 +1,5 @@
 import React from 'react'
-import './Admin_Dashboard.css'
+import './Admin_layout.css'
 import Admin_Content from '../components/Admin/Dashboard/Admin_Content/Admin_Content'
 import Admin_Profile from '../components/Admin/Dashboard/Admin_Profile/Admin_Profile'
 import Admin_Sidebar from '../components/Admin/Dashboard/Admin_Sidebar/Admin_Sidebar'
@@ -7,9 +7,9 @@ import Admin_Sidebar from '../components/Admin/Dashboard/Admin_Sidebar/Admin_Sid
 const Admin_Dashboard = () => {
   return (
     <div className='admin-body'>
-        <div className='dashboard_admin'>
+        <div className='admin-display'>
             <Admin_Sidebar />
-            <div className='dashboard_admin_content'>
+            <div className='admin-main-content'>
                 <Admin_Content />
                 <Admin_Profile />
             </div>

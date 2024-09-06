@@ -1,14 +1,14 @@
 import React from 'react'
-import './Admin_Archive.css'
+import './Admin_layout.css'
 import Archive_Content from '../components/Admin/Archive/Archive_Content/Archive_Content'
 import Archive_Sidebar from '../components/Admin/Archive/Archive_Sidebar/Archive_Sidebar'
 
 const Admin_Archive = () => {
   return (
-    <div className='archive-body'>
-        <div className='archive_admin'>
+    <div className='admin-body'>
+        <div className='admin-display'>
         <Archive_Sidebar />
-            <div className='archive_admin_content'>
+            <div className='admin-main-content'>
                 <Archive_Content />
                 
             </div>

@@ -47,6 +47,7 @@
 .admissions p{
     color: #000;
     margin-bottom: 20px;
+    text-align: justify;
 }
 
 /*------------Media Query-------------*/

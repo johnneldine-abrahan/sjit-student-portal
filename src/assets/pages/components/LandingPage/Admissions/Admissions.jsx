@@ -16,7 +16,7 @@ const Admissions = () => {
             <p>To join the lively community at San Juan Institute of Technology, 
               prospective students must meet the following admission requirements:</p>
             <ul>
-                <li><img src={pic2x2} alt='' />2x2 picture (2pcs.)</li>
+                <li><img src={pic2x2} alt='' />Two pieces of 2x2 picture</li>
                 <li><img src={good_moral} alt='' />Good Moral Certificate</li>
                 <li><img src={birth_certificate} alt='' />Original Birth Certificate</li>
                 <li><img src={form138} alt='' />Form 138 (Report Card)</li>

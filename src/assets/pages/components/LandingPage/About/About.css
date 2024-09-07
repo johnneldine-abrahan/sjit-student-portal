@@ -36,6 +36,7 @@
 .about p{
     color: #000;
     margin-bottom: 15px;
+    text-align: justify;
 }
 
 /*------------Media Query-------------*/

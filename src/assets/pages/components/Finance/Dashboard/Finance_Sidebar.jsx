@@ -1,6 +1,7 @@
 import React from 'react'
 import './Finance_Sidebar.css'
 import { BiHome } from "react-icons/bi"
+import menu_logo from '../../../../img/Sidebar/menu-logo.png'
 
 const Finance_Sidebar = () => {
   return (

@@ -21,7 +21,7 @@ const Vision_Mission = () => {
         </div>
         <div className='core-values'>
           <h2>Core Values</h2>
-          <p>San Juan Institute of Technology, we aspire to the values that promote the
+          <p>At San Juan Institute of Technology, we aspire to the values that promote the
             character qualities of:
           </p>
           <ul>

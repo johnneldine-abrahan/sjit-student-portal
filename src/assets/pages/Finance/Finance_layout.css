@@ -2,12 +2,12 @@
     padding: 20px;
 }
 
-.finance-main{
+.finance-display{
     display: flex;
     gap: 20px;
 }
 
-.finance_content{
+.finance-main-content{
     background: #fff;
     flex: 1;
     border-radius: 20px;

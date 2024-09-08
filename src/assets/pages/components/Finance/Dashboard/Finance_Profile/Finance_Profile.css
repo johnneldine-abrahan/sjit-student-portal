@@ -1,0 +1,77 @@
+.finance-profile{
+    flex: 1;
+}
+
+.finance-profile-header{
+    display: flex;
+    align-items: flex;
+    justify-content: space-between;
+}
+
+.buttons-header{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-act{
+    background: #dde6ed;
+    padding: 12px;
+    border-radius: 10px;
+    color: #969393;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-act .profile-icon{
+    font-size: 20px;
+    transition: 0.5s ease-in-out;
+}
+
+.profile-icon:hover{
+    transform: scale(1.3);
+    cursor: pointer;
+}
+
+.profile-title{
+    color: #150f57;
+}
+
+.user-profile{
+    height: 85%;
+    margin-top: 2rem;
+    background: #dde6ed;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-details{
+    width: 100%;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.user-details img{
+    background: #fff;
+    border-radius: 50%;
+    width: 150px;
+}
+
+.user-details .finance-fullname{
+    color: #150f57;
+}
+
+.calendar-container{
+    background: #fff;
+    flex: 1;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

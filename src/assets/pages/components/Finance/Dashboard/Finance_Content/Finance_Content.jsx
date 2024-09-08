@@ -6,6 +6,9 @@ const Finance_Content = () => {
   return (
     <div className='finance_content'>
         <Finance_ContentHeader />
+        <div className='finance-display'>
+
+        </div>
       
     </div>
   )

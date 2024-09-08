@@ -13,7 +13,7 @@ const Finance_Sidebar = () => {
             <h2>SJIT</h2>
         </div>
         <div className='menu-list'>
-            <a href='#' className='item active'><BiHome size={18}/>Dashboard</a>
+            <a href='/finance/dashboard' className='item active'><BiHome size={18}/>Dashboard</a>
             <a href='#' className='item'><GiInjustice size={18}/>Tag Liabilities</a>
             <a href='#' className='item'><FaFileAlt />Student Records</a>
             <a href='#' className='item'><FaHistory size={18}/>History</a>

@@ -9,6 +9,7 @@ import Admin_Enroll_Students from './assets/pages/Admin/Admin_Enroll_Students'
 import Admin_FacultyMembers from './assets/pages/Admin/Admin_FacultyMembers'
 import Admin_ManageSchedule from './assets/pages/Admin/Admin_ManageSchedule'
 import Admin_Archive from './assets/pages/Admin/Admin_Archive'
+import Finance_Dashboard from './assets/pages/Finance/Finance_Dashboard'
 
 
 const App = () => {
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/admin/faculty-members" element={<Admin_FacultyMembers />} />
         <Route path="/admin/manage-schedule" element={<Admin_ManageSchedule />} />
         <Route path="/admin/archive" element={<Admin_Archive />} />
+        <Route path="/finance/dashboard" element={<Finance_Dashboard />} />
 
       </Routes>
     </Router>

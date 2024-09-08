@@ -7,7 +7,21 @@ import welcome_img from '../img/Login/welcome-img.png'
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [Username, setUsername] = useState('');
+  const [Password, setPassword] = useState('');
   const navigate = useNavigate();
+
+  const handleLogin = (e) =>{
+    e.preventDefault();
+
+    if(Username === 'admin' && Password == 'admin'){
+      navigate('/admin/dashboard');
+    } else if (Username === 'finance' && Password === 'finance'){
+      navigate('/finance/dashboard');
+    } else {
+      alert('Invalid username or password');
+    }
+  }
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -17,10 +31,6 @@ const Login = () => {
      navigate('/')
   }
 
-  const handleAdminClick = () => {
-    navigate('/admin/dashboard')
-  }
-
   return (
     <div className='login-container'>
       <div className='login-left'>
@@ -28,13 +38,13 @@ const Login = () => {
         <div className='login-main'>
           <h2>Log in</h2>
           <p>Enter your account details</p>
-          <form>
+          <form onSubmit={handleLogin}>
             <label>Username</label>
-            <input type="text" placeholder='Username' required />
+            <input type="text" placeholder='Username' value={Username} onChange={(e) => setUsername(e.target.value)} required />
             <label>Password</label>
-            <input type={showPassword ? "text" : "password"} placeholder='Password' required />
+            <input type={showPassword ? "text" : "password"} placeholder='Password' value={Password} onChange={(e) => setPassword(e.target.value)} required />
             
-            <button type="submit" className='login-btn' onClick={handleAdminClick}>Log in</button>
+            <button type="submit" className='login-btn'>Log in</button>
           </form>
         </div>
       </div>

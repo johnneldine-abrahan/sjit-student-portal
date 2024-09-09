@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import './components/Login/Login.css'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -6,6 +6,11 @@ import login_logo from '../img/Login/login-logo.png'
 import welcome_img from '../img/Login/welcome-img.png'
 
 const Login = () => {
+
+  useEffect(() => {
+    document.title = "SJIT - Log in";
+  }, []);
+
   const [showPassword, setShowPassword] = useState(false);
   const [Username, setUsername] = useState('');
   const [Password, setPassword] = useState('');

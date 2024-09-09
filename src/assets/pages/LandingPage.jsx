@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import NavBar from './components/LandingPage/NavBar/Navbar'
 import Hero from './components/LandingPage/Hero/Hero'
 import Title from './components/LandingPage/Title/Title'
@@ -11,6 +11,11 @@ import Admissions from './components/LandingPage/Admissions/Admissions'
 import Vision_Mission from './components/LandingPage/Vision_Mission/Vision_Mission'
 
 const LandingPage = () => {
+
+  useEffect(() => {
+    document.title = "San Juan Institute of Technology";
+  }, []);
+
   return (
     <div>
       <NavBar />

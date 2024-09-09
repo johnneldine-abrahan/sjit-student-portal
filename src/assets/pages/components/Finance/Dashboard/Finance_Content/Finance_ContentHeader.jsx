@@ -1,4 +1,5 @@
 import React from 'react'
+import './Finance_Content.css'
 import { BiSearch } from "react-icons/bi";
 
 const Finance_ContentHeader = () => {

@@ -44,9 +44,6 @@ const Admin_Announcements = () => {
                 <div className='icon-act'>
                     <RiAddLargeFill className='announcement-icon' />
                 </div>
-                <div className='icon-act'>
-                    <RiDeleteBin6Line className='announcement-icon' />
-                </div>
             </div>
         </div>
         <div className='list-container'>

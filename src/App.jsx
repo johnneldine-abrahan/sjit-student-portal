@@ -12,6 +12,7 @@ import Admin_Archive from './assets/pages/Admin/Admin_Archive'
 import Finance_Dashboard from './assets/pages/Finance/Finance_Dashboard'
 import Finance_History from './assets/pages/Finance/Finance_History'
 import Finance_TagLiabilities from './assets/pages/Finance/Finance_TagLiabilities'
+import Finance_StudentRecords from './assets/pages/Finance/Finance_StudentRecords'
 
 
 const App = () => {
@@ -28,6 +29,7 @@ const App = () => {
         <Route path="/admin/archive" element={<Admin_Archive />} />
         <Route path="/finance/dashboard" element={<Finance_Dashboard />} />
         <Route path="/finance/tag-liabilities" element={<Finance_TagLiabilities />} />
+        <Route path="/finance/student-records" element={<Finance_StudentRecords />} />
         <Route path="/finance/history" element={<Finance_History />} />
 
       </Routes>

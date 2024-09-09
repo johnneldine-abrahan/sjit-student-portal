@@ -1,0 +1,51 @@
+.tagliabilities-content{
+    width: 100%;
+}
+
+.header-title{
+    color: #150f57;
+}
+
+.tagliabilities-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tagliabilities-activity{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.search-box{
+    background: #dde6ed;
+    padding: 8px 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    width: 350px;
+}
+
+.search-box input{
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 8px 10px;
+    font-size: 15px;
+    display: flex;
+    outline: none;
+    width: 100%;
+}
+
+.search-box .search-icon{
+    color: #969393;
+    font-size: 22px;
+    cursor: pointer;
+    transition: 0.5s ease-in-out;
+}
+
+.search-icon:hover{
+    transform: scale(1.3);
+    cursor: pointer;
+}

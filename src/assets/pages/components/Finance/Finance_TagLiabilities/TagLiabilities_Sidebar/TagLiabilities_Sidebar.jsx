@@ -14,7 +14,7 @@ const TagLiabilities_Sidebar = () => {
         <div className='menu-list'>
             <a href='/finance/dashboard' className='item'><BiHome size={18}/>Dashboard</a>
             <a href='/finance/tag-liabilities' className='item active'><GiInjustice size={18}/>Tag Liabilities</a>
-            <a href='#' className='item'><FaFileAlt />Student Records</a>
+            <a href='/finance/student-records' className='item'><FaFileAlt />Student Records</a>
             <a href='/finance/history' className='item'><FaHistory size={18}/>History</a>
         </div>
       

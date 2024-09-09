@@ -13,6 +13,7 @@ import Finance_Dashboard from './assets/pages/Finance/Finance_Dashboard'
 import Finance_History from './assets/pages/Finance/Finance_History'
 import Finance_TagLiabilities from './assets/pages/Finance/Finance_TagLiabilities'
 import Finance_StudentRecords from './assets/pages/Finance/Finance_StudentRecords'
+import Students_Dashboard from './assets/pages/Students/Students_Dashboard'
 
 
 const App = () => {
@@ -31,6 +32,7 @@ const App = () => {
         <Route path="/finance/tag-liabilities" element={<Finance_TagLiabilities />} />
         <Route path="/finance/student-records" element={<Finance_StudentRecords />} />
         <Route path="/finance/history" element={<Finance_History />} />
+        <Route path="/students/dashboard" element={<Students_Dashboard />} />
 
       </Routes>
     </Router>

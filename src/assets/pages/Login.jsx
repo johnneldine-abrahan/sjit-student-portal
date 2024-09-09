@@ -18,6 +18,8 @@ const Login = () => {
       navigate('/admin/dashboard');
     } else if (Username === 'finance' && Password === 'finance'){
       navigate('/finance/dashboard');
+    } else if (Username === 'student' && Password === 'student') {
+      navigate('/students/dashboard');
     } else {
       alert('Invalid username or password');
     }

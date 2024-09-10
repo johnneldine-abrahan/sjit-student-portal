@@ -33,16 +33,59 @@ const announcements = [
         edit: <BiEditAlt />
     },
 
-]
+];
+
+const Popup = ({ title, onClose }) => {
+    return(
+        <div className='popup'>
+            <div className='popup-header'>
+                <h3>{title}</h3>
+                <button onClick={onClose}>Close</button>
+            </div>
+            <div className='popup-content'>
+                
+            </div>
+        </div>
+    );
+};
+
 
 const Admin_Announcements = () => {
+    const [IoSpeedometerOutline, setIsOpen] = React.useState(false);
+    const [selectedAnnouncement, setSelectedAnnouncement] = React.useState({});
+    
+    const [isOpenAdd, setIsOpenAdd] = React.useState(false);
+
+    const handleOpen = (announcement) => {
+        setIsOpen(true);
+        setSelectedAnnouncement(announcement);
+    };
+
+    const handleClose = () => {
+        setIsOpen(false);
+    };
+
+    const handleOpenAdd = () => {
+        setIsOpenAdd(true);
+    }
+
+    const handleCloseAdd = () => {
+        setIsOpenAdd(false);
+    }
+
   return (
     <div className='admin-announcements'>
         <div className='announcement-list'>
             <h2>Announcements</h2>
             <div className='announcement-action'>
                 <div className='icon-act'>
-                    <RiAddLargeFill className='announcement-icon' />
+                    <RiAddLargeFill className='announcement-icon' onClick={handleOpenAdd}/>
+                    {isOpenAdd && (
+                        <div>
+                            <div className='popup-blurred-background' />
+                            <Popup title='Add Announcement' onClose={handleCloseAdd} />
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

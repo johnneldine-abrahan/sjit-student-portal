@@ -1,7 +1,7 @@
 import React from 'react'
 import './Admin_Announcements.css'
 import { BiEditAlt } from "react-icons/bi";
-import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
+import { RiAddLargeFill} from "react-icons/ri";
 
 
 const announcements = [

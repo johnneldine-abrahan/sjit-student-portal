@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import './Students_module.css'
 import Header from '../components/Students/Header_Student'
 import MainContent from '../components/Students/MainContent_Student'

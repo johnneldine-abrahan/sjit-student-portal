@@ -25,6 +25,8 @@ const Login = () => {
       navigate('/finance/dashboard');
     } else if (Username === 'student' && Password === 'student') {
       navigate('/students/dashboard');
+    } else if (Username === 'faculty' && Password === 'faculty'){
+      navigate('/faculty/dashboard');
     } else {
       alert('Invalid username or password');
     }

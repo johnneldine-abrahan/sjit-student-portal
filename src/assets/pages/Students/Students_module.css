@@ -71,6 +71,11 @@
     flex: 1 1 calc(50% - 20px);
     gap: 20px;
     padding: 19px 29px;
+    transition: 0.5s ease-in-out;
+  }
+
+  .actionCard:hover{
+    transform: scale(1.04);
     cursor: pointer;
   }
   

@@ -1,5 +1,6 @@
 import React from 'react'
 import '../../Students/Students_module.css'
+import Notifications_Student from './Notifications_Student'
 
 const ProfileSidebar_Student = () => {
   return (
@@ -12,6 +13,7 @@ const ProfileSidebar_Student = () => {
             <p className='academicYear'>2024-2025</p>
             <p className='enrollmentStatus'>ENROLLED</p>
         </div>
+        <Notifications_Student />
     </aside>
   )
 }

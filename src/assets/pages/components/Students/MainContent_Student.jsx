@@ -1,6 +1,6 @@
 import React from 'react'
 import '../../Students/Students_module.css'
-import ActionCard from './ActionCard_Student'
+import ActionCard_Student from './ActionCard_Student'
 import { GrCertificate } from "react-icons/gr";
 import { AiFillSchedule } from "react-icons/ai";
 import { PiExamFill } from "react-icons/pi";
@@ -48,7 +48,7 @@ const MainContent_Student = () => {
         </div>
         <div className='actionGrid'>
             {actionItems.map((item, index) => (
-                <ActionCard key={index} icon={item.icon} text={item.text} />
+                <ActionCard_Student key={index} icon={item.icon} text={item.text} />
             ))}
         </div>
     </section>

@@ -111,6 +111,19 @@
     font-weight: 700;
     padding: 15px 23px;
   }
+
+  .profileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.settingsIcon {
+  width: 31px;
+  height: 31px;
+}
   
   .profileTitle {
     font-size: 24px;

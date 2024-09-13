@@ -8,11 +8,10 @@
   
   .headerStudent {
     background-color: #7B8BBC;
-    color: rgba(0, 0, 0, 1);
     display: flex;
-    font: 600 32px Poppins, sans-serif;
+    
     justify-content: space-between;
-    padding: 16px 27px;
+    padding: 10px 27px;
     width: 100%;
   }
 
@@ -20,13 +19,7 @@
     aspect-ratio: 8.4;
     object-fit: contain;
     object-position: center;
-    width: 400px;
-  }
-  
-  .userActions {
-    display: flex;
-    gap: 24px;
-    margin: auto 0;
+    width: 350px;
   }
 
   .mainContent-Student {

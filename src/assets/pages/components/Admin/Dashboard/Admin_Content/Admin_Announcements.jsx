@@ -43,7 +43,9 @@ const Popup = ({ title, onClose }) => {
                 <button onClick={onClose}>Close</button>
             </div>
             <div className='popup-content'>
-                
+                <div className='form'>
+                    
+                </div>
             </div>
         </div>
     );

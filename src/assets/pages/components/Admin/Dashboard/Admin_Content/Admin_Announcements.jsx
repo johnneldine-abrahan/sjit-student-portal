@@ -44,7 +44,7 @@ const Popup = ({ title, onClose }) => {
             </div>
             <div className='popup-content'>
                 <div className='form'>
-                    
+
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@ const Popup = ({ title, onClose }) => {
 
 
 const Admin_Announcements = () => {
-    const [IoSpeedometerOutline, setIsOpen] = React.useState(false);
+    const [isOpen, setIsOpen] = React.useState(false);
     const [selectedAnnouncement, setSelectedAnnouncement] = React.useState({});
     
     const [isOpenAdd, setIsOpenAdd] = React.useState(false);
@@ -98,11 +98,25 @@ const Admin_Announcements = () => {
                   <h3>{announcement.title}</h3>
                 </div>
                 <span className='details'>{announcement.details}</span>
-                <span>{announcement.view}</span>
+                <span onClick={() => handleOpen(announcement)}>{announcement.view}</span>
                 <span>{announcement.edit}</span>
               </div>
             ))}
         </div>
+        {isOpen && (
+        <div>
+          <div className='popup-blurred-background' />
+          <div className='popup'>
+            <div className='popup-header'>
+              <h3>{selectedAnnouncement.title}</h3>
+              <button onClick={handleClose}>Close</button>
+            </div>
+            <div className='popup-content'>
+              <p>{selectedAnnouncement.details}</p>
+            </div>
+          </div>
+        </div>
+      )}
       
     </div>
   )

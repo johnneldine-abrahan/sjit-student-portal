@@ -286,6 +286,10 @@ const Admin_Students_ContentHeader = () => {
                       </div>
                     </div>
 
+                    <div class='buttons'>
+                      <button type="submit" class="btn-box" name="add" id="add">Done</button>
+                    </div>
+
                   </form>
                 </div>
               </div>

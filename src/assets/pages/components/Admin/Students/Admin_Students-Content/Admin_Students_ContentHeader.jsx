@@ -322,7 +322,10 @@ const Admin_Students_ContentHeader = () => {
                   <button onClick={handleClose}>Close</button>
                 </div>
                 <div className='popup-content'>
-                  {/* Add form or content here */}
+                  <p>Are you sure you want to delete the selected student? This action is cannot be undone.</p>
+                  <div className='buttons'>
+                    <button type="submit" class="btn-box" name="add" id="add">Delete</button>
+                  </div>
                 </div>
               </div>
             </>
@@ -339,6 +342,9 @@ const Admin_Students_ContentHeader = () => {
                 </div>
                 <div className='popup-content'>
                   <p>Do you want to archive the selected student?</p>
+                  <div className='buttons'>
+                    <button type="submit" class="btn-box" name="add" id="add">Archive</button>
+                  </div>
                 </div>
               </div>
             </>

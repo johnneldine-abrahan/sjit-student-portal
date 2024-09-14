@@ -160,6 +160,10 @@
     column-gap: 16px;
 }
 
+.popup-content p{
+    text-align: center;
+}
+
 .popup-content .input-box, .grade-level{
     width: 100%;
 }
@@ -225,11 +229,16 @@
     margin-top: 16px;
 }
 
+.pop-up-content .short-buttons{
+    display: flex;
+    margin-top: 16px;
+}
+
 .popup-content .btn-box{
     background-color: #150f57;
     color: #fff;
     padding: 14px 25px;
-    font-size: 20px;
+    font-size: 16px;
     border-radius: 26px;
     cursor: pointer;
     border: 0;

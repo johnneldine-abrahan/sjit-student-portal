@@ -33,8 +33,7 @@ const Admin_ProfileHeader = () => {
         </div>
         {showPopup && (
         <>
-          <div className="popup-blurred-background">
-          </div>
+          <div className="popup-blurred-background" />
           <div className="popup">
             <div className="popup-header">
               <h3 className="popup-title">Edit Profile</h3>

@@ -39,12 +39,12 @@ const Popup = ({ title, onClose }) => {
     return(
         <div className='popup'>
             <div className='popup-header'>
-                <h3>{title}</h3>
+                <h3 className='popup-title'>{title}</h3>
                 <button onClick={onClose}>Close</button>
             </div>
             <div className='popup-content'>
                 <div className='form'>
-
+                    
                 </div>
             </div>
         </div>
@@ -98,7 +98,7 @@ const Admin_Announcements = () => {
                   <h3>{announcement.title}</h3>
                 </div>
                 <span className='details'>{announcement.details}</span>
-                <span onClick={() => handleOpen(announcement)}>{announcement.view}</span>
+                <span className='view-details-link' onClick={() => handleOpen(announcement)}>{announcement.view}</span>
                 <span>{announcement.edit}</span>
               </div>
             ))}
@@ -108,7 +108,7 @@ const Admin_Announcements = () => {
           <div className='popup-blurred-background' />
           <div className='popup'>
             <div className='popup-header'>
-              <h3>{selectedAnnouncement.title}</h3>
+              <h3 className='popup-title'>{selectedAnnouncement.title}</h3>
               <button onClick={handleClose}>Close</button>
             </div>
             <div className='popup-content'>

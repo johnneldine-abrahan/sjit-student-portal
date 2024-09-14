@@ -23,6 +23,20 @@ const Admin_Students_ContentHeader = () => {
     nationality: '',
     religion: '',
     civilStatus: '',
+    birthOrder: '',
+    contactNumber: '',
+    studySupport: '',
+    address: '',
+    cityMunicipality: '',
+    province: '',
+    country: '',
+    zipCode: '',
+    schoolAttended: '',
+    yearAttended: '',
+    schoolAddress: '',
+    awards: '',
+    classification: '',
+
 
   });
 
@@ -86,6 +100,33 @@ const Admin_Students_ContentHeader = () => {
                 </div>
                 <div className='popup-content'>
                   <form onSubmit={handleSubmit}>
+                    <div className='first-row'>
+                      <div className='grade-level'>
+                        <label>Junior Highschool</label>
+                        <label><input type="checkbox" name="grade7" onChange={handleChange} />Grade 7</label>
+                        <label><input type="checkbox" name="grade8" onChange={handleChange} />Grade 8</label>
+                        <label><input type="checkbox" name="grade9" onChange={handleChange} />Grade 9</label>
+                        <label><input type="checkbox" name="grade10" onChange={handleChange} />Grade 10</label>
+                      </div>
+                    </div>
+
+                    <div className='first-row'>
+                      <div className='grade-level'>
+                        <label>Senior Highschool</label>
+                        <label><input type="checkbox" name="grade11" onChange={handleChange} />Grade 11</label>
+                        <label><input type="checkbox" name="grade12" onChange={handleChange} />Grade 12</label>
+                      </div>
+                      <div className='grade-level'>
+                        <label>Strand</label>
+                        <label><input type="checkbox" name="grade11" onChange={handleChange} />STEM</label>
+                        <label><input type="checkbox" name="grade12" onChange={handleChange} />ABM</label>
+                        <label><input type="checkbox" name="grade12" onChange={handleChange} />HUMSS</label>
+                        <label><input type="checkbox" name="grade12" onChange={handleChange} />IA</label>
+                        <label><input type="checkbox" name="grade12" onChange={handleChange} />ICT</label>
+                        <label><input type="checkbox" name="grade12" onChange={handleChange} />HE</label>
+                      </div>
+                    </div>
+
                     <div className='second-row'>
                       <div className='input-box'>
                         <label>Last Name</label>
@@ -137,6 +178,111 @@ const Admin_Students_ContentHeader = () => {
                       <div className='input-box'>
                         <label>Civil Status</label>
                         <input type='text' name='civilStatus' />
+                      </div>
+                      <div className='input-box'>
+                        <label>Birth Order</label>
+                        <input type='text' name='birthOrder' />
+                      </div>
+                      <div className='input-box'>
+                        <label>Contact Number</label>
+                        <input type='tel' name='contactNumber' />
+                      </div>
+                    </div>
+
+                    <div className='fifth-row'>
+                      
+                    </div>
+
+                    <div className='sixth-row'>
+                      <div className='input-box'>
+                        <label>House No./Street/Barangay</label>
+                        <input type='text' name='address' />
+                      </div>
+                    </div>
+
+                    <div className='seventh-row'>
+                      <div className='input-box'>
+                        <label>City/Municipality</label>
+                        <input type='text' name='cityMunicipality' />
+                      </div>
+                      <div className='input-box'>
+                        <label>Province</label>
+                        <input type='text' name='province' />
+                      </div>
+                      <div className='input-box'>
+                        <label>Country</label>
+                        <input type='text' name='country' />
+                      </div>
+                      <div className='input-box'>
+                        <label>ZIP Code</label>
+                        <input type='text' name='zipCode' />
+                      </div>
+                    </div>
+
+                    <div className='eighth-row'>
+                      <div className='input-box'>
+                        <label>School Name</label>
+                        <input type='text' name='schoolName' />
+                      </div>
+                      <div className='input-box'>
+                        <label>Year Attended</label>
+                        <input type='text' name='yearAttended' />
+                      </div>
+                    </div>
+
+                    <div className='ninth-row'>
+                      <div className='input-box'>
+                        <label>School Address</label>
+                        <input type='text' name='schoolAddress' />
+                      </div>
+                    </div>
+
+                    <div className='tenth-row'>
+                      <div className='input-box'>
+                        <label>Father's Name</label>
+                        <input type='text' name='fatherName' />
+                      </div>
+                      <div className='input-box'>
+                        <label>Occupation</label>
+                        <input type='text' name='occupationFather' />
+                      </div>
+                      <div className='input-box'>
+                        <label>Contact Number</label>
+                        <input type='tel' name='contactFather' />
+                      </div>
+                    </div>
+
+                    <div className='tenth-row'>
+                      <div className='input-box'>
+                        <label>Mother's Name</label>
+                        <input type='text' name='motherName' />
+                      </div>
+                      <div className='input-box'>
+                        <label>Occupation</label>
+                        <input type='text' name='occupationMother' />
+                      </div>
+                      <div className='input-box'>
+                        <label>Contact Number</label>
+                        <input type='tel' name='contactMother' />
+                      </div>
+                    </div>
+
+                    <div className='tenth-row'>
+                      <div className='input-box'>
+                        <label>Guardian Name</label>
+                        <input type='text' name='guardianName' />
+                      </div>
+                      <div className='input-box'>
+                        <label>Relationship</label>
+                        <input type='text' name='guardianRelationship' />
+                      </div>
+                      <div className='input-box'>
+                        <label>Guardian's Address</label>
+                        <input type='text' name='guardianAddress' />
+                      </div>
+                      <div className='input-box'>
+                        <label>Contact Number</label>
+                        <input type='tel' name='contactGuardian' />
                       </div>
                     </div>
 

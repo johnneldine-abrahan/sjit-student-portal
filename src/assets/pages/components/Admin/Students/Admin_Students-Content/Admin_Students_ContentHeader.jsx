@@ -13,6 +13,33 @@ const Admin_Students_ContentHeader = () => {
     archive: false,
   });
 
+  const [formData, setFormData] = useState({
+    lastName: '',
+    firstName: '',
+    middleName: '',
+    dateOfBirth: '',
+    sex: '',
+    placeOfBirth: '',
+    nationality: '',
+    religion: '',
+    civilStatus: '',
+
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Form submitted:', formData);
+    // Handle form submission logic here
+    handleClose();  // Close the popup after submitting
+  };
+
   const handlePopup = (type) => {
     setPopup((prevPopup) => ({ ...prevPopup, [type]: !prevPopup[type] }));
   };
@@ -52,13 +79,68 @@ const Admin_Students_ContentHeader = () => {
           {popup.add && (
             <>
               <div className='popup-blurred-background' />
-              <div className='popup'>
+              <div className='popup-add-edit-student'>
                 <div className='popup-header'>
                   <h3 className='popup-title'>Add Student</h3>
                   <button onClick={handleClose}>Close</button>
                 </div>
                 <div className='popup-content'>
-                  {/* Add form or content here */}
+                  <form onSubmit={handleSubmit}>
+                    <div className='second-row'>
+                      <div className='input-box'>
+                        <label>Last Name</label>
+                        <input type="text" name="lastName" />
+                      </div>
+                      <div className='input-box'>
+                        <label>First Name</label>
+                        <input type="text" name="firstName" />
+                      </div>
+                      <div className='input-box'>
+                        <label>Middle Name</label>
+                        <input type="text" name="firstName" />
+                      </div>
+                    </div>
+
+                    <div className='thrid-row'>
+                      <div className='input-box'>
+                        <label>Date of Birth</label>
+                        <input type='date' name='dateOfBirth' />
+                      </div>
+                      <div className='row'>
+                        <div className='sex-box'>
+                          <div className='sex-options'>
+                            <label>Sex</label>
+                            <div className='sex'>
+                              <label htmlFor='Male'><input type='radio' name='sex' value='Male' />Male</label>
+                            </div>
+                            <div className='sex'>
+                              <label htmlFor='Female'><input type='radio' name='sex' value='Female' />Female</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='input-box'>
+                        <label>Place of Birth</label>
+                        <input type='text' name='placeOfBirth' />
+                      </div>
+                    </div>
+
+                    <div className='fourth-row'>
+                      <div className='input-box'>
+                        <label>Nationality</label>
+                        <input type='text' name='nationality' />
+                      </div>
+                      <div className='input-box'>
+                        <label>Religion</label>
+                        <input type='text' name='religion' />
+                      </div>
+                      <div className='input-box'>
+                        <label>Civil Status</label>
+                        <input type='text' name='civilStatus' />
+                      </div>
+                    </div>
+
+                  </form>
                 </div>
               </div>
             </>
@@ -106,7 +188,7 @@ const Admin_Students_ContentHeader = () => {
                   <button onClick={handleClose}>Close</button>
                 </div>
                 <div className='popup-content'>
-                  {/* Add form or content here */}
+                  <p>Do you want to archive the selected student?</p>
                 </div>
               </div>
             </>

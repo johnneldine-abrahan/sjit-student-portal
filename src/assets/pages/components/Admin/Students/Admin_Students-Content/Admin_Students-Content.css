@@ -87,11 +87,26 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 1;
+    z-index: 1001;
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.popup-add-edit-student {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1001;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    width: 1000px;
+    max-height: 80vh; /* Set the maximum height */
+    overflow: auto;  /* Add scroll when the form is too long */
 }
 
 .popup-blurred-background {
@@ -101,7 +116,8 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 0;
+    z-index: 1000;
+    overflow: hidden;
 }
 
 .popup-header{
@@ -136,4 +152,54 @@
 
 .view-details-link{
     color: #0000ff;
+}
+
+.popup-content .second-row, .thrid-row, .fourth-row {
+    margin-top: 10px;
+    display: flex;
+    column-gap: 16px;
+}
+
+.popup-content .input-box{
+    width: 100%;
+}
+
+.popup-content input[type=text], input[type=tel], input[type=date]{
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 10px 0;
+    border-radius: 10px;
+    background: #f1f1f1;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    text-transform: uppercase;
+  }
+
+  .popup-content label{
+    font-size: 18px;
+  }
+
+  .popup-content input[type=text]:focus {
+    background-color: #ddd;
+    outline: none;
+  }
+
+  .popup-content :where(.sex-options, .sex){
+    display: flex;
+    align-items: center;
+    column-gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .sex label{
+    font-size: 14.5px;
+    padding-top: 5px;
+  }
+
+  .sex-options input[type="radio"] {
+    margin-right: 5px;
+}
+
+.popup-content :where(.sex-options, .sex label){
+    cursor: pointer;
 }

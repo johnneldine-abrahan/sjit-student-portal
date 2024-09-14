@@ -1,9 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './Admin_layout.css'
 import Archive_Content from '../components/Admin/Archive/Archive_Content/Archive_Content'
 import Archive_Sidebar from '../components/Admin/Archive/Archive_Sidebar/Archive_Sidebar'
 
 const Admin_Archive = () => {
+  useEffect(() => {
+    document.title = "Finance - Dashboard";
+  }, []);
+
   return (
     <div className='admin-body'>
         <div className='admin-display'>

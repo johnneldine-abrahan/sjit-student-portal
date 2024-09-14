@@ -1,10 +1,15 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import './Admin_layout.css'
 
 import FacultyMembers_Sidebar from '../components/Admin/FacultyMembers/FacultyMembers_Sidebar/FacultyMembers_Sidebar'
 import FacultyMembers_Content from '../components/Admin/FacultyMembers/FacultyMembers_Content/FacultyMembers_Content'
 
 const Admin_FacultyMembers = () => {
+  useEffect(() => {
+    document.title = "Admin - Faculty Members";
+  }, []);
+
+
   return (
     <div className='admin-body'>
         <div className='admin-display'>

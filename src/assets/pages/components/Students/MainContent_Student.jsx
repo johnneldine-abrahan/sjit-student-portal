@@ -7,37 +7,44 @@ import { PiExamFill } from "react-icons/pi";
 import { FaReceipt } from "react-icons/fa";
 import { GiInjustice } from "react-icons/gi";
 import { IoMdPrint } from "react-icons/io";
+import Certificate_of_Registration from './Certificate_of_Registration/Certificate_of_Registration';
+import Subjects_and_Schedule from './Subjects_and_Schedule/Subjects_and_Schedule';
+import Grades_Students from './Grades_Students/Grades_Students';
+import Payments from './Payments/Payments';
+import Liabilities_Students from './Liabilities_Students/Liabilities_Students';
+import PrintCopyofGrades from './PrintCopyofGrades/PrintCopyofGrades';
+
 
 const actionItems = [
   {
     icon: <GrCertificate size={40} />,
     text: "Certificate of Registration",
-    content: "Here you can download your Certificate of Registration."
+    content: <Certificate_of_Registration />
   },
   {
     icon: <AiFillSchedule size={40} />,
     text: "Subjects and Schedule",
-    content: "View and manage your subjects and schedules here."
+    content: <Subjects_and_Schedule />
   },
   {
     icon: <PiExamFill size={40} />,
     text: "Grades",
-    content: "Check your latest grades for this semester."
+    content: <Grades_Students />
   },
   {
     icon: <FaReceipt size={40} />,
     text: "Payments",
-    content: "View your payment history and upcoming dues."
+    content: <Payments />
   },
   {
     icon: <GiInjustice size={40} />,
     text: "Liabilities",
-    content: "You have outstanding liabilities. Please settle them."
+    content: <Liabilities_Students />
   },
   {
     icon: <IoMdPrint size={40} />,
     text: "Print Copy of Grades",
-    content: "Print a hard copy of your grades for your records."
+    content: <PrintCopyofGrades />
   },
 ];
 

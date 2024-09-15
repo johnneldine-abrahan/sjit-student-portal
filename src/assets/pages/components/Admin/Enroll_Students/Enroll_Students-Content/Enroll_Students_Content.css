@@ -1,3 +1,90 @@
 .admin-enroll_content{
     width: 100%;
 }
+
+.admin-enroll-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.admin-enroll-activity{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.select-btn{
+    background-color: #150f57;
+    color: #fff;
+    padding: 10px 25px;
+    font-size: 18px;
+    border-radius: 26px;
+    cursor: pointer;
+    border: 0;
+    outline: 0;
+    display: inline;
+    align-items: center;
+    justify-content: center;
+}
+
+.subject-list{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background-color: #dde6ed;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.subject-name{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: #000;
+}
+
+.student-profile-preview{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background-color: #dde6ed;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 20px;
+    width: 100%;
+    flex: 1;
+}
+
+.preview-details{
+    display: flex;
+    align-items: center;
+}
+
+.user-profile-preview{
+    height: 85%;
+    background: #dde6ed;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+}
+
+.profile-pic {
+    background: #fff;
+    border-radius: 50%;
+    margin-left: 10px;
+    width: 150px;
+}
+
+.student-enroll-info{
+    display: flex;
+    margin-left: 20px;
+    flex-direction: column;
+}
+
+.student-enroll-info h2{
+    color: #150f57;
+    font-size: 32px;
+}
+

@@ -82,6 +82,13 @@
     margin-top: 20px;
 }
 
+.student-details{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: #000;
+}
+
 .popup {
     position: fixed;
     top: 50%;
@@ -161,7 +168,7 @@
 }
 
 .popup-content p{
-    text-align: center;
+    text-align: justify;
 }
 
 .popup-content .input-box, .grade-level{

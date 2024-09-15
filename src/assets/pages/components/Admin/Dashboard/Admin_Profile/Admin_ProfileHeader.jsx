@@ -37,7 +37,7 @@ const Admin_ProfileHeader = () => {
           <div className="popup">
             <div className="popup-header">
               <h3 className="popup-title">Edit Profile</h3>
-              <button className="close-button" onClick={handleClose}>X</button>
+              <button className="close-button" onClick={handleClose}>Close</button>
             </div>
             <div className="popup-content">
               <p>Edit profile content will go here</p>

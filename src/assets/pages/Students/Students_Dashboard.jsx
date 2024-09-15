@@ -5,6 +5,10 @@ import MainContent_Student from '../components/Students/MainContent_Student'
 import ProfileSidebar_Student from '../components/Students/ProfileSidebar_Student'
 
 const Students_Dashboard = () => {
+  useEffect(() => {
+    document.title = "Student - Dashboard";
+  }, []);
+
   return (
     <div className='studentHome'>
       <Header_Student />

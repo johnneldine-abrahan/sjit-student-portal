@@ -5,27 +5,31 @@ import { AiFillSchedule } from "react-icons/ai";
 import { FaList } from "react-icons/fa";
 import { MdOutlineUploadFile } from "react-icons/md";
 import { MdAnalytics } from "react-icons/md";
+import Dashboard_Faculty from './Dashboard_Faculty/Dashboard_Faculty';
+import StudentList from './StudentList/StudentList';
+import UploadGrades from './UploadGrades/UploadGrades';
+import ViewSchedules from './ViewSchedules/ViewSchedules';
 
 const actionItems = [
   {
     icon: <AiFillSchedule size={40} />,
     text: "View Schedules",
-    content: "Check your daily and weekly teaching schedules."
+    content: <ViewSchedules />
   },
   {
     icon: <FaList size={40} />,
     text: "Student List",
-    content: "View the list of students enrolled in your classes."
+    content: <UploadGrades />
   },
   {
     icon: <MdOutlineUploadFile size={40} />,
     text: "Upload Grades",
-    content: "Upload students' grades for the current semester."
+    content: <StudentList />
   },
   {
     icon: <MdAnalytics size={40} />,
     text: "Reports",
-    content: "Generate reports and analyze student performance data."
+    content: <Dashboard_Faculty />
   },
 ];
 

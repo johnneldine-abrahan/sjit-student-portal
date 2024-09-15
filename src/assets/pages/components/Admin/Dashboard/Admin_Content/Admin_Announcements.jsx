@@ -37,7 +37,7 @@ const announcements = [
 
 const Popup = ({ title, onClose }) => {
     return(
-        <div className='popup'>
+        <div className='popup-announcements'>
             <div className='popup-header'>
                 <h3 className='popup-title'>{title}</h3>
                 <button onClick={onClose}>Close</button>

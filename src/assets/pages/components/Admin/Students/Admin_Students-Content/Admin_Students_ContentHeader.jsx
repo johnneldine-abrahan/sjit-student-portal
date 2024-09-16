@@ -135,15 +135,13 @@ const Admin_Students_ContentHeader = () => {
                         <label>First Name<input type="text" name="firstName" /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Middle Name</label>
-                        <input type="text" name="firstName" />
+                        <label>Middle Name<input type="text" name="firstName" /></label>
                       </div>
                     </div>
 
                     <div className='thrid-row'>
                       <div className='input-box'>
-                        <label>Date of Birth</label>
-                        <input type='date' name='dateOfBirth' />
+                        <label>Date of Birth<input type='date' name='dateOfBirth' /></label>
                       </div>
                       <div className='row'>
                         <div className='sex-box'>
@@ -159,31 +157,25 @@ const Admin_Students_ContentHeader = () => {
                         </div>
                       </div>
                       <div className='input-box'>
-                        <label>Place of Birth</label>
-                        <input type='text' name='placeOfBirth' />
+                        <label>Place of Birth<input type='text' name='placeOfBirth' /></label>
                       </div>
                     </div>
 
                     <div className='fourth-row'>
                       <div className='input-box'>
-                        <label>Nationality</label>
-                        <input type='text' name='nationality' />
+                        <label>Nationality<input type='text' name='nationality' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Religion</label>
-                        <input type='text' name='religion' />
+                        <label>Religion<input type='text' name='religion' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Civil Status</label>
-                        <input type='text' name='civilStatus' />
+                        <label>Civil Status<input type='text' name='civilStatus' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Birth Order</label>
-                        <input type='text' name='birthOrder' />
+                        <label>Birth Order<input type='text' name='birthOrder' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Contact Number</label>
-                        <input type='tel' name='contactNumber' />
+                        <label>Contact Number<input type='tel' name='contactNumber' /></label>
                       </div>
                     </div>
 
@@ -193,94 +185,76 @@ const Admin_Students_ContentHeader = () => {
 
                     <div className='sixth-row'>
                       <div className='input-box'>
-                        <label>House No./Street/Barangay</label>
-                        <input type='text' name='address' />
+                        <label>House No./Street/Barangay<input type='text' name='address' /></label>
                       </div>
                     </div>
 
                     <div className='seventh-row'>
                       <div className='input-box'>
-                        <label>City/Municipality</label>
-                        <input type='text' name='cityMunicipality' />
+                        <label>City/Municipality<input type='text' name='cityMunicipality' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Province</label>
-                        <input type='text' name='province' />
+                        <label>Province<input type='text' name='province' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Country</label>
-                        <input type='text' name='country' />
+                        <label>Country<input type='text' name='country' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>ZIP Code</label>
-                        <input type='text' name='zipCode' />
+                        <label>ZIP Code<input type='text' name='zipCode' /></label>
                       </div>
                     </div>
 
                     <div className='eighth-row'>
                       <div className='input-box'>
-                        <label>School Name</label>
-                        <input type='text' name='schoolName' />
+                        <label>School Name<input type='text' name='schoolName' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Year Attended</label>
-                        <input type='text' name='yearAttended' />
+                        <label>Year Attended<input type='text' name='yearAttended' /></label>
                       </div>
                     </div>
 
                     <div className='ninth-row'>
                       <div className='input-box'>
-                        <label>School Address</label>
-                        <input type='text' name='schoolAddress' />
+                        <label>School Address<input type='text' name='schoolAddress' /></label>
                       </div>
                     </div>
 
                     <div className='tenth-row'>
                       <div className='input-box'>
-                        <label>Father's Name</label>
-                        <input type='text' name='fatherName' />
+                        <label>Father's Name<input type='text' name='fatherName' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Occupation</label>
-                        <input type='text' name='occupationFather' />
+                        <label>Occupation<input type='text' name='occupationFather' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Contact Number</label>
-                        <input type='tel' name='contactFather' />
+                        <label>Contact Number<input type='tel' name='contactFather' /></label>
                       </div>
                     </div>
 
                     <div className='tenth-row'>
                       <div className='input-box'>
-                        <label>Mother's Name</label>
-                        <input type='text' name='motherName' />
+                        <label>Mother's Name<input type='text' name='motherName' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Occupation</label>
-                        <input type='text' name='occupationMother' />
+                        <label>Occupation<input type='text' name='occupationMother' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Contact Number</label>
-                        <input type='tel' name='contactMother' />
+                        <label>Contact Number<input type='tel' name='contactMother' /></label>
                       </div>
                     </div>
 
                     <div className='tenth-row'>
                       <div className='input-box'>
-                        <label>Guardian Name</label>
-                        <input type='text' name='guardianName' />
+                        <label>Guardian Name<input type='text' name='guardianName' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Relationship</label>
-                        <input type='text' name='guardianRelationship' />
+                        <label>Relationship<input type='text' name='guardianRelationship' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Guardian's Address</label>
-                        <input type='text' name='guardianAddress' />
+                        <label>Guardian's Address<input type='text' name='guardianAddress' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Contact Number</label>
-                        <input type='tel' name='contactGuardian' />
+                        <label>Contact Number<input type='tel' name='contactGuardian' /></label>
                       </div>
                     </div>
 
@@ -306,25 +280,21 @@ const Admin_Students_ContentHeader = () => {
                 <div className='popup-content'>
                   <form onSubmit={handleSubmit}>
 
-                    <div className='second-row'>
+                  <div className='second-row'>
                       <div className='input-box'>
-                        <label>Last Name</label>
-                        <input type="text" name="lastName" />
+                        <label>Last Name<input type="text" name="lastName" /></label>
                       </div>
                       <div className='input-box'>
-                        <label>First Name</label>
-                        <input type="text" name="firstName" />
+                        <label>First Name<input type="text" name="firstName" /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Middle Name</label>
-                        <input type="text" name="firstName" />
+                        <label>Middle Name<input type="text" name="firstName" /></label>
                       </div>
                     </div>
 
                     <div className='thrid-row'>
                       <div className='input-box'>
-                        <label>Date of Birth</label>
-                        <input type='date' name='dateOfBirth' />
+                        <label>Date of Birth<input type='date' name='dateOfBirth' /></label>
                       </div>
                       <div className='row'>
                         <div className='sex-box'>
@@ -340,31 +310,25 @@ const Admin_Students_ContentHeader = () => {
                         </div>
                       </div>
                       <div className='input-box'>
-                        <label>Place of Birth</label>
-                        <input type='text' name='placeOfBirth' />
+                        <label>Place of Birth<input type='text' name='placeOfBirth' /></label>
                       </div>
                     </div>
 
                     <div className='fourth-row'>
                       <div className='input-box'>
-                        <label>Nationality</label>
-                        <input type='text' name='nationality' />
+                        <label>Nationality<input type='text' name='nationality' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Religion</label>
-                        <input type='text' name='religion' />
+                        <label>Religion<input type='text' name='religion' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Civil Status</label>
-                        <input type='text' name='civilStatus' />
+                        <label>Civil Status<input type='text' name='civilStatus' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Birth Order</label>
-                        <input type='text' name='birthOrder' />
+                        <label>Birth Order<input type='text' name='birthOrder' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Contact Number</label>
-                        <input type='tel' name='contactNumber' />
+                        <label>Contact Number<input type='tel' name='contactNumber' /></label>
                       </div>
                     </div>
 
@@ -374,100 +338,83 @@ const Admin_Students_ContentHeader = () => {
 
                     <div className='sixth-row'>
                       <div className='input-box'>
-                        <label>House No./Street/Barangay</label>
-                        <input type='text' name='address' />
+                        <label>House No./Street/Barangay<input type='text' name='address' /></label>
                       </div>
                     </div>
 
                     <div className='seventh-row'>
                       <div className='input-box'>
-                        <label>City/Municipality</label>
-                        <input type='text' name='cityMunicipality' />
+                        <label>City/Municipality<input type='text' name='cityMunicipality' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Province</label>
-                        <input type='text' name='province' />
+                        <label>Province<input type='text' name='province' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Country</label>
-                        <input type='text' name='country' />
+                        <label>Country<input type='text' name='country' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>ZIP Code</label>
-                        <input type='text' name='zipCode' />
+                        <label>ZIP Code<input type='text' name='zipCode' /></label>
                       </div>
                     </div>
 
                     <div className='eighth-row'>
                       <div className='input-box'>
-                        <label>School Name</label>
-                        <input type='text' name='schoolName' />
+                        <label>School Name<input type='text' name='schoolName' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Year Attended</label>
-                        <input type='text' name='yearAttended' />
+                        <label>Year Attended<input type='text' name='yearAttended' /></label>
                       </div>
                     </div>
 
                     <div className='ninth-row'>
                       <div className='input-box'>
-                        <label>School Address</label>
-                        <input type='text' name='schoolAddress' />
+                        <label>School Address<input type='text' name='schoolAddress' /></label>
                       </div>
                     </div>
 
                     <div className='tenth-row'>
                       <div className='input-box'>
-                        <label>Father's Name</label>
-                        <input type='text' name='fatherName' />
+                        <label>Father's Name<input type='text' name='fatherName' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Occupation</label>
-                        <input type='text' name='occupationFather' />
+                        <label>Occupation<input type='text' name='occupationFather' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Contact Number</label>
-                        <input type='tel' name='contactFather' />
+                        <label>Contact Number<input type='tel' name='contactFather' /></label>
                       </div>
                     </div>
 
                     <div className='tenth-row'>
                       <div className='input-box'>
-                        <label>Mother's Name</label>
-                        <input type='text' name='motherName' />
+                        <label>Mother's Name<input type='text' name='motherName' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Occupation</label>
-                        <input type='text' name='occupationMother' />
+                        <label>Occupation<input type='text' name='occupationMother' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Contact Number</label>
-                        <input type='tel' name='contactMother' />
+                        <label>Contact Number<input type='tel' name='contactMother' /></label>
                       </div>
                     </div>
 
                     <div className='tenth-row'>
                       <div className='input-box'>
-                        <label>Guardian Name</label>
-                        <input type='text' name='guardianName' />
+                        <label>Guardian Name<input type='text' name='guardianName' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Relationship</label>
-                        <input type='text' name='guardianRelationship' />
+                        <label>Relationship<input type='text' name='guardianRelationship' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Guardian's Address</label>
-                        <input type='text' name='guardianAddress' />
+                        <label>Guardian's Address<input type='text' name='guardianAddress' /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Contact Number</label>
-                        <input type='tel' name='contactGuardian' />
+                        <label>Contact Number<input type='tel' name='contactGuardian' /></label>
                       </div>
                     </div>
 
                     <div class='buttons'>
                       <button type="submit" class="btn-box" name="add" id="add">Done</button>
                     </div>
+
                   </form>
                 </div>
               </div>

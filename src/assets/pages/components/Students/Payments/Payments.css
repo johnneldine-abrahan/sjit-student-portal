@@ -1,0 +1,36 @@
+.payments-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .payment-box {
+    background-color: #f7f7f7;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .payment-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .payment-description {
+    margin-bottom: 20px;
+  }
+  
+  .payment-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .payment-amount {
+    font-weight: bold;
+  }
+  
+  .payment-status {
+    color: #2ecc71;
+  }

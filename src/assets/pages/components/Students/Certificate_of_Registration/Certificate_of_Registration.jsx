@@ -1,10 +1,17 @@
 import React from 'react'
+import { FaPrint } from 'react-icons/fa';
+import './Certificate_of_Registration.css';
 
 const Certificate_of_Registration = () => {
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
-    <div>
-        <p>Pang back-end ata to mga boss kasi ang nakalagay lang dito ay yung document ng reg form...</p>
-    </div>
+    <button onClick={handlePrint} className="print-button">
+      <FaPrint className="icon" />
+      Print
+    </button>
   )
 }
 

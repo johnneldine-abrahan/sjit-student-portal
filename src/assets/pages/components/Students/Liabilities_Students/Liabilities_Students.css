@@ -1,0 +1,15 @@
+.container-liab {
+    padding: 10px;
+  }
+  
+  .box {
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .box + .box {
+    margin-top: 20px;
+  }

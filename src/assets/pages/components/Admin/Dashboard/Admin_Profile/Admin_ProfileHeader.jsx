@@ -40,7 +40,28 @@ const Admin_ProfileHeader = () => {
               <button className="close-button" onClick={handleClose}>Close</button>
             </div>
             <div className="popup-content">
-              <p>Edit profile content will go here</p>
+              <div className="first-row">
+                <div className="input-box">
+                  <label>First Name <input type='text' name='first_name' /></label>
+                </div>
+                <div className='input-box'>
+                  <label>Last Name <input type='text' name='last_name' /></label>
+                </div>
+              </div>
+
+              <div className='second-row'>
+                <div className='input-box'>
+                  <label>Username <input type='text' name='username' /></label>
+                </div>
+                <div className='input-box'>
+                  <label>Password <input type='text' name='password' /></label>
+                </div>
+              </div>
+
+              <div class='buttons'>
+                <button type="submit" class="btn-box" name="add" id="add">Done</button>
+              </div>
+
             </div>
           </div>
         </>

@@ -58,7 +58,7 @@ const FacultyMembers_List = () => {
         <div className='recordslist-container'>
             {FacultyList.map((records) => (
                 <div className='list'>
-                <div className='faculty-details'>
+                  <div className='faculty-details'>
                     <h3>{records.facultyID}</h3>
                 </div>
                 <span>{records.LastName}</span>

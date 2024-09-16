@@ -1,10 +1,69 @@
 .ManageSchedule_content{
-    width: 75%;
+    width: 100%;
 }
-
 
 .manage-schedule-header{
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.admin-manage-schedule{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.add-schedule-btn{
+    background-color: #150f57;
+    color: #fff;
+    padding: 10px 25px;
+    font-size: 18px;
+    border-radius: 26px;
+    cursor: pointer;
+    border: 0;
+    outline: 0;
+    display: inline;
+    align-items: center;
+    justify-content: center;
+}
+
+.section-list{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background-color: #dde6ed;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.add-subject-link{
+    color: #0000ff;
+}
+
+.list{
+    display: flex;
+    padding-right: 10px;
+    align-items: center;
+    justify-content: space-between;
+    transition: 0.3s ease-in-out;
+    border-bottom: 1px solid #383737;
+    margin-bottom: 15px;
+}
+
+.list-container{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background-color: #dde6ed;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.list:hover{
+    background-color: #7B8BBC;
+    border-radius: 10px;
+    gap: 5px;
+    cursor: pointer;
 }

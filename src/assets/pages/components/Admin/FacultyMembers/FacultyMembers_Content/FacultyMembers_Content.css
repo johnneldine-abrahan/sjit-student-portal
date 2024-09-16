@@ -82,6 +82,39 @@
     margin-top: 20px;
 }
 
+.list{
+    display: flex;
+    padding-right: 10px;
+    align-items: center;
+    justify-content: space-between;
+    transition: 0.3s ease-in-out;
+    border-bottom: 1px solid #383737;
+    margin-bottom: 15px;
+}
+
+.list-container{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background-color: #dde6ed;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.list:hover{
+    background-color: #7B8BBC;
+    border-radius: 10px;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.faculty-details{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: #000;
+}
+
 .view-details-link{
     color: #0000ff;
 }

@@ -90,7 +90,10 @@ const FacultyMembers_ContentHeader = () => {
                     <button onClick={handleClose}>Close</button>
                   </div>
                   <div className='popup-content'>
-                    {/* Add form or content here */}
+                    <p>Are you sure you want to delete the selected teacher? This action is cannot be undone.</p>
+                    <div className='buttons'>
+                      <button type="submit" class="btn-box" name="delete" id="delete">Delete</button>
+                    </div>
                   </div>
                 </div>
               </>
@@ -106,8 +109,11 @@ const FacultyMembers_ContentHeader = () => {
                     <button onClick={handleClose}>Close</button>
                   </div>
                   <div className='popup-content'>
-                    {/* Add form or content here */}
+                  <p>Do you want to archive the selected teacher?</p>
+                  <div className='buttons'>
+                    <button type="submit" class="btn-box" name="archive" id="archive">Archive</button>
                   </div>
+                </div>
                 </div>
               </>
             )}

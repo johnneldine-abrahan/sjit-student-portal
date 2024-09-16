@@ -146,14 +146,16 @@
 }
 
 .popup-content p{
+    margin: 0;
     text-align: justify;
+    color: #000;
 }
 
 .popup-content .input-box, .grade-level{
     width: 100%;
 }
 
-.popup-content input[type=text], input[type=tel], input[type=date], select{
+.popup-content input[type=text], input[type=tel], input[type=date], select, textarea{
     width: 100%;
     padding: 10px;
     margin: 5px 0 10px 0;
@@ -168,3 +170,13 @@
     font-size: 18px;
     color: #000;
   }
+
+  .popup-content .buttons{
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.popup-content p{
+    text-align: justify;
+}

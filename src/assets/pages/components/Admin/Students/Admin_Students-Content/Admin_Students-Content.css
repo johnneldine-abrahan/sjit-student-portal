@@ -181,6 +181,7 @@
 
 .popup-content p{
     margin: 0;
+    text-align: justify;
 }
 
 .view-details-link{
@@ -191,10 +192,6 @@
     margin-top: 10px;
     display: flex;
     column-gap: 16px;
-}
-
-.popup-content p{
-    text-align: justify;
 }
 
 .popup-content .input-box, .grade-level, .sex-box{
@@ -265,7 +262,7 @@
     margin-top: 16px;
 }
 
-.pop-up-content .short-buttons{
+.popup-content .short-buttons{
     display: flex;
     margin-top: 16px;
 }

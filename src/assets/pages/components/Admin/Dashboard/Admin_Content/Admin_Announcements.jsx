@@ -73,6 +73,16 @@ const Popup_Add = ({ title, onClose }) => {
                             <label>Announcement Title<input type='text' name='textAnnouncement' /></label>
                         </div>
                     </div>
+
+                    <div className='thrid-row'>
+                        <div className='input-box'>
+                            <label>Announcement Details<textarea name='announcement-details' rows={5} cols={40} /></label>
+                        </div>
+                    </div>
+
+                    <div class='buttons'>
+                      <button type="submit" class="btn-box" name="add" id="add">Done</button>
+                    </div>
                     
                 </form>
             </div>
@@ -81,6 +91,13 @@ const Popup_Add = ({ title, onClose }) => {
 };
 
 const Popup_Edit = ({ title, onClose }) => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log('Form submitted:', formData);
+        // Handle form submission logic here
+        handleClose();  // Close the popup after submitting
+      };
+
     return(
         <div className='popup-announcements'>
             <div className='popup-header'>
@@ -88,9 +105,46 @@ const Popup_Edit = ({ title, onClose }) => {
                 <button onClick={onClose}>Close</button>
             </div>
             <div className='popup-content'>
-                <div className='form'>
+            <form onSubmit={handleSubmit}>
+                    <div className='first-row'>
+                        <div className='input-box'>
+                            <label>Announce to
+                                <select>
+                                    <option value='student'>Students</option>
+                                    <option value='faculty'>Teachers</option>
+                                    <option value='finance'>Finance</option>
+                                    <option value='all'>All</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div className='input-box'>
+                            <label>Announce type
+                                <select>
+                                    <option value='event'>Event</option>
+                                    <option value='meeting'>Meeting</option>
+                                    <option value='misc'>Misc</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className='second-row'>
+                        <div className='input-box'>
+                            <label>Announcement Title<input type='text' name='textAnnouncement' /></label>
+                        </div>
+                    </div>
+
+                    <div className='thrid-row'>
+                        <div className='input-box'>
+                            <label>Announcement Details<textarea name='announcement-details' rows={5} cols={40} /></label>
+                        </div>
+                    </div>
+
+                    <div class='buttons'>
+                      <button type="submit" class="btn-box" name="add" id="add">Done</button>
+                    </div>
                     
-                </div>
+                </form>
             </div>
         </div>
     );
@@ -104,8 +158,9 @@ const Popup_Delete = ({ title, onClose }) => {
                 <button onClick={onClose}>Close</button>
             </div>
             <div className='popup-content'>
-                <div className='form'>
-                    
+                <p>Are you sure you want to delete the selected student? This action is cannot be undone.</p>
+                <div className='buttons'>
+                    <button type="submit" class="btn-box" name="delete" id="delete">Delete</button>
                 </div>
             </div>
         </div>

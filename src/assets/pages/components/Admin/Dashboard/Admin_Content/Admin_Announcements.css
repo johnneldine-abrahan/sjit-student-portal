@@ -88,7 +88,7 @@
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    width: 800px;
+    width: 750px;
 }
 
 .popup-blurred-background {
@@ -107,6 +107,10 @@
     align-items: center;
     padding-bottom: 10px;
     border-bottom: 1px solid #ddd;
+}
+
+.popup-title{
+    color: #000;
 }
 
 .popup-header h3{
@@ -130,3 +134,37 @@
 .view-details-link{
     color: #0000ff;
 }
+
+.popup-content .input-box{
+    width: 100%;
+}
+
+.popup-content .first-row, .second-row, .thrid-row, .fourth-row, .fifth-row, .sixth-row, .seventh-row, .eighth-row, .tenth-row {
+    margin-top: 10px;
+    display: flex;
+    column-gap: 16px;
+}
+
+.popup-content p{
+    text-align: justify;
+}
+
+.popup-content .input-box, .grade-level{
+    width: 100%;
+}
+
+.popup-content input[type=text], input[type=tel], input[type=date], select{
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 10px 0;
+    border-radius: 10px;
+    background: #f1f1f1;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    text-transform: uppercase;
+  }
+
+.popup-content label{
+    font-size: 18px;
+    color: #000;
+  }

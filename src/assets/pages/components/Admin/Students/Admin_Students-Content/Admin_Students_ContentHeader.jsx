@@ -129,12 +129,10 @@ const Admin_Students_ContentHeader = () => {
 
                     <div className='second-row'>
                       <div className='input-box'>
-                        <label>Last Name</label>
-                        <input type="text" name="lastName" />
+                        <label>Last Name<input type="text" name="lastName" /></label>
                       </div>
                       <div className='input-box'>
-                        <label>First Name</label>
-                        <input type="text" name="firstName" />
+                        <label>First Name<input type="text" name="firstName" /></label>
                       </div>
                       <div className='input-box'>
                         <label>Middle Name</label>

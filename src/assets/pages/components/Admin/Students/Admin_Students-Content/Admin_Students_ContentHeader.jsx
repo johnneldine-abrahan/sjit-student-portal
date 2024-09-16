@@ -102,28 +102,33 @@ const Admin_Students_ContentHeader = () => {
                   <form onSubmit={handleSubmit}>
                     <div className='first-row'>
                       <div className='grade-level'>
-                        <label>Junior Highschool</label>
-                        <label><input type="checkbox" name="grade7" onChange={handleChange} />Grade 7</label>
-                        <label><input type="checkbox" name="grade8" onChange={handleChange} />Grade 8</label>
-                        <label><input type="checkbox" name="grade9" onChange={handleChange} />Grade 9</label>
-                        <label><input type="checkbox" name="grade10" onChange={handleChange} />Grade 10</label>
+                        <label>Select Program</label>
+                        <label><input type="checkbox" name="program" value="jhs" onChange={handleChange} />Junior Highschool</label>
+                        <label><input type="checkbox" name="program" value="shs" onChange={handleChange} />Senior Highschool</label>
                       </div>
                     </div>
 
                     <div className='first-row'>
-                      <div className='grade-level'>
-                        <label>Senior Highschool</label>
-                        <label><input type="checkbox" name="grade11" onChange={handleChange} />Grade 11</label>
-                        <label><input type="checkbox" name="grade12" onChange={handleChange} />Grade 12</label>
-                      </div>
-                      <div className='grade-level'>
+                     <div className='input-box'>
+                        <label>Grade Level
+                          <select>
+                            <option value="grade7">Grade 7</option>
+                            <option value="grade8">Grade 8</option>
+                            <option value="grade9">Grade 9</option>
+                            <option value="grade10">Grade 10</option>
+                          </select>
+                        </label>
+                     </div>
+                      <div className='input-box'>
                         <label>Strand</label>
-                        <label><input type="checkbox" name="grade11" onChange={handleChange} />STEM</label>
-                        <label><input type="checkbox" name="grade12" onChange={handleChange} />ABM</label>
-                        <label><input type="checkbox" name="grade12" onChange={handleChange} />HUMSS</label>
-                        <label><input type="checkbox" name="grade12" onChange={handleChange} />IA</label>
-                        <label><input type="checkbox" name="grade12" onChange={handleChange} />ICT</label>
-                        <label><input type="checkbox" name="grade12" onChange={handleChange} />HE</label>
+                            <select>
+                              <option value="stem">Science, Technology, Engineering and Mathematics (STEM)</option>
+                              <option value="abm">Accountancy, Business and Management (ABM)</option>
+                              <option value="humss">Humanities and Social Sciences (HUMSS)</option>
+                              <option value="tvl-ia">TVL - Industrial Arts (TVL-IA)</option>
+                              <option value="tvl-he">TVL - Home Economics (TVL-HE)</option>
+                              <option value="tvl-ict">TVL - Internet Communications Technology (TVL-ICT)</option>
+                            </select>
                       </div>
                     </div>
 
@@ -139,23 +144,19 @@ const Admin_Students_ContentHeader = () => {
                       </div>
                     </div>
 
+                    <div className='first-row'>
+                      <div className='sex-box'>
+                        <label>Sex</label>
+                        <label><input type="radio" name="sex" option="male" />Male</label>
+                        <label><input type="radio" name="sex" option="female"/>Female</label>
+                      </div>
+                    </div>
+
                     <div className='thrid-row'>
                       <div className='input-box'>
                         <label>Date of Birth<input type='date' name='dateOfBirth' /></label>
                       </div>
-                      <div className='row'>
-                        <div className='sex-box'>
-                          <div className='sex-options'>
-                            <label>Sex</label>
-                            <div className='sex'>
-                              <label htmlFor='Male'><input type='radio' name='sex' value='Male' />Male</label>
-                            </div>
-                            <div className='sex'>
-                              <label htmlFor='Female'><input type='radio' name='sex' value='Female' />Female</label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                    
                       <div className='input-box'>
                         <label>Place of Birth<input type='text' name='placeOfBirth' /></label>
                       </div>
@@ -180,7 +181,19 @@ const Admin_Students_ContentHeader = () => {
                     </div>
 
                     <div className='fifth-row'>
-                      
+                      <div className='input-box'>
+                        <label>Financial Support
+                          <select>
+                            <option value="self-supporting">Self-supporting (Working)</option>
+                            <option value="parents-support">Parent's Full Support</option>
+                            <option value="relatives-support">Relatives/Family Friends</option>
+                            <option value="scholarship">Scholarship/Subsidy</option>
+                          </select>
+                        </label>
+                      </div>
+                      <div className='input-box'>
+                        <label>Scholarship/Subsidy (name of grant)<input type='text' name="schaolarship-name" /></label>
+                      </div>
                     </div>
 
                     <div className='sixth-row'>
@@ -292,22 +305,17 @@ const Admin_Students_ContentHeader = () => {
                       </div>
                     </div>
 
+                    <div className='first-row'>
+                      <div className='sex-box'>
+                        <label>Sex</label>
+                        <label><input type="radio" name="sex" option="male" />Male</label>
+                        <label><input type="radio" name="sex" option="female"/>Female</label>
+                      </div>
+                    </div>
+
                     <div className='thrid-row'>
                       <div className='input-box'>
                         <label>Date of Birth<input type='date' name='dateOfBirth' /></label>
-                      </div>
-                      <div className='row'>
-                        <div className='sex-box'>
-                          <div className='sex-options'>
-                            <label>Sex</label>
-                            <div className='sex'>
-                              <label htmlFor='Male'><input type='radio' name='sex' value='Male' />Male</label>
-                            </div>
-                            <div className='sex'>
-                              <label htmlFor='Female'><input type='radio' name='sex' value='Female' />Female</label>
-                            </div>
-                          </div>
-                        </div>
                       </div>
                       <div className='input-box'>
                         <label>Place of Birth<input type='text' name='placeOfBirth' /></label>
@@ -333,7 +341,19 @@ const Admin_Students_ContentHeader = () => {
                     </div>
 
                     <div className='fifth-row'>
-                      
+                    <div className='input-box'>
+                        <label>Financial Support
+                          <select>
+                            <option value="self-supporting">Self-supporting (Working)</option>
+                            <option value="parents-support">Parent's Full Support</option>
+                            <option value="relatives-support">Relatives/Family Friends</option>
+                            <option value="scholarship">Scholarship/Subsidy</option>
+                          </select>
+                        </label>
+                      </div>
+                      <div className='input-box'>
+                        <label>Scholarship/Subsidy (name of grant)<input type='text' name="schaolarship-name" /></label>
+                      </div>
                     </div>
 
                     <div className='sixth-row'>

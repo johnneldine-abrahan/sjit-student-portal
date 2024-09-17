@@ -1,5 +1,5 @@
 .studentHome {
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -7,7 +7,7 @@
 }
 
 .headerStudent {
-  background-color: #7B8BBC;
+  background-color: #7b8bbc;
   display: flex;
 
   justify-content: space-between;
@@ -49,11 +49,11 @@
   width: 100%;
 }
 
-p.carousel-status{
+p.carousel-status {
   display: none;
 }
 
-ul.thumbs.animated{
+ul.thumbs.animated {
   display: none;
 }
 
@@ -86,7 +86,7 @@ ul.thumbs.animated{
   transition: 0.5s ease-in-out;
 }
 
-.actionCard:hover{
+.actionCard:hover {
   transform: scale(1.04);
   cursor: pointer;
 }
@@ -125,16 +125,16 @@ ul.thumbs.animated{
 }
 
 .profileHeader {
-display: flex;
-justify-content: space-between;
-align-items: center;
-width: 100%;
-margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 15px;
 }
 
 .settingsIcon {
-width: 31px;
-height: 31px;
+  width: 31px;
+  height: 31px;
 }
 
 .profileTitle {
@@ -181,11 +181,56 @@ height: 31px;
   color: #150f57;
 }
 
+.filterheader-section{
+  display: flex;
+}
+
+.filter-section{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filter-section p{
+  font-size: 18px;
+  margin-top: -10px;
+}
+
+.filterheader {
+  background-color: #dde6ed;
+  border-radius: 20px;
+  color: #150f57;
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  width: 90px;
+  padding: 15px 0;
+  transition: 0.5s ease-in-out;
+}
+
+.filtertitle {
+  margin-left: 5px;
+}
+
+.info-ico{
+  margin-bottom: -9px;
+  margin-right: 10px;
+}
+
+.filterheader .filter-ico{
+  margin-left: 10px;
+}
+
+.filterheader:hover {
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
 /* Add to Students_module.css */
 
 .actionCard {
-cursor: pointer;
-/* existing styles */
+  cursor: pointer;
+  /* existing styles */
 }
 
 .modalOverlay {
@@ -220,17 +265,17 @@ cursor: pointer;
 }
 
 .modalTitle {
-font-size: 16px;
-font-weight: bold;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .modalCloseButton {
-background: none;
-border: none;
-cursor: pointer;
-padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
 }
 
 .modalBody {
-padding: 16px;
+  padding: 16px;
 }

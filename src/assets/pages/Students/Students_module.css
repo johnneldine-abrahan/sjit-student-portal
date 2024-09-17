@@ -40,7 +40,7 @@
   width: 75%;
 }
 
-.mainBanner {
+.carousel .slide {
   aspect-ratio: 3;
   border-radius: 20px;
   box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);
@@ -49,11 +49,30 @@
   width: 100%;
 }
 
+p.carousel-status{
+  display: none;
+}
+
+ul.thumbs.animated{
+  display: none;
+}
+
+.carousel {
+  border-radius: 20px;
+}
+.control-arrow {
+  border-radius: 20px;
+}
+
+.carousel img {
+  border-radius: 20px;
+}
+
 .actionGrid {
   display: flex;
   flex-wrap: wrap;
   gap: 30px;
-  margin-top: 62px;
+  margin-top: 11px;
 }
 
 .actionCard {

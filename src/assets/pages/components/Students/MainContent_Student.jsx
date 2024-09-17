@@ -13,7 +13,10 @@ import Grades_Students from './Grades_Students/Grades_Students';
 import Payments from './Payments/Payments';
 import Liabilities_Students from './Liabilities_Students/Liabilities_Students';
 import PrintCopyofGrades from './PrintCopyofGrades/PrintCopyofGrades';
-
+import { Carousel } from "react-responsive-carousel";
+import image1 from "../../../img/Faculty/Pinas.jpg";
+import image2 from "../../../img/Faculty/RHU.jpg";
+import image3 from "../../../img/Faculty/Aids.jpg";
 
 const actionItems = [
   {
@@ -49,9 +52,24 @@ const actionItems = [
 ];
 
 const MainContent_Student = () => {
+  const bannerImages = [image1, image2, image3];
   return (
     <section className='mainSection'>
-      <div className='mainBanner'></div>
+      <Carousel
+        autoPlay={true}
+        interval={3000}
+        infiniteLoop={true}
+        showArrows={true}
+        stopOnHover={false}
+        transitionTime={500}
+        >
+          
+        {bannerImages.map((image, index) => (
+          <div key={index}>
+            <img src={image} alt={`Pinas.jpg ${index + 1}`} />
+          </div>
+        ))}
+      </Carousel>
       <div className='actionGrid'>
         {actionItems.map((item, index) => (
           <ActionCard_Student 

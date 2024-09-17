@@ -1,166 +1,185 @@
 .facultyHome {
-    background-color: #F5F5F5;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    padding-bottom: 60px;
-  }
+  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-bottom: 60px;
+}
 
-  .headerFaculty {
-    background-color: #7B8BBC;
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 27px;
-    width: 100%;
-  }
+.headerFaculty {
+  background-color: #7b8bbc;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 27px;
+  width: 100%;
+}
 
-  .logo-faculty {
-    aspect-ratio: 8.4;
-    object-fit: contain;
-    object-position: center;
-    width: 350px;
-  }
+.logo-faculty {
+  aspect-ratio: 8.4;
+  object-fit: contain;
+  object-position: center;
+  width: 350px;
+}
 
-  .userActions {
-    display: flex;
-    gap: 24px;
-    margin: auto 0;
-  }
+.userActions {
+  display: flex;
+  gap: 24px;
+  margin: auto 0;
+}
 
-  .mainContent-Student {
-    align-self: center;
-    margin-top: 70px;
-    width: 100%;
-    max-width: 1331px;
-  }
+.mainContent-Student {
+  align-self: center;
+  margin-top: 70px;
+  width: 100%;
+  max-width: 1331px;
+}
 
-  .contentWrapper {
-    display: flex;
-    gap: 20px;
+.contentWrapper {
+  display: flex;
+  gap: 20px;
 }
 
 .mainSection {
-    display: flex;
-    flex-direction: column;
-    width: 75%;
-  }
+  display: flex;
+  flex-direction: column;
+  width: 75%;
+}
 
-  .mainBanner {
-    aspect-ratio: 3;
-    border-radius: 20px;
-    box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);
-    object-fit: contain;
-    object-position: center;
-    width: 100%;
-  }
+.carousel .slide {
+  aspect-ratio: 3;
+  border-radius: 20px;
+  box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);
+  object-fit: contain;
+  object-position: center;
+  width: 100%;
+}
 
-  .actionGrid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 30px;
-    margin-top: 62px;
-  }
+p.carousel-status{
+  display: none;
+}
 
-  .actionCard {
-    background-color: #dde6ed;
-    border-radius: 20px;
-    /*box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);*/
-    display: flex;
-    flex: 1 1 calc(50% - 20px);
-    gap: 20px;
-    padding: 19px 29px;
-    transition: 0.5s ease-in-out;
-  }
+ul.thumbs.animated{
+  display: none;
+}
 
-  .actionCard:hover{
-    transform: scale(1.04);
-    cursor: pointer;
-  }
+.carousel {
+  border-radius: 20px;
+}
+.control-arrow {
+  border-radius: 20px;
+}
 
-  .actionIcon {
-    aspect-ratio: 1;
-    object-fit: contain;
-    object-position: center;
-    color: #150f57;
-  }
+.carousel img {
+  border-radius: 20px;
+}
 
-  .actionText {
-    align-self: center;
-    flex-grow: 1;
-    font-weight: 600;
-    font-size: 18px;
-    color: #150f57;
-  }
+.actionGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-top: 11px;
+}
 
-  .profileSidebar {
-    display: flex;
-    flex-direction: column;
-    width: 25%;
-  }
+.actionCard {
+  background-color: #dde6ed;
+  border-radius: 20px;
+  /*box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);*/
+  display: flex;
+  flex: 1 1 calc(50% - 20px);
+  gap: 20px;
+  padding: 19px 29px;
+  transition: 0.5s ease-in-out;
+}
 
-  .profileCard {
-    background-color: rgba(255, 255, 255, 1);
-    border-radius: 20px;
-    /*box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);*/
-    color: rgba(0, 0, 0, 1);
-    display: flex;
-    flex-direction: column;
-    font-family: Poppins, sans-serif;
-    font-weight: 700;
-    padding: 15px 23px;
-  }
+.actionCard:hover {
+  transform: scale(1.04);
+  cursor: pointer;
+}
 
-  .profileHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 15px;
-  }
+.actionIcon {
+  aspect-ratio: 1;
+  object-fit: contain;
+  object-position: center;
+  color: #150f57;
+}
 
-  .settingsIcon {
-    width: 31px;
-    height: 31px;
-  }
+.actionText {
+  align-self: center;
+  flex-grow: 1;
+  font-weight: 600;
+  font-size: 18px;
+  color: #150f57;
+}
 
-  .profileTitle {
-    font-size: 24px;
-    margin-bottom: 15px;
-    color: #150f57;
-  }
+.profileSidebar {
+  display: flex;
+  flex-direction: column;
+  width: 25%;
+}
 
-  .profileImage {
-    align-self: center;
-    background-color: rgba(217, 217, 217, 1);
-    border-radius: 50%;
-    height: 184px;
-    width: 184px;
-  }
+.profileCard {
+  background-color: rgba(255, 255, 255, 1);
+  border-radius: 20px;
+  /*box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);*/
+  color: rgba(0, 0, 0, 1);
+  display: flex;
+  flex-direction: column;
+  font-family: Poppins, sans-serif;
+  font-weight: 700;
+  padding: 15px 23px;
+}
 
-  .facultyName,
-  .facultyPosition,
-  .academicYear{
-    margin-top: 8px;
-    text-align: center;
-  }
+.profileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 15px;
+}
 
-  .notificationSection {
-    background-color: #dde6ed;
-    border-radius: 20px;
-    /*box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);*/
-    margin-top: 16px;
-    padding: 18px 0;
-  }
+.settingsIcon {
+  width: 31px;
+  height: 31px;
+}
 
-  .notificationHeader {
-    align-items: center;
-    display: flex;
-    font-size: 16px;
-    gap: 14px;
-    justify-content: center;
-    margin-bottom: 11px;
-    color: #150f57;
-  }
+.profileTitle {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: #150f57;
+}
+
+.profileImage {
+  align-self: center;
+  background-color: rgba(217, 217, 217, 1);
+  border-radius: 50%;
+  height: 184px;
+  width: 184px;
+}
+
+.facultyName,
+.facultyPosition,
+.academicYear {
+  margin-top: 8px;
+  text-align: center;
+}
+
+.notificationSection {
+  background-color: #dde6ed;
+  border-radius: 20px;
+  /*box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);*/
+  margin-top: 16px;
+  padding: 18px 0;
+}
+
+.notificationHeader {
+  align-items: center;
+  display: flex;
+  font-size: 16px;
+  gap: 14px;
+  justify-content: center;
+  margin-bottom: 11px;
+  color: #150f57;
+}
 
 /* Add to Faculty_module.css */
 

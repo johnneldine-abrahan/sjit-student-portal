@@ -3,6 +3,7 @@ import './Admin_Profile.css'
 import { BiEditAlt } from "react-icons/bi";
 import { LuLogOut } from "react-icons/lu";
 import { useNavigate } from 'react-router-dom';
+import Profile from '../../../../../img/Profile/ProfileSample.jpg'
 
 const Admin_ProfileHeader = () => {
   const navigate = useNavigate();
@@ -40,6 +41,10 @@ const Admin_ProfileHeader = () => {
               <button className="close-button" onClick={handleClose}>Close</button>
             </div>
             <div className="popup-content">
+              <form>
+              <div className='change-profile'>
+                <img src={Profile} alt="" />
+              </div>
               <div className="first-row">
                 <div className="input-box">
                   <label>First Name <input type='text' name='first_name' /></label>
@@ -61,7 +66,7 @@ const Admin_ProfileHeader = () => {
               <div class='buttons'>
                 <button type="submit" class="btn-box" name="add" id="add">Done</button>
               </div>
-
+              </form>
             </div>
           </div>
         </>

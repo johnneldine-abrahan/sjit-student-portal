@@ -256,7 +256,7 @@ const Admin_Announcements = () => {
         {isOpen && (
         <div>
           <div className='popup-blurred-background' />
-          <div className='popup'>
+          <div className='popup-announcements'>
             <div className='popup-header'>
               <h3 className='popup-title'>{selectedAnnouncement.title}</h3>
               <button onClick={handleClose}>Close</button>

@@ -5,6 +5,8 @@ import { AiFillSchedule } from "react-icons/ai";
 import { FaList } from "react-icons/fa";
 import { MdOutlineUploadFile } from "react-icons/md";
 import { MdAnalytics } from "react-icons/md";
+import { FiFilter } from "react-icons/fi";
+import { IoIosInformationCircleOutline } from "react-icons/io";
 import Dashboard_Faculty from "./Dashboard_Faculty/Dashboard_Faculty";
 import StudentList from "./StudentList/StudentList";
 import UploadGrades from "./UploadGrades/UploadGrades";
@@ -57,6 +59,17 @@ const MainContent_Faculty = () => {
           </div>
         ))}
       </Carousel>
+
+      <div className="filter-section">
+          <p><IoIosInformationCircleOutline size={30} className="info-ico"/>Please click "Filter" button to change the current school year / semester</p>
+          <div className="filterheader-section">
+            <div className="filterheader">
+              <FiFilter className="filter-ico" />
+              <h3 className="filtertitle">Filter</h3>
+            </div>
+          </div>
+      </div>
+
       <div className="actionGrid">
         {actionItems.map((item, index) => (
           <ActionCard_Faculty

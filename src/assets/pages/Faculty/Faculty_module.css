@@ -181,6 +181,51 @@ ul.thumbs.animated{
   color: #150f57;
 }
 
+.filterheader-section{
+  display: flex;
+}
+
+.filter-section{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filter-section p{
+  font-size: 18px;
+  margin-top: -10px;
+}
+
+.filterheader {
+  background-color: #dde6ed;
+  border-radius: 20px;
+  color: #150f57;
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  width: 90px;
+  padding: 15px 0;
+  transition: 0.5s ease-in-out;
+}
+
+.filtertitle {
+  margin-left: 5px;
+}
+
+.info-ico{
+  margin-bottom: -9px;
+  margin-right: 10px;
+}
+
+.filterheader .filter-ico{
+  margin-left: 10px;
+}
+
+.filterheader:hover {
+  transform: scale(1.04);
+  cursor: pointer;
+}
+
 /* Add to Faculty_module.css */
 
 .actionCard {

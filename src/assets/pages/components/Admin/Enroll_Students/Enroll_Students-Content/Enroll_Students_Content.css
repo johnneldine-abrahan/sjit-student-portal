@@ -1,20 +1,20 @@
-.admin-enroll_content{
+.admin-enroll_content {
     width: 100%;
-}
-
-.admin-enroll-header{
+  }
+  
+  .admin-enroll-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-}
-
-.admin-enroll-activity{
+  }
+  
+  .admin-enroll-activity {
     display: flex;
     align-items: center;
     gap: 20px;
-}
-
-.select-btn{
+  }
+  
+  .select-btn {
     background-color: #150f57;
     color: #fff;
     padding: 10px 25px;
@@ -26,26 +26,43 @@
     display: inline;
     align-items: center;
     justify-content: center;
-}
-
-.subject-list{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    background-color: #dde6ed;
-    border-radius: 10px;
-    padding: 20px;
+  }
+  /* */
+  .subject-list table {
+    width: 100%;
     margin-top: 20px;
-}
-
-.subject-name{
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    color: #000;
-}
-
-.student-profile-preview{
+    border-collapse: collapse;
+    border-radius: 10px; /* Add border radius here */
+    overflow: hidden; /* Add this to ensure the border radius is applied correctly */
+  }
+  .subject-list th,
+  .subject-list td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .subject-list th {
+    background-color: #f0f0f0;
+  }
+  
+  .subject-list tr:nth-child(even) {
+    background-color: #f5f5f5;
+  }
+  
+  .subject-list td {
+    border-style: hidden;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .subject-list th {
+    border-style: hidden;
+    padding: 10px;
+    text-align: left;
+  }
+  /* */
+  .student-profile-preview {
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -55,36 +72,35 @@
     margin-top: 20px;
     width: 100%;
     flex: 1;
-}
-
-.preview-details{
+  }
+  
+  .preview-details {
     display: flex;
     align-items: center;
-}
-
-.user-profile-preview{
+  }
+  
+  .user-profile-preview {
     height: 85%;
     background: #dde6ed;
     border-radius: 10px;
     padding: 10px;
     display: flex;
-}
-
-.profile-pic {
+  }
+  
+  .profile-pic {
     background: #fff;
     border-radius: 50%;
     margin-left: 10px;
     width: 150px;
-}
-
-.student-enroll-info{
+  }
+  
+  .student-enroll-info {
     display: flex;
     margin-left: 20px;
     flex-direction: column;
-}
-
-.student-enroll-info h2{
+  }
+  
+  .student-enroll-info h2 {
     color: #150f57;
     font-size: 32px;
-}
-
+  }

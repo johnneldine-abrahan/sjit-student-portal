@@ -55,18 +55,32 @@ const Admin_StudentsRecords = () => {
     return (
         <div className='student-records'>
             <div className='recordslist-container'>
-                {StudentRecords.map((records) => (
-                    <div className='list' key={records.studentID}>
-                        <div className='students-details'>
-                            <h3>{records.studentID}</h3>
-                        </div>
-                        <span>{records.LastName}</span>
-                        <span>{records.FirstName}</span>
-                        <span>{records.MiddleName}</span>
-                        <span>{records.yearGraduated}</span>
-                        <span className='view-details-link' onClick={() => handlePopup(records)}>View Details</span>
-                    </div>
-                ))}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Last Name</th>
+                            <th>First Name</th>
+                            <th>Middle Name</th>
+                            <th>Year Graduated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {StudentRecords.map((records) => (
+                            <tr key={records.studentID}>
+                                <td>{records.studentID}</td>
+                                <td>{records.LastName}</td>
+                                <td>{records.FirstName}</td>
+                                <td>{records.MiddleName}</td>
+                                <td>{records.yearGraduated}</td>
+                                <td>
+                                    <span className='view-details-link' onClick={() => handlePopup(records)}>View Details</span>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
 
             {popup.show && (

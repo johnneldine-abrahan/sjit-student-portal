@@ -1,29 +1,29 @@
-.admin-s_content{
+.admin-s_content {
     width: 100%;
-}
-
-.admin-student-header{
+  }
+  
+  .admin-student-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-}
-
-.admin-student-activity{
+  }
+  
+  .admin-student-activity {
     display: flex;
     align-items: center;
     gap: 20px;
-}
-
-.search-box{
+  }
+  
+  .search-box {
     background: #dde6ed;
     padding: 8px 10px;
     border-radius: 10px;
     display: flex;
     align-items: center;
     width: 350px;
-}
-
-.search-box input{
+  }
+  
+  .search-box input {
     border: none;
     outline: none;
     background: transparent;
@@ -32,27 +32,27 @@
     display: flex;
     outline: none;
     width: 100%;
-}
-
-.search-box .search-icon{
+  }
+  
+  .search-box .search-icon {
     color: #969393;
     font-size: 22px;
     cursor: pointer;
     transition: 0.5s ease-in-out;
-}
-
-.search-icon:hover{
+  }
+  
+  .search-icon:hover {
     transform: scale(1.3);
     cursor: pointer;
-}
-
-.buttons-header{
+  }
+  
+  .buttons-header {
     display: flex;
     align-items: center;
     gap: 8px;
-}
-
-.buttons-act{
+  }
+  
+  .buttons-act {
     background: #dde6ed;
     padding: 15px;
     border-radius: 10px;
@@ -60,62 +60,60 @@
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.buttons-act .buttons-icon{
+  }
+  
+  .buttons-act .buttons-icon {
     font-size: 20px;
     transition: 0.5s ease-in-out;
-}
-
-.buttons-icon:hover{
+  }
+  
+  .buttons-icon:hover {
     transform: scale(1.3);
     cursor: pointer;
-}
-
-.student-records{
+  }
+  
+  .student-records {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    background-color: #dde6ed;
+  
     border-radius: 10px;
-    padding: 20px;
     margin-top: 20px;
-}
-
-.list{
-    display: flex;
-    padding-right: 10px;
-    align-items: center;
-    justify-content: space-between;
-    transition: 0.3s ease-in-out;
-    border-bottom: 1px solid #383737;
-    margin-bottom: 15px;
-}
-
-.list-container{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    background-color: #dde6ed;
-    border-radius: 10px;
-    padding: 20px;
-}
-
-.list:hover{
-    background-color: #7B8BBC;
-    border-radius: 10px;
-    gap: 5px;
+  }
+  
+  .student-records table {
+    width: 100%;
+    border-collapse: collapse;
+    border-style: hidden;
+    border-radius: 10px; /* Add border radius here */
+    overflow: hidden; /* Add this to ensure the border radius is applied correctly */
+  }
+  
+  .student-records td {
+    border-style: hidden;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .student-records th {
+    border-style: hidden;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .student-records th {
+    background-color: #f0f0f0;
+  }
+  
+  .student-records tr:nth-child(even) {
+    background-color: #f5f5f5;
+  }
+  
+  .view-details-link:hover {
     cursor: pointer;
-}
-
-.students-details{
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    color: #000;
-}
-
-.popup {
+  }
+  
+  .popup {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -125,9 +123,9 @@
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-}
-
-.popup-add-edit-student {
+  }
+  
+  .popup-add-edit-student {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -139,10 +137,10 @@
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     width: 1000px;
     max-height: 80vh; /* Set the maximum height */
-    overflow: auto;  /* Add scroll when the form is too long */
-}
-
-.popup-blurred-background {
+    overflow: auto; /* Add scroll when the form is too long */
+  }
+  
+  .popup-blurred-background {
     position: fixed;
     top: 0;
     left: 0;
@@ -151,123 +149,135 @@
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
     overflow: hidden;
-}
-
-.popup-header{
+  }
+  
+  .popup-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding-bottom: 10px;
     border-bottom: 1px solid #ddd;
-}
-
-.popup-title{
+  }
+  
+  .popup-title {
     color: #000;
-}
-
-.popup-header h3{
+  }
+  
+  .popup-header h3 {
     margin: 0;
-}
-
-.popup-header button{
+  }
+  
+  .popup-header button {
     background-color: transparent;
     border: none;
     cursor: pointer;
-}
-
-.popup-content{
+  }
+  
+  .popup-content {
     padding: 20px;
-}
-
-.popup-content p{
+  }
+  
+  .popup-content p {
     margin: 0;
     text-align: justify;
-}
-
-.view-details-link{
+  }
+  
+  .view-details-link {
     color: #0000ff;
-}
-
-.popup-content .first-row, .second-row, .thrid-row, .fourth-row, .fifth-row, .sixth-row, .seventh-row, .eighth-row, .tenth-row {
+  }
+  
+  .popup-content .first-row,
+  .second-row,
+  .thrid-row,
+  .fourth-row,
+  .fifth-row,
+  .sixth-row,
+  .seventh-row,
+  .eighth-row,
+  .tenth-row {
     margin-top: 10px;
     display: flex;
     column-gap: 16px;
-}
-
-.popup-content .input-box, .grade-level, .sex-box{
+  }
+  
+  .popup-content .input-box,
+  .grade-level,
+  .sex-box {
     width: 100%;
-}
-
-.popup-content input[type=text], input[type=tel], input[type=date], select{
+  }
+  
+  .popup-content input[type="text"],
+  input[type="tel"],
+  input[type="date"],
+  select {
     width: 100%;
     padding: 10px;
     margin: 5px 0 10px 0;
     border-radius: 10px;
     background: #f1f1f1;
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-size: 16px;
     text-transform: uppercase;
   }
-
-  .grade-level{
+  
+  .grade-level {
     display: flex;
     gap: 10px;
   }
-
-  .grade-level label{
+  
+  .grade-level label {
     display: flex;
     align-items: center;
     cursor: pointer;
   }
-
-  .sex-box{
+  
+  .sex-box {
     display: flex;
     gap: 10px;
   }
-
-  .sex-box label{
+  
+  .sex-box label {
     display: flex;
     align-items: center;
     cursor: pointer;
   }
-
-  .grade-level input[type=checkbox]{
+  
+  .grade-level input[type="checkbox"] {
     margin-right: 5px;
   }
-
-  .popup-content label{
+  
+  .popup-content label {
     font-size: 18px;
   }
-
-  .popup-content input[type=text]:focus {
+  
+  .popup-content input[type="text"]:focus {
     background-color: #ddd;
     outline: none;
   }
-
-  .popup-content :where(.sex-options, .sex){
+  
+  .popup-content :where(.sex-options, .sex) {
     display: flex;
     align-items: center;
     column-gap: 0.5rem;
     flex-wrap: wrap;
   }
-
+  
   .first-row input[type="radio"] {
     margin-right: 5px;
-}
-
-
-.popup-content .buttons{
+  }
+  
+  .popup-content .buttons {
     display: flex;
     justify-content: flex-end;
     margin-top: 16px;
-}
-
-.popup-content .short-buttons{
+  }
+  
+  .popup-content .short-buttons {
     display: flex;
     margin-top: 16px;
-}
-
-.popup-content .btn-box{
+  }
+  
+  .popup-content .btn-box {
     background-color: #150f57;
     color: #fff;
     padding: 10px 25px;
@@ -279,4 +289,4 @@
     display: inline;
     align-items: center;
     justify-content: center;
-}
+  }

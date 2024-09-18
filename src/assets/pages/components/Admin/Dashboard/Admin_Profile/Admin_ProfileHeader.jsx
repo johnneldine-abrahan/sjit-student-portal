@@ -21,6 +21,13 @@ const Admin_ProfileHeader = () => {
     setShowPopup(false);
   }
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Form submitted:', formData);
+    // Handle form submission logic here
+    handleClose();  // Close the popup after submitting
+  };
+
   return (
     <div className="admin-p_header">
         <h2 className='profile-title'>Profile</h2>
@@ -41,31 +48,31 @@ const Admin_ProfileHeader = () => {
               <button className="close-button" onClick={handleClose}>Close</button>
             </div>
             <div className="popup-content">
-              <form>
-              <div className='change-profile'>
-                <img src={Profile} alt="" />
-              </div>
-              <div className="first-row">
-                <div className="input-box">
-                  <label>First Name <input type='text' name='first_name' /></label>
+              <form onSubmit={handleSubmit}>
+                <div className='change-profile'>
+                  <img src={Profile} alt="" />
                 </div>
-                <div className='input-box'>
-                  <label>Last Name <input type='text' name='last_name' /></label>
+                <div className="first-row">
+                  <div className="input-box">
+                    <label>First Name <input type='text' name='first_name' /></label>
+                  </div>
+                  <div className='input-box'>
+                    <label>Last Name <input type='text' name='last_name' /></label>
+                  </div>
                 </div>
-              </div>
 
-              <div className='second-row'>
-                <div className='input-box'>
-                  <label>Username <input type='text' name='username' /></label>
+                <div className='second-row'>
+                  <div className='input-box'>
+                    <label>Username <input type='text' name='username' /></label>
+                  </div>
+                  <div className='input-box'>
+                    <label>Password <input type='text' name='password' /></label>
+                  </div>
                 </div>
-                <div className='input-box'>
-                  <label>Password <input type='text' name='password' /></label>
-                </div>
-              </div>
 
-              <div class='buttons'>
-                <button type="submit" class="btn-box" name="add" id="add">Done</button>
-              </div>
+                <div class='buttons'>
+                  <button type="submit" class="btn-box" name="add" id="add">Done</button>
+                </div>
               </form>
             </div>
           </div>

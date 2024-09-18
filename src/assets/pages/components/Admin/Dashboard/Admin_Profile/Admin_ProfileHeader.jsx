@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import './Admin_Profile.css'
 import { BiEditAlt } from "react-icons/bi";
 import { LuLogOut } from "react-icons/lu";
@@ -27,6 +27,20 @@ const Admin_ProfileHeader = () => {
     // Handle form submission logic here
     handleClose();  // Close the popup after submitting
   };
+
+  // Disable scrolling when modal is open
+  useEffect(() => {
+    if (showPopup) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset'; // Reset overflow when modal is closed
+    }
+
+    // Clean up the effect when the component unmounts or modal closes
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showPopup]);
 
   return (
     <div className="admin-p_header">

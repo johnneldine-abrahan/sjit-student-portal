@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect} from "react";
 import "./ManageSchedule_Content.css";
 
 const SectionList = [
@@ -37,6 +37,39 @@ const SectionList = [
 ];
 
 const ManageSchedule_Sections = () => {
+  const [popup, setPopup] = useState({
+    show: false,
+    record: null,
+  });
+
+  const handlePopup = (record) => {
+    setPopup({
+      show: true,
+      record: record,
+    });
+  };
+
+  const handleClose = () => {
+    setPopup({
+      show: false,
+      record: null,
+    });
+  };
+
+  // Disable scrolling when modal is open
+  useEffect(() => {
+    if (popup) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset'; // Reset overflow when modal is closed
+    }
+
+    // Clean up the effect when the component unmounts or modal closes
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [popup]);
+
   return (
     <div className="section-list">
       <div className="recordslist-container">
@@ -60,12 +93,44 @@ const ManageSchedule_Sections = () => {
                 <td>{records.semester}</td>
                 <td>{records.subject}</td>
                 <td>
-                  <span className="add-subject-link">{records.add}</span>
+                  <span
+                    className="add-subject-link"
+                    onClick={() => handlePopup(records)}
+                  >
+                    {records.add}
+                  </span>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+
+        {popup.show && (
+          <div className="popup-blurred-background" onClick={handleClose} />
+        )}
+        {popup.show && (
+          <div className="popup-manage-schedule">
+            <div className="popup-header">
+              <h3>Add Subject</h3>
+              <button onClick={handleClose}>Close</button>
+            </div>
+            <div className="popup-content">
+              <p>Year Level: {popup.record.yearLevel}</p>
+              <p>Section: {popup.record.section}</p>
+              <p>Slots: {popup.record.slots}</p>
+              <p>Semester: {popup.record.semester}</p>
+              <p>Subject: {popup.record.subject}</p>
+              <button
+                onClick={() => {
+                  // Add subject logic here
+                  console.log("Add subject logic here");
+                }}
+              >
+                Add Subject
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

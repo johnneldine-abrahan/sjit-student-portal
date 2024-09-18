@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import './Admin_Announcements.css'
 import { BiEditAlt } from "react-icons/bi";
 import { RiAddLargeFill, RiDeleteBin6Line} from "react-icons/ri";
@@ -207,6 +207,20 @@ const Admin_Announcements = () => {
     const handleCloseDelete = () => {
         setIsOpenDelete(false);
     }
+
+    // Disable scrolling when modal is open
+   useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset'; // Reset overflow when modal is closed
+    }
+
+    // Clean up the effect when the component unmounts or modal closes
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   return (
     <div className='admin-announcements'>

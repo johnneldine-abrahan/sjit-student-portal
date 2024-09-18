@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import './Admin_Students-Content.css'
 import { BiSearch } from "react-icons/bi";
 import { BiEditAlt } from "react-icons/bi";
@@ -66,6 +66,20 @@ const Admin_Students_ContentHeader = () => {
       archive: false,
     });
   };
+
+  // Disable scrolling when modal is open
+   useEffect(() => {
+    if (popup) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset'; // Reset overflow when modal is closed
+    }
+
+    // Clean up the effect when the component unmounts or modal closes
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [popup]);
 
   return (
     <div className='admin-student-header'>

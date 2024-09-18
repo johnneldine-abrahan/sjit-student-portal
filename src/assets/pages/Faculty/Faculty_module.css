@@ -232,7 +232,6 @@ ul.thumbs.animated{
   cursor: pointer;
   /* existing styles */
 }
-
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -241,7 +240,6 @@ ul.thumbs.animated{
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
-  overflow: hidden;
 }
 
 .modal {
@@ -254,6 +252,8 @@ ul.thumbs.animated{
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  height: 80vh;
 }
 
 .modalHeader {

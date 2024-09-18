@@ -1,26 +1,70 @@
-.list-item {
-    margin-bottom: 20px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
+.schedule-view-container {
+  padding: 20px;
+}
 
-  .list-item div {
-    margin-bottom: 10px;
-  }
+.view-toggle{
+  display: flex;
+  margin-bottom: 10px;
+}
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
+.view-toggle .left{
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  width: 50%;
+}
 
-  th, td {
-    border: 1px solid #ccc;
-    padding: 10px;
-    text-align: left;
-  }
+.view-toggle .right{
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  width: 50%;
+}
 
-  th {
-    background-color: #f0f0f0;
-  }
+.view-toggle button {
+
+  padding: 8px 12px;
+  cursor: pointer;
+  border: none
+}
+
+.schedule-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.schedule-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.schedule-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.schedule-time {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.schedule-table th, .schedule-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.schedule-table th {
+  background-color: #f4f4f4;
+}
+
+.schedule-table td {
+  vertical-align: middle;
+}

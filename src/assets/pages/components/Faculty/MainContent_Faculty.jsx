@@ -25,7 +25,7 @@ const actionItems = [
   },
   {
     icon: <FaList size={40} />,
-    text: "Student List",
+    text: "Section & Student List",
     content: <StudentList />,
   },
   {

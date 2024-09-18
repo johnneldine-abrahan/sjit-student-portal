@@ -232,6 +232,7 @@ ul.thumbs.animated{
   cursor: pointer;
   /* existing styles */
 }
+
 .modalOverlay {
   position: fixed;
   top: 0;

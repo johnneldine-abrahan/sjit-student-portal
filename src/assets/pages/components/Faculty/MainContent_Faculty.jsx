@@ -26,12 +26,12 @@ const actionItems = [
   {
     icon: <FaList size={40} />,
     text: "Student List",
-    content: <UploadGrades />,
+    content: <StudentList />,
   },
   {
     icon: <MdOutlineUploadFile size={40} />,
     text: "Upload Grades",
-    content: <StudentList />,
+    content: <UploadGrades />,
   },
   {
     icon: <MdAnalytics size={40} />,

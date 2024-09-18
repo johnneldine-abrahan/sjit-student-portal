@@ -28,7 +28,7 @@ const Login = () => {
     } else if (Username === "faculty" && Password === "faculty") {
       navigate("/faculty/dashboard");
     } else {
-      setError("Invalid username or password");
+      setError("Invalid username or password!");
     }
   };
 
@@ -52,7 +52,7 @@ const Login = () => {
         <div className="login-main">
           <h2>Log in</h2>
           <p>Enter your account details</p>
-          {error && <p style={{ color: "red" }}>{error}</p>}
+          {error && <p style={{ color: "red", fontWeight: 600 }}>{error}</p>}
           <form onSubmit={handleLogin}>
             <label>Username</label>
             <input

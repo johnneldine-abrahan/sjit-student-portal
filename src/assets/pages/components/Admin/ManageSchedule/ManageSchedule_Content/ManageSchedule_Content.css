@@ -1,126 +1,246 @@
 .ManageSchedule_content {
+  width: 100%;
+}
+
+.manage-schedule-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-manage-schedule {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.add-subjectnsection-btn {
+  background-color: #150f57;
+  color: #fff;
+  padding: 10px 25px;
+  font-size: 18px;
+  border-radius: 26px;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+  display: inline;
+  align-items: center;
+  justify-content: center;
+}
+
+.section-list table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  border-radius: 10px; /* Add border radius here */
+  overflow: hidden; /* Add this to ensure the border radius is applied correctly */
+}
+.section-list th,
+.section-list td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.section-list th {
+  background-color: #f0f0f0;
+}
+
+.section-list tr:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+.section-list td {
+  border-style: hidden;
+  padding: 10px;
+  text-align: left;
+}
+
+.section-list th {
+  border-style: hidden;
+  padding: 10px;
+  text-align: left;
+}
+
+.add-subject-link {
+  color: #0000ff;
+}
+
+.add-subject-link:hover {
+  cursor: pointer;
+}
+
+.popup-manage-schedule {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  width: 500px;
+}
+
+.popup-blurred-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.popup-title {
+  color: #000;
+}
+
+.popup-header h3 {
+  margin: 0;
+}
+
+.popup-header button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.popup-content {
+  padding: 20px;
+}
+
+.popup-content p {
+  margin: 0;
+  text-align: justify;
+}
+
+.filterscheduleheader-section {
+  display: flex;
+}
+
+.filterschedule-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+}
+
+.filterschedule-header {
+  background-color: #dde6ed;
+  border-radius: 20px;
+  color: #150f57;
+  display: flex;
+  align-items: center;
+  
+  width: 90px;
+  padding: 8px 0;
+  transition: 0.5s ease-in-out;
+}
+
+.filterschedule-title {
+  margin-left: 5px;
+}
+
+.info-ico {
+  margin-bottom: -9px;
+  margin-right: 10px;
+}
+
+.filterschedule-header .filter-ico {
+  margin-left: 10px;
+}
+
+.filterschedule-header:hover {
+  transform: scale(1.04);
+  cursor: pointer;
+}
+
+.filteradd {
+  display: flex;
+  gap: 10px;
+}
+
+.popup-content .first-row,
+  .second-row,
+  .thrid-row,
+  .fourth-row,
+  .fifth-row,
+  .sixth-row,
+  .seventh-row,
+  .eighth-row,
+  .tenth-row {
+    margin-top: 10px;
+    display: flex;
+    column-gap: 16px;
+  }
+  
+  .popup-content .input-box,
+  .grade-level,
+  .sex-box {
     width: 100%;
   }
   
-  .manage-schedule-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  .popup-content input[type="text"],
+  input[type="tel"],
+  input[type="date"], input[type="time"],
+  select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 10px 0;
+    border-radius: 10px;
+    background: #f1f1f1;
+    font-family: "Poppins", sans-serif;
+    font-size: 16px;
+    text-transform: uppercase;
   }
   
-  .admin-manage-schedule {
+  .grade-level {
     display: flex;
-    align-items: center;
-    gap: 20px;
+    gap: 10px;
   }
   
-  .add-schedule-btn {
-    background-color: #150f57;
-    color: #fff;
-    padding: 10px 25px;
-    font-size: 18px;
-    border-radius: 26px;
+  .grade-level label {
+    display: flex;
+    align-items: center;
     cursor: pointer;
-    border: 0;
-    outline: 0;
-    display: inline;
+  }
+
+  .actions{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .add-btn, .edit-btn, .delete-btn{
+    background: #f1f1f1;
+    padding: 15px;
+    border-radius: 10px;
+    color: #969393;
+    display: flex;
     align-items: center;
     justify-content: center;
   }
-  
-  .section-list table {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
-    border-radius: 10px; /* Add border radius here */
-    overflow: hidden; /* Add this to ensure the border radius is applied correctly */
+
+  .edit-btn{
+    margin-left: 30px;
   }
-  .section-list th,
-  .section-list td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
+
+  .add-btn, .edit-btn, .delete-btn, .actions-ico{
+    font-size: 20px;
   }
-  
-  .section-list th {
-    background-color: #f0f0f0;
-  }
-  
-  .section-list tr:nth-child(even) {
-    background-color: #f5f5f5;
-  }
-  
-  .section-list td {
-    border-style: hidden;
-    padding: 10px;
-    text-align: left;
-  }
-  
-  .section-list th {
-    border-style: hidden;
-    padding: 10px;
-    text-align: left;
-  }
-  
-  .add-subject-link {
-    color: #0000ff;
-  }
-  
-  .add-subject-link:hover {
+
+  .add-btn, .edit-btn, .delete-btn, .actions-ico:hover{
     cursor: pointer;
-  }
-  
-  .popup-manage-schedule {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1001;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    width: 500px;
-  }
-  
-  .popup-blurred-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    overflow: hidden;
-  }
-  
-  .popup-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .popup-title {
-    color: #000;
-  }
-  
-  .popup-header h3 {
-    margin: 0;
-  }
-  
-  .popup-header button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .popup-content {
-    padding: 20px;
-  }
-  
-  .popup-content p {
-    margin: 0;
-    text-align: justify;
   }

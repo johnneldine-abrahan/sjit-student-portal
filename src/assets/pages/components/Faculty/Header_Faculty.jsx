@@ -58,14 +58,16 @@ const Header_Faculty = () => {
         <div className='modalOverlay' onClick={handleClose} />
       )}
       {isModalOpen.show && (
-        <div className='modal'>
+        <div className='modal-logout'>
           <div className='modalHeader'>
             <h3 className='modalTitle'>Log out</h3>
             <button className='modalCloseButton' onClick={handleClose}>Close</button>
           </div>
           <div className='modalBody'>
             <p>{isModalOpen.message}</p>
-            <button onClick={handleConfirmLogout}>Confirm</button>
+            <div class='buttons'>
+              <button type="submit" class="btn-box" name="add" id="add">Done</button>
+            </div>
           </div>
         </div>
       )}

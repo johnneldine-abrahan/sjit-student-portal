@@ -29,6 +29,31 @@ const subjectList = [
   },
 ];
 
+// Example data for grade levels, sections, instructors, etc.
+const enrollmentData = [
+  {
+    gradeLevel: "9",
+    section: "A",
+    subject: "Mathematics 9",
+    instructor: "Mr. Smith",
+    schedule: "Monday, 9:00 AM - 10:30 AM",
+  },
+  {
+    gradeLevel: "9",
+    section: "B",
+    subject: "Science 9",
+    instructor: "Ms. Johnson",
+    schedule: "Wednesday, 11:00 AM - 12:30 PM",
+  },
+  {
+    gradeLevel: "9",
+    section: "C",
+    subject: "Filipino 9",
+    instructor: "Mr. Reyes",
+    schedule: "Friday, 2:00 PM - 3:30 PM",
+  },
+];
+
 const Enroll_SubjectsList = () => {
   const [popup, setPopup] = useState({
     show: false,
@@ -49,17 +74,16 @@ const Enroll_SubjectsList = () => {
     });
   };
 
-   // Disable scrolling when modal is open
-   useEffect(() => {
-    if (popup) {
-      document.body.style.overflow = 'hidden';
+  // Disable scrolling when modal is open
+  useEffect(() => {
+    if (popup.show) {
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset'; // Reset overflow when modal is closed
+      document.body.style.overflow = "unset"; // Reset overflow when modal is closed
     }
 
-    // Clean up the effect when the component unmounts or modal closes
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [popup]);
 
@@ -94,27 +118,48 @@ const Enroll_SubjectsList = () => {
       </table>
 
       {popup.show && (
-        <div className="popup-blurred-background" onClick={handleClose} />
-      )}
-      {popup.show && (
-        <div className="popup-enroll">
-          <div className="popup-header">
-            <h3>Add Subject</h3>
-            <button onClick={handleClose}>Close</button>
+        <>
+          <div className="popup-blurred-background" onClick={handleClose} />
+          <div className="popup-enroll">
+            <div className="popup-header">
+              <h3>Add Subject</h3>
+              <button onClick={handleClose}>Close</button>
+            </div>
+            <div className="popup-content">
+              {/* New table inside the popup */}
+              <table className="enrollment-table">
+                <thead>
+                  <tr>
+                    <th>Grade Level</th>
+                    <th>Section</th>
+                    <th>Subject</th>
+                    <th>Instructor</th>
+                    <th>Schedule</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {enrollmentData.map((data, index) => (
+                    <tr key={index}>
+                      <td>{data.gradeLevel}</td>
+                      <td>{data.section}</td>
+                      <td>{data.subject}</td>
+                      <td>{data.instructor}</td>
+                      <td>{data.schedule}</td>
+                      <td><span className='view-details-link'>Add Subject</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div className="popup-content">
-            <p>Subject ID: {popup.record.subjectID}</p>
-            <p>Subject Name: {popup.record.subjectName}</p>
-            <p>Semester: {popup.record.semester}</p>
-            <button onClick={() => {
-              // Add subject logic here
-              console.log("Add subject logic here");
-            }}>
-              Add Subject
-            </button>
-          </div>
-        </div>
+        </>
       )}
+
+      <div className="onQueue-section">
+        <button type='submit' className='queue'>Queue</button>
+      </div>
+
     </div>
   );
 };

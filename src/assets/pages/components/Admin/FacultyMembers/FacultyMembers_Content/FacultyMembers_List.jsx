@@ -10,24 +10,24 @@ const FacultyList = [
     viewRecords: "View Details",
   },
   {
-    facultyID: "21-05298",
-    LastName: "Sanchez",
-    FirstName: "Kim William",
-    MiddleName: "Bacsa",
+    facultyID: "21-05299",
+    LastName: "Dela Cruz",
+    FirstName: "Juan",
+    MiddleName: "B.",
     viewRecords: "View Details",
   },
   {
-    facultyID: "21-05298",
-    LastName: "Sanchez",
-    FirstName: "Kim William",
-    MiddleName: "Bacsa",
+    facultyID: "21-05300",
+    LastName: "Reyes",
+    FirstName: "Maria",
+    MiddleName: "L.",
     viewRecords: "View Details",
   },
   {
-    facultyID: "21-05298",
-    LastName: "Sanchez",
-    FirstName: "Kim William",
-    MiddleName: "Bacsa",
+    facultyID: "21-05301",
+    LastName: "Gonzales",
+    FirstName: "Pedro",
+    MiddleName: "R.",
     viewRecords: "View Details",
   },
 ];
@@ -58,6 +58,7 @@ const FacultyMembers_List = () => {
         <table>
           <thead>
             <tr>
+              <th>Select</th> {/* Column for checkboxes */}
               <th>Faculty ID</th>
               <th>Last Name</th>
               <th>First Name</th>
@@ -68,6 +69,9 @@ const FacultyMembers_List = () => {
           <tbody>
             {FacultyList.map((records) => (
               <tr key={records.facultyID}>
+                <td>
+                  <input type="checkbox" /> {/* Checkbox for selection */}
+                </td>
                 <td>{records.facultyID}</td>
                 <td>{records.LastName}</td>
                 <td>{records.FirstName}</td>

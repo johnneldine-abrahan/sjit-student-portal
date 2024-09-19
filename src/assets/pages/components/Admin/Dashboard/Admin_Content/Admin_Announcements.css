@@ -194,3 +194,10 @@
     align-items: center;
     justify-content: center;
 }
+
+input[type="checkbox"] {
+    accent-color: #007bff; /* Modern browsers */
+    width: 20px;
+    height: 20px;
+    margin-left: 20px;
+  }

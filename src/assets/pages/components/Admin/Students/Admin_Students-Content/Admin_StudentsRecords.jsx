@@ -58,6 +58,7 @@ const Admin_StudentsRecords = () => {
                 <table>
                     <thead>
                         <tr>
+                            <th>Select</th> {/* New column for checkbox */}
                             <th>Student ID</th>
                             <th>Last Name</th>
                             <th>First Name</th>
@@ -67,8 +68,11 @@ const Admin_StudentsRecords = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {StudentRecords.map((records) => (
-                            <tr key={records.studentID}>
+                        {StudentRecords.map((records, index) => (
+                            <tr key={index}>
+                                <td>
+                                    <input type="checkbox" name={`select-${records.studentID}`} /> {/* Checkbox */}
+                                </td>
                                 <td>{records.studentID}</td>
                                 <td>{records.LastName}</td>
                                 <td>{records.FirstName}</td>
@@ -105,4 +109,4 @@ const Admin_StudentsRecords = () => {
     )
 }
 
-export default Admin_StudentsRecords
+export default Admin_StudentsRecords;

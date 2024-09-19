@@ -26,6 +26,13 @@ const FacultyMembers_ContentHeader = () => {
     });
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Form submitted:', formData);
+    // Handle form submission logic here
+    handleClose();  // Close the popup after submitting
+  };
+
   // Disable scrolling when modal is open
   useEffect(() => {
     if (popup) {
@@ -72,7 +79,24 @@ const FacultyMembers_ContentHeader = () => {
                   <button onClick={handleClose}>Close</button>
                 </div>
                 <div className='popup-content'>
-                  {/* Add form or content here */}
+                  <form onSubmit={handleSubmit}>
+                    <div className='first-row'>
+                      <div className='input-box'>
+                        <label>Last Name<input type="text" name="lastName" /></label>
+                      </div>
+                      <div className='input-box'>
+                        <label>First Name<input type="text" name="firstName" /></label>
+                      </div>
+                      <div className='input-box'>
+                        <label>Middle Name<input type="text" name="middleName" /></label>
+                      </div>
+                    </div>
+
+                    <div class='buttons'>
+                      <button type="submit" class="btn-box" name="add" id="add">Done</button>
+                    </div>
+
+                  </form>
                 </div>
               </div>
             </>
@@ -88,7 +112,24 @@ const FacultyMembers_ContentHeader = () => {
                   <button onClick={handleClose}>Close</button>
                 </div>
                 <div className='popup-content'>
-                  {/* Add form or content here */}
+                <form onSubmit={handleSubmit}>
+                    <div className='first-row'>
+                      <div className='input-box'>
+                        <label>Last Name<input type="text" name="lastName" /></label>
+                      </div>
+                      <div className='input-box'>
+                        <label>First Name<input type="text" name="firstName" /></label>
+                      </div>
+                      <div className='input-box'>
+                        <label>Middle Name<input type="text" name="middleName" /></label>
+                      </div>
+                    </div>
+
+                    <div class='buttons'>
+                      <button type="submit" class="btn-box" name="add" id="add">Done</button>
+                    </div>
+
+                  </form>
                 </div>
               </div>
             </>

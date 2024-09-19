@@ -115,19 +115,7 @@ const ManageSchedule_Sections = () => {
               <button onClick={handleClose}>Close</button>
             </div>
             <div className="popup-content">
-              <p>Year Level: {popup.record.yearLevel}</p>
-              <p>Section: {popup.record.section}</p>
-              <p>Slots: {popup.record.slots}</p>
-              <p>Semester: {popup.record.semester}</p>
-              <p>Subject: {popup.record.subject}</p>
-              <button
-                onClick={() => {
-                  // Add subject logic here
-                  console.log("Add subject logic here");
-                }}
-              >
-                Add Subject
-              </button>
+              
             </div>
           </div>
         )}

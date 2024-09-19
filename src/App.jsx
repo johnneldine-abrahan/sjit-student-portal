@@ -10,7 +10,7 @@ import Admin_FacultyMembers from './assets/pages/Admin/Admin_FacultyMembers'
 import Admin_ManageSchedule from './assets/pages/Admin/Admin_ManageSchedule'
 import Admin_Archive from './assets/pages/Admin/Admin_Archive'
 import Finance_Dashboard from './assets/pages/Finance/Finance_Dashboard'
-import Finance_History from './assets/pages/Finance/Finance_History'
+import Finance_ConfirmEnrollment from './assets/pages/Finance/Finance_ConfirmEnrollment'
 import Finance_TagLiabilities from './assets/pages/Finance/Finance_TagLiabilities'
 import Finance_StudentRecords from './assets/pages/Finance/Finance_StudentRecords'
 import Students_Dashboard from './assets/pages/Students/Students_Dashboard'
@@ -30,9 +30,9 @@ const App = () => {
         <Route path="/admin/manage-schedule" element={<Admin_ManageSchedule />} />
         <Route path="/admin/archive" element={<Admin_Archive />} />
         <Route path="/finance/dashboard" element={<Finance_Dashboard />} />
+        <Route path="finance/confirm-enrollment" element={<Finance_ConfirmEnrollment />} />
         <Route path="/finance/tag-liabilities" element={<Finance_TagLiabilities />} />
         <Route path="/finance/student-records" element={<Finance_StudentRecords />} />
-        <Route path="/finance/history" element={<Finance_History />} />
         <Route path="/student/dashboard" element={<Students_Dashboard />} />
         <Route path="/faculty/dashboard" element={<Faculty_Dashboard />} />
       </Routes>

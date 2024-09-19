@@ -1,37 +1,42 @@
 import React, { useState, useEffect} from "react";
 import "./ManageSchedule_Content.css";
 
+
 const SectionList = [
   {
-    yearLevel: "Grade 7",
+    GradeLevel: "Grade 7",
     section: "Masikap",
-    slots: "35",
-    semester: "FIRST",
     subject: "0/9",
+    Instructor: "Bossing",
+    semester: "FIRST",
+    slots: "35",
     add: "Add Subjects",
   },
   {
-    yearLevel: "Grade 8",
+    GradeLevel: "Grade 8",
     section: "Milflores",
-    slots: "35",
-    semester: "FIRST",
     subject: "0/9",
+    Instructor: "Bossing",
+    semester: "FIRST",
+    slots: "35",
     add: "Add Subjects",
   },
   {
-    yearLevel: "Grade 9",
+    GradeLevel: "Grade 9",
     section: "Luna",
-    slots: "35",
-    semester: "FIRST",
     subject: "0/9",
+    Instructor: "Bossing",
+    semester: "FIRST",
+    slots: "35",
     add: "Add Subjects",
   },
   {
-    yearLevel: "Grade 10",
+    GradeLevel: "Grade 10",
     section: "Guijo",
-    slots: "35",
-    semester: "FIRST",
     subject: "0/9",
+    Instructor: "Bossing",
+    semester: "FIRST",
+    slots: "35",
     add: "Add Subjects",
   },
 ];
@@ -73,37 +78,43 @@ const ManageSchedule_Sections = () => {
   return (
     <div className="section-list">
       <div className="recordslist-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Year Level</th>
-              <th>Section</th>
-              <th>Slots</th>
-              <th>Semester</th>
-              <th>Subject</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {SectionList.map((records) => (
-              <tr key={records.section}>
-                <td>{records.yearLevel}</td>
-                <td>{records.section}</td>
-                <td>{records.slots}</td>
-                <td>{records.semester}</td>
-                <td>{records.subject}</td>
-                <td>
-                  <span
-                    className="add-subject-link"
-                    onClick={() => handlePopup(records)}
-                  >
-                    {records.add}
-                  </span>
-                </td>
+          <table>
+            <thead>
+              <tr>
+                <th>Select</th> {/* New column for checkbox */}
+                <th>Grade Level</th>
+                <th>Section</th>
+                <th>Subject</th>
+                <th>Instructor</th>
+                <th>Semester</th>
+                <th>Slots</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {SectionList.map((records) => (
+                <tr key={records.section}>
+                  <td>
+                    <input type="checkbox" name={`select-${records.section}`} /> {/* Checkbox */}
+                  </td>
+                  <td>{records.GradeLevel}</td>
+                  <td>{records.section}</td>
+                  <td>{records.subject}</td>
+                  <td>{records.Instructor}</td>
+                  <td>{records.semester}</td>
+                  <td>{records.slots}</td>
+                  <td>
+                    <span
+                      className="add-subject-link"
+                      onClick={() => handlePopup(records)}
+                    >
+                      {records.add}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
         {popup.show && (
           <div className="popup-blurred-background" onClick={handleClose} />
@@ -115,7 +126,21 @@ const ManageSchedule_Sections = () => {
               <button onClick={handleClose}>Close</button>
             </div>
             <div className="popup-content">
+              <p>Grade Level: {popup.record.GradeLevel}</p>
+              <p>Section: {popup.record.section}</p>
+              <p>Subject: {popup.record.subject}</p>
+              <p>Instructor: {popup.record.Instructor}</p>
+              <p>Slots: {popup.record.slots}</p>
               
+              
+              <button
+                onClick={() => {
+                  // Add subject logic here
+                  console.log("Add subject logic here");
+                }}
+              >
+                Add Subject
+              </button>
             </div>
           </div>
         )}

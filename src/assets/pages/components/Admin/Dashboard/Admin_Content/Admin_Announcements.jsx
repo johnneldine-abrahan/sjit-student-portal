@@ -50,6 +50,7 @@ const Popup_Add = ({ title, onClose }) => {
                         <div className='input-box'>
                             <label>Announce to
                                 <select>
+                                    <option value=""></option>
                                     <option value='student'>Students</option>
                                     <option value='faculty'>Teachers</option>
                                     <option value='finance'>Finance</option>
@@ -60,6 +61,7 @@ const Popup_Add = ({ title, onClose }) => {
                         <div className='input-box'>
                             <label>Announce type
                                 <select>
+                                    <option value=""></option>
                                     <option value='event'>Event</option>
                                     <option value='meeting'>Meeting</option>
                                     <option value='misc'>Misc</option>

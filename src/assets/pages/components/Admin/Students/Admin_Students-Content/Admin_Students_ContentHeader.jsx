@@ -126,6 +126,7 @@ const Admin_Students_ContentHeader = () => {
                      <div className='input-box'>
                         <label>Grade Level
                           <select>
+                            <option value=""></option>
                             <option value="grade7">Grade 7</option>
                             <option value="grade8">Grade 8</option>
                             <option value="grade9">Grade 9</option>
@@ -136,6 +137,7 @@ const Admin_Students_ContentHeader = () => {
                       <div className='input-box'>
                         <label>Strand</label>
                             <select>
+                              <option value=""></option>
                               <option value="stem">Science, Technology, Engineering and Mathematics (STEM)</option>
                               <option value="abm">Accountancy, Business and Management (ABM)</option>
                               <option value="humss">Humanities and Social Sciences (HUMSS)</option>
@@ -198,6 +200,7 @@ const Admin_Students_ContentHeader = () => {
                       <div className='input-box'>
                         <label>Financial Support
                           <select>
+                            <option value=""></option>
                             <option value="self-supporting">Self-supporting (Working)</option>
                             <option value="parents-support">Parent's Full Support</option>
                             <option value="relatives-support">Relatives/Family Friends</option>
@@ -358,6 +361,7 @@ const Admin_Students_ContentHeader = () => {
                     <div className='input-box'>
                         <label>Financial Support
                           <select>
+                            <option value=""></option>
                             <option value="self-supporting">Self-supporting (Working)</option>
                             <option value="parents-support">Parent's Full Support</option>
                             <option value="relatives-support">Relatives/Family Friends</option>

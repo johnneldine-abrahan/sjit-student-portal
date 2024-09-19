@@ -101,7 +101,7 @@ const ManageSchedule_ContentHeader = () => {
       {popup.show && (
         <>
           <div className='popup-blurred-background' onClick={handleClose} />
-          <div className='popup'>
+          <div className='popup-manage-schedule'>
             <div className='popup-header'>
               <h3>{popup.message}</h3>
               <button onClick={handleClose}>Close</button>

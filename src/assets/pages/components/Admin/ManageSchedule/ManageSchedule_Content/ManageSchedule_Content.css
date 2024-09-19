@@ -80,7 +80,6 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  width: 500px;
 }
 
 .popup-blurred-background {
@@ -234,7 +233,7 @@
   }
 
   .edit-btn{
-    margin-left: 30px;
+    margin-left: 20px;
   }
 
   .add-btn, .edit-btn, .delete-btn, .actions-ico{

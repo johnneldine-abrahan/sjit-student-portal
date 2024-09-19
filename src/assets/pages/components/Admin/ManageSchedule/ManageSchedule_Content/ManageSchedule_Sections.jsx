@@ -10,7 +10,7 @@ const SectionList = [
     Instructor: "Bossing",
     semester: "FIRST",
     slots: "35",
-    add: "Add Subjects",
+    view: "View Details",
   },
   {
     GradeLevel: "Grade 8",
@@ -19,7 +19,7 @@ const SectionList = [
     Instructor: "Bossing",
     semester: "FIRST",
     slots: "35",
-    add: "Add Subjects",
+    view: "View Details",
   },
   {
     GradeLevel: "Grade 9",
@@ -28,7 +28,7 @@ const SectionList = [
     Instructor: "Bossing",
     semester: "FIRST",
     slots: "35",
-    add: "Add Subjects",
+    view: "View Details",
   },
   {
     GradeLevel: "Grade 10",
@@ -37,7 +37,7 @@ const SectionList = [
     Instructor: "Bossing",
     semester: "FIRST",
     slots: "35",
-    add: "Add Subjects",
+    view: "View Details",
   },
 ];
 
@@ -108,7 +108,7 @@ const ManageSchedule_Sections = () => {
                       className="add-subject-link"
                       onClick={() => handlePopup(records)}
                     >
-                      {records.add}
+                      {records.view}
                     </span>
                   </td>
                 </tr>
@@ -122,7 +122,7 @@ const ManageSchedule_Sections = () => {
         {popup.show && (
           <div className="popup-manage-schedule">
             <div className="popup-header">
-              <h3>Add Subject</h3>
+              <h3>View Details</h3>
               <button onClick={handleClose}>Close</button>
             </div>
             <div className="popup-content">
@@ -139,7 +139,7 @@ const ManageSchedule_Sections = () => {
                   console.log("Add subject logic here");
                 }}
               >
-                Add Subject
+                View Details
               </button>
             </div>
           </div>

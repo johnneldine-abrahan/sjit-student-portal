@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react'
-import './Admin_Profile.css'
+import React, { useState, useEffect } from 'react';
+import './Admin_Profile.css';
 import { BiEditAlt } from "react-icons/bi";
 import { LuLogOut } from "react-icons/lu";
 import { useNavigate } from 'react-router-dom';
@@ -8,29 +8,36 @@ import Profile from '../../../../../img/Profile/ProfileSample.jpg'
 const Admin_ProfileHeader = () => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState({
+    show: false,
+    message: '',
+  });
 
   const handleLogout = () => {
-    navigate('/login')
-  }
-
-  const handleEdit = () => {
-    setShowPopup(true);
-  }
-
-  const handleClose = () => {
-    setShowPopup(false);
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Handle form submission logic here
-    handleClose();  // Close the popup after submitting
+    setIsModalOpen({
+      show: true,
+      message: 'Are you sure you want to log out?',
+    });
   };
 
-  // Disable scrolling when modal is open
+  const handleClose = () => {
+    setIsModalOpen({
+      show: false,
+      message: '',
+    });
+  };
+
+  const handleConfirmLogout = () => {
+    console.log('Logging out...');
+    setIsModalOpen({
+      show: false,
+      message: '',
+    });
+    navigate('/login');
+  };
+
   useEffect(() => {
-    if (showPopup) {
+    if (isModalOpen.show) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset'; // Reset overflow when modal is closed
@@ -40,29 +47,33 @@ const Admin_ProfileHeader = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [showPopup]);
+  }, [isModalOpen.show]);
 
   return (
     <div className="admin-p_header">
-        <h2 className='profile-title'>Profile</h2>
-        <div className='buttons-header'>
-          <div className='profile-act'>
-            <BiEditAlt class='profile-icon' onClick={handleEdit} />
-          </div>
-          <div className='profile-act'>
-            <LuLogOut className='profile-icon' onClick={handleLogout} />
-          </div>
+      <h2 className='profile-title'>Profile</h2>
+      <div className='buttons-header'>
+        <div className='profile-act'>
+          <BiEditAlt class='profile-icon' onClick={() => setShowPopup(true)} />
         </div>
-        {showPopup && (
+        <div className='profile-act'>
+          <LuLogOut className='profile-icon' onClick={handleLogout} />
+        </div>
+      </div>
+      {showPopup && (
         <>
           <div className="popup-blurred-background" />
           <div className="popup">
             <div className="popup-header">
               <h3 className="popup-title">Edit Profile</h3>
-              <button className="close-button" onClick={handleClose}>Close</button>
+              <button className="close-button" onClick={() => setShowPopup(false)}>Close</button>
             </div>
             <div className="popup-content">
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                console.log('Form submitted:');
+                setShowPopup(false);  // Close the popup after submitting
+              }}>
                 <div className='change-profile'>
                   <img src={Profile} alt="" />
                 </div>
@@ -91,6 +102,23 @@ const Admin_ProfileHeader = () => {
             </div>
           </div>
         </>
+      )}
+      {isModalOpen.show && (
+        <div className='modalOverlay' onClick={handleClose} />
+      )}
+      {isModalOpen.show && (
+        <div className='modal-logout'>
+          <div className='modalHeader'>
+            <h3 className='modalTitle'>Log out</h3>
+            <button className='modalCloseButton' onClick={handleClose}>Close</button>
+          </div>
+          <div className='modalBody'>
+            <p>{isModalOpen.message}</p>
+            <div class='buttons'>
+              <button type="submit" class="btn-box" name="add" id="add" onClick={handleConfirmLogout}>Done</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

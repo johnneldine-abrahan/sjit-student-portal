@@ -115,7 +115,7 @@ const Admin_ProfileHeader = () => {
           <div className='modalBody'>
             <p>{isModalOpen.message}</p>
             <div class='buttons'>
-              <button type="submit" class="btn-box" name="add" id="add" onClick={handleConfirmLogout}>Done</button>
+              <button type="submit" class="btn-box" name="add" id="add" onClick={handleConfirmLogout}>Log out</button>
             </div>
           </div>
         </div>

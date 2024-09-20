@@ -8,10 +8,33 @@ import Profile from '../../../../../img/Profile/ProfileSample.jpg'
 const Finance_ProfileHeader = () => {
   const navigate = useNavigate();
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState({
+    show: false,
+    message: '',
+  });
 
   const handleLogout = () => {
-    navigate('/login')
-  }
+    setIsModalOpen({
+      show: true,
+      message: 'Are you sure you want to log out?',
+    });
+  };
+
+  const handleClose = () => {
+    setIsModalOpen({
+      show: false,
+      message: '',
+    });
+  };
+
+  const handleConfirmLogout = () => {
+    console.log('Logging out...');
+    setIsModalOpen({
+      show: false,
+      message: '',
+    });
+    navigate('/login');
+  };
 
   const handleEditClick = () => {
     setIsEditPopupOpen(true);
@@ -73,6 +96,23 @@ const Finance_ProfileHeader = () => {
 
             </div>
           </>
+        )}
+        {isModalOpen.show && (
+          <div className='modalOverlay' onClick={handleClose} />
+        )}
+        {isModalOpen.show && (
+          <div className='modal-logout'>
+            <div className='modalHeader'>
+              <h3 className='modalTitle'>Log out</h3>
+              <button className='modalCloseButton' onClick={handleClose}>Close</button>
+            </div>
+            <div className='modalBody'>
+              <p>{isModalOpen.message}</p>
+              <div class='buttons'>
+                <button type="submit" class="btn-box" name="add" id="add" onClick={handleConfirmLogout}>Log out</button>
+              </div>
+            </div>
+          </div>
         )}
     </div>
   )

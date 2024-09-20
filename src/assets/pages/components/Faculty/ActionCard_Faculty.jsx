@@ -14,17 +14,21 @@ const ActionCard_Faculty = ({ icon, text, content }) => {
 
   // Disable scrolling when modal is open
   useEffect(() => {
-    if (isModalOpen) {
+    const openModals = document.querySelectorAll('.modalOverlay');
+    if (openModals.length > 0) {
       document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = 'unset'; // Reset overflow when modal is closed
-    }
-
-    // Clean up the effect when the component unmounts or modal closes
-    return () => {
       document.body.style.overflow = 'unset';
+    }
+  
+    return () => {
+      const openModals = document.querySelectorAll('.modalOverlay');
+      if (openModals.length === 0) {
+        document.body.style.overflow = 'unset';
+      }
     };
   }, [isModalOpen]);
+  
 
   return (
     <>
@@ -52,4 +56,3 @@ const ActionCard_Faculty = ({ icon, text, content }) => {
 };
 
 export default ActionCard_Faculty;
-

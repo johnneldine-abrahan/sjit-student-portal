@@ -35,7 +35,8 @@ app.post('/login', async (req, res) => {
 
         // Check if the password matches (plain text comparison)
         if (user.password === password) {
-            return res.send('Login successful!');
+            // If password is correct, return the user's role
+            return res.json({ message: 'Login successful!', role: user.user_role }); // Ensure 'role' is a column in your database
         } else {
             return res.status(401).send('Invalid username or password!');
         }
@@ -44,6 +45,7 @@ app.post('/login', async (req, res) => {
         return res.status(500).send('Error while querying the database.');
     }
 });
+
 
 
 

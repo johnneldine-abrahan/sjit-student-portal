@@ -16,21 +16,39 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+``
+    try{
+      const response = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username: Username, password: Password }),
+      });
 
-    if (Username === "admin" && Password === "admin") {
-      navigate("/admin/dashboard");
-    } else if (Username === "finance" && Password === "finance") {
-      navigate("/finance/dashboard");
-    } else if (Username === "student" && Password === "student") {
-      navigate("/student/dashboard");
-    } else if (Username === "faculty" && Password === "faculty") {
-      navigate("/faculty/dashboard");
-    } else {
-      setError("Invalid username or password!");
-    }
-  };
+      if(response.ok){
+        const data = await response.json();
+        const role = data.role;
+
+        if(role === 'Admin' || role === 'Registrar'){
+          navigate("/admin/dashboard");
+        }else if(role === 'Finance'){
+          navigate("/finance/dashboard");
+        }else if(role === 'Student'){
+          navigate("/student/dashboard");
+        }else if(role === 'Faculty'){
+          navigate("/faculty/dashboard");
+        }
+       }else{
+          const errorMsg = await response.text();
+          setError(errorMsg);
+       }
+      }catch(error){
+        setError("Server error. Please try again later.");
+      }
+    };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

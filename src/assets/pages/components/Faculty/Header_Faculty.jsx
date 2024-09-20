@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import '../../Faculty/Faculty_module.css';
 import logo from '../../../img/LandingPage/NavBar/logo.png';
 import { LuLogOut } from "react-icons/lu";
+import { useNavigate } from 'react-router-dom';
 
 const Header_Faculty = () => {
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState({
     show: false,
     message: '',
@@ -29,6 +31,7 @@ const Header_Faculty = () => {
       show: false,
       message: '',
     });
+    navigate('/login');
   };
 
   useEffect(() => {
@@ -66,7 +69,7 @@ const Header_Faculty = () => {
           <div className='modalBody'>
             <p>{isModalOpen.message}</p>
             <div class='buttons'>
-              <button type="submit" class="btn-box" name="add" id="add">Done</button>
+              <button type="submit" class="btn-box" name="add" id="add" onClick={handleConfirmLogout}>Log out</button>
             </div>
           </div>
         </div>

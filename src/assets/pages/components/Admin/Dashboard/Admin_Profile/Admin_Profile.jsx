@@ -27,8 +27,8 @@ const Admin_Profile = () => {
     return date.toLocaleDateString([], {
       weekday: "short",
       year: "numeric",
-      month: "2-day",
-      day: "2-day",
+      month: "2-digit",
+      day: "2-digit",
     });
   };
 

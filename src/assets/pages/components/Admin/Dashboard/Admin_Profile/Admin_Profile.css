@@ -46,6 +46,7 @@
     padding: 10px;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
   }
   
   .user-details {
@@ -68,6 +69,7 @@
   }
   
   .calendar {
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -76,6 +78,9 @@
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 250px;
+    margin-top: 20px;
+    min-height: 150px;
+    justify-content: center;
   }
   
   .calendar h4 {

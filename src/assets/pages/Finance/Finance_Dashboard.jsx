@@ -6,7 +6,7 @@ import Finance_Profile from '../components/Finance/Dashboard/Finance_Profile/Fin
 
 const Finance_Dashboard = () => {
   useEffect(() => {
-    document.title = "Admin - Archive";
+    document.title = "Finance - Dashboard";
   }, []);
 
   return (

@@ -67,6 +67,10 @@
   .user-details .finance-fullname {
     color: #150f57;
   }
+
+  .finance-fullname{
+    margin-top: 20px;
+  }
   
   .calendar-container {
     flex: 1;

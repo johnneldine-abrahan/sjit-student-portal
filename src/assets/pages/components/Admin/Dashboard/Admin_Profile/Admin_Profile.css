@@ -67,6 +67,10 @@
   .user-details .admin-fullname {
     color: #150f57;
   }
+
+  .admin-fullname{
+    margin-top: 20px;
+  }
   
   .calendar {
     flex-grow: 1;

@@ -15,6 +15,22 @@ const Finance_Profile = () => {
     return () => clearInterval(interval); // Cleanup interval on component unmount
   }, []);
 
+  const [userData, setUserData] = useState({ firstName: '', lastName: '', role: '' });
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      // Decode JWT token to extract user info
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      setUserData({
+        firstName: decodedToken.firstName,
+        lastName: decodedToken.lastName,
+        role: decodedToken.role
+      });
+    }
+  }, []);
+
   const formatDate = (date) => {
     const options = {
       weekday: "short",
@@ -35,9 +51,9 @@ const Finance_Profile = () => {
 
       <div className="user-profile">
         <div className="user-details">
-          <img src={Profile} alt="Profile" />
-          <h3 className="finance-fullname">Juan Dela Cruz</h3>
-          <span className="position">Finance</span>
+          <img src={Profile} alt="" />
+          <h3 className="admin-fullname">{userData.firstName} {userData.lastName}</h3>
+          <span className="position">{userData.role}</span>
         </div>
 
         <div className="calendar-container">

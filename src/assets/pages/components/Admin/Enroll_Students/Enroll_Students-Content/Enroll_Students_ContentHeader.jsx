@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import './Enroll_Students_Content.css';
+import React, { useState, useEffect } from "react";
+import "./Enroll_Students_Content.css";
 
 const studentData = [
   {
@@ -45,23 +45,31 @@ const Enroll_Students_ContentHeader = () => {
   // Disable scrolling when modal is open
   useEffect(() => {
     if (popup.show) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset'; // Reset overflow when modal is closed
+      document.body.style.overflow = "unset"; // Reset overflow when modal is closed
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [popup]);
 
   return (
-    <div className='admin-enroll-header'>
-      <h1 className='header-title'>Enroll Students</h1>
-      <div className='admin-enroll-activity'>
-        <button type='submit' className='select-btn' onClick={() => handleSelectStudentClick(null)}>
+    <div className="admin-enroll-header">
+      <h1 className="header-title">Enroll Students</h1>
+      <div className="admin-enroll-activity">
+        <button type="submit" className="setyr-btn" onClick={() => hands(null)}>
+          Set School Year
+        </button>
+        <button
+          type="submit"
+          className="select-btn"
+          onClick={() => handleSelectStudentClick(null)}
+        >
           Select Student
         </button>
+
         {popup.show && (
           <>
             <div className="popup-blurred-background" onClick={handleClose} />
@@ -88,7 +96,9 @@ const Enroll_Students_ContentHeader = () => {
                         <td>{data.studentName}</td>
                         <td>{data.gradeLevel}</td>
                         <td>{data.section}</td>
-                        <td><span className='view-details-link'>Select</span></td>
+                        <td>
+                          <span className="view-details-link">Select</span>
+                        </td>
                       </tr>
                     ))}
                   </tbody>

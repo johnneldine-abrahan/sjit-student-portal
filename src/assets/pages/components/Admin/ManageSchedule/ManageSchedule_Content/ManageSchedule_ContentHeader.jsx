@@ -152,6 +152,11 @@ const ManageSchedule_ContentHeader = () => {
             <div className='popup-content'>
               <form onSubmit={handleSubmit}>
                 <div className='first-row'>
+                  <div className='input-box'>
+                    <label>School Year<input type="text" name='schoolyear' /></label>
+                  </div>
+                </div>
+                <div className='first-row'>
                   <div className='grade-level'>
                     <label>Select Program</label>
                     <label><input type="checkbox" name="program" value="jhs" onChange={handleChange} />Junior Highschool</label>
@@ -165,6 +170,7 @@ const ManageSchedule_ContentHeader = () => {
                         <label>Select Semester</label>
                         <label><input type="checkbox" name="semester" value="first" onChange={handleChange} />FIRST</label>
                         <label><input type="checkbox" name="semester" value="second" onChange={handleChange} />SECOND</label>
+                        <label><input type="checkbox" name="semester" value="summer" onChange={handleChange} />SUMMER</label>
                       </div>
                     </div>
                 </div>
@@ -177,8 +183,7 @@ const ManageSchedule_ContentHeader = () => {
                     </select>
                   </div>
                   <div className='input-box'>
-                    <label>Strand</label>
-                    <select>
+                    <label>Strand<select>
                       <option value=''></option>
                       <option value="stem">Science, Technology, Engineering and Mathematics (STEM)</option>
                       <option value="abm">Accountancy, Business and Management (ABM)</option>
@@ -186,22 +191,27 @@ const ManageSchedule_ContentHeader = () => {
                       <option value="tvl-ia">TVL - Industrial Arts (TVL-IA)</option>
                       <option value="tvl-he">TVL - Home Economics (TVL-HE)</option>
                       <option value="tvl-ict">TVL - Internet Communications Technology (TVL-ICT)</option>
-                    </select>
+                    </select></label>
+                  </div>
+                  <div class='input-box'>
+                    <label>Section<input type='text' name='section' /></label>
                   </div>
                 </div>
 
                 <div className='second-row'>
                   <div className='input-box'>
-                    <label>Subject</label>
+                    <label>Subject
                     <select>
                       <option value=''></option>
                     </select>
+                    </label>
                   </div>
                   <div className='input-box'>
-                    <label>Instructor</label>
+                    <label>Instructor
                     <select>
                       <option value=''></option>
                     </select>
+                    </label>
                   </div>
                 </div>
 
@@ -237,7 +247,6 @@ const ManageSchedule_ContentHeader = () => {
                         </td>
                         <td style={{ border: '1px solid black', padding: '8px' }}>
                           <div className='actions'>
-                            <button type='button' className='edit-btn'><FiEdit className='actions-ico' /></button>
                             <button type='button' className='delete-btn'><FiTrash className='actions-ico' /></button>
                             <button type='button' className='add-btn'><RiAddLargeFill className='actions-ico'/></button>
                           </div>
@@ -271,12 +280,17 @@ const ManageSchedule_ContentHeader = () => {
         <>
           <div className='popup-blurred-background' onClick={handleEditClose} />
           <div className='popup-manage-schedule'>
-            <div className='popup-header'>
+          <div className='popup-header'>
               <h3>{popupEdit.message}</h3>
               <button onClick={handleEditClose}>Close</button>
             </div>
             <div className='popup-content'>
               <form onSubmit={handleSubmit}>
+                <div className='first-row'>
+                  <div className='input-box'>
+                    <label>School Year<input type="text" name='schoolyear' /></label>
+                  </div>
+                </div>
                 <div className='first-row'>
                   <div className='grade-level'>
                     <label>Select Program</label>
@@ -291,6 +305,7 @@ const ManageSchedule_ContentHeader = () => {
                         <label>Select Semester</label>
                         <label><input type="checkbox" name="semester" value="first" onChange={handleChange} />FIRST</label>
                         <label><input type="checkbox" name="semester" value="second" onChange={handleChange} />SECOND</label>
+                        <label><input type="checkbox" name="semester" value="summer" onChange={handleChange} />SUMMER</label>
                       </div>
                     </div>
                 </div>
@@ -303,8 +318,7 @@ const ManageSchedule_ContentHeader = () => {
                     </select>
                   </div>
                   <div className='input-box'>
-                    <label>Strand</label>
-                    <select>
+                    <label>Strand<select>
                       <option value=''></option>
                       <option value="stem">Science, Technology, Engineering and Mathematics (STEM)</option>
                       <option value="abm">Accountancy, Business and Management (ABM)</option>
@@ -312,22 +326,27 @@ const ManageSchedule_ContentHeader = () => {
                       <option value="tvl-ia">TVL - Industrial Arts (TVL-IA)</option>
                       <option value="tvl-he">TVL - Home Economics (TVL-HE)</option>
                       <option value="tvl-ict">TVL - Internet Communications Technology (TVL-ICT)</option>
-                    </select>
+                    </select></label>
+                  </div>
+                  <div class='input-box'>
+                    <label>Section<input type='text' name='section' /></label>
                   </div>
                 </div>
 
                 <div className='second-row'>
                   <div className='input-box'>
-                    <label>Subject</label>
+                    <label>Subject
                     <select>
                       <option value=''></option>
                     </select>
+                    </label>
                   </div>
                   <div className='input-box'>
-                    <label>Instructor</label>
+                    <label>Instructor
                     <select>
                       <option value=''></option>
                     </select>
+                    </label>
                   </div>
                 </div>
 
@@ -363,7 +382,6 @@ const ManageSchedule_ContentHeader = () => {
                         </td>
                         <td style={{ border: '1px solid black', padding: '8px' }}>
                           <div className='actions'>
-                            <button type='button' className='edit-btn'><FiEdit className='actions-ico' /></button>
                             <button type='button' className='delete-btn'><FiTrash className='actions-ico' /></button>
                             <button type='button' className='add-btn'><RiAddLargeFill className='actions-ico'/></button>
                           </div>
@@ -385,7 +403,6 @@ const ManageSchedule_ContentHeader = () => {
                 <div class='buttons'>
                       <button type="submit" class="btn-box" name="add" id="add">Done</button>
                 </div>
-
 
               </form>
               </div>

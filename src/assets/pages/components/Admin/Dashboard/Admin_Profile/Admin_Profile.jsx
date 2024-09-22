@@ -4,33 +4,21 @@ import Admin_ProfileHeader from "./Admin_ProfileHeader";
 import Profile from "../../../../../img/Profile/ProfileSample.jpg";
 
 const Admin_Profile = () => {
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [userData, setUserData] = useState({ firstName: '', lastName: '', role: '' });
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
+    const token = localStorage.getItem('token');
 
-    // Cleanup the interval on component unmount
-    return () => clearInterval(timer);
+    if (token) {
+      // Decode JWT token to extract user info
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      setUserData({
+        firstName: decodedToken.firstName,
+        lastName: decodedToken.lastName,
+        role: decodedToken.role
+      });
+    }
   }, []);
-
-  const formatTime = (date) => {
-    return date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-  };
-
-  const formatDate = (date) => {
-    return date.toLocaleDateString([], {
-      weekday: "short",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-  };
 
   return (
     <div className="admin-profile">
@@ -39,13 +27,13 @@ const Admin_Profile = () => {
       <div className="user-profile">
         <div className="user-details">
           <img src={Profile} alt="" />
-          <h3 className="admin-fullname">Juan Dela Cruz</h3>
-          <span className="position">Admin</span>
+          <h3 className="admin-fullname">{userData.firstName} {userData.lastName}</h3>
+          <span className="position">{userData.role}</span>
         </div>
 
         <div className="calendar">
-          <h4>{formatDate(currentTime)}</h4>
-          <p>{formatTime(currentTime)}</p>
+          <h4>{new Date().toLocaleDateString()}</h4>
+          <p>{new Date().toLocaleTimeString()}</p>
         </div>
       </div>
     </div>

@@ -151,6 +151,10 @@ ul.thumbs.animated {
   width: 184px;
 }
 
+.student-details, .sub-details{
+  margin-top: 20px;
+}
+
 .studentName,
 .studentClass,
 .academicYear,

@@ -226,6 +226,10 @@ ul.thumbs.animated{
   cursor: pointer;
 }
 
+.faculty-details, .sub-details{
+  margin-top: 20px;
+}
+
 /* Add to Faculty_module.css */
 
 .actionCard {

@@ -18,37 +18,41 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-``
-    try{
-      const response = await fetch("http://localhost:3000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username: Username, password: Password }),
-      });
 
-      if(response.ok){
-        const data = await response.json();
-        const role = data.role;
+    try {
+        const response = await fetch("http://localhost:3000/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username: Username, password: Password }),
+        });
 
-        if(role === 'Admin' || role === 'Registrar'){
-          navigate("/admin/dashboard");
-        }else if(role === 'Finance'){
-          navigate("/finance/dashboard");
-        }else if(role === 'Student'){
-          navigate("/student/dashboard");
-        }else if(role === 'Faculty'){
-          navigate("/faculty/dashboard");
+        if (response.ok) {
+            const data = await response.json();
+            const { token, userRole } = data;
+
+            // Store the token in localStorage
+            localStorage.setItem('token', token);
+
+            // Redirect based on role
+            if (userRole === 'Admin' || userRole === 'Registrar') {
+                navigate("/admin/dashboard");
+            } else if (userRole === 'Finance') {
+                navigate("/finance/dashboard");
+            } else if (userRole === 'Student') {
+                navigate("/student/dashboard");
+            } else if (userRole === 'Faculty') {
+                navigate("/faculty/dashboard");
+            }
+        } else {
+            const errorMsg = await response.text();
+            setError(errorMsg);
         }
-       }else{
-          const errorMsg = await response.text();
-          setError(errorMsg);
-       }
-      }catch(error){
+    } catch (error) {
         setError("Server error. Please try again later.");
-      }
-    };
+    }
+};
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

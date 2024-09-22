@@ -12,6 +12,7 @@ const Enroll_Student_Preview = () => {
         <div className='student-enroll-info'>
           <h2>DELA CRUZ, JUAN A.</h2>
           <h3>Junior Highschool</h3>
+          <h3>2024-2025, FIRST</h3>
           <h3>Grade 9</h3>
           <h3>NOT ENROLLED</h3>
         </div>

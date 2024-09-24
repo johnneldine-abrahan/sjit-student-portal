@@ -163,6 +163,10 @@ ul.thumbs.animated {
   text-align: center;
 }
 
+.studentName{
+  text-transform: uppercase;
+}
+
 .enrollmentStatus {
   color: #008000;
 }

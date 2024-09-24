@@ -34,83 +34,80 @@ app.post("/login", async (req, res) => {
             return res.status(401).json("Invalid username or password!");
         }
 
-        // Check if the password matches (assuming passwords are stored in plain text)
-        if (user.password !== password) {
-            console.error("Password mismatch");
-            return res.status(401).json("Invalid username or password!");
+       // If user is a student, fetch additional data from studenttbl
+       if (user.user_role === 'Student') {
+        // Query to join enrollmenttbl, sectiontbl, and studenttbl
+        const studentQuery = `
+            SELECT s.last_name, s.first_name, s.middle_name, sec.program, sec.grade_level, sec.school_year, sec.semester, e.enrollment_status 
+            FROM enrollmenttbl e
+            INNER JOIN sectiontbl sec ON e.section_id = sec.section_id
+            INNER JOIN studenttbl s ON e.student_id = s.student_id
+            WHERE e.student_id = $1
+            ORDER BY sec.school_year DESC, sec.semester DESC
+            LIMIT 1
+        `;
+        
+        const studentResult = await pool.query(studentQuery, [user.user_id]);
+        const studentData = studentResult.rows[0];
+    
+        if (!studentData) {
+            return res.status(404).json("Student data not found!");
         }
-
-        // If user is a student, fetch additional data from studenttbl
-        if (user.user_role === 'Student') {
-            const studentQuery = `
-                SELECT last_name, first_name, middle_name, program, grade_level, school_year, semester, enrollment_status 
-                FROM enrollmenttbl
-                WHERE user_id = $1
-            `;
-            const studentResult = await pool.query(studentQuery, [user.user_id]);
-            const studentData = studentResult.rows[0];
-
-            if (!studentData) {
-                return res.status(404).json("Student data not found!");
-            }
-
-            // Format the full name
-            const middleInitial = studentData.middle_name ? studentData.middle_name.charAt(0) + "." : "";
-            const fullName = `${studentData.last_name}, ${studentData.first_name} ${middleInitial}`;
-
-            // Create JWT token with student data
-            const token = jwt.sign(
-                {
-                    userId: user.user_id,
-                    role: user.user_role,
-                    fullName,
-                    program: studentData.program,
-                    gradeLevel: studentData.grade_level,
-                    schoolYear: studentData.school_year,
-                    semester: studentData.semester,
-                    enrollmentStatus: studentData.enrollment_status
-                },
-                SECRET_KEY,
-                { expiresIn: "1h" }
-            );
-
-            return res.json({ message: "Login successful!", token, userRole: user.user_role });
-        }
+    
+        // Format the full name with middle initial
+        const middleInitial = studentData.middle_name ? studentData.middle_name.charAt(0) + "." : "";
+        const fullName = `${studentData.last_name}, ${studentData.first_name} ${middleInitial}`;
+    
+        // Create JWT token with student data
+        const token = jwt.sign(
+            {
+                userId: user.user_id,
+                role: user.user_role,
+                fullName,
+                program: studentData.program,
+                gradeLevel: studentData.grade_level,
+                schoolYear: studentData.school_year,
+                semester: studentData.semester,
+                enrollmentStatus: studentData.enrollment_status
+            },
+            SECRET_KEY,
+            { expiresIn: "1h" }
+        );
+    
+        return res.json({ message: "Login successful!", token, userRole: user.user_role });
+    }
 
         if (user.user_role === 'Faculty') {
+            // Query to join facultytbl, teachingload_tbl, and sectiontbl
             const facultyQuery = `
-                SELECT last_name, first_name, middle_name 
-                FROM accountstbl
-                WHERE user_id = $1
+                SELECT f.last_name, f.first_name, f.middle_name, f.user_role, sec.school_year, sec.semester
+                FROM facultytbl f
+                INNER JOIN teachingload_tbl t ON f.faculty_id = t.faculty_id
+                INNER JOIN sectiontbl sec ON t.section_id = sec.section_id
+                WHERE f.faculty_id = $1
+                ORDER BY sec.school_year DESC, sec.semester DESC
+                LIMIT 1
             `;
+            
             const facultyResult = await pool.query(facultyQuery, [user.user_id]);
             const facultyData = facultyResult.rows[0];
         
-            const scheduleQuery = `
-                SELECT schoolyear, semester 
-                FROM scheduletbl 
-                WHERE faculty_id = $1 
-                ORDER BY subject_id DESC LIMIT 1
-            `;
-            const scheduleResult = await pool.query(scheduleQuery, [user.user_id]);
-            const scheduleData = scheduleResult.rows[0];
-        
-            if (!facultyData || !scheduleData) {
+            if (!facultyData) {
                 return res.status(404).json("Faculty or schedule data not found!");
             }
         
-            // Format the full name
-            const middleInitial = facultyData.middle_name ? facultyData.middle_name.charAt(0) + "." : "-";
+            // Format the full name with middle initial
+            const middleInitial = facultyData.middle_name ? facultyData.middle_name.charAt(0) + "." : "";
             const fullName = `${facultyData.last_name}, ${facultyData.first_name} ${middleInitial}`;
         
-            // Create JWT token with faculty and schedule data
+            // Create JWT token with faculty data
             const token = jwt.sign(
                 {
                     userId: user.user_id,
-                    role: user.user_role,
+                    role: facultyData.user_role,
                     fullName,
-                    schoolYear: scheduleData.schoolyear,
-                    semester: scheduleData.semester
+                    schoolYear: facultyData.school_year,
+                    semester: facultyData.semester
                 },
                 SECRET_KEY,
                 { expiresIn: "1h" }
@@ -118,7 +115,7 @@ app.post("/login", async (req, res) => {
         
             return res.json({ message: "Login successful!", token, userRole: user.user_role });
         }
-
+    
         // Create JWT token for other roles (Admin, Finance, etc.)
         const token = jwt.sign(
             {

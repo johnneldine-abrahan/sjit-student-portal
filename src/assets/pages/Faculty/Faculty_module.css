@@ -163,6 +163,10 @@ ul.thumbs.animated{
   text-align: center;
 }
 
+.facultyName{
+  text-transform: uppercase;
+}
+
 .notificationSection {
   background-color: #dde6ed;
   border-radius: 20px;

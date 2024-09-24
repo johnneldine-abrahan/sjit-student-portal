@@ -14,6 +14,7 @@ const Admin_Students_ContentHeader = () => {
   });
 
   const [formData, setFormData] = useState({
+    lrn: '',
     lastName: '',
     firstName: '',
     middleName: '',
@@ -25,20 +26,32 @@ const Admin_Students_ContentHeader = () => {
     civilStatus: '',
     birthOrder: '',
     contactNumber: '',
-    studySupport: '',
+    studySupport: '',  // For financial support
+    scholarshipName: '',  // Added based on 'schaolarship-name'
     address: '',
     cityMunicipality: '',
     province: '',
     country: '',
     zipCode: '',
-    schoolAttended: '',
+    schoolName: '',  // Added from 'School Name'
     yearAttended: '',
     schoolAddress: '',
-    awards: '',
+    honorsAwards: '',  // Added from 'Honors/Awards'
     classification: '',
-
-
+    program: '',  // For checkbox options "jhs", "shs"
+    strand: '',  // For strand selection
+    fatherName: '',  // Added from 'Father's Name'
+    occupationFather: '',  // Added from 'Father's Occupation'
+    contactFather: '',  // Added from 'Father's Contact Number'
+    motherName: '',  // Added from 'Mother's Name'
+    occupationMother: '',  // Added from 'Mother's Occupation'
+    contactMother: '',  // Added from 'Mother's Contact Number'
+    guardianName: '',  // Added from 'Guardian Name'
+    guardianRelationship: '',  // Added from 'Guardian Relationship'
+    guardianAddress: '',  // Added from 'Guardian's Address'
+    contactGuardian: '',  // Added from 'Guardian's Contact Number'
   });
+  
 
   const handleChange = (e) => {
     setFormData({
@@ -115,17 +128,23 @@ const Admin_Students_ContentHeader = () => {
                 <div className='popup-content'>
                   <form onSubmit={handleSubmit}>
                     <div className='first-row'>
-                      <div className='grade-level'>
-                        <label>Select Program</label>
-                        <label><input type="checkbox" name="program" value="jhs" onChange={handleChange} />Junior Highschool</label>
-                        <label><input type="checkbox" name="program" value="shs" onChange={handleChange} />Senior Highschool</label>
+                      <div className='input-box'>
+                        <label>LRN<input type="text" name="lrn" value={formData.lrn} onChange={handleChange} /></label>
                       </div>
                     </div>
 
                     <div className='first-row'>
-                     <div className='input-box'>
+                      <div className='grade-level'>
+                        <label>Select Program</label>
+                        <label><input type="checkbox" name="program" value="jhs" checked={formData.program === 'jhs'} onChange={handleChange} />Junior Highschool</label>
+                        <label><input type="checkbox" name="program" value="shs" checked={formData.program === 'shs'} onChange={handleChange} />Senior Highschool</label>
+                      </div>
+                    </div>
+
+                    <div className='first-row'>
+                      <div className='input-box'>
                         <label>Grade Level
-                          <select>
+                          <select name="gradeLevel" value={formData.gradeLevel} onChange={handleChange}>
                             <option value=""></option>
                             <option value="grade7">Grade 7</option>
                             <option value="grade8">Grade 8</option>
@@ -133,73 +152,73 @@ const Admin_Students_ContentHeader = () => {
                             <option value="grade10">Grade 10</option>
                           </select>
                         </label>
-                     </div>
+                      </div>
                       <div className='input-box'>
-                        <label>Strand</label>
-                            <select>
-                              <option value=""></option>
-                              <option value="stem">Science, Technology, Engineering and Mathematics (STEM)</option>
-                              <option value="abm">Accountancy, Business and Management (ABM)</option>
-                              <option value="humss">Humanities and Social Sciences (HUMSS)</option>
-                              <option value="tvl-ia">TVL - Industrial Arts (TVL-IA)</option>
-                              <option value="tvl-he">TVL - Home Economics (TVL-HE)</option>
-                              <option value="tvl-ict">TVL - Internet Communications Technology (TVL-ICT)</option>
-                            </select>
+                        <label>Strand
+                          <select name="strand" value={formData.strand} onChange={handleChange}>
+                            <option value=""></option>
+                            <option value="stem">Science, Technology, Engineering and Mathematics (STEM)</option>
+                            <option value="abm">Accountancy, Business and Management (ABM)</option>
+                            <option value="humss">Humanities and Social Sciences (HUMSS)</option>
+                            <option value="tvl-ia">TVL - Industrial Arts (TVL-IA)</option>
+                            <option value="tvl-he">TVL - Home Economics (TVL-HE)</option>
+                            <option value="tvl-ict">TVL - Internet Communications Technology (TVL-ICT)</option>
+                          </select>
+                        </label>
                       </div>
                     </div>
 
                     <div className='second-row'>
                       <div className='input-box'>
-                        <label>Last Name<input type="text" name="lastName" /></label>
+                        <label>Last Name<input type="text" name="lastName" value={formData.lastName} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>First Name<input type="text" name="firstName" /></label>
+                        <label>First Name<input type="text" name="firstName" value={formData.firstName} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Middle Name<input type="text" name="firstName" /></label>
+                        <label>Middle Name<input type="text" name="middleName" value={formData.middleName} onChange={handleChange} /></label>
                       </div>
                     </div>
 
                     <div className='first-row'>
                       <div className='sex-box'>
                         <label>Sex</label>
-                        <label><input type="radio" name="sex" option="male" />Male</label>
-                        <label><input type="radio" name="sex" option="female"/>Female</label>
+                        <label><input type="radio" name="sex" value="male" checked={formData.sex === 'male'} onChange={handleChange} />Male</label>
+                        <label><input type="radio" name="sex" value="female" checked={formData.sex === 'female'} onChange={handleChange} />Female</label>
                       </div>
                     </div>
 
                     <div className='thrid-row'>
                       <div className='input-box'>
-                        <label>Date of Birth<input type='date' name='dateOfBirth' /></label>
+                        <label>Date of Birth<input type='date' name='dateOfBirth' value={formData.dateOfBirth} onChange={handleChange} /></label>
                       </div>
-                    
                       <div className='input-box'>
-                        <label>Place of Birth<input type='text' name='placeOfBirth' /></label>
+                        <label>Place of Birth<input type='text' name='placeOfBirth' value={formData.placeOfBirth} onChange={handleChange} /></label>
                       </div>
                     </div>
 
                     <div className='fourth-row'>
                       <div className='input-box'>
-                        <label>Nationality<input type='text' name='nationality' /></label>
+                        <label>Nationality<input type='text' name='nationality' value={formData.nationality} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Religion<input type='text' name='religion' /></label>
+                        <label>Religion<input type='text' name='religion' value={formData.religion} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Civil Status<input type='text' name='civilStatus' /></label>
+                        <label>Civil Status<input type='text' name='civilStatus' value={formData.civilStatus} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Birth Order<input type='text' name='birthOrder' /></label>
+                        <label>Birth Order<input type='text' name='birthOrder' value={formData.birthOrder} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Contact Number<input type='tel' name='contactNumber' /></label>
+                        <label>Contact Number<input type='tel' name='contactNumber' value={formData.contactNumber} onChange={handleChange} /></label>
                       </div>
                     </div>
 
                     <div className='fifth-row'>
                       <div className='input-box'>
                         <label>Financial Support
-                          <select>
+                          <select name="studySupport" value={formData.studySupport} onChange={handleChange}>
                             <option value=""></option>
                             <option value="self-supporting">Self-supporting (Working)</option>
                             <option value="parents-support">Parent's Full Support</option>
@@ -209,82 +228,88 @@ const Admin_Students_ContentHeader = () => {
                         </label>
                       </div>
                       <div className='input-box'>
-                        <label>Scholarship/Subsidy (name of grant)<input type='text' name="schaolarship-name" /></label>
+                        <label>Scholarship/Subsidy (name of grant)<input type='text' name="scholarshipName" value={formData.scholarshipName} onChange={handleChange} /></label>
                       </div>
                     </div>
 
                     <div className='sixth-row'>
                       <div className='input-box'>
-                        <label>House No./Street/Barangay<input type='text' name='address' /></label>
+                        <label>House No./Street/Barangay<input type='text' name='address' value={formData.address} onChange={handleChange} /></label>
                       </div>
                     </div>
 
                     <div className='seventh-row'>
                       <div className='input-box'>
-                        <label>City/Municipality<input type='text' name='cityMunicipality' /></label>
+                        <label>City/Municipality<input type='text' name='cityMunicipality' value={formData.cityMunicipality} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Province<input type='text' name='province' /></label>
+                        <label>Province<input type='text' name='province' value={formData.province} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Country<input type='text' name='country' /></label>
+                        <label>Country<input type='text' name='country' value={formData.country} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>ZIP Code<input type='text' name='zipCode' /></label>
+                        <label>ZIP Code<input type='text' name='zipCode' value={formData.zipCode} onChange={handleChange} /></label>
                       </div>
                     </div>
 
                     <div className='eighth-row'>
                       <div className='input-box'>
-                        <label>School Name<input type='text' name='schoolName' /></label>
+                        <label>School Name<input type='text' name='schoolName' value={formData.schoolName} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Year Attended<input type='text' name='yearAttended' /></label>
+                        <label>Year Attended<input type='text' name='yearAttended' value={formData.yearAttended} onChange={handleChange} /></label>
                       </div>
                     </div>
 
                     <div className='ninth-row'>
                       <div className='input-box'>
-                        <label>School Address<input type='text' name='schoolAddress' /></label>
+                        <label>Honors/Awards<input type='text' name='honorsAwards' value={formData.honorsAwards} onChange={handleChange} /></label>
+                      </div>
+                      <div className='input-box'>
+                        <label>School Address<input type='text' name='schoolAddress' value={formData.schoolAddress} onChange={handleChange} /></label>
                       </div>
                     </div>
 
+                    {/* Father's Info */}
                     <div className='tenth-row'>
                       <div className='input-box'>
-                        <label>Father's Name<input type='text' name='fatherName' /></label>
+                        <label>Father's Name<input type='text' name='fatherName' value={formData.fatherName} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Occupation<input type='text' name='occupationFather' /></label>
+                        <label>Occupation<input type='text' name='occupationFather' value={formData.occupationFather} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Contact Number<input type='tel' name='contactFather' /></label>
+                        <label>Contact Number<input type='tel' name='contactFather' value={formData.contactFather} onChange={handleChange} /></label>
                       </div>
                     </div>
 
+                    {/* Mother's Info */}
                     <div className='tenth-row'>
                       <div className='input-box'>
-                        <label>Mother's Name<input type='text' name='motherName' /></label>
+                        <label>Mother's Name<input type='text' name='motherName' value={formData.motherName} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Occupation<input type='text' name='occupationMother' /></label>
+                        <label>Occupation<input type='text' name='occupationMother' value={formData.occupationMother} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Contact Number<input type='tel' name='contactMother' /></label>
+                        <label>Contact Number<input type='tel' name='contactMother' value={formData.contactMother} onChange={handleChange} /></label>
                       </div>
                     </div>
 
+                    {/* Guardian Info */}
                     <div className='tenth-row'>
                       <div className='input-box'>
-                        <label>Guardian Name<input type='text' name='guardianName' /></label>
+                        <label>Guardian Name<input type='text' name='guardianName' value={formData.guardianName} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Relationship<input type='text' name='guardianRelationship' /></label>
+                        <label>Relationship<input type='text' name='guardianRelationship' value={formData.guardianRelationship} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Guardian's Address<input type='text' name='guardianAddress' /></label>
+                        <label>Guardian's Address<input type='text' name='guardianAddress' value={formData.guardianAddress} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Contact Number<input type='tel' name='contactGuardian' /></label>
+                        <label>Contact Number<input type='tel' name='contactGuardian' value={formData.contactGuardian} onChange={handleChange} /></label>
                       </div>
                     </div>
 
@@ -309,58 +334,85 @@ const Admin_Students_ContentHeader = () => {
                 </div>
                 <div className='popup-content'>
                   <form onSubmit={handleSubmit}>
+                    <div className='first-row'>
+                      <div className='input-box'>
+                        <label>LRN
+                          <input type="text" name="lrn" value={formData.lrn} onChange={handleChange} />
+                        </label>
+                      </div>
+                    </div>
 
-                  <div className='second-row'>
+                    <div className='second-row'>
                       <div className='input-box'>
-                        <label>Last Name<input type="text" name="lastName" /></label>
+                        <label>Last Name
+                          <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
+                        </label>
                       </div>
                       <div className='input-box'>
-                        <label>First Name<input type="text" name="firstName" /></label>
+                        <label>First Name
+                          <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} />
+                        </label>
                       </div>
                       <div className='input-box'>
-                        <label>Middle Name<input type="text" name="firstName" /></label>
+                        <label>Middle Name
+                          <input type="text" name="middleName" value={formData.middleName} onChange={handleChange} />
+                        </label>
                       </div>
                     </div>
 
                     <div className='first-row'>
                       <div className='sex-box'>
                         <label>Sex</label>
-                        <label><input type="radio" name="sex" option="male" />Male</label>
-                        <label><input type="radio" name="sex" option="female"/>Female</label>
+                        <label><input type="radio" name="sex" value="male" checked={formData.sex === 'male'} onChange={handleChange} /> Male</label>
+                        <label><input type="radio" name="sex" value="female" checked={formData.sex === 'female'} onChange={handleChange} /> Female</label>
                       </div>
                     </div>
 
-                    <div className='thrid-row'>
+                    <div className='third-row'>
                       <div className='input-box'>
-                        <label>Date of Birth<input type='date' name='dateOfBirth' /></label>
+                        <label>Date of Birth
+                          <input type='date' name='dateOfBirth' value={formData.dateOfBirth} onChange={handleChange} />
+                        </label>
                       </div>
                       <div className='input-box'>
-                        <label>Place of Birth<input type='text' name='placeOfBirth' /></label>
+                        <label>Place of Birth
+                          <input type='text' name='placeOfBirth' value={formData.placeOfBirth} onChange={handleChange} />
+                        </label>
                       </div>
                     </div>
 
                     <div className='fourth-row'>
                       <div className='input-box'>
-                        <label>Nationality<input type='text' name='nationality' /></label>
+                        <label>Nationality
+                          <input type='text' name='nationality' value={formData.nationality} onChange={handleChange} />
+                        </label>
                       </div>
                       <div className='input-box'>
-                        <label>Religion<input type='text' name='religion' /></label>
+                        <label>Religion
+                          <input type='text' name='religion' value={formData.religion} onChange={handleChange} />
+                        </label>
                       </div>
                       <div className='input-box'>
-                        <label>Civil Status<input type='text' name='civilStatus' /></label>
+                        <label>Civil Status
+                          <input type='text' name='civilStatus' value={formData.civilStatus} onChange={handleChange} />
+                        </label>
                       </div>
                       <div className='input-box'>
-                        <label>Birth Order<input type='text' name='birthOrder' /></label>
+                        <label>Birth Order
+                          <input type='text' name='birthOrder' value={formData.birthOrder} onChange={handleChange} />
+                        </label>
                       </div>
                       <div className='input-box'>
-                        <label>Contact Number<input type='tel' name='contactNumber' /></label>
+                        <label>Contact Number
+                          <input type='tel' name='contactNumber' value={formData.contactNumber} onChange={handleChange} />
+                        </label>
                       </div>
                     </div>
 
                     <div className='fifth-row'>
-                    <div className='input-box'>
+                      <div className='input-box'>
                         <label>Financial Support
-                          <select>
+                          <select name="studySupport" value={formData.studySupport} onChange={handleChange}>
                             <option value=""></option>
                             <option value="self-supporting">Self-supporting (Working)</option>
                             <option value="parents-support">Parent's Full Support</option>
@@ -370,94 +422,135 @@ const Admin_Students_ContentHeader = () => {
                         </label>
                       </div>
                       <div className='input-box'>
-                        <label>Scholarship/Subsidy (name of grant)<input type='text' name="schaolarship-name" /></label>
+                        <label>Scholarship/Subsidy (name of grant)
+                          <input type='text' name="scholarshipName" value={formData.scholarshipName} onChange={handleChange} />
+                        </label>
                       </div>
                     </div>
 
                     <div className='sixth-row'>
                       <div className='input-box'>
-                        <label>House No./Street/Barangay<input type='text' name='address' /></label>
+                        <label>House No./Street/Barangay
+                          <input type='text' name='address' value={formData.address} onChange={handleChange} />
+                        </label>
                       </div>
                     </div>
 
                     <div className='seventh-row'>
                       <div className='input-box'>
-                        <label>City/Municipality<input type='text' name='cityMunicipality' /></label>
+                        <label>City/Municipality
+                          <input type='text' name='cityMunicipality' value={formData.cityMunicipality} onChange={handleChange} />
+                        </label>
                       </div>
                       <div className='input-box'>
-                        <label>Province<input type='text' name='province' /></label>
+                        <label>Province
+                          <input type='text' name='province' value={formData.province} onChange={handleChange} />
+                        </label>
                       </div>
                       <div className='input-box'>
-                        <label>Country<input type='text' name='country' /></label>
+                        <label>Country
+                          <input type='text' name='country' value={formData.country} onChange={handleChange} />
+                        </label>
                       </div>
                       <div className='input-box'>
-                        <label>ZIP Code<input type='text' name='zipCode' /></label>
+                        <label>ZIP Code
+                          <input type='text' name='zipCode' value={formData.zipCode} onChange={handleChange} />
+                        </label>
                       </div>
                     </div>
 
                     <div className='eighth-row'>
                       <div className='input-box'>
-                        <label>School Name<input type='text' name='schoolName' /></label>
+                        <label>School Name
+                          <input type='text' name='schoolName' value={formData.schoolName} onChange={handleChange} />
+                        </label>
                       </div>
                       <div className='input-box'>
-                        <label>Year Attended<input type='text' name='yearAttended' /></label>
+                        <label>Year Attended
+                          <input type='text' name='yearAttended' value={formData.yearAttended} onChange={handleChange} />
+                        </label>
                       </div>
                     </div>
 
                     <div className='ninth-row'>
                       <div className='input-box'>
-                        <label>School Address<input type='text' name='schoolAddress' /></label>
+                        <label>School Address
+                          <input type='text' name='schoolAddress' value={formData.schoolAddress} onChange={handleChange} />
+                        </label>
                       </div>
                     </div>
 
+                    {/* Father's Info */}
                     <div className='tenth-row'>
                       <div className='input-box'>
-                        <label>Father's Name<input type='text' name='fatherName' /></label>
+                        <label>Father's Name
+                          <input type='text' name='fatherName' value={formData.fatherName} onChange={handleChange} />
+                        </label>
                       </div>
                       <div className='input-box'>
-                        <label>Occupation<input type='text' name='occupationFather' /></label>
+                        <label>Occupation
+                          <input type='text' name='occupationFather' value={formData.occupationFather} onChange={handleChange} />
+                        </label>
                       </div>
                       <div className='input-box'>
-                        <label>Contact Number<input type='tel' name='contactFather' /></label>
+                        <label>Contact Number
+                          <input type='tel' name='contactFather' value={formData.contactFather} onChange={handleChange} />
+                        </label>
                       </div>
                     </div>
 
+                    {/* Mother's Info */}
                     <div className='tenth-row'>
                       <div className='input-box'>
-                        <label>Mother's Name<input type='text' name='motherName' /></label>
+                        <label>Mother's Name
+                          <input type='text' name='motherName' value={formData.motherName} onChange={handleChange} />
+                        </label>
                       </div>
                       <div className='input-box'>
-                        <label>Occupation<input type='text' name='occupationMother' /></label>
+                        <label>Occupation
+                          <input type='text' name='occupationMother' value={formData.occupationMother} onChange={handleChange} />
+                        </label>
                       </div>
                       <div className='input-box'>
-                        <label>Contact Number<input type='tel' name='contactMother' /></label>
+                        <label>Contact Number
+                          <input type='tel' name='contactMother' value={formData.contactMother} onChange={handleChange} />
+                        </label>
                       </div>
                     </div>
 
+                    {/* Guardian Info */}
                     <div className='tenth-row'>
                       <div className='input-box'>
-                        <label>Guardian Name<input type='text' name='guardianName' /></label>
+                        <label>Guardian Name
+                          <input type='text' name='guardianName' value={formData.guardianName} onChange={handleChange} />
+                        </label>
                       </div>
                       <div className='input-box'>
-                        <label>Relationship<input type='text' name='guardianRelationship' /></label>
+                        <label>Relationship
+                          <input type='text' name='guardianRelationship' value={formData.guardianRelationship} onChange={handleChange} />
+                        </label>
                       </div>
                       <div className='input-box'>
-                        <label>Guardian's Address<input type='text' name='guardianAddress' /></label>
+                        <label>Guardian's Address
+                          <input type='text' name='guardianAddress' value={formData.guardianAddress} onChange={handleChange} />
+                        </label>
                       </div>
                       <div className='input-box'>
-                        <label>Contact Number<input type='tel' name='contactGuardian' /></label>
+                        <label>Contact Number
+                          <input type='tel' name='contactGuardian' value={formData.contactGuardian} onChange={handleChange} />
+                        </label>
                       </div>
                     </div>
 
-                    <div class='buttons'>
-                      <button type="submit" class="btn-box" name="add" id="add">Done</button>
+                    <div className='buttons'>
+                      <button type="submit" className="btn-box" name="add" id="add">Done</button>
                     </div>
-
                   </form>
                 </div>
               </div>
             </>
           )}
+
 
           {/* Delete Pop-up */}
           {popup.delete && (

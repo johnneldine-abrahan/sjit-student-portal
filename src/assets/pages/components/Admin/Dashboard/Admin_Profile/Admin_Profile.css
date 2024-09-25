@@ -66,6 +66,7 @@
   
   .user-details .admin-fullname {
     color: #150f57;
+    text-transform: uppercase;
   }
 
   .admin-fullname{

@@ -273,7 +273,7 @@ const Admin_Students_ContentHeader = () => {
                     <div className='first-row'>
                       <div className='sex-box'>
                         <label>Sex
-                        <label><input type="radio" name="sex" value="Male" checked={formData.sex === 'Male'} onChange={handleChange} />Male</label>
+                        <label className='male'><input type="radio" name="sex" value="Male" checked={formData.sex === 'Male'} onChange={handleChange} />Male</label>
                         <label><input type="radio" name="sex" value="Female" checked={formData.sex === 'Female'} onChange={handleChange} />Female</label>
                         </label>
                       </div>

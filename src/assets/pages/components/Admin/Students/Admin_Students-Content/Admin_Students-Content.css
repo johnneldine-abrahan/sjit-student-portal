@@ -235,11 +235,16 @@
     display: flex;
     gap: 10px;
   }
-  
+
+  .sex-box .male{
+    margin-left: 10px;
+  }
+
   .sex-box label {
     display: flex;
     align-items: center;
     cursor: pointer;
+    margin-right: 10px;
   }
   
   .grade-level input[type="checkbox"] {

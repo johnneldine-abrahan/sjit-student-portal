@@ -5,6 +5,8 @@ import { PiStudentBold } from "react-icons/pi"
 import { GiArchiveRegister } from "react-icons/gi"
 import { FaChalkboardTeacher } from "react-icons/fa";
 import { AiFillSchedule } from "react-icons/ai";
+import { MdOutlineSwitchAccount } from "react-icons/md";
+
 import menu_logo from '../../../../../img/Sidebar/menu-logo.png'
 
 const FacultyMembers_Sidebar = () => {
@@ -20,9 +22,10 @@ const FacultyMembers_Sidebar = () => {
             <a href='/admin/enroll-students' className='item'><GiArchiveRegister size={18}/>Enroll Student</a>
             <a href='/admin/faculty-members' className='item active'><FaChalkboardTeacher size={18}/>Faculty Members</a>
             <a href='/admin/manage-schedule' className='item'><AiFillSchedule size={18} />Manage Schedule</a>
+            <a href='/admin/manage-accounts' className='item'><MdOutlineSwitchAccount size={18}/>Manage Accounts</a>
             <a href='/admin/archive' className='item'><BiArchiveIn size={18}/>Archive</a>
         </div>
-      
+
     </div>
   )
 }

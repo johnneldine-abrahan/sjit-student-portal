@@ -9,7 +9,7 @@ import { MdOutlineSwitchAccount } from "react-icons/md";
 
 import menu_logo from '../../../../../img/Sidebar/menu-logo.png'
 
-const Archive_Sidebar = () => {
+const ManageAccount_Sidebar = () => {
   return (
     <div className='menu'>
         <div className='menu-logo'>
@@ -22,12 +22,13 @@ const Archive_Sidebar = () => {
             <a href='/admin/enroll-students' className='item'><GiArchiveRegister size={18}/>Enroll Student</a>
             <a href='/admin/faculty-members' className='item'><FaChalkboardTeacher size={18}/>Faculty Members</a>
             <a href='/admin/manage-schedule' className='item'><AiFillSchedule size={18} />Manage Schedule</a>
-            <a href='/admin/manage-accounts' className='item'><MdOutlineSwitchAccount size={18}/>Manage Accounts</a>
-            <a href='/admin/archive' className='item active'><BiArchiveIn size={18}/>Archive</a>
+            <a href='/admin/manage-accounts' className='item active'><MdOutlineSwitchAccount size={18}/>Manage Accounts</a>
+            <a href='/admin/archive' className='item'><BiArchiveIn size={18}/>Archive</a>
+
         </div>
 
     </div>
   )
 }
 
-export default Archive_Sidebar
+export default ManageAccount_Sidebar

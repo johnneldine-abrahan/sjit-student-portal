@@ -181,7 +181,7 @@ app.get('/students', async (req, res) => {
 
 app.post("/registerStudent", async (req, res) => {
     const {
-        lrn, first_name, middle_name, last_name, birth_date, sex, place_of_birth, nationality, religion, civil_status, 
+        lrn, first_name, middle_name, last_name, birth_date, sex, place_of_birth, nationality, religion, civil_status,
         birth_order, contact_number, program, grade_level, strand, financial_support, scholarship_grant,
         school_name, years_attended, honors_awards, school_address,
         address, city_municipality, province, country, zip_code,
@@ -223,7 +223,7 @@ app.post("/registerStudent", async (req, res) => {
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
         `;
         await client.query(studentQuery, [
-            student_id, lrn, first_name, middle_name, last_name, birth_date, sex, place_of_birth, nationality, religion, 
+            student_id, lrn, first_name, middle_name, last_name, birth_date, sex, place_of_birth, nationality, religion,
             civil_status, birth_order, contact_number, program, grade_level, strand, user_id, financial_support, scholarship_grant
         ]);
 
@@ -277,6 +277,39 @@ app.post("/registerStudent", async (req, res) => {
         client.release();
     }
 });
+
+app.delete('/deleteStudent', async (req, res) => {
+    const { studentIds } = req.body; // Array of student_ids to delete
+
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN'); // Start transaction
+
+        // Step 1: Delete from emergency_contacttbl first
+        await client.query('DELETE FROM emergency_contacttbl WHERE student_id = ANY($1)', [studentIds]);
+
+        // Step 2: Delete from other dependent tables as needed
+        await client.query('DELETE FROM contacttbl WHERE student_id = ANY($1)', [studentIds]);
+        await client.query('DELETE FROM address_tbl WHERE student_id = ANY($1)', [studentIds]);
+        await client.query('DELETE FROM school_historytbl WHERE student_id = ANY($1)', [studentIds]);
+
+        // Step 3: Delete from studenttbl
+        await client.query('DELETE FROM studenttbl WHERE student_id = ANY($1)', [studentIds]);
+
+        // Step 4: Finally delete from accountstbl
+        await client.query('DELETE FROM accountstbl WHERE user_id = ANY($1)', [studentIds]);
+
+        await client.query('COMMIT'); // Commit transaction
+        res.status(200).json({ message: "Selected students deleted successfully." });
+    } catch (error) {
+        await client.query('ROLLBACK'); // Rollback transaction on error
+        console.error("Error deleting students:", error);
+        res.status(500).json({ message: "Error deleting students." });
+    } finally {
+        client.release();
+    }
+});
+
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

@@ -6,7 +6,7 @@ import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 import { RiInboxUnarchiveLine } from "react-icons/ri";
 
 
-const Admin_Students_ContentHeader = () => {
+const Admin_Students_ContentHeader = ({onDelete, selectedStudentIds}) => {
   const [popup, setPopup] = useState({
     add: false,
     edit: false,
@@ -655,7 +655,7 @@ const Admin_Students_ContentHeader = () => {
                 <div className='popup-content'>
                   <p>Are you sure you want to delete the selected student? This action is cannot be undone.</p>
                   <div className='buttons'>
-                    <button type="submit" class="btn-box" name="delete" id="delete">Delete</button>
+                    <button type="button" class="btn-box" onClick={() => {onDelete(); handleClose();}}>Delete</button>
                   </div>
                 </div>
               </div>

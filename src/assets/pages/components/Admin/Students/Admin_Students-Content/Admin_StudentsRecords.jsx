@@ -1,42 +1,27 @@
-import React, { useState } from "react";
-import './Admin_Students-Content.css'
-
-const StudentRecords = [
-    {
-        studentID: '21-05298',
-        LastName: 'Sanchez',
-        FirstName: 'Kim William',
-        MiddleName: 'Bacsa',
-        yearGraduated: '2025',
-    },
-    {
-        studentID: '21-05298',
-        LastName: 'Sanchez',
-        FirstName: 'Kim William',
-        MiddleName: 'Bacsa',
-        yearGraduated: '2025',
-    },
-    {
-        studentID: '21-05298',
-        LastName: 'Sanchez',
-        FirstName: 'Kim William',
-        MiddleName: 'Bacsa',
-        yearGraduated: '2025',
-    },
-    {
-        studentID: '21-05298',
-        LastName: 'Sanchez',
-        FirstName: 'Kim William',
-        MiddleName: 'Bacsa',
-        yearGraduated: '2025',
-    },
-]
+import React, { useState, useEffect } from "react";
+import './Admin_Students-Content.css';
 
 const Admin_StudentsRecords = () => {
+    const [studentRecords, setStudentRecords] = useState([]); // State to store student records
     const [popup, setPopup] = useState({
         show: false,
         record: null,
     });
+
+    // Fetch student records when the component mounts
+    useEffect(() => {
+        const fetchStudentRecords = async () => {
+            try {
+                const response = await fetch('http://localhost:3000/students'); // Adjust URL if needed
+                const data = await response.json();
+                setStudentRecords(data); // Set the fetched data to the state
+            } catch (error) {
+                console.error("Error fetching student records:", error);
+            }
+        };
+
+        fetchStudentRecords();
+    }, []);
 
     const handlePopup = (record) => {
         setPopup({
@@ -63,23 +48,25 @@ const Admin_StudentsRecords = () => {
                             <th>Last Name</th>
                             <th>First Name</th>
                             <th>Middle Name</th>
-                            <th>Year Graduated</th>
+                            <th>Program</th>
+                            <th>Grade Level</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {StudentRecords.map((records, index) => (
+                        {studentRecords.map((record, index) => (
                             <tr key={index}>
                                 <td>
-                                    <input type="checkbox" name={`select-${records.studentID}`} /> {/* Checkbox */}
+                                    <input type="checkbox" name={`select-${record.student_id}`} /> {/* Checkbox */}
                                 </td>
-                                <td>{records.studentID}</td>
-                                <td>{records.LastName}</td>
-                                <td>{records.FirstName}</td>
-                                <td>{records.MiddleName}</td>
-                                <td>{records.yearGraduated}</td>
+                                <td>{record.student_id}</td>
+                                <td>{record.last_name}</td>
+                                <td>{record.first_name}</td>
+                                <td>{record.middle_name}</td>
+                                <td>{record.program}</td>
+                                <td>{record.grade_level}</td>
                                 <td>
-                                    <span className='view-details-link' onClick={() => handlePopup(records)}>View Details</span>
+                                    <span className='view-details-link' onClick={() => handlePopup(record)}>View Details</span>
                                 </td>
                             </tr>
                         ))}
@@ -97,16 +84,17 @@ const Admin_StudentsRecords = () => {
                         <button onClick={handleClose}>Close</button>
                     </div>
                     <div className='popup-content'>
-                        <p>Student ID: {popup.record.studentID}</p>
-                        <p>Last Name: {popup.record.LastName}</p>
-                        <p>First Name: {popup.record.FirstName}</p>
-                        <p>Middle Name: {popup.record.MiddleName}</p>
-                        <p>Year Graduated: {popup.record.yearGraduated}</p>
+                        <p>Student ID: {popup.record.student_id}</p>
+                        <p>Last Name: {popup.record.last_name}</p>
+                        <p>First Name: {popup.record.first_name}</p>
+                        <p>Middle Name: {popup.record.middle_name}</p>
+                        <p>Program: {popup.record.program}</p>
+                        <p>Grade Level: {popup.record.grade_level}</p>
                     </div>
                 </div>
             )}
         </div>
-    )
-}
+    );
+};
 
 export default Admin_StudentsRecords;

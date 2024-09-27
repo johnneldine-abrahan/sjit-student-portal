@@ -135,7 +135,6 @@ app.post("/login", async (req, res) => {
     }
 });
 
-
 // Middleware to protect routes
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
@@ -160,11 +159,25 @@ app.get('/profile', authenticateToken, (req, res) => {
     });
 });
 
-// Function to generate the student_id, user_id, and password
-function generateUserId() {
-    const randomNum = Math.floor(1000 + Math.random() * 9000); // 4 digit random number
-    return `24-${randomNum}`;
-}
+app.get('/students', async (req, res) => {
+    try {
+        // Query to fetch student_id, last_name, first_name, middle_name, program, and grade_level from studenttbl
+        const query = `
+            SELECT student_id, last_name, first_name, middle_name, program, grade_level 
+            FROM studenttbl
+        `;
+
+        // Execute the query
+        const result = await pool.query(query);
+        const students = result.rows;
+
+        // Send the result back as JSON
+        res.status(200).json(students);
+    } catch (error) {
+        console.error("Error fetching student data:", error);
+        res.status(500).json({ message: "Error fetching student data." });
+    }
+});
 
 app.post("/registerStudent", async (req, res) => {
     const {
@@ -264,7 +277,6 @@ app.post("/registerStudent", async (req, res) => {
         client.release();
     }
 });
-
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

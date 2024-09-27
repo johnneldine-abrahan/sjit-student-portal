@@ -96,6 +96,7 @@ const Admin_Students_ContentHeader = () => {
         // Log the response object
         console.log('Raw response:', response);
 
+        // Check for successful response
         if (!response.ok) {
             const errorText = await response.text();
             console.error('Error from server:', errorText);
@@ -112,6 +113,7 @@ const Admin_Students_ContentHeader = () => {
         if (contentType && contentType.includes('application/json')) {
             const result = await response.json();
             console.log('Parsed JSON:', result);
+            // Handle any result data if needed
         } else {
             const text = await response.text(); // Handle text response if not JSON
             console.log('Response text:', text);
@@ -121,42 +123,42 @@ const Admin_Students_ContentHeader = () => {
 
         // Reset the form and close the popup
         setFormData({
-          lrn: '', // Reset lrn to empty string for the form
-          first_name: '',
-          middle_name: '',
-          last_name: '',
-          birth_date: '',
-          sex: '',
-          place_of_birth: '',
-          nationality: '',
-          religion: '',
-          civil_status: '',
-          birth_order: '',
-          contact_number: '',
-          program: '',
-          grade_level: '',
-          strand: '',
-          financial_support: '',
-          scholarship_grant: '',
-          school_name: '',
-          years_attended: '',
-          honors_awards: '',
-          school_address: '',
-          address: '',
-          city_municipality: '',
-          province: '',
-          country: '',
-          zip_code: '',
-          name_father: '',
-          occupation_father: '',
-          contact_father: '',
-          name_mother: '',
-          occupation_mother: '',
-          contact_mother: '',
-          guardian_name: '',
-          relationship: '',
-          guardian_address: '',
-          contact_guardian: '',
+            lrn: '', // Reset lrn to empty string for the form
+            first_name: '',
+            middle_name: '',
+            last_name: '',
+            birth_date: '',
+            sex: '',
+            place_of_birth: '',
+            nationality: '',
+            religion: '',
+            civil_status: '',
+            birth_order: '',
+            contact_number: '',
+            program: '',
+            grade_level: '',
+            strand: '',
+            financial_support: '',
+            scholarship_grant: '',
+            school_name: '',
+            years_attended: '',
+            honors_awards: '',
+            school_address: '',
+            address: '',
+            city_municipality: '',
+            province: '',
+            country: '',
+            zip_code: '',
+            name_father: '',
+            occupation_father: '',
+            contact_father: '',
+            name_mother: '',
+            occupation_mother: '',
+            contact_mother: '',
+            guardian_name: '',
+            relationship: '',
+            guardian_address: '',
+            contact_guardian: '',
         });
 
         setPopup({ add: false, edit: false, delete: false, archive: false });
@@ -167,11 +169,9 @@ const Admin_Students_ContentHeader = () => {
     }
 };
 
-
-
   // Disable scrolling when modal is open
    useEffect(() => {
-    if (popup) {
+    if (popup.add || popup.edit || popup.delete || popup.archive) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset'; // Reset overflow when modal is closed

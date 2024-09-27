@@ -87,6 +87,7 @@
     border-style: hidden;
     border-radius: 10px; /* Add border radius here */
     overflow: hidden; /* Add this to ensure the border radius is applied correctly */
+    text-transform: uppercase;
   }
   
   .student-records td {

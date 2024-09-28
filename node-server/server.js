@@ -363,6 +363,45 @@ app.post('/registerFaculty', async (req, res) => {
     }
 });
 
+app.delete('/deleteFaculty', async (req, res) => {
+    const { facultyIds } = req.body;
+
+    if (!facultyIds || facultyIds.length === 0) {
+        return res.status(400).send('No faculty IDs provided for deletion');
+    }
+
+    try {
+        // Start a transaction
+        await pool.query('BEGIN');
+
+        // First, delete from facultytbl
+        const deleteFaculties = `
+            DELETE FROM facultytbl 
+            WHERE faculty_id = ANY($1)`;
+        await pool.query(deleteFaculties, [facultyIds]);
+
+        // Then, delete from accountstbl
+        const deleteAccounts = `
+            DELETE FROM accountstbl 
+            WHERE user_id IN (
+                SELECT user_id 
+                FROM facultytbl 
+                WHERE faculty_id = ANY($1)
+            )`;
+        await pool.query(deleteAccounts, [facultyIds]);
+
+        // Commit transaction
+        await pool.query('COMMIT');
+
+        res.status(200).send('Faculty and associated accounts deleted successfully');
+    } catch (error) {
+        // Rollback transaction in case of error
+        await pool.query('ROLLBACK');
+        console.error('Error deleting faculty data:', error);
+        res.status(500).send('Internal server error');
+    }
+});
+
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

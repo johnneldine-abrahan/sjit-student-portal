@@ -5,7 +5,7 @@ import { BiEditAlt } from "react-icons/bi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 import { RiInboxUnarchiveLine } from "react-icons/ri";
 
-const FacultyMembers_ContentHeader = ({refreshFacultyList}) => {
+const FacultyMembers_ContentHeader = ({refreshFacultyList, onDelete}) => {
   const [popup, setPopup] = useState({
     add: false,
     edit: false,
@@ -189,7 +189,7 @@ const FacultyMembers_ContentHeader = ({refreshFacultyList}) => {
                   <div className='popup-content'>
                     <p>Are you sure you want to delete the selected teacher? This action is cannot be undone.</p>
                     <div className='buttons'>
-                      <button type="submit" class="btn-box" name="delete" id="delete">Delete</button>
+                      <button type="submit" class="btn-box" name="delete" id="delete" onClick={() => {onDelete(); handleClose()}}>Delete</button>
                     </div>
                   </div>
                 </div>

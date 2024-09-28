@@ -314,7 +314,15 @@ app.delete('/deleteStudent', async (req, res) => {
     }
 });
 
-// server.js or your backend file
+app.get('/faculties', async (req, res) => {
+    try {
+      const result = await pool.query('SELECT * FROM facultytbl');
+      res.status(200).json(result.rows);
+    } catch (error) {
+      console.error('Error fetching faculty data:', error);
+      res.status(500).json({ error: 'Failed to fetch faculty data' });
+    }
+  });
 
 app.post('/registerFaculty', async (req, res) => {
     const client = await pool.connect();

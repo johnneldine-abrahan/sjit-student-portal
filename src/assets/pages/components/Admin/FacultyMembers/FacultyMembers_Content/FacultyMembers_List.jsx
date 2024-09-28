@@ -1,38 +1,7 @@
 import React, { useState } from "react";
 import "./FacultyMembers_Content.css";
 
-const FacultyList = [
-  {
-    facultyID: "21-05298",
-    LastName: "Sanchez",
-    FirstName: "Kim William",
-    MiddleName: "Bacsa",
-    viewRecords: "View Details",
-  },
-  {
-    facultyID: "21-05299",
-    LastName: "Dela Cruz",
-    FirstName: "Juan",
-    MiddleName: "B.",
-    viewRecords: "View Details",
-  },
-  {
-    facultyID: "21-05300",
-    LastName: "Reyes",
-    FirstName: "Maria",
-    MiddleName: "L.",
-    viewRecords: "View Details",
-  },
-  {
-    facultyID: "21-05301",
-    LastName: "Gonzales",
-    FirstName: "Pedro",
-    MiddleName: "R.",
-    viewRecords: "View Details",
-  },
-];
-
-const FacultyMembers_List = () => {
+const FacultyMembers_List = ({ facultyList }) => {
   const [popup, setPopup] = useState({
     show: false,
     faculty: null,
@@ -58,7 +27,7 @@ const FacultyMembers_List = () => {
         <table>
           <thead>
             <tr>
-              <th>Select</th> {/* Column for checkboxes */}
+              <th>Select</th>
               <th>Faculty ID</th>
               <th>Last Name</th>
               <th>First Name</th>
@@ -67,19 +36,19 @@ const FacultyMembers_List = () => {
             </tr>
           </thead>
           <tbody>
-            {FacultyList.map((records) => (
-              <tr key={records.facultyID}>
+            {facultyList.map((faculty) => (
+              <tr key={faculty.faculty_id}>
                 <td>
-                  <input type="checkbox" /> {/* Checkbox for selection */}
+                  <input type="checkbox" />
                 </td>
-                <td>{records.facultyID}</td>
-                <td>{records.LastName}</td>
-                <td>{records.FirstName}</td>
-                <td>{records.MiddleName}</td>
+                <td>{faculty.faculty_id}</td>
+                <td>{faculty.last_name}</td>
+                <td>{faculty.first_name}</td>
+                <td>{faculty.middle_name}</td>
                 <td>
                   <span
                     className="view-details-link"
-                    onClick={() => handlePopup(records)}
+                    onClick={() => handlePopup(faculty)}
                   >
                     View Details
                   </span>
@@ -99,10 +68,10 @@ const FacultyMembers_List = () => {
                 <button onClick={handleClose}>Close</button>
               </div>
               <div className="popup-content">
-                <p>Faculty ID: {popup.faculty.facultyID}</p>
-                <p>Last Name: {popup.faculty.LastName}</p>
-                <p>First Name: {popup.faculty.FirstName}</p>
-                <p>Middle Name: {popup.faculty.MiddleName}</p>
+                <p>Faculty ID: {popup.faculty.faculty_id}</p>
+                <p>Last Name: {popup.faculty.last_name}</p>
+                <p>First Name: {popup.faculty.first_name}</p>
+                <p>Middle Name: {popup.faculty.middle_name}</p>
               </div>
             </div>
           </div>

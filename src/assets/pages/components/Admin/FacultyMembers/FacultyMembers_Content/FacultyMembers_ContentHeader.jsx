@@ -5,7 +5,7 @@ import { BiEditAlt } from "react-icons/bi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 import { RiInboxUnarchiveLine } from "react-icons/ri";
 
-const FacultyMembers_ContentHeader = () => {
+const FacultyMembers_ContentHeader = ({refreshFacultyList}) => {
   const [popup, setPopup] = useState({
     add: false,
     edit: false,
@@ -42,9 +42,8 @@ const FacultyMembers_ContentHeader = () => {
     e.preventDefault();
 
     const adjustedData = { ...formData };
-  
+
     try {
-      // Submit data to the registerFaculty API endpoint
       const response = await fetch('http://localhost:3000/registerFaculty', {
         method: 'POST',
         headers: {
@@ -52,39 +51,33 @@ const FacultyMembers_ContentHeader = () => {
         },
         body: JSON.stringify(adjustedData),
       });
-  
+
       if (!response.ok) {
         const errorText = await response.text();
         alert(`Failed to register faculty: ${errorText || 'Unknown error'}`);
         return;
       }
-  
+
       alert('Faculty successfully registered!');
-  
-      // Reset the form after submission
+
       setFormData({
         last_name: '',
         first_name: '',
         middle_name: '',
       });
-  
-      // Close the popup after successful submission
+
       setPopup({ add: false });
-  
-      // Optional: Fetch the updated faculty records if needed to refresh the data
-      // const updatedResponse = await fetch('http://localhost:3000/faculties');
-      // const updatedRecords = await updatedResponse.json();
-      // updateFacultyRecords(updatedRecords); // Uncomment if you need to refresh data
-  
+
+      // Refresh the faculty list after successful submission
+      await refreshFacultyList();  // Call the passed function to refresh the faculty list
     } catch (error) {
       alert('Network error: Failed to reach the server.');
     }
   };
-  
 
   // Disable scrolling when modal is open
   useEffect(() => {
-    if (popup) {
+    if (popup.add) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset'; // Reset overflow when modal is closed

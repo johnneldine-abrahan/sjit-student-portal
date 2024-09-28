@@ -15,7 +15,6 @@ const Admin_Students_ContentHeader = ({onDelete, selectedStudentIds}) => {
   });
 
   const [formData, setFormData] = useState({
-    student_type: '',
     lrn: '',
     first_name: '',
     middle_name: '',
@@ -124,7 +123,6 @@ const Admin_Students_ContentHeader = ({onDelete, selectedStudentIds}) => {
 
         // Reset the form and close the popup
         setFormData({
-            student_type: '',
             lrn: '', // Reset lrn to empty string for the form
             first_name: '',
             middle_name: '',
@@ -218,14 +216,6 @@ const Admin_Students_ContentHeader = ({onDelete, selectedStudentIds}) => {
                 </div>
                 <div className='popup-content'>
                   <form onSubmit={handleSubmit}>
-                  <div className='first-row'>
-                      <div className='grade-level'>
-                        <label>Is student...
-                        <label><input type="checkbox" name="student_type" value="New Student" checked={formData.student_type === 'New Student'} onChange={handleChange} />New</label>
-                        <label><input type="checkbox" name="student_type" value="Old Student" checked={formData.student_type === 'Old Student'} onChange={handleChange} />Old</label>
-                        </label>
-                      </div>
-                    </div>
 
                     <div className='first-row'>
                       <div className='input-box'>

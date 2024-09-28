@@ -181,7 +181,7 @@ app.get('/students', async (req, res) => {
 
 app.post("/registerStudent", async (req, res) => {
     const {
-        student_type, lrn, first_name, middle_name, last_name, birth_date, sex, place_of_birth, nationality, religion, civil_status,
+        lrn, first_name, middle_name, last_name, birth_date, sex, place_of_birth, nationality, religion, civil_status,
         birth_order, contact_number, program, grade_level, strand, financial_support, scholarship_grant,
         school_name, years_attended, honors_awards, school_address,
         address, city_municipality, province, country, zip_code,
@@ -196,6 +196,7 @@ app.post("/registerStudent", async (req, res) => {
     const user_id = student_id;
     const password = student_id; // Optionally hash the password with bcrypt if needed
     const user_role = "Student";
+    const student_type = "New";
 
     // Default profile picture (update this to your default image URL or file path)
     const defaultProfilePicture = "src\assets\img\Profile\default_profile.png"; // Replace with actual path or URL

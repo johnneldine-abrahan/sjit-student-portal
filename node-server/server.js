@@ -181,7 +181,7 @@ app.get('/students', async (req, res) => {
 
 app.post("/registerStudent", async (req, res) => {
     const {
-        lrn, first_name, middle_name, last_name, birth_date, sex, place_of_birth, nationality, religion, civil_status,
+        student_type, lrn, first_name, middle_name, last_name, birth_date, sex, place_of_birth, nationality, religion, civil_status,
         birth_order, contact_number, program, grade_level, strand, financial_support, scholarship_grant,
         school_name, years_attended, honors_awards, school_address,
         address, city_municipality, province, country, zip_code,
@@ -191,11 +191,14 @@ app.post("/registerStudent", async (req, res) => {
     } = req.body;
 
     // Generate a common student_id, user_id, and password
-    const randomNumber = Math.floor(1000 + Math.random() * 9000); // Generates a 4-digit random number
+    const randomNumber = Math.floor(10000 + Math.random() * 90000); // Generates a 5-digit random number
     const student_id = `24-${randomNumber}`;
     const user_id = student_id;
     const password = student_id; // Optionally hash the password with bcrypt if needed
     const user_role = "Student";
+
+    // Default profile picture (update this to your default image URL or file path)
+    const defaultProfilePicture = "src\assets\img\Profile\default_profile.png"; // Replace with actual path or URL
 
     const client = await pool.connect();
 
@@ -219,12 +222,12 @@ app.post("/registerStudent", async (req, res) => {
 
         // Insert into studentstbl
         const studentQuery = `
-            INSERT INTO studenttbl (student_id, lrn, first_name, middle_name, last_name, birth_date, sex, place_of_birth, nationality, religion, civil_status, birth_order, contact_number, program, grade_level, strand, user_id, financial_support, scholarship_grant)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+            INSERT INTO studenttbl (student_id, student_type, lrn, first_name, middle_name, last_name, birth_date, sex, place_of_birth, nationality, religion, civil_status, birth_order, contact_number, program, grade_level, strand, user_id, financial_support, scholarship_grant, profile)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
         `;
         await client.query(studentQuery, [
-            student_id, lrn, first_name, middle_name, last_name, birth_date, sex, place_of_birth, nationality, religion,
-            civil_status, birth_order, contact_number, program, grade_level, strand, user_id, financial_support, scholarship_grant
+            student_id, student_type, lrn, first_name, middle_name, last_name, birth_date, sex, place_of_birth, nationality, religion,
+            civil_status, birth_order, contact_number, program, grade_level, strand, user_id, financial_support, scholarship_grant, defaultProfilePicture // Adding default profile picture here
         ]);
 
         // Insert into school_historytbl
@@ -268,7 +271,7 @@ app.post("/registerStudent", async (req, res) => {
         ]);
 
         await client.query('COMMIT'); // Commit the transaction
-        res.status(200).json({ message: "Student registered successfully!" });
+        res.status(200).json({ message: "Student registered successfully with default profile picture!" });
     } catch (error) {
         await client.query('ROLLBACK'); // Roll back the transaction in case of error
         console.error("Error inserting student data transactionally:", error);

@@ -15,6 +15,7 @@ const Admin_Students_ContentHeader = ({onDelete, selectedStudentIds}) => {
   });
 
   const [formData, setFormData] = useState({
+    student_type: '',
     lrn: '',
     first_name: '',
     middle_name: '',
@@ -123,6 +124,7 @@ const Admin_Students_ContentHeader = ({onDelete, selectedStudentIds}) => {
 
         // Reset the form and close the popup
         setFormData({
+            student_type: '',
             lrn: '', // Reset lrn to empty string for the form
             first_name: '',
             middle_name: '',
@@ -216,6 +218,15 @@ const Admin_Students_ContentHeader = ({onDelete, selectedStudentIds}) => {
                 </div>
                 <div className='popup-content'>
                   <form onSubmit={handleSubmit}>
+                  <div className='first-row'>
+                      <div className='grade-level'>
+                        <label>Is student...
+                        <label><input type="checkbox" name="student_type" value="New Student" checked={formData.student_type === 'New Student'} onChange={handleChange} />New</label>
+                        <label><input type="checkbox" name="student_type" value="Old Student" checked={formData.student_type === 'Old Student'} onChange={handleChange} />Old</label>
+                        </label>
+                      </div>
+                    </div>
+
                     <div className='first-row'>
                       <div className='input-box'>
                         <label>LRN<input type="text" name="lrn" value={formData.lrn} onChange={handleChange} /></label>
@@ -311,10 +322,10 @@ const Admin_Students_ContentHeader = ({onDelete, selectedStudentIds}) => {
                         <label>Financial Support
                           <select name="financial_support" value={formData.financial_support} onChange={handleChange}>
                             <option value=""></option>
-                            <option value="self-supporting">Self-supporting (Working)</option>
-                            <option value="parents-support">Parent's Full Support</option>
-                            <option value="relatives-support">Relatives/Family Friends</option>
-                            <option value="scholarship">Scholarship/Subsidy</option>
+                            <option value="Self-supporting (Working)">Self-supporting (Working)</option>
+                            <option value="Parent's Full Support">Parent's Full Support</option>
+                            <option value="Relatives/Family Friends">Relatives/Family Friends</option>
+                            <option value="Scholarship/Subsidy">Scholarship/Subsidy</option>
                           </select>
                         </label>
                       </div>

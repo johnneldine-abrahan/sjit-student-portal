@@ -14,6 +14,20 @@ const Admin_StudentsRecords = ({ onSelectStudent, selectedStudentIds }) => {
         fetchStudentRecords();
     }, []);
 
+    const handlePopup = (record) => {
+        setPopup({
+            show: true,
+            record: record,
+        });
+    };
+
+    const handleClose = () => {
+        setPopup({
+            show: false,
+            record: null,
+        });
+    };
+
     return (
         <div className='student-records'>
             <div className='recordslist-container'>
@@ -54,7 +68,27 @@ const Admin_StudentsRecords = ({ onSelectStudent, selectedStudentIds }) => {
                     </tbody>
                 </table>
             </div>
-            {/* Your existing popup logic for viewing student details */}
+
+            {popup.show && (
+                <div className='popup-blurred-background' onClick={handleClose} />
+            )}
+            {popup.show && (
+                <div className='popup'>
+                    <div className='popup-header'>
+                        <h3>Student Details</h3>
+                        <button onClick={handleClose}>Close</button>
+                    </div>
+                    <div className='popup-content'>
+                        <p>Student ID: {popup.record.student_id}</p>
+                        <p>Last Name: {popup.record.last_name}</p>
+                        <p>First Name: {popup.record.first_name}</p>
+                        <p>Middle Name: {popup.record.middle_name}</p>
+                        <p>Program: {popup.record.program}</p>
+                        <p>Grade Level : {popup.record.grade_level}</p>
+                        
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

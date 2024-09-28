@@ -13,6 +13,18 @@ const FacultyMembers_ContentHeader = () => {
     archive: false,
   });
 
+  const [formData, setFormData] = useState({
+    last_name: '',
+    first_name: '',
+    middle_name: '',
+  })
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+
   const handlePopup = (type) => {
     setPopup((prevPopup) => ({ ...prevPopup, [type]: !prevPopup[type] }));
   };
@@ -26,12 +38,49 @@ const FacultyMembers_ContentHeader = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Handle form submission logic here
-    handleClose();  // Close the popup after submitting
+
+    const adjustedData = { ...formData };
+  
+    try {
+      // Submit data to the registerFaculty API endpoint
+      const response = await fetch('http://localhost:3000/registerFaculty', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(adjustedData),
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        alert(`Failed to register faculty: ${errorText || 'Unknown error'}`);
+        return;
+      }
+  
+      alert('Faculty successfully registered!');
+  
+      // Reset the form after submission
+      setFormData({
+        last_name: '',
+        first_name: '',
+        middle_name: '',
+      });
+  
+      // Close the popup after successful submission
+      setPopup({ add: false });
+  
+      // Optional: Fetch the updated faculty records if needed to refresh the data
+      // const updatedResponse = await fetch('http://localhost:3000/faculties');
+      // const updatedRecords = await updatedResponse.json();
+      // updateFacultyRecords(updatedRecords); // Uncomment if you need to refresh data
+  
+    } catch (error) {
+      alert('Network error: Failed to reach the server.');
+    }
   };
+  
 
   // Disable scrolling when modal is open
   useEffect(() => {
@@ -82,13 +131,13 @@ const FacultyMembers_ContentHeader = () => {
                   <form onSubmit={handleSubmit}>
                     <div className='first-row'>
                       <div className='input-box'>
-                        <label>Last Name<input type="text" name="lastName" /></label>
+                        <label>Last Name<input type="text" name="last_name" value={formData.last_name} onChange={handleChange}/></label>
                       </div>
                       <div className='input-box'>
-                        <label>First Name<input type="text" name="firstName" /></label>
+                        <label>First Name<input type="text" name="first_name" value={formData.first_name} onChange={handleChange}/></label>
                       </div>
                       <div className='input-box'>
-                        <label>Middle Name<input type="text" name="middleName" /></label>
+                        <label>Middle Name<input type="text" name="middle_name" value={formData.middle_name} onChange={handleChange}/></label>
                       </div>
                     </div>
 

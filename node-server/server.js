@@ -314,6 +314,47 @@ app.delete('/deleteStudent', async (req, res) => {
     }
 });
 
+// server.js or your backend file
+
+app.post('/registerFaculty', async (req, res) => {
+    const client = await pool.connect();
+    try {
+        const { first_name, middle_name, last_name } = req.body;
+
+        // Generate a unique faculty_id, user_id, and password in "FC-XXXXX" format
+        const randomNum = Math.floor(10000 + Math.random() * 90000);
+        const user_id = `FC-${randomNum}`;
+        const password = user_id; // Same as user_id
+        const defaultProfilePicture = "src\assets\img\Profile\default_profile.png";
+
+        // SQL transaction to insert into both facultytbl and accountstbl
+        await client.query('BEGIN');
+
+        // Insert into accountstbl
+        const accountQuery = `
+         INSERT INTO accountstbl (user_id, first_name, middle_name, last_name, password, user_role)
+         VALUES ($1, $2, $3, $4, $5, 'Faculty')
+        `;
+        await client.query(accountQuery, [user_id, first_name, middle_name, last_name, password]);
+
+        // Insert into facultytbl
+        const facultyQuery = `
+            INSERT INTO facultytbl (faculty_id, first_name, middle_name, last_name, user_role, user_id, profile)
+            VALUES ($1, $2, $3, $4, 'Faculty', $5, $6)
+        `;
+        await client.query(facultyQuery, [user_id, first_name, middle_name, last_name, user_id, defaultProfilePicture]);
+
+        await client.query('COMMIT');
+        res.status(201).send('Faculty registered successfully.');
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Error registering faculty:', error);
+        res.status(500).send('Failed to register faculty.');
+    } finally {
+        client.release();
+    }
+});
+
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

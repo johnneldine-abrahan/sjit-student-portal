@@ -1,10 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Admin_Students-Content.css';
 import Admin_Students_ContentHeader from './Admin_Students_ContentHeader';
 import Admin_StudentsRecords from './Admin_StudentsRecords';
 
 const Students_Content = () => {
+    const [studentRecords, setStudentRecords] = useState([]);
     const [selectedStudentIds, setSelectedStudentIds] = useState([]);
+
+    // Function to update student records after adding or deleting
+    const updateStudentRecords = (updatedRecords) => {
+        setStudentRecords(updatedRecords);
+    };
+
+    // Function to fetch students initially or whenever needed
+    useEffect(() => {
+        const fetchStudentRecords = async () => {
+            const response = await fetch('http://localhost:3000/students');
+            const data = await response.json();
+            setStudentRecords(data);
+        };
+        fetchStudentRecords();
+    }, []);
 
     const handleSelectStudent = (studentId) => {
         setSelectedStudentIds((prev) =>
@@ -26,7 +42,10 @@ const Students_Content = () => {
         });
         if (response.ok) {
             alert("Selected students deleted successfully.");
-            // Optionally, you can refresh the student records here
+            // Fetch updated records after deletion
+            const updatedResponse = await fetch('http://localhost:3000/students');
+            const updatedRecords = await updatedResponse.json();
+            updateStudentRecords(updatedRecords);
         } else {
             alert("Failed to delete students.");
         }
@@ -37,10 +56,12 @@ const Students_Content = () => {
             <Admin_Students_ContentHeader 
                 onDelete={handleDeleteStudents} 
                 selectedStudentIds={selectedStudentIds} 
+                updateStudentRecords={updateStudentRecords} // Pass function as prop
             />
             <Admin_StudentsRecords 
                 onSelectStudent={handleSelectStudent} 
                 selectedStudentIds={selectedStudentIds} 
+                studentRecords={studentRecords} // Pass records as prop
             />
         </div>
     );

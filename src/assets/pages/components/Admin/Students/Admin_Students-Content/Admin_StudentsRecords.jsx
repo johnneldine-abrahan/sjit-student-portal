@@ -1,18 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, {useState} from "react";
 import './Admin_Students-Content.css';
 
-const Admin_StudentsRecords = ({ onSelectStudent, selectedStudentIds }) => {
-    const [studentRecords, setStudentRecords] = useState([]);
+const Admin_StudentsRecords = ({ onSelectStudent, selectedStudentIds, studentRecords }) => {
     const [popup, setPopup] = useState({ show: false, record: null });
-
-    useEffect(() => {
-        const fetchStudentRecords = async () => {
-            const response = await fetch('http://localhost:3000/students');
-            const data = await response.json();
-            setStudentRecords(data);
-        };
-        fetchStudentRecords();
-    }, []);
 
     const handlePopup = (record) => {
         setPopup({
@@ -85,7 +75,6 @@ const Admin_StudentsRecords = ({ onSelectStudent, selectedStudentIds }) => {
                         <p>Middle Name: {popup.record.middle_name}</p>
                         <p>Program: {popup.record.program}</p>
                         <p>Grade Level : {popup.record.grade_level}</p>
-                        
                     </div>
                 </div>
             )}

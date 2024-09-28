@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import './Admin_Students-Content.css'
 import { BiSearch } from "react-icons/bi";
 import { BiEditAlt } from "react-icons/bi";
@@ -6,7 +6,7 @@ import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 import { RiInboxUnarchiveLine } from "react-icons/ri";
 
 
-const Admin_Students_ContentHeader = ({onDelete, selectedStudentIds}) => {
+const Admin_Students_ContentHeader = ({ onDelete, updateStudentRecords}) => {
   const [popup, setPopup] = useState({
     add: false,
     edit: false,
@@ -75,102 +75,81 @@ const Admin_Students_ContentHeader = ({onDelete, selectedStudentIds}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Prepare adjusted data
-    const adjustedData = { ...formData }; // Make a copy of formData
+    const adjustedData = { ...formData };
     const integerFields = ['lrn'];
-
-    // Set lrn to null if it's an empty string
     integerFields.forEach(field => {
-        adjustedData[field] = adjustedData[field] === '' ? null : adjustedData[field];
+      adjustedData[field] = adjustedData[field] === '' ? null : adjustedData[field];
     });
 
     try {
-        const response = await fetch('http://localhost:3000/registerStudent', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(adjustedData), // Use adjustedData directly
-        });
+      const response = await fetch('http://localhost:3000/registerStudent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(adjustedData),
+      });
 
-        // Log the response object
-        console.log('Raw response:', response);
+      if (!response.ok) {
+        const errorText = await response.text();
+        alert(`Failed to register student: ${errorText || 'Unknown error'}`);
+        return;
+      }
 
-        // Check for successful response
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Error from server:', errorText);
-            alert(`Failed to register student: ${errorText || 'Unknown error'}`);
-            return;
-        }
+      alert('Student successfully registered!');
 
-        // Log response headers to check content type
-        console.log('Response headers:', response.headers);
+      // Fetch updated student records
+      const updatedResponse = await fetch('http://localhost:3000/students');
+      const updatedRecords = await updatedResponse.json();
+      updateStudentRecords(updatedRecords); // Update parent state
 
-        // Check for JSON response, otherwise handle as plain text
-        const contentType = response.headers.get('Content-Type');
-
-        if (contentType && contentType.includes('application/json')) {
-            const result = await response.json();
-            console.log('Parsed JSON:', result);
-            // Handle any result data if needed
-        } else {
-            const text = await response.text(); // Handle text response if not JSON
-            console.log('Response text:', text);
-        }
-
-        alert('Student successfully registered!');
-
-        // Reset the form and close the popup
-        setFormData({
-            lrn: '', // Reset lrn to empty string for the form
-            first_name: '',
-            middle_name: '',
-            last_name: '',
-            birth_date: '',
-            sex: '',
-            place_of_birth: '',
-            nationality: '',
-            religion: '',
-            civil_status: '',
-            birth_order: '',
-            contact_number: '',
-            program: '',
-            grade_level: '',
-            strand: '',
-            financial_support: '',
-            scholarship_grant: '',
-            school_name: '',
-            years_attended: '',
-            honors_awards: '',
-            school_address: '',
-            address: '',
-            city_municipality: '',
-            province: '',
-            country: '',
-            zip_code: '',
-            name_father: '',
-            occupation_father: '',
-            contact_father: '',
-            name_mother: '',
-            occupation_mother: '',
-            contact_mother: '',
-            guardian_name: '',
-            relationship: '',
-            guardian_address: '',
-            contact_guardian: '',
-        });
-
-        setPopup({ add: false, edit: false, delete: false, archive: false });
+      // Reset the form and close the popup
+      setFormData({
+        lrn: '',
+        first_name: '',
+        middle_name: '',
+        last_name: '',
+        birth_date: '',
+        sex: '',
+        place_of_birth: '',
+        nationality: '',
+        religion: '',
+        civil_status: '',
+        birth_order: '',
+        contact_number: '',
+        program: '',
+        grade_level: '',
+        strand: '',
+        financial_support: '',
+        scholarship_grant: '',
+        school_name: '',
+        years_attended: '',
+        honors_awards: '',
+        school_address: '',
+        address: '',
+        city_municipality: '',
+        province: '',
+        country: '',
+        zip_code: '',
+        name_father: '',
+        occupation_father: '',
+        contact_father: '',
+        name_mother: '',
+        occupation_mother: '',
+        contact_mother: '',
+        guardian_name: '',
+        relationship: '',
+        guardian_address: '',
+        contact_guardian: '',
+      }); // Reset form data
+      setPopup({ add: false });
 
     } catch (error) {
-        console.error('Network error:', error);
-        alert('Network error: Failed to reach the server.');
+      alert('Network error: Failed to reach the server.');
     }
-};
+  };
+
 
   // Disable scrolling when modal is open
-   useEffect(() => {
+  useEffect(() => {
     if (popup.add || popup.edit || popup.delete || popup.archive) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -226,8 +205,8 @@ const Admin_Students_ContentHeader = ({onDelete, selectedStudentIds}) => {
                     <div className='first-row'>
                       <div className='grade-level'>
                         <label>Select Program
-                        <label><input type="checkbox" name="program" value="Junior Highschool" checked={formData.program === 'Junior Highschool'} onChange={handleChange} />Junior Highschool</label>
-                        <label><input type="checkbox" name="program" value="Senior Highschool" checked={formData.program === 'Senior Highschool'} onChange={handleChange} />Senior Highschool</label>
+                          <label><input type="checkbox" name="program" value="Junior Highschool" checked={formData.program === 'Junior Highschool'} onChange={handleChange} />Junior Highschool</label>
+                          <label><input type="checkbox" name="program" value="Senior Highschool" checked={formData.program === 'Senior Highschool'} onChange={handleChange} />Senior Highschool</label>
                         </label>
                       </div>
                     </div>
@@ -274,8 +253,8 @@ const Admin_Students_ContentHeader = ({onDelete, selectedStudentIds}) => {
                     <div className='first-row'>
                       <div className='sex-box'>
                         <label>Sex
-                        <label className='male'><input type="radio" name="sex" value="Male" checked={formData.sex === 'Male'} onChange={handleChange} />Male</label>
-                        <label><input type="radio" name="sex" value="Female" checked={formData.sex === 'Female'} onChange={handleChange} />Female</label>
+                          <label className='male'><input type="radio" name="sex" value="Male" checked={formData.sex === 'Male'} onChange={handleChange} />Male</label>
+                          <label><input type="radio" name="sex" value="Female" checked={formData.sex === 'Female'} onChange={handleChange} />Female</label>
                         </label>
                       </div>
                     </div>
@@ -656,7 +635,7 @@ const Admin_Students_ContentHeader = ({onDelete, selectedStudentIds}) => {
                 <div className='popup-content'>
                   <p>Are you sure you want to delete the selected student? This action is cannot be undone.</p>
                   <div className='buttons'>
-                    <button type="button" class="btn-box" onClick={() => {onDelete(); handleClose();}}>Delete</button>
+                    <button type="button" class="btn-box" onClick={() => { onDelete(); handleClose(); }}>Delete</button>
                   </div>
                 </div>
               </div>

@@ -48,10 +48,10 @@ const Popup_Add = ({ title, onClose }) => {
                 Announce to
                 <select>
                   <option value=""></option>
-                  <option value="student">Students</option>
-                  <option value="faculty">Teachers</option>
-                  <option value="finance">Finance</option>
-                  <option value="all">All</option>
+                  <option value="Student">Students</option>
+                  <option value="Faculty">Teachers</option>
+                  <option value="Finance">Finance</option>
+                  <option value="All">All</option>
                 </select>
               </label>
             </div>
@@ -59,10 +59,11 @@ const Popup_Add = ({ title, onClose }) => {
               <label>
                 Announce type
                 <select>
-                  <option value=""></option>
-                  <option value="event">Event</option>
-                  <option value="meeting">Meeting</option>
-                  <option value="misc">Misc</option>
+                <option value=""></option>
+                  <option value="Reminder">Reminder</option>
+                  <option value="Event">Event</option>
+                  <option value="Meeting">Meeting</option>
+                  <option value="Misc">Misc</option>
                 </select>
               </label>
             </div>
@@ -119,10 +120,10 @@ const Popup_Edit = ({ title, onClose }) => {
                 Announce to
                 <select>
                   <option value=""></option>
-                  <option value="student">Students</option>
-                  <option value="faculty">Teachers</option>
-                  <option value="finance">Finance</option>
-                  <option value="all">All</option>
+                  <option value="Student">Students</option>
+                  <option value="Faculty">Teachers</option>
+                  <option value="Finance">Finance</option>
+                  <option value="All">All</option>
                 </select>
               </label>
             </div>
@@ -131,9 +132,10 @@ const Popup_Edit = ({ title, onClose }) => {
                 Announce type
                 <select>
                   <option value=""></option>
-                  <option value="event">Event</option>
-                  <option value="meeting">Meeting</option>
-                  <option value="misc">Misc</option>
+                  <option value="Reminder">Reminder</option>
+                  <option value="Event">Event</option>
+                  <option value="Meeting">Meeting</option>
+                  <option value="Misc">Misc</option>
                 </select>
               </label>
             </div>

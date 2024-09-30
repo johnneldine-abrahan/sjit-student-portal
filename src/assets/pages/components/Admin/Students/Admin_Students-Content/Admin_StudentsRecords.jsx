@@ -74,7 +74,7 @@ const Admin_StudentsRecords = ({ onSelectStudent, selectedStudentIds, studentRec
                         <p>First Name: {popup.record.first_name}</p>
                         <p>Middle Name: {popup.record.middle_name}</p>
                         <p>Program: {popup.record.program}</p>
-                        <p>Grade Level : {popup.record.grade_level}</p>
+                        <p>Grade Level: {popup.record.grade_level}</p>
                     </div>
                 </div>
             )}

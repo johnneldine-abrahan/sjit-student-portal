@@ -51,9 +51,7 @@ const FacultyMembers_Content = () => {
               // Fetch the updated list of faculty
               const updatedResponse = await fetch('http://localhost:3000/faculties'); // Update with the correct endpoint for fetching faculty
               const updatedRecords = await updatedResponse.json();
-              
-              // Update the state with the new records
-              setFacultyRecords(updatedRecords); // Ensure setFacultyRecords is defined to update your state
+              updateFacultyRecords(updatedRecords);
           } else {
               const errorText = await response.text();
               alert(`Failed to delete faculty: ${errorText}`);
@@ -70,6 +68,7 @@ const FacultyMembers_Content = () => {
             <FacultyMembers_ContentHeader 
                 onDelete={handleDeleteFaculty} // Pass delete function to header
                 selectedFacultyIds={selectedFacultyIds} // Pass selected IDs
+                updateFacultyRecords={updateFacultyRecords}
             />
             <FacultyMembers_List 
                 onSelectFaculty={handleSelectFaculty} // Handle selecting faculties

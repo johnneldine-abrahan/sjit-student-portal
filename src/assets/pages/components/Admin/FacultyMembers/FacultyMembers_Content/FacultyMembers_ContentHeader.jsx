@@ -5,7 +5,7 @@ import { BiEditAlt } from "react-icons/bi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 import { RiInboxUnarchiveLine } from "react-icons/ri";
 
-const FacultyMembers_ContentHeader = ({refreshFacultyList, onDelete}) => {
+const FacultyMembers_ContentHeader = ({updateFacultyRecords, onDelete}) => {
   const [popup, setPopup] = useState({
     add: false,
     edit: false,
@@ -60,6 +60,10 @@ const FacultyMembers_ContentHeader = ({refreshFacultyList, onDelete}) => {
 
       alert('Faculty successfully registered!');
 
+      const updatedResponse = await fetch('http://localhost:3000/faculties');
+      const updatedRecords = await updatedResponse.json();
+      await updateFacultyRecords(updatedRecords);  // Call the passed function to refresh the faculty list
+
       setFormData({
         last_name: '',
         first_name: '',
@@ -68,8 +72,7 @@ const FacultyMembers_ContentHeader = ({refreshFacultyList, onDelete}) => {
 
       setPopup({ add: false });
 
-      // Refresh the faculty list after successful submission
-      await refreshFacultyList();  // Call the passed function to refresh the faculty list
+
     } catch (error) {
       alert('Network error: Failed to reach the server.');
     }

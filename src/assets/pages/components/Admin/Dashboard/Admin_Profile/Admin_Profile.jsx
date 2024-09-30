@@ -4,6 +4,17 @@ import Admin_ProfileHeader from "./Admin_ProfileHeader";
 import Profile from "../../../../../img/Profile/ProfileSample.jpg";
 
 const Admin_Profile = () => {
+  const [dateTime, setDateTime] = useState(new Date());
+
+  // Update dateTime every second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDateTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, []);
+  
   const [userData, setUserData] = useState({ firstName: '', lastName: '', role: '' });
 
   useEffect(() => {
@@ -20,6 +31,20 @@ const Admin_Profile = () => {
     }
   }, []);
 
+  const formatDate = (date) => {
+    const options = {
+      weekday: "short",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    };
+    return date.toLocaleDateString(undefined, options);
+  };
+
+  const formatTime = (date) => {
+    return date.toLocaleTimeString();
+  };
+
   return (
     <div className="admin-profile">
       <Admin_ProfileHeader />
@@ -32,8 +57,8 @@ const Admin_Profile = () => {
         </div>
 
         <div className="calendar">
-          <h4>{new Date().toLocaleDateString()}</h4>
-          <p>{new Date().toLocaleTimeString()}</p>
+          <h4>{formatDate(dateTime)}</h4>
+          <p>{formatTime(dateTime)}</p>
         </div>
       </div>
     </div>

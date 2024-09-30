@@ -1,37 +1,49 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect} from "react";
 import "./Admin_Announcements.css";
 import { BiEditAlt } from "react-icons/bi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 
-const announcements = [
-  {
-    title: "Announcement1",
-    details: "The new policy will be implemented starting next month to improve the overall efficiency of the company. All employees are required to attend a training session to learn about the changes and how to adapt to them. The management team is confident that this new policy will bring positive results and increase productivity.",
-    view: "View Details",
-  },
-  {
-    title: "Announcement2",
-    details: "Genshin Impact is an open-world action role-playing game developed and published by miHoYo. It is a fantasy game where you play as a character called the Traveller, exploring a vast world called Teyvat.",
-    view: "View Details",
-  },
-  {
-    title: "Announcement3",
-    details: "We are thrilled to announce that enrollment for [Program/Course Name] is now open!",
-    view: "View Details",
-  },
-  {
-    title: "Announcement4",
-    details: "We are thrilled to announce that enrollment for [Program/Course Name] is now open!",
-    view: "View Details",
-  },
-];
-
 const Popup_Add = ({ title, onClose }) => {
+  const [announcementData, setAnnouncementData] = useState({
+    announce_to: "",
+    announcement_type: "",
+    announcement_title: "",
+    announcement_text: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setAnnouncementData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const addAnnouncement = async (announcementData) => {
+    const token = localStorage.getItem("token"); // Assuming you're storing the token in localStorage
+
+    const response = await fetch('http://localhost:3000/addAnnouncement', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Adding the token in the Authorization header
+      },
+      body: JSON.stringify(announcementData),
+    });
+
+    if (response.status === 401) {
+      console.log("Unauthorized - You are not authenticated");
+    } else if (response.ok) {
+      console.log("Announcement added successfully!");
+      onClose(); // Close popup after successful submission
+    } else {
+      console.error("Failed to add announcement:", response.statusText);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted");
-    // Handle form submission logic here
-    onClose(); // Close the popup after submitting
+    addAnnouncement(announcementData); // Call API when form is submitted
   };
 
   return (
@@ -46,7 +58,7 @@ const Popup_Add = ({ title, onClose }) => {
             <div className="input-box">
               <label>
                 Announce to
-                <select>
+                <select name="announce_to" onChange={handleChange}>
                   <option value=""></option>
                   <option value="Student">Students</option>
                   <option value="Faculty">Teachers</option>
@@ -57,9 +69,9 @@ const Popup_Add = ({ title, onClose }) => {
             </div>
             <div className="input-box">
               <label>
-                Announce type
-                <select>
-                <option value=""></option>
+                Announcement type
+                <select name="announcement_type" onChange={handleChange}>
+                  <option value=""></option>
                   <option value="Reminder">Reminder</option>
                   <option value="Event">Event</option>
                   <option value="Meeting">Meeting</option>
@@ -73,7 +85,11 @@ const Popup_Add = ({ title, onClose }) => {
             <div className="input-box">
               <label>
                 Announcement Title
-                <input type="text" name="textAnnouncement" />
+                <input
+                  type="text"
+                  name="announcement_title"
+                  onChange={handleChange}
+                />
               </label>
             </div>
           </div>
@@ -82,7 +98,12 @@ const Popup_Add = ({ title, onClose }) => {
             <div className="input-box">
               <label>
                 Announcement Details
-                <textarea name="announcement-details" rows={5} cols={40} />
+                <textarea
+                  name="announcement_text"
+                  rows={5}
+                  cols={40}
+                  onChange={handleChange}
+                />
               </label>
             </div>
           </div>
@@ -265,6 +286,7 @@ const Admin_Announcements = () => {
           </div>
         </div>
       </div>
+      {/*
       <div className="list-container">
         {announcements.map((announcement, index) => (
           <div className="list" key={index}>
@@ -297,7 +319,9 @@ const Admin_Announcements = () => {
           </div>
         </div>
       )}
+ */}
     </div>
+  
   );
 };
 

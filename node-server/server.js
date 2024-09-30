@@ -402,6 +402,41 @@ app.delete('/deleteFaculty', async (req, res) => {
     }
 });
 
+app.post('/addAnnouncement', authenticateToken, async (req, res) => {
+    const { announce_to, announcement_type, announcement_title, announcement_text } = req.body;
+
+    // Generate unique announcement ID
+    const announcement_id = `ANN-${Math.floor(10000 + Math.random() * 90000)}`;
+
+    // Get the current date and timestamp
+    const announcement_timestamp = new Date().toISOString(); // Full timestamp
+
+    // Get the user_role of the logged-in user
+    const announcement_by = req.user.role; // This is extracted from the JWT token using authenticateToken middleware
+
+    try {
+        // Insert the new announcement into the database
+        const query = `
+            INSERT INTO announcementtbl (
+                announcement_id, announce_to, announcement_type, 
+                announcement_title, announcement_text, 
+                announcement_timestamp, announcement_by
+            )
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+        `;
+        await pool.query(query, [
+            announcement_id, announce_to, announcement_type, 
+            announcement_title, announcement_text, 
+            announcement_timestamp, announcement_by
+        ]);
+
+        res.status(201).json({ message: 'Announcement added successfully.' });
+    } catch (error) {
+        console.error("Error adding announcement:", error);
+        res.status(500).json({ message: 'Error adding announcement.' });
+    }
+});
+
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

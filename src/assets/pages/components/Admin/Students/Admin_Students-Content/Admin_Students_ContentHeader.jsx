@@ -5,8 +5,7 @@ import { BiEditAlt } from "react-icons/bi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 import { RiInboxUnarchiveLine } from "react-icons/ri";
 
-
-const Admin_Students_ContentHeader = ({ onDelete, updateStudentRecords}) => {
+const Admin_Students_ContentHeader = ({ onDelete, updateStudentRecords }) => {
   const [popup, setPopup] = useState({
     add: false,
     edit: false,
@@ -53,10 +52,22 @@ const Admin_Students_ContentHeader = ({ onDelete, updateStudentRecords}) => {
     contact_guardian: '',
   });
 
+  const [juniorHighschoolChecked, setJuniorHighschoolChecked] = useState(false);
+  const [seniorHighschoolChecked, setSeniorHighschoolChecked] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+
+    if (name === 'program') {
+      if (value === 'Junior Highschool') {
+        setJuniorHighschoolChecked(true);
+        setSeniorHighschoolChecked(false);
+      } else if (value === 'Senior Highschool') {
+        setJuniorHighschoolChecked(false);
+        setSeniorHighschoolChecked(true);
+      }
+    }
   };
 
   const handlePopup = (type) => {
@@ -147,12 +158,11 @@ const Admin_Students_ContentHeader = ({ onDelete, updateStudentRecords}) => {
     }
   };
 
-
   // Disable scrolling when modal is open
   useEffect(() => {
     if (popup.add || popup.edit || popup.delete || popup.archive) {
       document.body.style.overflow = 'hidden';
-    } else {
+ } else {
       document.body.style.overflow = 'unset'; // Reset overflow when modal is closed
     }
 
@@ -205,8 +215,8 @@ const Admin_Students_ContentHeader = ({ onDelete, updateStudentRecords}) => {
                     <div className='first-row'>
                       <div className='grade-level'>
                         <label>Select Program
-                          <label><input type="checkbox" name="program" value="Junior Highschool" checked={formData.program === 'Junior Highschool'} onChange={handleChange} />Junior Highschool</label>
-                          <label><input type="checkbox" name="program" value="Senior Highschool" checked={formData.program === 'Senior Highschool'} onChange={handleChange} />Senior Highschool</label>
+                          <label><input type="checkbox" name="program" value="Junior Highschool" checked={juniorHighschoolChecked} onChange={handleChange} />Junior Highschool</label>
+                          <label><input type="checkbox" name="program" value="Senior Highschool" checked={seniorHighschoolChecked} onChange={handleChange} />Senior Highschool</label>
                         </label>
                       </div>
                     </div>
@@ -215,24 +225,39 @@ const Admin_Students_ContentHeader = ({ onDelete, updateStudentRecords}) => {
                       <div className='input-box'>
                         <label>Grade Level
                           <select name="grade_level" value={formData.grade_level} onChange={handleChange}>
-                            <option value=""></option>
-                            <option value="Grade 7">Grade 7</option>
-                            <option value="Grade 8">Grade 8</option>
-                            <option value="Grade 9">Grade 9</option>
-                            <option value="Grade 10">Grade 10</option>
+                            {juniorHighschoolChecked && (
+                              <>
+                                <option value=""></option>
+                                <option value="Grade 7">Grade 7</option>
+                                <option value="Grade 8">Grade 8</option>
+                                <option value="Grade 9">Grade 9</option>
+                                <option value="Grade 10">Grade 10</option>
+                              </>
+                            )}
+                            {seniorHighschoolChecked && (
+                              <>
+                                <option value=""></option>
+                                <option value="Grade 11">Grade 11</option>
+                                <option value="Grade 12">Grade 12</option>
+                              </>
+                            )}
                           </select>
                         </label>
                       </div>
                       <div className='input-box'>
                         <label>Strand
-                          <select name="strand" value={formData.strand} onChange={handleChange}>
-                            <option value=""></option>
-                            <option value="Science, Technology, Engineering and Mathematics (STEM)">Science, Technology, Engineering and Mathematics (STEM)</option>
-                            <option value="Accountancy, Business and Management (ABM)">Accountancy, Business and Management (ABM)</option>
-                            <option value="Humanities and Social Sciences (HUMSS)">Humanities and Social Sciences (HUMSS)</option>
-                            <option value="TVL - Industrial Arts (TVL-IA)">TVL - Industrial Arts (TVL-IA)</option>
-                            <option value="TVL - Home Economics (TVL-HE)">TVL - Home Economics (TVL-HE)</option>
-                            <option value="TVL - Internet Communications Technology (TVL-ICT)">TVL - Internet Communications Technology (TVL-ICT)</option>
+                          <select name="strand" value={formData.strand} onChange={handleChange} disabled={juniorHighschoolChecked}>
+                            {seniorHighschoolChecked && (
+                              <>
+                                <option value=""></option>
+                                <option value="Science, Technology, Engineering and Mathematics (STEM)">Science, Technology, Engineering and Mathematics (STEM)</option>
+                                <option value="Accountancy, Business and Management (ABM)">Accountancy, Business and Management (ABM)</option>
+                                <option value="Humanities and Social Sciences (HUMSS)">Humanities and Social Sciences (HUMSS)</option>
+                                <option value="TVL - Industrial Arts (TVL-IA)">TVL - Industrial Arts (TVL-IA)</option>
+                                <option value="TVL - Home Economics (TVL-HE)">TVL - Home Economics (TVL-HE)</option>
+                                <option value="TVL - Internet Communications Technology (TVL-ICT)">TVL - Internet Communications Technology (TVL-ICT)</option>
+                              </>
+                            )}
                           </select>
                         </label>
                       </div>
@@ -243,7 +268,7 @@ const Admin_Students_ContentHeader = ({ onDelete, updateStudentRecords}) => {
                         <label>Last Name<input type="text" name="last_name" value={formData.last_name} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>First Name<input type="text" name="first_name" value={formData.first_name} onChange={handleChange} /></label>
+                        < label>First Name<input type="text" name="first_name" value={formData.first_name} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
                         <label>Middle Name<input type="text" name="middle_name" value={formData.middle_name} onChange={handleChange} /></label>
@@ -329,7 +354,7 @@ const Admin_Students_ContentHeader = ({ onDelete, updateStudentRecords}) => {
                         <label>School Name<input type='text' name='school_name' value={formData.school_name} onChange={handleChange} /></label>
                       </div>
                       <div className='input-box'>
-                        <label>Year Attended<input type='text' name='years_attended' value={formData.years_attended} onChange={handleChange} /></label>
+                        <label>Year Attended<input type='text' name='years_attended' value={formData.years_attended} onChange={handleChange} /></label >
                       </div>
                     </div>
 
@@ -435,7 +460,7 @@ const Admin_Students_ContentHeader = ({ onDelete, updateStudentRecords}) => {
                       <div className='sex-box'>
                         <label>Sex</label>
                         <label><input type="radio" name="sex" value="male" checked={formData.sex === 'male'} onChange={handleChange} /> Male</label>
-                        <label><input type="radio" name="sex" value="female" checked={formData.sex === 'female'} onChange={handleChange} /> Female</label>
+                        <label><input type="radio" name="sex" value="female" checked={formData.sex === 'female'} onChange ={handleChange} /> Female</label>
                       </div>
                     </div>
 
@@ -555,7 +580,7 @@ const Admin_Students_ContentHeader = ({ onDelete, updateStudentRecords}) => {
                     <div className='tenth-row'>
                       <div className='input-box'>
                         <label>Father's Name
-                          <input type='text' name='fatherName' value={formData.fatherName} onChange={handleChange} />
+                          <input type='text' name ='fatherName' value={formData.fatherName} onChange={handleChange} />
                         </label>
                       </div>
                       <div className='input-box'>
@@ -622,7 +647,6 @@ const Admin_Students_ContentHeader = ({ onDelete, updateStudentRecords}) => {
             </>
           )}
 
-
           {/* Delete Pop-up */}
           {popup.delete && (
             <>
@@ -660,10 +684,8 @@ const Admin_Students_ContentHeader = ({ onDelete, updateStudentRecords}) => {
               </div>
             </>
           )}
-
         </div>
       </div>
-
     </div>
   )
 }

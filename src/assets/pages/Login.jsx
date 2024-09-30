@@ -15,6 +15,8 @@ const Login = () => {
   const [Password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false);
+  const [email, setEmail] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -62,6 +64,37 @@ const Login = () => {
     navigate("/");
   };
 
+  const handleForgotPasswordClick = () => {
+    setIsForgotPasswordModalOpen(true);
+  };
+
+  const handleCloseForgotPasswordModal = () => {
+    setIsForgotPasswordModalOpen(false);
+  };
+
+  const handleSendResetLink = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:3000/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        alert("Reset link sent to your email");
+      } else {
+        const errorMsg = await response.text();
+        alert(errorMsg);
+      }
+    } catch (error) {
+      alert("Server error. Please try again later.");
+    }
+  };
+
   return (
     <div className="login-container">
       <div className="login-left">
@@ -102,7 +135,42 @@ const Login = () => {
             </div>
 
             <div className="forgot-password">
-              <a href="#">Forgot Password?</a>
+              <a href="#" onClick={handleForgotPasswordClick}>
+                Forgot Password?
+              </a>
+              {isForgotPasswordModalOpen && (
+                <div className="modalOverlay">
+                  <div className="modal">
+                    <div className="modalHeader">
+                      <span className="modalTitle">Forgot Password</span>
+                      <button
+                        className="modalCloseButton"
+                        onClick={handleCloseForgotPasswordModal}
+                      >
+                        Close
+                      </button>
+                    </div>
+                    <div className="modalBody">
+                      <p>
+                        Enter your username and we will send you a reset link.
+                      </p>
+                      <form onSubmit={handleSendResetLink}>
+                        <label>Email</label>
+                        <input
+                          type="Email"
+                          placeholder="Email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                        />
+                        <button type="submit" className="login-btn">
+                          Send Reset Link
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             <button type="submit" className="login-btn">
               Log in
@@ -118,6 +186,6 @@ const Login = () => {
       </div>
     </div>
   );
-};
+ };
 
 export default Login;

@@ -213,23 +213,32 @@ const Popup_Delete = ({ title, onClose }) => {
 };
 
 const Admin_Announcements = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedAnnouncement, setSelectedAnnouncement] = useState({});
-  const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [isOpenAdd, setIsOpenAdd] = useState(false);
+  const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
-
-  // State for selected announcements
+  const [announcements, setAnnouncements] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
 
-  const handleOpen = (announcement) => {
-    setIsOpen(true);
-    setSelectedAnnouncement(announcement);
-  };
+  // Fetch announcements on component mount
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      const token = localStorage.getItem("token"); // Assuming you have a token stored in localStorage
+      const response = await fetch("http://localhost:3000/announcements", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setAnnouncements(data);
+      } else {
+        console.error("Failed to fetch announcements:", response.statusText);
+      }
+    };
 
-  const handleClose = () => {
-    setIsOpen(false);
-  };
+    fetchAnnouncements();
+  }, []);
 
   const handleSelectAnnouncement = (index) => {
     setSelectedIds((prevSelectedIds) =>
@@ -239,26 +248,16 @@ const Admin_Announcements = () => {
     );
   };
 
-  // Disable scrolling when modal is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
-
   return (
     <div className="admin-announcements">
       <div className="announcement-list">
         <h2>Announcements</h2>
         <div className="announcement-action">
           <div className="icon-act">
-            <RiAddLargeFill className="announcement-icon" onClick={() => setIsOpenAdd(true)} />
+            <RiAddLargeFill
+              className="announcement-icon"
+              onClick={() => setIsOpenAdd(true)}
+            />
             {isOpenAdd && (
               <div>
                 <div className="popup-blurred-background" />
@@ -267,7 +266,10 @@ const Admin_Announcements = () => {
             )}
           </div>
           <div className="icon-act">
-            <BiEditAlt className="announcement-icon" onClick={() => setIsOpenEdit(true)} />
+            <BiEditAlt 
+              className="announcement-icon" 
+              onClick={() => setIsOpenEdit(true)} 
+            />
             {isOpenEdit && (
               <div>
                 <div className="popup-blurred-background" />
@@ -276,7 +278,10 @@ const Admin_Announcements = () => {
             )}
           </div>
           <div className="icon-act">
-            <RiDeleteBin6Line className="announcement-icon" onClick={() => setIsOpenDelete(true)} />
+            <RiDeleteBin6Line 
+              className="announcement-icon" 
+              onClick={() => setIsOpenDelete(true)} 
+            />
             {isOpenDelete && (
               <div>
                 <div className="popup-blurred-background" />
@@ -286,42 +291,37 @@ const Admin_Announcements = () => {
           </div>
         </div>
       </div>
-      {/*
-      <div className="list-container">
-        {announcements.map((announcement, index) => (
-          <div className="list" key={index}>
-            <input
-              type="checkbox"
-              checked={selectedIds.includes(index)}
-              onChange={() => handleSelectAnnouncement(index)}
-            />
-            <div className="announcement-details">
-              <h3>{announcement.title}</h3>
-            </div>
-            <span className="details">{announcement.details}</span>
-            <span className="view-details-link" onClick={() => handleOpen(announcement)}>
-              {announcement.view}
-            </span>
-          </div>
-        ))}
-      </div>
-      {isOpen && (
-        <div>
-          <div className="popup-blurred-background" />
-          <div className="popup-announcements">
-            <div className="popup-header">
-              <h3 className="popup-title">{selectedAnnouncement.title}</h3>
-              <button onClick={handleClose}>Close</button>
-            </div>
-            <div className="popup-content">
-              <p>{selectedAnnouncement.details}</p>
-            </div>
-          </div>
-        </div>
-      )}
- */}
+
+      {/* Display announcements in a table format */}
+      <table className="announcement-table">
+        <thead>
+          <tr>
+            <th>Select</th>
+            <th>Title</th>
+            <th>Preview</th>
+            <th>Date/Time</th>
+            <th>User ID</th> {/* New column for user_id */}
+          </tr>
+        </thead>
+        <tbody>
+          {announcements.map((announcement, index) => (
+            <tr key={index}>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={selectedIds.includes(index)}
+                  onChange={() => handleSelectAnnouncement(index)}
+                />
+              </td>
+              <td>{announcement.title}</td>
+              <td>{announcement.preview}...</td>
+              <td>{new Date(announcement.timestamp).toLocaleString()}</td>
+              <td>{announcement.userId}</td> {/* Display user_id */}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
-  
   );
 };
 

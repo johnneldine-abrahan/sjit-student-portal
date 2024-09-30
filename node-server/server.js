@@ -408,11 +408,11 @@ app.post('/addAnnouncement', authenticateToken, async (req, res) => {
     // Generate unique announcement ID
     const announcement_id = `ANN-${Math.floor(10000 + Math.random() * 90000)}`;
 
-    // Get the current date and timestamp
-    const announcement_timestamp = new Date().toISOString(); // Full timestamp
+    // Get the current date and timestamp in local time
+    const announcement_timestamp = new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }); // Change to your timezone
 
-    // Get the user_role of the logged-in user
-    const announcement_by = req.user.role; // This is extracted from the JWT token using authenticateToken middleware
+    // Get the user_id from the database
+    const announcement_by = req.user.userId; // Change to match your JWT structure
 
     try {
         // Insert the new announcement into the database
@@ -432,10 +432,49 @@ app.post('/addAnnouncement', authenticateToken, async (req, res) => {
 
         res.status(201).json({ message: 'Announcement added successfully.' });
     } catch (error) {
-        console.error("Error adding announcement:", error);
-        res.status(500).json({ message: 'Error adding announcement.' });
+        console.error("Error adding announcement:", error); // Log the error
+        res.status(500).json({ message: 'Error adding announcement.', error: error.message }); // Include error message in response
     }
 });
+
+app.get('/announcements', authenticateToken, async (req, res) => {
+    try {
+        // Query to select all announcements along with the user ID of the announcer
+        const query = `
+            SELECT 
+                a.announcement_id,
+                a.announcement_title, 
+                a.announcement_text,
+                LEFT(a.announcement_text, 20) AS preview_text, 
+                a.announcement_timestamp,
+                ac.user_id
+            FROM 
+                announcementtbl a
+            JOIN 
+                accountstbl ac ON a.announcement_by = ac.user_id
+            ORDER BY 
+                a.announcement_timestamp DESC
+        `;
+        
+        const result = await pool.query(query);
+        
+        // Map the results to include all necessary fields
+        const announcements = result.rows.map(announcement => ({
+            id: announcement.announcement_id, // Include ID for potential editing/deleting
+            title: announcement.announcement_title,
+            text: announcement.announcement_text, // Full text of the announcement
+            preview: announcement.preview_text,
+            timestamp: announcement.announcement_timestamp,
+            userId: announcement.user_id // Include user ID in the response
+        }));
+        
+        res.status(200).json(announcements); // Respond with the announcements array
+    } catch (error) {
+        console.error("Error fetching announcements:", error); // Log the error
+        res.status(500).json({ message: 'Error fetching announcements.', error: error.message }); // Include error message in response
+    }
+});
+
 
 
 app.listen(port, () => {

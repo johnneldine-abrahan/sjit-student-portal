@@ -9,7 +9,7 @@ const app = express();
 const port = 3000;
 const SECRET_KEY = 'your-secret-key'; // Change this to a secure key
 
-const pool = new Pool({
+const pool = new Pool({ 
     user: 'postgres',
     host: 'localhost',
     database: 'SJIT_db',
@@ -377,17 +377,15 @@ app.delete('/deleteFaculty', async (req, res) => {
         // First, delete from facultytbl
         const deleteFaculties = `
             DELETE FROM facultytbl 
-            WHERE faculty_id = ANY($1)`;
+            WHERE faculty_id = ANY($1)
+        `;
         await pool.query(deleteFaculties, [facultyIds]);
 
-        // Then, delete from accountstbl
+        // Then, delete from accountstbl (user_id is the same as faculty_id)
         const deleteAccounts = `
             DELETE FROM accountstbl 
-            WHERE user_id IN (
-                SELECT user_id 
-                FROM facultytbl 
-                WHERE faculty_id = ANY($1)
-            )`;
+            WHERE user_id = ANY($1)
+        `;
         await pool.query(deleteAccounts, [facultyIds]);
 
         // Commit transaction
@@ -401,6 +399,7 @@ app.delete('/deleteFaculty', async (req, res) => {
         res.status(500).send('Internal server error');
     }
 });
+
 
 app.post('/addAnnouncement', authenticateToken, async (req, res) => {
     const { announce_to, announcement_type, announcement_title, announcement_text } = req.body;
@@ -475,7 +474,39 @@ app.get('/announcements', authenticateToken, async (req, res) => {
     }
 });
 
+app.post('/registerAccount', async (req, res) => {
+    const { first_name, middle_name, last_name, user_role } = req.body;
 
+    try {
+        // Generate a random 5-digit number
+        const randomNumber = Math.floor(10000 + Math.random() * 90000);
+
+        // Determine the user_id and password format based on user_role
+        let user_id;
+        if (user_role === 'Registrar') {
+            user_id = `RG-${randomNumber}`;
+        } else if (user_role === 'Finance') {
+            user_id = `FN-${randomNumber}`;
+        } else {
+            return res.status(400).json({ message: "Invalid user role!" });
+        }
+
+        const password = user_id; // Set password as the same value as user_id
+
+        // Insert into accountstbl
+        const accountQuery = `
+            INSERT INTO accountstbl (user_id, first_name, middle_name, last_name, password, user_role)
+            VALUES ($1, $2, $3, $4, $5, $6)
+        `;
+
+        await pool.query(accountQuery, [user_id, first_name, middle_name, last_name, password, user_role]);
+
+        res.status(200).json({ message: "Account registered successfully!", user_id });
+    } catch (error) {
+        console.error("Error registering account:", error);
+        res.status(500).json({ message: "Error registering account." });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

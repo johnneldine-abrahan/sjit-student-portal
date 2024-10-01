@@ -11,6 +11,15 @@ const ManageAccounts_ContentHeader = () => {
     delete: false,
   });
 
+  const [formData, setFormData] = useState({
+
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
   const handlePopup = (type) => {
     setPopup((prevPopup) => ({ ...prevPopup, [type]: !prevPopup[type] }));
   };
@@ -23,11 +32,53 @@ const ManageAccounts_ContentHeader = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:');
-    // Handle form submission logic here
-    handleClose();  // Close the popup after submitting
+    
+    // Prepare the data to be sent to the backend
+    const { first_name, middle_name, last_name, financial_support } = formData;
+  
+    // Check if the form is filled correctly
+    if (!first_name || !last_name || !financial_support) {
+      console.log("Please fill in all required fields");
+      return;
+    }
+  
+    // Create the payload object
+    const payload = {
+      first_name,
+      middle_name: middle_name || "", // Optional
+      last_name,
+      user_role: financial_support,
+    };
+  
+    try {
+      // Send a POST request to the backend
+      const response = await fetch("http://localhost:3000/registerAccount", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Account registered successfully:", result);
+        alert("Account registered successfully!");
+  
+        // Reset the form
+        setFormData({});
+        handleClose(); // Close the popup after successful submission
+      } else {
+        const errorResult = await response.json();
+        console.error("Error registering account:", errorResult);
+        alert("Error registering account: " + errorResult.message);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+      alert("Network error while registering account.");
+    }
   };
 
   // Disable scrolling when modal is open
@@ -83,7 +134,30 @@ const ManageAccounts_ContentHeader = () => {
                 </div>
                 <div className='popup-content'>
                   <form onSubmit={handleSubmit}>
-                    {/* Add form fields here */}
+                    <div className='first-row'>
+                        <div className='input-box'>
+                          <label>Last Name<input type="text" name="last_name" value={formData.last_name} onChange={handleChange} /></label>
+                        </div>
+                        <div className='input-box'>
+                          < label>First Name<input type="text" name="first_name" value={formData.first_name} onChange={handleChange} /></label>
+                        </div>
+                        <div className='input-box'>
+                          <label>Middle Name<input type="text" name="middle_name" value={formData.middle_name} onChange={handleChange} /></label>
+                        </div>
+                      </div>
+
+                      <div className='second-row'>
+                        <div className='input-box'>
+                          <label>User Role
+                            <select name="financial_support" value={formData.financial_support} onChange={handleChange}>
+                              <option value=""></option>
+                              <option value="Finance">Finance</option>
+                              <option value="Registrar">Registrar</option>
+                            </select>
+                          </label>
+                      </div>
+                      </div>
+
                     <div class='buttons'>
                       <button type="submit" class="btn-box" name="add" id="add">Done</button>
                     </div>
@@ -102,9 +176,34 @@ const ManageAccounts_ContentHeader = () => {
                   <h3>Edit Account</h3>
                   <button onClick={handleClose}>Close</button>
                 </div>
+
                 <div className='popup-content'>
                   <form onSubmit={handleSubmit}>
-                    {/* Add form fields here */}
+                    <div className='first-row'>
+                        <div className='input-box'>
+                          <label>Last Name<input type="text" name="last_name" value={formData.last_name} onChange={handleChange} /></label>
+                        </div>
+                        <div className='input-box'>
+                          < label>First Name<input type="text" name="first_name" value={formData.first_name} onChange={handleChange} /></label>
+                        </div>
+                        <div className='input-box'>
+                          <label>Middle Name<input type="text" name="middle_name" value={formData.middle_name} onChange={handleChange} /></label>
+                        </div>
+                      </div>
+
+                      <div className='second-row'>
+                        <div className='input-box'>
+                          <label>User Role
+                            <select name="financial_support" value={formData.financial_support} onChange={handleChange}>
+                              <option value=""></option>
+                              <option value="Finance">Finance</option>
+                              <option value="Faculty">Faculty</option>
+                            </select>
+                          </label>
+                      </div>
+                      </div>
+
+
                     <div class='buttons'>
                       <button type="submit" class="btn-box" name="edit" id="edit">Done</button>
                     </div>

@@ -9,7 +9,7 @@ const app = express();
 const port = 3000;
 const SECRET_KEY = 'your-secret-key'; // Change this to a secure key
 
-const pool = new Pool({ 
+const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
     database: 'SJIT_db',
@@ -38,7 +38,7 @@ app.post("/login", async (req, res) => {
         if (user.user_role === 'Student') {
             // Query to join enrollmenttbl, sectiontbl, and studenttbl
             const studentQuery = `
-            SELECT s.last_name, s.first_name, s.middle_name, sec.program, sec.grade_level, sec.school_year, sec.semester, e.enrollment_status 
+            SELECT s.last_name, s.first_name, s.middle_name, sec.program, sec.grade_level, sec.school_year, sec.semester, e.enrollment_status
             FROM enrollmenttbl e
             INNER JOIN sectiontbl sec ON e.section_id = sec.section_id
             INNER JOIN studenttbl s ON e.student_id = s.student_id
@@ -163,7 +163,7 @@ app.get('/students', async (req, res) => {
     try {
         // Query to fetch student_id, last_name, first_name, middle_name, program, and grade_level from studenttbl
         const query = `
-            SELECT student_id, last_name, first_name, middle_name, program, grade_level 
+            SELECT student_id, last_name, first_name, middle_name, program, grade_level
             FROM studenttbl
         `;
 
@@ -376,14 +376,14 @@ app.delete('/deleteFaculty', async (req, res) => {
 
         // First, delete from facultytbl
         const deleteFaculties = `
-            DELETE FROM facultytbl 
+            DELETE FROM facultytbl
             WHERE faculty_id = ANY($1)
         `;
         await pool.query(deleteFaculties, [facultyIds]);
 
         // Then, delete from accountstbl (user_id is the same as faculty_id)
         const deleteAccounts = `
-            DELETE FROM accountstbl 
+            DELETE FROM accountstbl
             WHERE user_id = ANY($1)
         `;
         await pool.query(deleteAccounts, [facultyIds]);
@@ -417,15 +417,15 @@ app.post('/addAnnouncement', authenticateToken, async (req, res) => {
         // Insert the new announcement into the database
         const query = `
             INSERT INTO announcementtbl (
-                announcement_id, announce_to, announcement_type, 
-                announcement_title, announcement_text, 
+                announcement_id, announce_to, announcement_type,
+                announcement_title, announcement_text,
                 announcement_timestamp, announcement_by
             )
             VALUES ($1, $2, $3, $4, $5, $6, $7)
         `;
         await pool.query(query, [
-            announcement_id, announce_to, announcement_type, 
-            announcement_title, announcement_text, 
+            announcement_id, announce_to, announcement_type,
+            announcement_title, announcement_text,
             announcement_timestamp, announcement_by
         ]);
 
@@ -440,23 +440,23 @@ app.get('/announcements', authenticateToken, async (req, res) => {
     try {
         // Query to select all announcements along with the user ID of the announcer
         const query = `
-            SELECT 
+            SELECT
                 a.announcement_id,
-                a.announcement_title, 
+                a.announcement_title,
                 a.announcement_text,
-                LEFT(a.announcement_text, 20) AS preview_text, 
+                LEFT(a.announcement_text, 20) AS preview_text,
                 a.announcement_timestamp,
                 ac.user_id
-            FROM 
+            FROM
                 announcementtbl a
-            JOIN 
+            JOIN
                 accountstbl ac ON a.announcement_by = ac.user_id
-            ORDER BY 
+            ORDER BY
                 a.announcement_timestamp DESC
         `;
-        
+
         const result = await pool.query(query);
-        
+
         // Map the results to include all necessary fields
         const announcements = result.rows.map(announcement => ({
             id: announcement.announcement_id, // Include ID for potential editing/deleting
@@ -466,7 +466,7 @@ app.get('/announcements', authenticateToken, async (req, res) => {
             timestamp: announcement.announcement_timestamp,
             userId: announcement.user_id // Include user ID in the response
         }));
-        
+
         res.status(200).json(announcements); // Respond with the announcements array
     } catch (error) {
         console.error("Error fetching announcements:", error); // Log the error
@@ -505,6 +505,37 @@ app.post('/registerAccount', async (req, res) => {
     } catch (error) {
         console.error("Error registering account:", error);
         res.status(500).json({ message: "Error registering account." });
+    }
+});
+
+app.delete('/deleteAccounts', async (req, res) => {
+    const { user_ids } = req.body;
+
+    if (!Array.isArray(user_ids) || user_ids.length === 0) {
+      return res.status(400).json({ message: "No accounts selected for deletion." });
+    }
+
+    try {
+      // Delete accounts whose user_id is in the user_ids array
+      const deleteQuery = 'DELETE FROM accountstbl WHERE user_id = ANY($1)';
+      await pool.query(deleteQuery, [user_ids]);
+
+      res.status(200).json({ message: "Accounts deleted successfully!" });
+    } catch (error) {
+      console.error("Error deleting accounts:", error);
+      res.status(500).json({ message: "Error deleting accounts." });
+    }
+  });
+
+
+app.get('/getAccounts', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM accountstbl');
+        const accounts = result.rows;
+        res.status(200).json(accounts);
+    } catch (error) {
+        console.error("Error fetching accounts:", error);
+        res.status(500).json({ message: "Error fetching accounts." });
     }
 });
 

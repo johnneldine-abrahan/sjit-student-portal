@@ -1,83 +1,113 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ManageAccounts_Content.css";
 import ManageAccounts_ContentHeader from "./ManageAccounts_ContentHeader";
 
-const AccountsRecords = [
-  {
-    studentID: "21-05298",
-    LastName: "Sanchez",
-    FirstName: "Kim William",
-    MiddleName: "Bacsa",
-    yearGraduated: "2025",
-    status: "Active",
-  },
-  {
-    studentID: "21-05298",
-    LastName: "Sanchez",
-    FirstName: "Kim William",
-    MiddleName: "Bacsa",
-    yearGraduated: "2025",
-    status: "Active",
-  },
-  {
-    studentID: "21-05298",
-    LastName: "Sanchez",
-    FirstName: "Kim William",
-    MiddleName: "Bacsa",
-    yearGraduated: "2025",
-    status: "Active",
-  },
-  {
-    studentID: "21-05298",
-    LastName: "Sanchez",
-    FirstName: "Kim William",
-    MiddleName: "Bacsa",
-    yearGraduated: "2025",
-    status: "Active",
-  },
-];
 const ManageAccounts_Content = () => {
+  const [accountsRecords, setAccountsRecords] = useState([]);
+  const [selectedAccounts, setSelectedAccounts] = useState([]); // Track selected accounts
+
+  // Fetch accounts from the backend when the component mounts
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/getAccounts");
+        const data = await response.json();
+        setAccountsRecords(data);
+      } catch (error) {
+        console.error("Error fetching accounts:", error);
+      }
+    };
+
+    fetchAccounts();
+  }, []);
+
+  // Function to add the new account to the top of the table
+  const addNewAccount = (newAccount) => {
+    setAccountsRecords((prevAccounts) => [newAccount, ...prevAccounts]);
+  };
+
+  // Handle selecting and deselecting accounts
+  const handleSelectAccount = (userId) => {
+    setSelectedAccounts((prevSelected) =>
+      prevSelected.includes(userId)
+        ? prevSelected.filter((id) => id !== userId)
+        : [...prevSelected, userId]
+    );
+  };
+
+  // Function to delete selected accounts
+  const deleteSelectedAccounts = async () => {
+    if (selectedAccounts.length === 0) {
+      alert("No accounts selected for deletion.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3000/deleteAccounts", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user_ids: selectedAccounts }),
+      });
+
+      if (response.ok) {
+        alert("Accounts deleted successfully!");
+
+        // Remove deleted accounts from the table
+        setAccountsRecords((prevAccounts) =>
+          prevAccounts.filter((account) => !selectedAccounts.includes(account.user_id))
+        );
+
+        setSelectedAccounts([]); // Clear selected accounts
+      } else {
+        const errorResult = await response.json();
+        console.error("Error deleting accounts:", errorResult);
+        alert("Error deleting accounts: " + errorResult.message);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+      alert("Network error while deleting accounts.");
+    }
+  };
+
   return (
     <div className="ManageAccounts_content">
-      <ManageAccounts_ContentHeader />
+      {/* Pass the addNewAccount and delete function as props */}
+      <ManageAccounts_ContentHeader
+        onNewAccount={addNewAccount}
+        onDelete={deleteSelectedAccounts} // Pass the delete function to header
+      />
 
       <div className="Accounts-records">
         <div className="recordslist-container">
           <table>
             <thead>
               <tr>
-                <th>Select</th> {/* New column for checkbox */}
+                <th>Select</th>
                 <th>Student ID</th>
                 <th>Last Name</th>
                 <th>First Name</th>
                 <th>Middle Name</th>
-                <th>Year Graduated</th>
-                <th>Action</th>
+                <th>User Role</th>
               </tr>
             </thead>
             <tbody>
-              {AccountsRecords.map((records, index) => (
-                <tr key={index}>
+              {accountsRecords.map((record) => (
+                <tr key={record.user_id}>
                   <td>
                     <input
                       type="checkbox"
-                      name={`select-${records.studentID}`}
-                    />{" "}
-                    {/* Checkbox */}
+                      name={`select-${record.user_id}`}
+                      checked={selectedAccounts.includes(record.user_id)}
+                      onChange={() => handleSelectAccount(record.user_id)}
+                    />
                   </td>
-                  <td>{records.studentID}</td>
-                  <td>{records.LastName}</td>
-                  <td>{records.FirstName}</td>
-                  <td>{records.MiddleName}</td>
-                  <td>{records.yearGraduated}</td>
-                  <td>
-                    <span
-                      className="view-details-link"
-                      onClick={() => handlePopup(records)}
-                    >
-                      View Details
-                    </span>
-                  </td>
+                  <td>{record.user_id}</td>
+                  <td>{record.last_name}</td>
+                  <td>{record.first_name}</td>
+                  <td>{record.middle_name}</td>
+                  <td>{record.user_role}</td>
                 </tr>
               ))}
             </tbody>

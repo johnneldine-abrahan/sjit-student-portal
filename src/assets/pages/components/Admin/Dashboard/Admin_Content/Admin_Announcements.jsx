@@ -3,6 +3,8 @@ import "./Admin_Announcements.css";
 import { BiEditAlt } from "react-icons/bi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 
+import { FaRegEye } from "react-icons/fa";
+
 const Popup_Add = ({ title, onClose }) => {
   const [announcementData, setAnnouncementData] = useState({
     announce_to: "",
@@ -269,21 +271,7 @@ const Admin_Announcements = () => {
               </div>
             )}
           </div>
-          <div className="icon-act">
-            <BiEditAlt
-              className="announcement-icon"
-              onClick={() => setIsOpenEdit(true)}
-            />
-            {isOpenEdit && (
-              <div>
-                <div className="popup-blurred-background" />
-                <Popup_Edit
-                  title="Edit Announcement"
-                  onClose={() => setIsOpenEdit(false)}
-                />
-              </div>
-            )}
-          </div>
+
           <div className="icon-act">
             <RiDeleteBin6Line
               className="announcement-icon"
@@ -312,6 +300,7 @@ const Admin_Announcements = () => {
               <th>Preview</th>
               <th>Date/Time</th>
               <th>User ID</th> {/* New column for user_id */}
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -331,6 +320,21 @@ const Admin_Announcements = () => {
                 <td>{announcement.preview}...</td>
                 <td>{new Date(announcement.timestamp).toLocaleString()}</td>
                 <td>{announcement.userId}</td> {/* Display user_id */}
+                <td>
+                  <span
+                    className="view-details-link"
+                    onClick={() => handlePopup(record)}
+                  >
+                    <FaRegEye />
+                  </span>
+                  <button
+                    className="edit-button"
+                    onClick={() => handleEdit(record)}
+                    style={{ marginLeft: "10px" }}
+                  >
+                    <BiEditAlt size={20} />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>

@@ -1,6 +1,7 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "./ManageSchedule_Content.css";
-
+import { BiEditAlt } from "react-icons/bi";
+import { FaRegEye } from "react-icons/fa";
 
 const SectionList = [
   {
@@ -64,57 +65,65 @@ const ManageSchedule_Sections = () => {
   // Disable scrolling when modal is open
   useEffect(() => {
     if (popup) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset'; // Reset overflow when modal is closed
+      document.body.style.overflow = "unset"; // Reset overflow when modal is closed
     }
 
     // Clean up the effect when the component unmounts or modal closes
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [popup]);
 
   return (
     <div className="section-list">
       <div className="recordslist-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Select</th> {/* New column for checkbox */}
-                <th>Grade Level</th>
-                <th>Section</th>
-                <th>Subject</th>
-                <th>Instructor</th>
-                <th>Semester</th>
-                <th>Slots</th>
-                <th>Actions</th>
+        <table>
+          <thead>
+            <tr>
+              <th>Select</th> {/* New column for checkbox */}
+              <th>Grade Level</th>
+              <th>Section</th>
+              <th>Subject</th>
+              <th>Instructor</th>
+              <th>Semester</th>
+              <th>Slots</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {SectionList.map((records) => (
+              <tr key={records.section}>
+                <td>
+                  <input type="checkbox" name={`select-${records.section}`} />{" "}
+                  {/* Checkbox */}
+                </td>
+                <td>{records.GradeLevel}</td>
+                <td>{records.section}</td>
+                <td>{records.subject}</td>
+                <td>{records.Instructor}</td>
+                <td>{records.semester}</td>
+                <td>{records.slots}</td>
+                <td>
+                  <span
+                    className="add-subject-link"
+                    onClick={() => handlePopup(records)}
+                  >
+                    <FaRegEye />
+                  </span>
+                  <button
+                    className="edit-button"
+                    onClick={() => handleEdit(record)}
+                    style={{ marginLeft: "10px" }}
+                  >
+                    <BiEditAlt size={20} />
+                  </button>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {SectionList.map((records) => (
-                <tr key={records.section}>
-                  <td>
-                    <input type="checkbox" name={`select-${records.section}`} /> {/* Checkbox */}
-                  </td>
-                  <td>{records.GradeLevel}</td>
-                  <td>{records.section}</td>
-                  <td>{records.subject}</td>
-                  <td>{records.Instructor}</td>
-                  <td>{records.semester}</td>
-                  <td>{records.slots}</td>
-                  <td>
-                    <span
-                      className="add-subject-link"
-                      onClick={() => handlePopup(records)}
-                    >
-                      {records.view}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            ))}
+          </tbody>
+        </table>
 
         {popup.show && (
           <div className="popup-blurred-background" onClick={handleClose} />
@@ -131,8 +140,7 @@ const ManageSchedule_Sections = () => {
               <p>Subject: {popup.record.subject}</p>
               <p>Instructor: {popup.record.Instructor}</p>
               <p>Slots: {popup.record.slots}</p>
-              
-              
+
               <button
                 onClick={() => {
                   // Add subject logic here

@@ -27,7 +27,15 @@
   align-items: center;
   justify-content: center;
 }
+.view-details-link {
+  color: #000000;
+}
 
+.edit-button {
+  border-style: hidden;
+  padding: 8px;
+  background: none;
+}
 .section-list table {
   margin-top: 20px;
   width: 100%;

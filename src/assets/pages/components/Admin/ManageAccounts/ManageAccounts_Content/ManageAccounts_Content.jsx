@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./ManageAccounts_Content.css";
 import ManageAccounts_ContentHeader from "./ManageAccounts_ContentHeader";
+import { BiEditAlt } from "react-icons/bi";
+import { FaRegEye } from "react-icons/fa";
 
 const ManageAccounts_Content = () => {
   const [accountsRecords, setAccountsRecords] = useState([]);
@@ -56,7 +58,9 @@ const ManageAccounts_Content = () => {
 
         // Remove deleted accounts from the table
         setAccountsRecords((prevAccounts) =>
-          prevAccounts.filter((account) => !selectedAccounts.includes(account.user_id))
+          prevAccounts.filter(
+            (account) => !selectedAccounts.includes(account.user_id)
+          )
         );
 
         setSelectedAccounts([]); // Clear selected accounts
@@ -90,6 +94,7 @@ const ManageAccounts_Content = () => {
                 <th>First Name</th>
                 <th>Middle Name</th>
                 <th>User Role</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -108,6 +113,15 @@ const ManageAccounts_Content = () => {
                   <td>{record.first_name}</td>
                   <td>{record.middle_name}</td>
                   <td>{record.user_role}</td>
+                  <td>
+                    <button
+                      className="edit-button"
+                      onClick={() => handleEdit(record)}
+                      style={{ marginLeft: "10px" }}
+                    >
+                      <BiEditAlt size={20} />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

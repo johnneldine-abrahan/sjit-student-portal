@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./FacultyMembers_Content.css";
-
+import { BiEditAlt } from "react-icons/bi";
+import { FaRegEye } from "react-icons/fa";
 const FacultyMembers_List = ({
   onSelectFaculty,
   selectedFacultyIds,
@@ -62,8 +63,15 @@ const FacultyMembers_List = ({
                     className="view-details-link"
                     onClick={() => handlePopup(record)}
                   >
-                    View Details
+                    <FaRegEye />
                   </span>
+                  <button
+                    className="edit-button"
+                    onClick={() => handleEdit(record)}
+                    style={{ marginLeft: "10px" }}
+                  >
+                    <BiEditAlt size={20} />
+                  </button>
                 </td>
               </tr>
             ))}

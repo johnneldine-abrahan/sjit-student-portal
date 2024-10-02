@@ -9,6 +9,7 @@ const Admin_StudentsRecords = ({
   studentRecords,
 }) => {
   const [popup, setPopup] = useState({ show: false, record: null });
+  const [editPopup, setEditPopup] = useState({ show: false, record: null });
 
   const handlePopup = (record) => {
     setPopup({
@@ -17,8 +18,19 @@ const Admin_StudentsRecords = ({
     });
   };
 
+  const handleEditPopup = (record) => {
+    setEditPopup({
+      show: true,
+      record: record,
+    });
+  };
+
   const handleClose = () => {
     setPopup({
+      show: false,
+      record: null,
+    });
+    setEditPopup({
       show: false,
       record: null,
     });
@@ -72,7 +84,7 @@ const Admin_StudentsRecords = ({
                   </span>
                   <button
                     className="edit-button"
-                    onClick={() => handleEdit(record)}
+                    onClick={() => handleEditPopup(record)}
                     style={{ marginLeft: "10px" }}
                   >
                     <BiEditAlt size={20} />
@@ -100,6 +112,49 @@ const Admin_StudentsRecords = ({
             <p>Middle Name: {popup.record.middle_name}</p>
             <p>Program: {popup.record.program}</p>
             <p>Grade Level: {popup.record.grade_level}</p>
+          </div>
+        </div>
+      )}
+
+      {editPopup.show && (
+        <div className="popup-blurred-background" onClick={handleClose} />
+      )}
+      {editPopup.show && (
+        <div className="popup">
+          <div className="popup-header">
+            <h3>Edit Student</h3>
+            <button onClick={handleClose}>Close</button>
+          </div>
+          <div className="popup-content">
+            <form>
+              <div className="input-box">
+                <label>Student ID:</label>
+                <input type="text" value={editPopup.record.student_id} />
+              </div>
+              <div className="input-box">
+                <label>Last Name:</label>
+                <input type="text" value={editPopup.record.last_name} />
+              </div>
+              <div className="input-box">
+                <label>First Name:</label>
+                <input type="text" value={editPopup.record.first_name} />
+              </div>
+              <div className="input-box">
+                <label>Middle Name:</label>
+                <input type="text" value={editPopup.record.middle_name} />
+              </div>
+              <div className="input-box">
+                <label>Program:</label>
+                <input type="text" value={editPopup.record.program} />
+              </div>
+              <div className="input-box">
+                <label>Grade Level:</label>
+                <input type="text" value={editPopup.record.grade_level} />
+              </div>
+              <div class='buttons'>
+                      <button type="submit" class="btn-box" name="add" id="add">Done</button>
+                    </div>
+            </form>
           </div>
         </div>
       )}

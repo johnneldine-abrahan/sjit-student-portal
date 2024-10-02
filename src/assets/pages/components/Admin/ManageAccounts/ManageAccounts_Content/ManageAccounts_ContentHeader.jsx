@@ -113,12 +113,6 @@ const ManageAccounts_ContentHeader = ({ onNewAccount, onDelete }) => {
             />
           </div>
           <div className="buttons-act">
-            <BiEditAlt
-              className="buttons-icon"
-              onClick={() => handlePopup("edit")}
-            />
-          </div>
-          <div className="buttons-act">
             <RiDeleteBin6Line
               className="buttons-icon"
               onClick={() => handlePopup("delete")}
@@ -162,52 +156,6 @@ const ManageAccounts_ContentHeader = ({ onNewAccount, onDelete }) => {
 
                     <div class='buttons'>
                       <button type="submit" class="btn-box" name="add" id="add">Done</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </>
-          )}
-
-          {/* Edit Pop-up */}
-          {popup.edit && (
-            <>
-              <div className='popup-blurred-background' onClick={handleClose} />
-              <div className='popup'>
-                <div className='popup-header'>
-                  <h3>Edit Account</h3>
-                  <button onClick={handleClose}>Close</button>
-                </div>
-
-                <div className='popup-content'>
-                  <form onSubmit={handleSubmit}>
-                    <div className='first-row'>
-                        <div className='input-box'>
-                          <label>Last Name<input type="text" name="last_name" value={formData.last_name} onChange={handleChange} /></label>
-                        </div>
-                        <div className='input-box'>
-                          < label>First Name<input type="text" name="first_name" value={formData.first_name} onChange={handleChange} /></label>
-                        </div>
-                        <div className='input-box'>
-                          <label>Middle Name<input type="text" name="middle_name" value={formData.middle_name} onChange={handleChange} /></label>
-                        </div>
-                      </div>
-
-                      <div className='second-row'>
-                        <div className='input-box'>
-                          <label>User Role
-                            <select name="user_role" value={formData.user_role} onChange={handleChange}>
-                              <option value=""></option>
-                              <option value="Finance">Finance</option>
-                              <option value="Faculty">Faculty</option>
-                            </select>
-                          </label>
-                      </div>
-                      </div>
-
-
-                    <div class='buttons'>
-                      <button type="submit" class="btn-box" name="edit" id="edit">Done</button>
                     </div>
                   </form>
                 </div>

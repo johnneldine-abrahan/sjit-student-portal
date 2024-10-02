@@ -105,9 +105,6 @@ const FacultyMembers_ContentHeader = ({updateFacultyRecords, onDelete}) => {
             <RiAddLargeFill className='buttons-icon' onClick={() => handlePopup('add')} />
           </div>
           <div className='buttons-act'>
-            <BiEditAlt className='buttons-icon' onClick={() => handlePopup('edit')}/>
-          </div>
-          <div className='buttons-act'>
             <RiDeleteBin6Line className='buttons-icon' onClick={() => handlePopup('delete')} />
           </div>
           <div className='buttons-act'>
@@ -134,39 +131,6 @@ const FacultyMembers_ContentHeader = ({updateFacultyRecords, onDelete}) => {
                       </div>
                       <div className='input-box'>
                         <label>Middle Name<input type="text" name="middle_name" value={formData.middle_name} onChange={handleChange}/></label>
-                      </div>
-                    </div>
-
-                    <div class='buttons'>
-                      <button type="submit" class="btn-box" name="add" id="add">Done</button>
-                    </div>
-
-                  </form>
-                </div>
-              </div>
-            </>
-          )}
-
-          {/* Edit Pop-up */}
-          {popup.edit && (
-            <>
-              <div className='popup-blurred-background' onClick={handleClose} />
-              <div className='popup'>
-                <div className='popup-header'>
-                  <h3>Edit Teacher</h3>
-                  <button onClick={handleClose}>Close</button>
-                </div>
-                <div className='popup-content'>
-                <form onSubmit={handleSubmit}>
-                    <div className='first-row'>
-                      <div className='input-box'>
-                        <label>Last Name<input type="text" name="lastName" /></label>
-                      </div>
-                      <div className='input-box'>
-                        <label>First Name<input type="text" name="firstName" /></label>
-                      </div>
-                      <div className='input-box'>
-                        <label>Middle Name<input type="text" name="middleName" /></label>
                       </div>
                     </div>
 

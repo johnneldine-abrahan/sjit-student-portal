@@ -7,6 +7,10 @@ import { FaRegEye } from "react-icons/fa";
 const ManageAccounts_Content = () => {
   const [accountsRecords, setAccountsRecords] = useState([]);
   const [selectedAccounts, setSelectedAccounts] = useState([]); // Track selected accounts
+  const [popup, setPopup] = useState({
+    show: false,
+    record: null,
+  });
 
   // Fetch accounts from the backend when the component mounts
   useEffect(() => {
@@ -75,6 +79,20 @@ const ManageAccounts_Content = () => {
     }
   };
 
+  const handlePopup = (record) => {
+    setPopup({
+      show: true,
+      record: record,
+    });
+  };
+
+  const handleClose = () => {
+    setPopup({
+      show: false,
+      record: null,
+    });
+  };
+
   return (
     <div className="ManageAccounts_content">
       {/* Pass the addNewAccount and delete function as props */}
@@ -116,7 +134,7 @@ const ManageAccounts_Content = () => {
                   <td>
                     <button
                       className="edit-button"
-                      onClick={() => handleEdit(record)}
+                      onClick={() => handlePopup(record)}
                       style={{ marginLeft: "10px" }}
                     >
                       <BiEditAlt size={20} />
@@ -128,6 +146,45 @@ const ManageAccounts_Content = () => {
           </table>
         </div>
       </div>
+
+      {popup.show && (
+        <div className="popup-blurred-background" onClick={handleClose} />
+      )}
+      {popup.show && (
+        <div className="popup-manage-schedule">
+          <div className=" popup-header">
+            <h3>Edit Account</h3>
+            <button onClick={handleClose}>Close</button>
+          </div>
+          <div className="popup-content">
+            <form>
+              <div className="input-box">
+                <label>Student ID:</label>
+                <input type="text" value={popup.record.user_id} />
+              </div>
+              <div className="input-box">
+                <label>Last Name:</label>
+                <input type="text" value={popup.record.last_name} />
+              </div>
+              <div className="input-box">
+                <label>First Name:</label>
+                <input type="text" value={popup.record.first_name} />
+              </div>
+              <div className="input-box">
+                <label>Middle Name:</label>
+                <input type="text" value={popup.record.middle_name} />
+              </div>
+              <div className="input-box">
+                <label>User Role:</label>
+                <input type="text" value={popup.record.user_role} />
+              </div>
+              <div class='buttons'>
+                <button type="submit" class="btn-box" name="add" id="add">Done</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -197,6 +197,7 @@ app.post("/registerStudent", async (req, res) => {
     const password = student_id; // Optionally hash the password with bcrypt if needed
     const user_role = "Student";
     const student_type = "New";
+    const formattedDate = new Date(birth_date).toISOString().split('T')[0];
 
     // Default profile picture (update this to your default image URL or file path)
     const defaultProfilePicture = "src\assets\img\Profile\default_profile.png"; // Replace with actual path or URL
@@ -227,7 +228,7 @@ app.post("/registerStudent", async (req, res) => {
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
         `;
         await client.query(studentQuery, [
-            student_id, student_type, lrn, first_name, middle_name, last_name, birth_date, sex, place_of_birth, nationality, religion,
+            student_id, student_type, lrn, first_name, middle_name, last_name, formattedDate, sex, place_of_birth, nationality, religion,
             civil_status, birth_order, contact_number, program, grade_level, strand, user_id, financial_support, scholarship_grant, defaultProfilePicture // Adding default profile picture here
         ]);
 
@@ -281,6 +282,123 @@ app.post("/registerStudent", async (req, res) => {
         client.release();
     }
 });
+
+app.get('/getStudentData/:studentId', async (req, res) => {
+    const { studentId } = req.params;
+
+    try {
+        // Query student data using pool.query
+        const studentData = await pool.query(`
+          SELECT * FROM studenttbl WHERE student_id = $1
+        `, [studentId]);
+
+        const accountData = await pool.query(`
+          SELECT first_name, middle_name, last_name FROM accountstbl WHERE user_id = $1
+        `, [studentId]);
+
+        const schoolHistoryData = await pool.query(`
+          SELECT * FROM school_historytbl WHERE student_id = $1
+        `, [studentId]);
+
+        const addressData = await pool.query(`
+          SELECT * FROM address_tbl WHERE student_id = $1
+        `, [studentId]);
+
+        const contactData = await pool.query(`
+          SELECT * FROM contacttbl WHERE student_id = $1
+        `, [studentId]);
+
+        const emergencyContactData = await pool.query(`
+          SELECT * FROM emergency_contacttbl WHERE student_id = $1
+        `, [studentId]);
+
+        // Ensure that all the data exists before proceeding
+        if (!studentData.rows.length || !accountData.rows.length ||
+            !schoolHistoryData.rows.length || !addressData.rows.length ||
+            !contactData.rows.length || !emergencyContactData.rows.length) {
+            return res.status(404).json({ error: "Student data not found" });
+        }
+
+        // Combine the data
+        const combinedData = {
+            studentData: studentData.rows[0],
+            accountData: accountData.rows[0],
+            schoolHistoryData: schoolHistoryData.rows[0],
+            addressData: addressData.rows[0],
+            contactData: contactData.rows[0],
+            emergencyContactData: emergencyContactData.rows[0],
+        };
+
+        res.json(combinedData);
+    } catch (error) {
+        console.error('Error fetching student data:', error);
+        res.status(500).send('Error fetching student data');
+    }
+});
+
+app.put('/updateStudentData/:studentId', async (req, res) => {
+    const { studentId } = req.params;
+    const {
+      firstName, middleName, lastName, lrn, birthDate, sex, placeOfBirth, nationality, religion, civilStatus, birthOrder, contactNumber, program, gradeLevel, strand, financialSupport, scholarshipGrant,
+      schoolName, yearsAttended, honorsAwards, schoolAddress,
+      address, cityMunicipality, province, country, zipCode,
+      nameFather, occupationFather, contactFather, nameMother, occupationMother, contactMother,
+      guardianName, relationship, guardianAddress, contactGuardian
+    } = req.body;
+
+    try {
+      await pool.query('BEGIN'); // Start transaction
+
+      // Update studenttbl
+      await pool.query(`
+        UPDATE studenttbl SET
+        first_name = $1, middle_name = $2, last_name = $3, lrn = $4, birth_date = $5, sex = $6, place_of_birth = $7, nationality = $8, religion = $9, civil_status = $10, birth_order = $11, contact_number = $12, program = $13, grade_level = $14, strand = $15, financial_support = $16, scholarship_grant = $17
+        WHERE student_id = $18
+      `, [firstName, middleName, lastName, lrn, birthDate, sex, placeOfBirth, nationality, religion, civilStatus, birthOrder, contactNumber, program, gradeLevel, strand, financialSupport, scholarshipGrant, studentId]);
+
+      // Update accountstbl
+      await pool.query(`
+        UPDATE accountstbl SET
+        first_name = $1, middle_name = $2, last_name = $3
+        WHERE user_id = $4
+      `, [firstName, middleName, lastName, studentId]);
+
+      // Update school_historytbl
+      await pool.query(`
+        UPDATE school_historytbl SET
+        school_name = $1, years_attended = $2, honors_awards = $3, school_address = $4
+        WHERE student_id = $5
+      `, [schoolName, yearsAttended, honorsAwards, schoolAddress, studentId]);
+
+      // Update addresstbl
+      await pool.query(`
+        UPDATE addresstbl SET
+        address = $1, city_municipality = $2, province = $3, country = $4, zip_code = $5
+        WHERE student_id = $6
+      `, [address, cityMunicipality, province, country, zipCode, studentId]);
+
+      // Update contacttbl
+      await pool.query(`
+        UPDATE contacttbl SET
+        name_father = $1, occupation_father = $2, contact_father = $3, name_mother = $4, occupation_mother = $5, contact_mother = $6
+        WHERE student_id = $7
+      `, [nameFather, occupationFather, contactFather, nameMother, occupationMother, contactMother, studentId]);
+
+      // Update emergency_contacttbl
+      await pool.query(`
+        UPDATE emergency_contacttbl SET
+        guardian_name = $1, relationship = $2, guardian_address = $3, contact_guardian = $4
+        WHERE student_id = $5
+      `, [guardianName, relationship, guardianAddress, contactGuardian, studentId]);
+
+      await pool.query('COMMIT'); // Commit transaction
+
+      res.send('Student data updated successfully');
+    } catch (error) {
+      await pool.query('ROLLBACK'); // Rollback transaction in case of error
+      res.status(500).send('Error updating student data');
+    }
+  });
 
 app.delete('/deleteStudent', async (req, res) => {
     const { studentIds } = req.body; // Array of student_ids to delete

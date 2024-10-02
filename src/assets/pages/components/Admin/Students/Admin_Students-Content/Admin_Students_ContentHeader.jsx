@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './Admin_Students-Content.css'
 import { BiSearch } from "react-icons/bi";
-import { BiEditAlt } from "react-icons/bi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 import { RiInboxUnarchiveLine } from "react-icons/ri";
 
@@ -87,6 +86,16 @@ const Admin_Students_ContentHeader = ({ onDelete, updateStudentRecords }) => {
     e.preventDefault();
 
     const adjustedData = { ...formData };
+
+    const formatDate = (dateString) => {
+      if (!dateString) return '';  // Handle empty date strings gracefully
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Zero-padded month
+      const day = String(date.getDate()).padStart(2, '0'); // Zero-padded day
+      return `${year}-${month}-${day}`; // Return formatted date in YYYY-MM-DD format
+    };
+    
     const integerFields = ['lrn'];
     integerFields.forEach(field => {
       adjustedData[field] = adjustedData[field] === '' ? null : adjustedData[field];

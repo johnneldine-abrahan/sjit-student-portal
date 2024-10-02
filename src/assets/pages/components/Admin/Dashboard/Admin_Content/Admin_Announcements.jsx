@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "./Admin_Announcements.css";
 import { BiEditAlt } from "react-icons/bi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
@@ -22,7 +22,7 @@ const Popup_Add = ({ title, onClose }) => {
   const addAnnouncement = async (announcementData) => {
     const token = localStorage.getItem("token"); // Assuming you're storing the token in localStorage
 
-    const response = await fetch('http://localhost:3000/addAnnouncement', {
+    const response = await fetch("http://localhost:3000/addAnnouncement", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -200,7 +200,8 @@ const Popup_Delete = ({ title, onClose }) => {
       </div>
       <div className="popup-content">
         <p>
-          Are you sure you want to delete the selected announcement? This action cannot be undone.
+          Are you sure you want to delete the selected announcement? This action
+          cannot be undone.
         </p>
         <div className="buttons">
           <button type="submit" className="btn-box" name="delete" id="delete">
@@ -261,31 +262,40 @@ const Admin_Announcements = () => {
             {isOpenAdd && (
               <div>
                 <div className="popup-blurred-background" />
-                <Popup_Add title="Add Announcement" onClose={() => setIsOpenAdd(false)} />
+                <Popup_Add
+                  title="Add Announcement"
+                  onClose={() => setIsOpenAdd(false)}
+                />
               </div>
             )}
           </div>
           <div className="icon-act">
-            <BiEditAlt 
-              className="announcement-icon" 
-              onClick={() => setIsOpenEdit(true)} 
+            <BiEditAlt
+              className="announcement-icon"
+              onClick={() => setIsOpenEdit(true)}
             />
             {isOpenEdit && (
               <div>
                 <div className="popup-blurred-background" />
-                <Popup_Edit title="Edit Announcement" onClose={() => setIsOpenEdit(false)} />
+                <Popup_Edit
+                  title="Edit Announcement"
+                  onClose={() => setIsOpenEdit(false)}
+                />
               </div>
             )}
           </div>
           <div className="icon-act">
-            <RiDeleteBin6Line 
-              className="announcement-icon" 
-              onClick={() => setIsOpenDelete(true)} 
+            <RiDeleteBin6Line
+              className="announcement-icon"
+              onClick={() => setIsOpenDelete(true)}
             />
             {isOpenDelete && (
               <div>
                 <div className="popup-blurred-background" />
-                <Popup_Delete title="Delete Announcement" onClose={() => setIsOpenDelete(false)} />
+                <Popup_Delete
+                  title="Delete Announcement"
+                  onClose={() => setIsOpenDelete(false)}
+                />
               </div>
             )}
           </div>
@@ -293,34 +303,39 @@ const Admin_Announcements = () => {
       </div>
 
       {/* Display announcements in a table format */}
-      <table className="announcement-table">
-        <thead>
-          <tr>
-            <th>Select</th>
-            <th>Title</th>
-            <th>Preview</th>
-            <th>Date/Time</th>
-            <th>User ID</th> {/* New column for user_id */}
-          </tr>
-        </thead>
-        <tbody>
-          {announcements.map((announcement, index) => (
-            <tr key={index}>
-              <td>
-                <input
-                  type="checkbox"
-                  checked={selectedIds.includes(index)}
-                  onChange={() => handleSelectAnnouncement(index)}
-                />
-              </td>
-              <td>{announcement.title}</td>
-              <td>{announcement.preview}...</td>
-              <td>{new Date(announcement.timestamp).toLocaleString()}</td>
-              <td>{announcement.userId}</td> {/* Display user_id */}
+      <div className="announcement-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Select</th>
+              <th>Title</th>
+              <th>Preview</th>
+              <th>Date/Time</th>
+              <th>User ID</th> {/* New column for user_id */}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {announcements.map((announcement, index) => (
+              <tr
+                key={index}
+                className={selectedIds.includes(index) ? "checked" : ""}
+              >
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.includes(index)}
+                    onChange={() => handleSelectAnnouncement(index)}
+                  />
+                </td>
+                <td>{announcement.title}</td>
+                <td>{announcement.preview}...</td>
+                <td>{new Date(announcement.timestamp).toLocaleString()}</td>
+                <td>{announcement.userId}</td> {/* Display user_id */}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

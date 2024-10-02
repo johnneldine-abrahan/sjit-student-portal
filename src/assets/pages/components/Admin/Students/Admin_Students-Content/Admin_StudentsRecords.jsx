@@ -3,7 +3,7 @@ import { FaRegEye } from "react-icons/fa";
 import { BiEditAlt } from "react-icons/bi";
 import axios from 'axios';
 
-const Admin_StudentsRecords = ({ selectedStudentIds, studentId = '', studentRecords, onSelectStudent }) => {
+const Admin_StudentsRecords = ({ selectedStudentIds, studentId = '', studentRecords, onSelectStudent, updateStudentRecords }) => {
   const [popup, setPopup] = useState({ show: false, record: null });
   const [editPopup, setEditPopup] = useState({ show: false, record: null });
   const [formData, setFormData] = useState({
@@ -48,14 +48,6 @@ const Admin_StudentsRecords = ({ selectedStudentIds, studentId = '', studentReco
   const [juniorHighschoolChecked, setJuniorHighschoolChecked] = useState(false);
   const [seniorHighschoolChecked, setSeniorHighschoolChecked] = useState(false);
 
-  const formatToDateInput = (isoDate) => {
-  // Check if the date is valid and in ISO format
-  if (isoDate) {
-    return isoDate.split('T')[0]; // Split on 'T' and return the first part (yyyy-MM-dd)
-  }
-  return ''; // Return an empty string if no date is provided
-};
-
   useEffect(() => {
     console.log('Student ID:', studentId); // Add this line for debugging
     if (studentId) {
@@ -83,26 +75,49 @@ const Admin_StudentsRecords = ({ selectedStudentIds, studentId = '', studentReco
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Submitting form with data:', formData); // Log the form data
+  
+    // Create a copy of the formData and ensure defaults for empty or null values
+    const adjustedData = { ...formData };
+  
+    // Convert 'lrn' to null if it is empty or invalid, otherwise to an integer
+    adjustedData.lrn = formData.lrn ? parseInt(formData.lrn) : null;
+  
+    // Set default empty strings for optional fields
+    const optionalFields = ['contact_father', 'contact_mother', 'contact_guardian', 'guardian_name', 'relationship', 'occupation_father', 'occupation_mother'];
+  
+    optionalFields.forEach(field => {
+      adjustedData[field] = formData[field] || '';  // Set to empty string if undefined or null
+    });
+  
+    console.log('Submitting adjusted data:', adjustedData);
+  
     try {
-      const response = await axios.put(`http://localhost:3000/updateStudentData/${editPopup.record.student_id}`, formData);
-      console.log('Response:', response); // Log the response
+      // Perform the update request
+      const response = await axios.put(`http://localhost:3000/updateStudentData/${editPopup.record.student_id}`, adjustedData);
       alert('Student data updated successfully');
-      setEditPopup({ show: false, record: null });
+  
+      // Re-fetch updated student records to sync the UI
+      const updatedResponse = await axios.get('http://localhost:3000/students');
+      const updatedRecords = updatedResponse.data;
+  
+      // Update the parent component with new student data (this can be passed down as a prop)
+      updateStudentRecords(updatedRecords); // Assuming this method is passed in props
+  
+      setEditPopup({ show: false, record: null }); // Close the edit popup
+  
     } catch (error) {
-      console.error('Error occurred while updating student data:', error); // More specific error logging
+      console.error('Error occurred while updating student data:', error);
+  
       if (error.response) {
-        console.log('Response data:', error.response.data);
-        console.log('Response status:', error.response.status);
-        console.log('Response headers:', error.response.headers);
-      } else if (error.request) {
-        console.log('Request made but no response received:', error.request);
+        alert(`Failed to update student data. Server responded with status: ${error.response.status}`);
+        if (error.response.data) {
+          alert(`Error message: ${error.response.data.message}`);
+        }
       } else {
-        console.log('Error message:', error.message);
+        alert('An unexpected error occurred. Please try again later.');
       }
     }
-  };
-  
+  };  
 
   const handlePopup = (record) => {
     setPopup({ show: true, record });
@@ -113,12 +128,18 @@ const Admin_StudentsRecords = ({ selectedStudentIds, studentId = '', studentReco
       const response = await axios.get(`http://localhost:3000/getStudentData/${record.student_id}`);
       const data = response.data;
 
+      const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toISOString().split('T')[0]; // Converts to YYYY-MM-DD format
+      };
+  
+
       setFormData({
         first_name: data?.accountData?.first_name || '',
         middle_name: data?.accountData?.middle_name || '',
         last_name: data?.accountData?.last_name || '',
         lrn: data?.studentData?.lrn || '',
-        birth_date: data?.studentData?.birth_date || '',
+        birth_date: data?.studentData?.birth_date ? formatDate(data.studentData.birth_date) : '',
         sex: data?.studentData?.sex || '',
         place_of_birth: data?.studentData?.place_of_birth || '',
         nationality: data?.studentData?.nationality || '',

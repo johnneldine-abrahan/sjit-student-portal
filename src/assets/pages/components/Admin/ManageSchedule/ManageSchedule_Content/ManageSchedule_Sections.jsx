@@ -48,8 +48,20 @@ const ManageSchedule_Sections = () => {
     record: null,
   });
 
+  const [editPopup, setEditPopup] = useState({
+    show: false,
+    record: null,
+  });
+
   const handlePopup = (record) => {
     setPopup({
+      show: true,
+      record: record,
+    });
+  };
+
+  const handleEditPopup = (record) => {
+ setEditPopup({
       show: true,
       record: record,
     });
@@ -60,11 +72,15 @@ const ManageSchedule_Sections = () => {
       show: false,
       record: null,
     });
+    setEditPopup({
+      show: false,
+      record: null,
+    });
   };
 
   // Disable scrolling when modal is open
   useEffect(() => {
-    if (popup) {
+    if (popup || editPopup) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset"; // Reset overflow when modal is closed
@@ -74,7 +90,7 @@ const ManageSchedule_Sections = () => {
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [popup]);
+  }, [popup, editPopup]);
 
   return (
     <div className="section-list">
@@ -114,7 +130,7 @@ const ManageSchedule_Sections = () => {
                   </span>
                   <button
                     className="edit-button"
-                    onClick={() => handleEdit(record)}
+                    onClick={() => handleEditPopup(records)}
                     style={{ marginLeft: "10px" }}
                   >
                     <BiEditAlt size={20} />
@@ -149,6 +165,45 @@ const ManageSchedule_Sections = () => {
               >
                 View Details
               </button>
+            </div>
+          </div>
+        )}
+
+        {editPopup.show && (
+          <div className="popup-blurred-background" onClick={handleClose} />
+        )}
+        {editPopup.show && (
+          <div className="popup-manage-schedule">
+            <div className="popup-header">
+              <h3>Edit Section</h3>
+              <button onClick={handleClose}>Close</button>
+            </div>
+            <div className="popup-content">
+              <form>
+                <div className="input-box">
+                  <label>Grade Level:</label>
+                  <input type="text" value={editPopup.record.GradeLevel} />
+                </div>
+                <div className="input-box">
+                  <label>Section:</label>
+                  <input type="text" value={editPopup.record.section} />
+                </div>
+                <div className="input-box">
+                  <label>Subject:</label>
+                  <input type="text" value={editPopup.record.subject} />
+                </div>
+                <div className="input-box">
+                  <label>Instructor:</label>
+                  <input type="text" value={editPopup.record.Instructor} />
+                </div>
+                <div className="input-box">
+                  <label>Slots:</label>
+                  <input type="text" value={editPopup.record.slots} />
+                </div>
+                <div class='buttons'>
+                  <button type="submit" class="btn-box" name="add" id="add">Done</button>
+                </div>
+              </form>
             </div>
           </div>
         )}

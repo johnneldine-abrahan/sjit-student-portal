@@ -10,6 +10,10 @@ import Admin_FacultyMembers from './assets/pages/Admin/Admin_FacultyMembers'
 import Admin_ManageSchedule from './assets/pages/Admin/Admin_ManageSchedule'
 import Admin_ManageAccounts from './assets/pages/Admin/Admin_ManageAccounts'
 import Admin_Archive from './assets/pages/Admin/Admin_Archive'
+import Registrar_Dashboard from './assets/pages/Registrar/Registrar_Dashboard'
+import Registrar_Enroll_Students from './assets/pages/Registrar/Registrar_Enroll_Students'
+import Registrar_Students from './assets/pages/Registrar/Registrar_Students'
+import Registrar_Archive from  './assets/pages/Registrar/Registrar_Archive'
 import Finance_Dashboard from './assets/pages/Finance/Finance_Dashboard'
 import Finance_ConfirmEnrollment from './assets/pages/Finance/Finance_ConfirmEnrollment'
 import Finance_TagLiabilities from './assets/pages/Finance/Finance_TagLiabilities'
@@ -31,6 +35,10 @@ const App = () => {
         <Route path="/admin/manage-schedule" element={<Admin_ManageSchedule />} />
         <Route path="/admin/manage-accounts" element={<Admin_ManageAccounts />} />
         <Route path="/admin/archive" element={<Admin_Archive />} />
+        <Route path="/registrar/dashboard" element={<Registrar_Dashboard />} />
+        <Route path="/registrar/student-list" element={<Registrar_Students />} />
+        <Route path="/registrar/enroll-students" element={<Registrar_Enroll_Students />} />
+        <Route path="/registrar/archive" element={<Registrar_Archive />} />
         <Route path="/finance/dashboard" element={<Finance_Dashboard />} />
         <Route path="finance/confirm-enrollment" element={<Finance_ConfirmEnrollment />} />
         <Route path="/finance/tag-liabilities" element={<Finance_TagLiabilities />} />

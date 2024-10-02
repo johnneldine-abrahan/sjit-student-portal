@@ -38,8 +38,10 @@ const Login = () => {
             localStorage.setItem('token', token);
 
             // Redirect based on role
-            if (userRole === 'Admin' || userRole === 'Registrar') {
+            if (userRole === 'Admin') {
                 navigate("/admin/dashboard");
+            } else if (userRole === 'Registrar'){
+              navigate("/registrar/dashboard");
             } else if (userRole === 'Finance') {
                 navigate("/finance/dashboard");
             } else if (userRole === 'Student') {

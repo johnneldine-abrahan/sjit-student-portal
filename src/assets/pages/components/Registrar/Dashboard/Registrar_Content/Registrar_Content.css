@@ -1,0 +1,81 @@
+.Registrar-d_content{
+    width: 75%;
+}
+
+.header-title{
+    color: #150f57;
+}
+
+.dashboard-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.activity-header{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.search-box{
+    background: #dde6ed;
+    padding: 8px 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.search-box input{
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 5px;
+    outline: none;
+}
+
+.search-box .search-icon{
+    color: #969393;
+    font-size: 22px;
+    cursor: pointer;
+    transition: 0.5s ease-in-out;
+}
+
+.search-icon:hover{
+    transform: scale(1.3);
+    cursor: pointer;
+}
+
+.card-container{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.card{
+    flex: 1;
+    background: #dde6ed;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 5px;
+    transition: 0.5s ease-in-out;
+}
+
+.card:hover{
+    transform: scale(1.04);
+    cursor: pointer;
+}
+
+.card-title{
+    font-size: 16px;
+    color: #150f57;
+}
+
+.card-number{
+    font-size: 24px;
+    color: #150f57;
+}

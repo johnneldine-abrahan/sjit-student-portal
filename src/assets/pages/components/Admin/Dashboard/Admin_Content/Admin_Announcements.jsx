@@ -194,7 +194,29 @@ const Popup_Edit = ({ title, onClose }) => {
   );
 };
 
-const Popup_Delete = ({ title, onClose }) => {
+const Popup_Delete = ({ title, onClose, selectedIds, announcements, refreshAnnouncements }) => {
+  const handleDelete = async () => {
+    const selectedTitles = selectedIds.map(id => announcements[id].title);
+    const token = localStorage.getItem("token");
+
+    const response = await fetch("http://localhost:3000/deleteAnnouncements", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ announcementTitles: selectedTitles }),
+    });
+
+    if (response.ok) {
+      console.log("Announcements deleted successfully!");
+      refreshAnnouncements(); // Refresh the announcements list
+      onClose(); // Close the popup
+    } else {
+      console.error("Failed to delete announcements:", response.statusText);
+    }
+  };
+
   return (
     <div className="popup">
       <div className="popup-header">
@@ -203,11 +225,10 @@ const Popup_Delete = ({ title, onClose }) => {
       </div>
       <div className="popup-content">
         <p>
-          Are you sure you want to delete the selected announcement? This action
-          cannot be undone.
+          Are you sure you want to delete the selected announcement(s)? This action cannot be undone.
         </p>
         <div className="buttons">
-          <button type="submit" className="btn-box" name="delete" id="delete">
+          <button onClick={handleDelete} className="btn-box" name="delete" id="delete">
             Delete
           </button>
         </div>
@@ -320,6 +341,9 @@ const Admin_Announcements = () => {
                 <Popup_Delete
                   title="Delete Announcement"
                   onClose={() => setIsOpenDelete(false)}
+                  selectedIds={selectedIds}
+                  announcements={announcements}
+                  refreshAnnouncements={refreshAnnouncements}
                 />
               </div>
             )}

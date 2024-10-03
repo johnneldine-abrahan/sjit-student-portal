@@ -1,6 +1,7 @@
 import React, { useState, useEffect} from "react";
 import "./Finance_Announcements.css";
 import { BiEditAlt } from "react-icons/bi";
+import { FaRegEye } from "react-icons/fa";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 
 const Popup_Add = ({ title, onClose }) => {
@@ -62,8 +63,6 @@ const Popup_Add = ({ title, onClose }) => {
                   <option value=""></option>
                   <option value="Student">Students</option>
                   <option value="Faculty">Teachers</option>
-                  <option value="Finance">Finance</option>
-                  <option value="All">All</option>
                 </select>
               </label>
             </div>
@@ -73,8 +72,6 @@ const Popup_Add = ({ title, onClose }) => {
                 <select name="announcement_type" onChange={handleChange}>
                   <option value=""></option>
                   <option value="Reminder">Reminder</option>
-                  <option value="Event">Event</option>
-                  <option value="Meeting">Meeting</option>
                   <option value="Misc">Misc</option>
                 </select>
               </label>
@@ -292,8 +289,7 @@ const Finance_Announcements = () => {
         </div>
       </div>
 
-      {/* Display announcements in a table format */}
-      <table className="announcement-table">
+      <table className="announcement-table-finance">
         <thead>
           <tr>
             <th>Select</th>
@@ -301,11 +297,15 @@ const Finance_Announcements = () => {
             <th>Preview</th>
             <th>Date/Time</th>
             <th>User ID</th> {/* New column for user_id */}
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {announcements.map((announcement, index) => (
-            <tr key={index}>
+            <tr
+              key={index}
+              className={selectedIds.includes(index) ? "checked" : ""}
+            >
               <td>
                 <input
                   type="checkbox"
@@ -317,6 +317,21 @@ const Finance_Announcements = () => {
               <td>{announcement.preview}...</td>
               <td>{new Date(announcement.timestamp).toLocaleString()}</td>
               <td>{announcement.userId}</td> {/* Display user_id */}
+              <td>
+                <span
+                  className="view-details-link"
+                  onClick={() => handlePopup(record)}
+                >
+                  <FaRegEye />
+                </span>
+                <button
+                  className="edit-button"
+                  onClick={() => handleEdit(record)}
+                  style={{ marginLeft: "10px" }}
+                >
+                  <BiEditAlt size={20} />
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>

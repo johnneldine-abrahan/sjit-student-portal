@@ -1,223 +1,234 @@
 .announcement-list {
-    display: flex;
-    margin: 1rem 0;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .announcement-action {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  
-  .icon-act {
-    background: #dde6ed;
-    padding: 12px;
-    border-radius: 10px;
-    color: #969393;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .icon-act .announcement-icon {
-    font-size: 20px;
-    transition: 0.5s ease-in-out;
-  }
-  
-  .announcement-icon:hover {
-    transform: scale(1.3);
-    cursor: pointer;
-  }
-  
-  .announcement-list h2 {
-    color: #150f57;
-  }
-  
-  .announcement-details {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    color: #000;
-  }
-  
-  .card-body {
-    padding: 20px;
-  }
-  .details {
-    max-width: 300px; /* adjust the max width to your liking */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  
-  .popup-announcements {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1001;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    width: 750px;
-  }
-  
-  .popup-blurred-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-  }
-  
-  .popup-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .popup-title {
-    color: #000;
-  }
-  
-  .popup-header h3 {
-    margin: 0;
-  }
-  
-  .popup-header button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .popup-content {
-    padding: 20px;
-  }
-  
-  .popup-content p {
-    margin: 0;
-  }
-  
-  .view-details-link {
-    color: #0000ff;
-  }
-  
-  .popup-content .input-box {
-    width: 100%;
-  }
-  
-  .popup-content .first-row,
-  .second-row,
-  .thrid-row {
-    margin-top: 10px;
-    display: flex;
-    column-gap: 16px;
-  }
-  
-  .popup-content p {
-    margin: 0;
-    text-align: justify;
-    color: #000;
-  }
-  
-  .popup-content .input-box {
-    width: 100%;
-  }
-  
-  .popup-content input[type="text"],
-  select,
-  textarea {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0 10px 0;
-    border-radius: 10px;
-    background: #f1f1f1;
-    font-family: "Poppins", sans-serif;
-    font-size: 16px;
-  }
-  
-  .popup-content label {
-    font-size: 18px;
-    color: #000;
-  }
-  
-  .popup-content .buttons {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 16px;
-  }
-  
-  .popup-content p {
-    text-align: justify;
-  }
-  
-  .popup-content .btn-box {
-    background-color: #150f57;
-    color: #fff;
-    padding: 10px 25px;
-    font-size: 16px;
-    border-radius: 26px;
-    cursor: pointer;
-    border: 0;
-    outline: 0;
-    display: inline;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  input[type="checkbox"] {
-    accent-color: #007bff; /* Modern browsers */
-    width: 20px;
-    height: 20px;
-    margin-left: 20px;
-  }
-  .announcement-table-registrar {
-    width: 100%;
-    flex-direction: column;
-    gap: 5px;
-    border-collapse: collapse;
-    border-radius: 10px;
-    margin-top: 20px;
-  }
-  
-  .announcement-table-registrar table {
-    width: 100%;
-    border: none;
-    border-collapse: collapse;
-    border-radius: 10px; /* Add border radius here */
-    overflow: hidden; /* Add this to ensure the border radius is applied correctly */
-    text-transform: uppercase;
-  }
-  
-  .announcement-table-registrar td,
-  .announcement-table-registrar th {
-    border: none; /* Remove all borders */
-    border-bottom: 1px solid #000000; /* Keep the bottom border */
-    padding: 10px;
-    text-align: left;
-  }
-  
-  .announcement-table-registrar tbody tr:hover {
-    background-color: #7b8bbc; /* Change this to your desired hover color */
-    cursor: pointer;
-  }
-  
-  .announcement-table-registrar tbody tr.checked {
-    background-color: #7b8bbc; /* Change this to your desired checked color */
-  }
-  
-  .announcement-table-registrar tbody tr:nth-child(even):hover {
-    background-color: #7b8bbc;
-  }
-  
-  .announcement-table-registrar tbody tr.checked:nth-child(even) {
-    background-color: #7b8bbc;
-  }
-  
+  display: flex;
+  margin: 1rem 0;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.announcement-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.view-details {
+  color: #000000;
+  border-style: hidden;
+
+  background: none;
+}
+
+.edit-button {
+  border-style: hidden;
+
+  background: none;
+}
+
+.icon-act {
+  background: #dde6ed;
+  padding: 12px;
+  border-radius: 10px;
+  color: #969393;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-act .announcement-icon {
+  font-size: 20px;
+  transition: 0.5s ease-in-out;
+}
+
+.announcement-icon:hover {
+  transform: scale(1.3);
+  cursor: pointer;
+}
+
+.announcement-list h2 {
+  color: #150f57;
+}
+
+.announcement-details {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: #000;
+}
+.announcement-table {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border-collapse: collapse;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.announcement-table table {
+  width: 100%;
+  border: none;
+  border-collapse: collapse;
+  border-radius: 10px; /* Add border radius here */
+  overflow: hidden; /* Add this to ensure the border radius is applied correctly */
+  text-transform: uppercase;
+}
+
+.announcement-table td,
+.announcement-table th {
+  border: none; /* Remove all borders */
+  border-bottom: 1px solid #000000; /* Keep the bottom border */
+  padding: 10px;
+  text-align: left;
+}
+
+.announcement-table tbody tr:hover {
+  background-color: #7b8bbc; /* Change this to your desired hover color */
+  cursor: pointer;
+}
+
+.announcement-table tbody tr.checked {
+  background-color: #7b8bbc; /* Change this to your desired checked color */
+}
+
+.announcement-table tbody tr:nth-child(even):hover {
+  background-color: #7b8bbc;
+}
+
+.announcement-table tbody tr.checked:nth-child(even) {
+  background-color: #7b8bbc;
+}
+
+.card-body {
+  padding: 20px;
+}
+.details {
+  max-width: 300px; /* adjust the max width to your liking */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.popup-announcements {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+
+}
+
+.popup-blurred-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.popup-title {
+  color: #000;
+}
+
+.popup-header h3 {
+  margin: 0;
+}
+
+.popup-header button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.popup-content {
+  padding: 20px;
+}
+
+.popup-content p {
+  margin: 0;
+}
+
+.view-details-link {
+  color: #000000;
+}
+
+.popup-content .input-box {
+  width: 100%;
+}
+
+.popup-content .first-row,
+.second-row,
+.third-row {
+  margin-top: 10px;
+  display: flex;
+  column-gap: 16px;
+}
+
+.popup-content p {
+  margin: 0;
+  text-align: justify;
+  color: #000;
+}
+
+.popup-content .input-box {
+  width: 100%;
+}
+
+.popup-content input[type="text"],
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0 10px 0;
+  border-radius: 10px;
+  background: #f1f1f1;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+}
+
+.popup-content label {
+  font-size: 18px;
+  color: #000;
+}
+
+.popup-content .buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.popup-content p {
+  text-align: justify;
+}
+
+.popup-content .btn-box {
+  background-color: #150f57;
+  color: #fff;
+  padding: 10px 25px;
+  font-size: 16px;
+  border-radius: 26px;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+  display: inline;
+  align-items: center;
+  justify-content: center;
+}
+
+input[type="checkbox"] {
+  accent-color: #007bff; /* Modern browsers */
+  width: 20px;
+  height: 20px;
+  margin-left: 20px;
+}

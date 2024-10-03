@@ -126,7 +126,7 @@ const ManageSchedule_Sections = () => {
                     className="add-subject-link"
                     onClick={() => handlePopup(records)}
                   >
-                    <FaRegEye />
+                    <FaRegEye size={20}/>
                   </span>
                   <button
                     className="edit-button"

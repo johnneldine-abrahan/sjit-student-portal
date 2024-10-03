@@ -72,12 +72,12 @@ const FacultyMembers_List = ({
                 <td>{record.first_name}</td>
                 <td>{record.middle_name}</td>
                 <td>
-                  <span
-                    className="view-details-link"
+                  <button
+                    className="view-details"
                     onClick={() => handlePopup(record)}
                   >
-                    <FaRegEye />
-                  </span>
+                    <FaRegEye size={20} />
+                  </button>
                   <button
                     className="edit-button"
                     onClick={() => handleEditPopup(record)}

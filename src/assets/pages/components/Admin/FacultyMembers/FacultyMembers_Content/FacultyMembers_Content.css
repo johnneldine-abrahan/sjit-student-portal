@@ -13,8 +13,11 @@
   align-items: center;
   gap: 20px;
 }
-.view-details-link {
+.view-details {
   color: #000000;
+  border-style: hidden;
+
+  background: none;
 }
 
 .edit-button {

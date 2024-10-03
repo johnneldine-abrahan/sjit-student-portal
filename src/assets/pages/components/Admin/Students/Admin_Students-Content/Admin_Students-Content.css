@@ -1,7 +1,9 @@
 .admin-s_content {
   width: 100%;
 }
-
+.edit-button-admin:hover {
+  cursor: pointer;
+}
 .admin-student-header {
   display: flex;
   align-items: center;
@@ -73,19 +75,19 @@
 }
 
 .student-records {
-  display: flex;
+
   flex-direction: column;
   gap: 5px;
 
-  border-radius: 10px;
+
   margin-top: 20px;
 }
 
 .student-records table {
   width: 100%;
   border-collapse: collapse;
-  border-radius: 10px; /* Add border radi us here */
-  overflow: hidden; /* Add this to ensure the border radius is applied correctly */
+
+
   text-transform: uppercase;
 }
 
@@ -99,18 +101,19 @@
   border-bottom: 1px solid #000000; /* Add border at the bottom only */
   padding: 10px;
   text-align: left;
+  pointer-events: none; /* Prevent any hover effect */
 }
 
-.student-records tbody tr:hover {
+.student-records tr:hover {
   background-color: #7b8bbc; /* change this to your desired hover color */
   cursor: pointer;
 }
 
-.student-records tbody tr.checked {
+.student-records tr.checked {
   background-color: #7b8bbc; /* change this to your desired checked color */
 }
 
-.view-details-link:hover {
+.view-details:hover {
   cursor: pointer;
 }
 
@@ -183,9 +186,7 @@
   text-align: justify;
 }
 
-.view-details-link {
-  color: #0000ff;
-}
+
 
 .popup-content .first-row,
 .second-row,
@@ -295,4 +296,37 @@ select {
   display: inline;
   align-items: center;
   justify-content: center;
+}
+
+.popup-view-student {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+}
+
+.popup-view-student .popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.popup-view-student .popup-content {
+  padding: 20px;
+}
+
+.popup-view-student .popup-view-student-container {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: auto;
 }

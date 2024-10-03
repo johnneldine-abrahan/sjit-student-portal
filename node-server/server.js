@@ -159,6 +159,8 @@ app.get('/profile', authenticateToken, (req, res) => {
     });
 });
 
+// REGISTER STUDENT FUNCTIONS --------------------------------------------------------------
+
 app.get('/students', async (req, res) => {
     try {
         // Query to fetch student_id, last_name, first_name, middle_name, program, and grade_level from studenttbl
@@ -483,6 +485,8 @@ app.delete('/deleteStudent', async (req, res) => {
     }
 });
 
+// Admin - Faculty (CRUD) ------------------------------------------------------------------------------------
+
 app.get('/faculties', async (req, res) => {
     try {
       const result = await pool.query('SELECT * FROM facultytbl');
@@ -569,6 +573,8 @@ app.delete('/deleteFaculty', async (req, res) => {
     }
 });
 
+// Registrar & Finance Announcements ---------------------------------------------------------------------------------
+
 app.post('/addAnnouncement', authenticateToken, async (req, res) => {
     const { announce_to, announcement_type, announcement_title, announcement_text } = req.body;
 
@@ -604,24 +610,27 @@ app.post('/addAnnouncement', authenticateToken, async (req, res) => {
     }
 });
 
-// server.js
+
+
 app.delete('/deleteAnnouncements', async (req, res) => {
-    const { announcementIds } = req.body;
-  
-    if (!announcementIds || !Array.isArray(announcementIds) || announcementIds.length === 0) {
-      return res.status(400).json({ error: "Invalid request: No announcement IDs provided" });
+    const { announcementTitles } = req.body;
+
+    console.log("Received announcement titles:", announcementTitles); // Add this line
+
+    if (!announcementTitles || !Array.isArray(announcementTitles) || announcementTitles.length === 0) {
+      return res.status(400).json({ error: "Invalid request: No announcement titles provided" });
     }
-  
+
     try {
-      const query = 'DELETE FROM announcementtbl WHERE announcement_id = ANY($1::text[])';
-      await pool.query(query, [announcementIds]);
+      const query = 'DELETE FROM announcementtbl WHERE announcement_title = ANY($1::text[])';
+      await pool.query(query, [announcementTitles]);
       
       res.status(200).json({ message: "Announcements deleted successfully" });
     } catch (error) {
       console.error('Error deleting announcements:', error);
       res.status(500).json({ error: "Failed to delete announcements" });
     }
-  });  
+});
 
 app.get('/announcements', authenticateToken, async (req, res) => {
     try {
@@ -661,6 +670,8 @@ app.get('/announcements', authenticateToken, async (req, res) => {
     }
 });
 
+// Registrar & Finance Accounts --------------------------------------------------------------------------------------
+
 app.post('/registerAccount', async (req, res) => {
     const { first_name, middle_name, last_name, user_role } = req.body;
 
@@ -694,6 +705,37 @@ app.post('/registerAccount', async (req, res) => {
         res.status(500).json({ message: "Error registering account." });
     }
 });
+
+app.put('/update-account/:id', (req, res) => {
+    const accountId = req.params.id;
+    const { first_name, middle_name, last_name, password } = req.body;
+
+    // Correct SQL Query for PostgreSQL
+    const query = `
+        UPDATE accountstbl 
+        SET 
+            first_name = $1, 
+            middle_name = $2, 
+            last_name = $3, 
+            password = $4
+        WHERE user_id = $5;
+    `;
+
+    // Execute the query
+    pool.query(query, [first_name, middle_name, last_name, password, accountId], (err, result) => {
+        if (err) {
+            console.error('Error updating data:', err);
+            return res.status(500).json({ message: 'Database error' });
+        }
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Account not found' });
+        }
+
+        res.json({ message: 'Account updated successfully' });
+    });
+});
+
 
 app.delete('/deleteAccounts', async (req, res) => {
     const { user_ids } = req.body;

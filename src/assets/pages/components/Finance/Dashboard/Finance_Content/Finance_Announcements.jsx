@@ -1,8 +1,8 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "./Finance_Announcements.css";
 import { BiEditAlt } from "react-icons/bi";
-import { FaRegEye } from "react-icons/fa";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
+import { FaRegEye } from "react-icons/fa";
 
 const Popup_Add = ({ title, onClose }) => {
   const [announcementData, setAnnouncementData] = useState({
@@ -23,7 +23,7 @@ const Popup_Add = ({ title, onClose }) => {
   const addAnnouncement = async (announcementData) => {
     const token = localStorage.getItem("token"); // Assuming you're storing the token in localStorage
 
-    const response = await fetch('http://localhost:3000/addAnnouncement', {
+    const response = await fetch("http://localhost:3000/addAnnouncement", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -63,6 +63,8 @@ const Popup_Add = ({ title, onClose }) => {
                   <option value=""></option>
                   <option value="Student">Students</option>
                   <option value="Faculty">Teachers</option>
+                  <option value="Finance">Finance</option>
+                  <option value="All">All</option>
                 </select>
               </label>
             </div>
@@ -72,6 +74,8 @@ const Popup_Add = ({ title, onClose }) => {
                 <select name="announcement_type" onChange={handleChange}>
                   <option value=""></option>
                   <option value="Reminder">Reminder</option>
+                  <option value="Event">Event</option>
+                  <option value="Meeting">Meeting</option>
                   <option value="Misc">Misc</option>
                 </select>
               </label>
@@ -188,7 +192,7 @@ const Popup_Edit = ({ title, onClose }) => {
   );
 };
 
-const Popup_Delete = ({ title, onClose }) => {
+const Popup_Delete = ({ selectedStudentIds, title, onClose }) => {
   return (
     <div className="popup">
       <div className="popup-header">
@@ -197,7 +201,8 @@ const Popup_Delete = ({ title, onClose }) => {
       </div>
       <div className="popup-content">
         <p>
-          Are you sure you want to delete the selected announcement? This action cannot be undone.
+          Are you sure you want to delete the selected announcement? This action
+          cannot be undone.
         </p>
         <div className="buttons">
           <button type="submit" className="btn-box" name="delete" id="delete">
@@ -209,12 +214,31 @@ const Popup_Delete = ({ title, onClose }) => {
   );
 };
 
+const Popup_ViewDetails = ({ title, onClose, announcement }) => {
+  return (
+    <div className="popup-announcements">
+      <div className="popup-header">
+        <h3 className="popup-title">{title}</h3>
+        <button onClick={onClose}>Close</button>
+      </div>
+      <div className="popup-content">
+        <p>Title: {announcement.title}</p>
+        <p>Preview: {announcement.preview}</p>
+        <p>Date/Time: {new Date(announcement.timestamp).toLocaleString()}</p>
+        <p>User ID: {announcement.userId}</p>
+      </div>
+    </div>
+  );
+};
+
 const Finance_Announcements = () => {
   const [isOpenAdd, setIsOpenAdd] = useState(false);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
+  const [isOpenViewDetails, setIsOpenViewDetails] = useState(false);
   const [announcements, setAnnouncements] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
 
   // Fetch announcements on component mount
   useEffect(() => {
@@ -245,8 +269,18 @@ const Finance_Announcements = () => {
     );
   };
 
+  const handleViewDetails = (announcement) => {
+    setIsOpenViewDetails(true);
+    setSelectedAnnouncement(announcement);
+  };
+
+  const handleCloseViewDetails = () => {
+    setIsOpenViewDetails(false);
+    setSelectedAnnouncement(null);
+  };
+
   return (
-    <div className="admin-announcements">
+    <div className="registrar-announcements">
       <div className="announcement-list">
         <h2>Announcements</h2>
         <div className="announcement-action">
@@ -258,22 +292,14 @@ const Finance_Announcements = () => {
             {isOpenAdd && (
               <div>
                 <div className="popup-blurred-background" />
-                <Popup_Add title="Add Announcement" onClose={() => setIsOpenAdd(false)} />
+                <Popup_Add
+                  title="Add Announcement"
+                  onClose={() => setIsOpenAdd(false)}
+                />
               </div>
             )}
           </div>
-          <div className="icon-act">
-            <BiEditAlt
-              className="announcement-icon"
-              onClick={() => setIsOpenEdit(true)}
-            />
-            {isOpenEdit && (
-              <div>
-                <div className="popup-blurred-background" />
-                <Popup_Edit title="Edit Announcement" onClose={() => setIsOpenEdit(false)} />
-              </div>
-            )}
-          </div>
+
           <div className="icon-act">
             <RiDeleteBin6Line
               className="announcement-icon"
@@ -282,60 +308,86 @@ const Finance_Announcements = () => {
             {isOpenDelete && (
               <div>
                 <div className="popup-blurred-background" />
-                <Popup_Delete title="Delete Announcement" onClose={() => setIsOpenDelete(false)} />
+                <Popup_Delete
+                  title="Delete Announcement"
+                  onClose={() => setIsOpenDelete(false)}
+                />
               </div>
             )}
           </div>
         </div>
       </div>
 
-      <table className="announcement-table-finance">
-        <thead>
-          <tr>
-            <th>Select</th>
-            <th>Title</th>
-            <th>Preview</th>
-            <th>Date/Time</th>
-            <th>User ID</th> {/* New column for user_id */}
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {announcements.map((announcement, index) => (
-            <tr
-              key={index}
-              className={selectedIds.includes(index) ? "checked" : ""}
-            >
-              <td>
-                <input
-                  type="checkbox"
-                  checked={selectedIds.includes(index)}
-                  onChange={() => handleSelectAnnouncement(index)}
-                />
-              </td>
-              <td>{announcement.title}</td>
-              <td>{announcement.preview}...</td>
-              <td>{new Date(announcement.timestamp).toLocaleString()}</td>
-              <td>{announcement.userId}</td> {/* Display user_id */}
-              <td>
-                <span
-                  className="view-details-link"
-                  onClick={() => handlePopup(record)}
-                >
-                  <FaRegEye />
-                </span>
-                <button
-                  className="edit-button"
-                  onClick={() => handleEdit(record)}
-                  style={{ marginLeft: "10px" }}
-                >
-                  <BiEditAlt size={20} />
-                </button>
-              </td>
+      {/* Display announcements in a table format */}
+      <div className="announcement-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Select</th>
+              <th>Title</th>
+              <th>Preview</th>
+              <th>Date/Time</th>
+              <th>User ID</th> {/* New column for user_id */}
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {announcements.length > 0 ? (
+              announcements.map((announcement, index) => (
+                <tr
+                  key={index}
+                  className={selectedIds.includes(index) ? "checked" : ""}
+                >
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(index)}
+                      onChange={() => handleSelectAnnouncement(index)}
+                    />
+                  </td>
+                  <td>{announcement.title}</td>
+                  <td>{announcement.preview}...</td>
+                  <td>{new Date(announcement.timestamp).toLocaleString()}</td>
+                  <td>{announcement.userId}</td> {/* Display user_id */}
+                  <td>
+                    <button
+                      className="view-details"
+                      onClick={() => handleViewDetails(announcement)}
+                    >
+                      <FaRegEye size={20} />
+                    </button>
+                    <button
+                      className="edit-button"
+                      onClick={() => handleEdit(announcement)}
+                      style={{ marginLeft: "10px" }}
+                    >
+                      <BiEditAlt size={20} />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6">No announcements available.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {isOpenViewDetails && (
+        <div>
+          <div
+            className="popup-blurred-background"
+            onClick={handleCloseViewDetails}
+          />
+          <Popup_ViewDetails
+            title="View Details"
+            onClose={handleCloseViewDetails}
+            announcement={selectedAnnouncement}
+          />
+        </div>
+      )}
     </div>
   );
 };

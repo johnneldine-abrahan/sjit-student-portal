@@ -10,13 +10,16 @@
   align-items: center;
   gap: 8px;
 }
-.view-details-link {
+.view-details {
   color: #000000;
+  border-style: hidden;
+
+  background: none;
 }
 
 .edit-button {
   border-style: hidden;
-  padding: 15px;
+
   background: none;
 }
 
@@ -113,7 +116,7 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  width: 750px;
+
 }
 
 .popup-blurred-background {
@@ -157,7 +160,7 @@
 }
 
 .view-details-link {
-  color: #0000ff;
+  color: #000000;
 }
 
 .popup-content .input-box {

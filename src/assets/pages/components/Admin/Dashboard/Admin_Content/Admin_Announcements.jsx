@@ -5,7 +5,7 @@ import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 
 import { FaRegEye } from "react-icons/fa";
 
-const Popup_Add = ({ title, onClose }) => {
+const Popup_Add = ({ title, onClose, refreshAnnouncements }) => {
   const [announcementData, setAnnouncementData] = useState({
     announce_to: "",
     announcement_type: "",
@@ -22,13 +22,13 @@ const Popup_Add = ({ title, onClose }) => {
   };
 
   const addAnnouncement = async (announcementData) => {
-    const token = localStorage.getItem("token"); // Assuming you're storing the token in localStorage
+    const token = localStorage.getItem("token");
 
     const response = await fetch("http://localhost:3000/addAnnouncement", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // Adding the token in the Authorization header
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(announcementData),
     });
@@ -37,7 +37,8 @@ const Popup_Add = ({ title, onClose }) => {
       console.log("Unauthorized - You are not authenticated");
     } else if (response.ok) {
       console.log("Announcement added successfully!");
-      onClose(); // Close popup after successful submission
+      refreshAnnouncements(); // Refresh the announcements list
+      onClose(); // Close the popup
     } else {
       console.error("Failed to add announcement:", response.statusText);
     }
@@ -45,7 +46,7 @@ const Popup_Add = ({ title, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addAnnouncement(announcementData); // Call API when form is submitted
+    addAnnouncement(announcementData);
   };
 
   return (
@@ -215,33 +216,58 @@ const Popup_Delete = ({ title, onClose }) => {
   );
 };
 
+const Popup_ViewDetails = ({ title, onClose, announcement }) => {
+  return (
+    <div className="popup-announcements">
+      <div className="popup-header">
+        <h3 className="popup-title">{title}</h3>
+        <button onClick={onClose}>Close</button>
+      </div>
+      <div className="popup-content">
+        <p>Title: {announcement.title}</p>
+        <p>Preview: {announcement.text}</p>
+        <p>Date/Time: {new Date(announcement.timestamp).toLocaleString()}</p>
+        <p>User ID: {announcement.userId}</p>
+      </div>
+    </div>
+  );
+};
+
 const Admin_Announcements = () => {
   const [isOpenAdd, setIsOpenAdd] = useState(false);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
+  const [isOpenViewDetails, setIsOpenViewDetails] = useState(false);
   const [announcements, setAnnouncements] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
+
+  // Function to fetch announcements
+  const fetchAnnouncements = async () => {
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:3000/announcements", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (response.ok) {
+      const data = await response.json();
+      setAnnouncements(data);
+    } else {
+      console.error("Failed to fetch announcements:", response.statusText);
+    }
+  };
 
   // Fetch announcements on component mount
   useEffect(() => {
-    const fetchAnnouncements = async () => {
-      const token = localStorage.getItem("token"); // Assuming you have a token stored in localStorage
-      const response = await fetch("http://localhost:3000/announcements", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setAnnouncements(data);
-      } else {
-        console.error("Failed to fetch announcements:", response.statusText);
-      }
-    };
-
     fetchAnnouncements();
   }, []);
+
+  // Refresh announcements after adding a new one
+  const refreshAnnouncements = () => {
+    fetchAnnouncements(); // Re-fetch the announcements
+  };
 
   const handleSelectAnnouncement = (index) => {
     setSelectedIds((prevSelectedIds) =>
@@ -250,6 +276,17 @@ const Admin_Announcements = () => {
         : [...prevSelectedIds, index]
     );
   };
+
+  const handleViewDetails = (announcement) => {
+    setIsOpenViewDetails(true);
+    setSelectedAnnouncement(announcement);
+  };
+
+  const handleCloseViewDetails = () => {
+    setIsOpenViewDetails(false);
+    setSelectedAnnouncement(null);
+  };
+
 
   return (
     <div className="admin-announcements">
@@ -267,11 +304,11 @@ const Admin_Announcements = () => {
                 <Popup_Add
                   title="Add Announcement"
                   onClose={() => setIsOpenAdd(false)}
+                  refreshAnnouncements={refreshAnnouncements} // Pass the function to Popup_Add
                 />
               </div>
             )}
           </div>
-
           <div className="icon-act">
             <RiDeleteBin6Line
               className="announcement-icon"
@@ -299,47 +336,67 @@ const Admin_Announcements = () => {
               <th>Title</th>
               <th>Preview</th>
               <th>Date/Time</th>
-              <th>User ID</th> {/* New column for user_id */}
+              <th>User ID</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {announcements.map((announcement, index) => (
-              <tr
-                key={index}
-                className={selectedIds.includes(index) ? "checked" : ""}
-              >
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.includes(index)}
-                    onChange={() => handleSelectAnnouncement(index)}
-                  />
-                </td>
-                <td>{announcement.title}</td>
-                <td>{announcement.preview}...</td>
-                <td>{new Date(announcement.timestamp).toLocaleString()}</td>
-                <td>{announcement.userId}</td> {/* Display user_id */}
-                <td>
-                  <span
-                    className="view-details-link"
-                    onClick={() => handlePopup(record)}
-                  >
-                    <FaRegEye />
-                  </span>
-                  <button
-                    className="edit-button"
-                    onClick={() => handleEdit(record)}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    <BiEditAlt size={20} />
-                  </button>
-                </td>
+            {announcements.length > 0 ? (
+              announcements.map((announcement, index) => (
+                <tr
+                  key={index}
+                  className={selectedIds.includes(index) ? "checked" : ""}
+                >
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(index)}
+                      onChange={() => handleSelectAnnouncement(index)}
+                    />
+                  </td>
+                  <td>{announcement.title}</td>
+                  <td>{announcement.preview}...</td>
+                  <td>{new Date(announcement.timestamp).toLocaleString()}</td>
+                  <td>{announcement.userId}</td> {/* Display user_id */}
+                  <td>
+                    <button
+                      className="view-details"
+                      onClick={() => handleViewDetails(announcement)}
+                    >
+                      <FaRegEye size={20} />
+                    </button>
+                    <button
+                      className="edit-button"
+                      onClick={() => handleEdit(announcement)}
+                      style={{ marginLeft: "10px" }}
+                    >
+                      <BiEditAlt size={20} />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6">No announcements available.</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
+
+      {isOpenViewDetails && (
+        <div>
+          <div
+            className="popup-blurred-background"
+            onClick={handleCloseViewDetails}
+          />
+          <Popup_ViewDetails
+            title="View Details"
+            onClose={handleCloseViewDetails}
+            announcement={selectedAnnouncement}
+          />
+        </div>
+      )}
     </div>
   );
 };

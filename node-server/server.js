@@ -569,7 +569,6 @@ app.delete('/deleteFaculty', async (req, res) => {
     }
 });
 
-
 app.post('/addAnnouncement', authenticateToken, async (req, res) => {
     const { announce_to, announcement_type, announcement_title, announcement_text } = req.body;
 
@@ -604,6 +603,25 @@ app.post('/addAnnouncement', authenticateToken, async (req, res) => {
         res.status(500).json({ message: 'Error adding announcement.', error: error.message }); // Include error message in response
     }
 });
+
+// server.js
+app.delete('/deleteAnnouncements', async (req, res) => {
+    const { announcementIds } = req.body;
+  
+    if (!announcementIds || !Array.isArray(announcementIds) || announcementIds.length === 0) {
+      return res.status(400).json({ error: "Invalid request: No announcement IDs provided" });
+    }
+  
+    try {
+      const query = 'DELETE FROM announcementtbl WHERE announcement_id = ANY($1::text[])';
+      await pool.query(query, [announcementIds]);
+      
+      res.status(200).json({ message: "Announcements deleted successfully" });
+    } catch (error) {
+      console.error('Error deleting announcements:', error);
+      res.status(500).json({ error: "Failed to delete announcements" });
+    }
+  });  
 
 app.get('/announcements', authenticateToken, async (req, res) => {
     try {

@@ -12,6 +12,8 @@ const ManageAccounts_Content = () => {
     record: null,
   });
 
+  const [formData, setFormData] = useState({}); // For form data in edit pop-up
+
   // Fetch accounts from the backend when the component mounts
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -26,6 +28,19 @@ const ManageAccounts_Content = () => {
 
     fetchAccounts();
   }, []);
+
+  // Disable scrolling when pop-up is open
+  useEffect(() => {
+    if (popup.show) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [popup]);
 
   // Function to add the new account to the top of the table
   const addNewAccount = (newAccount) => {
@@ -84,6 +99,14 @@ const ManageAccounts_Content = () => {
       show: true,
       record: record,
     });
+
+    // Pre-fill the form with the selected account's data
+    setFormData({
+      first_name: record.first_name,
+      middle_name: record.middle_name,
+      last_name: record.last_name,
+      user_role: record.user_role,
+    });
   };
 
   const handleClose = () => {
@@ -91,6 +114,68 @@ const ManageAccounts_Content = () => {
       show: false,
       record: null,
     });
+    setFormData({});
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const { first_name, middle_name, last_name, password } = formData;
+
+    if (!first_name || !last_name || !password) {
+      console.log("Please fill in all required fields");
+      return;
+    }
+
+    const payload = {
+      first_name,
+      middle_name: middle_name || "", // Middle name is optional
+      last_name,
+      password,
+    };
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/update-account/${popup.record.user_id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Account updated successfully:", result);
+
+        // Update the account in the table
+        setAccountsRecords((prevRecords) =>
+          prevRecords.map((account) =>
+            account.user_id === popup.record.user_id
+              ? { ...account, ...formData }
+              : account
+          )
+        );
+
+        alert("Account updated successfully!");
+        setFormData({});
+        handleClose();
+      } else {
+        const errorResult = await response.json();
+        console.error("Error updating account:", errorResult);
+        alert("Error updating account: " + errorResult.message);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+      alert("Network error while updating account.");
+    }
   };
 
   return (
@@ -148,42 +233,79 @@ const ManageAccounts_Content = () => {
       </div>
 
       {popup.show && (
-        <div className="popup-blurred-background" onClick={handleClose} />
-      )}
-      {popup.show && (
-        <div className="popup-manage-schedule">
-          <div className=" popup-header">
-            <h3>Edit Account</h3>
-            <button onClick={handleClose}>Close</button>
+        <>
+          <div className="popup-blurred-background" onClick={handleClose} />
+          <div className="popup">
+            <div className="popup-header">
+              <h3>Edit Account</h3>
+              <button onClick={handleClose}>Close</button>
+            </div>
+            <div className="popup-content">
+              <form onSubmit={handleSubmit}>
+                <div className="first-row">
+                  <div className="input-box">
+                    <label>
+                      Last Name
+                      <input
+                        type="text"
+                        name="last_name"
+                        value={formData.last_name}
+                        onChange={handleChange}
+                      />
+                    </label>
+                  </div>
+                  <div className="input-box">
+                    <label>
+                      First Name
+                      <input
+                        type="text"
+                        name="first_name"
+                        value={formData.first_name}
+                        onChange={handleChange}
+                      />
+                    </label>
+                  </div>
+                  <div className="input-box">
+                    <label>
+                      Middle Name
+                      <input
+                        type="text"
+                        name="middle_name"
+                        value={formData.middle_name}
+                        onChange={handleChange}
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                <div className="second-row">
+                  <div className="input-box">
+                  <label>
+                      Password
+                      <input
+                        type="text"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                <div className="buttons">
+                  <button
+                    type="submit"
+                    className="btn-box"
+                    name="edit"
+                    id="edit"
+                  >
+                    Done
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-          <div className="popup-content">
-            <form>
-              <div className="input-box">
-                <label>Student ID:</label>
-                <input type="text" value={popup.record.user_id} />
-              </div>
-              <div className="input-box">
-                <label>Last Name:</label>
-                <input type="text" value={popup.record.last_name} />
-              </div>
-              <div className="input-box">
-                <label>First Name:</label>
-                <input type="text" value={popup.record.first_name} />
-              </div>
-              <div className="input-box">
-                <label>Middle Name:</label>
-                <input type="text" value={popup.record.middle_name} />
-              </div>
-              <div className="input-box">
-                <label>User Role:</label>
-                <input type="text" value={popup.record.user_role} />
-              </div>
-              <div class='buttons'>
-                <button type="submit" class="btn-box" name="add" id="add">Done</button>
-              </div>
-            </form>
-          </div>
-        </div>
+        </>
       )}
     </div>
   );

@@ -39,6 +39,14 @@ const ManageSchedule_ContentHeader = () => {
     endTime: '',
   });
 
+  const [tableData, setTableData] = useState([
+    {
+      day: '',
+      startTime: '',
+      endTime: '',
+    },
+  ]);
+
   const handlePopup = (message) => {
     setPopup({
       show: true,
@@ -118,7 +126,15 @@ const ManageSchedule_ContentHeader = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
-  }
+  };
+
+  const handleAddRow = () => {
+    setTableData([...tableData, {
+      day: '',
+      startTime: '',
+      endTime: '',
+    }]);
+  };
 
   return (
     <div className='manage-schedule-header'>
@@ -148,12 +164,7 @@ const ManageSchedule_ContentHeader = () => {
             </div>
             <div className='popup-content'>
               <form onSubmit={handleSubmit}>
-                <div className='first-row'>
-                  <div className='input-box'>
-                    <label>School Year<input type="text" name='schoolyear' /></label>
-                  </div>
-                </div>
-                <div className='first-row'>
+                <div className ='first-row'>
                   <div className='grade-level'>
                     <label>Select Program</label>
                     <label><input type="checkbox" name="program" value="jhs" onChange={handleChange} />Junior Highschool</label>
@@ -167,7 +178,6 @@ const ManageSchedule_ContentHeader = () => {
                         <label>Select Semester</label>
                         <label><input type="checkbox" name="semester" value="first" onChange={handleChange} />FIRST</label>
                         <label><input type="checkbox" name="semester" value="second" onChange={handleChange} />SECOND</label>
-                        <label><input type="checkbox" name="semester" value="summer" onChange={handleChange} />SUMMER</label>
                       </div>
                     </div>
                 </div>
@@ -180,7 +190,8 @@ const ManageSchedule_ContentHeader = () => {
                     </select>
                   </div>
                   <div className='input-box'>
-                    <label>Strand<select>
+                    <label>Strand</label>
+                    <select>
                       <option value=''></option>
                       <option value="stem">Science, Technology, Engineering and Mathematics (STEM)</option>
                       <option value="abm">Accountancy, Business and Management (ABM)</option>
@@ -188,27 +199,22 @@ const ManageSchedule_ContentHeader = () => {
                       <option value="tvl-ia">TVL - Industrial Arts (TVL-IA)</option>
                       <option value="tvl-he">TVL - Home Economics (TVL-HE)</option>
                       <option value="tvl-ict">TVL - Internet Communications Technology (TVL-ICT)</option>
-                    </select></label>
-                  </div>
-                  <div class='input-box'>
-                    <label>Section<input type='text' name='section' /></label>
+                    </select>
                   </div>
                 </div>
 
                 <div className='second-row'>
                   <div className='input-box'>
-                    <label>Subject
+                    <label>Subject</label>
                     <select>
                       <option value=''></option>
                     </select>
-                    </label>
                   </div>
                   <div className='input-box'>
-                    <label>Instructor
+                    <label>Instructor</label>
                     <select>
                       <option value=''></option>
                     </select>
-                    </label>
                   </div>
                 </div>
 
@@ -223,32 +229,34 @@ const ManageSchedule_ContentHeader = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td style={{ border: '1px solid black', padding: '8px' }}>
-                          <select name="day" value={schedule.day} onChange={handleScheduleChange}>
-                            <option value=""></option>
-                            <option value="Monday">Monday</option>
-                            <option value="Tuesday">Tuesday</option>
-                            <option value="Wednesday">Wednesday</option>
-                            <option value="Thursday">Thursday</option>
-                            <option value="Friday">Friday</option>
-                            <option value="Saturday">Saturday</option>
-                            <option value="Sunday">Sunday</option>
-                          </select>
-                        </td>
-                        <td style={{ border: '1px solid black', padding: '8px' }}>
-                          <input type="time" name="startTime" value={schedule.startTime} onChange={handleScheduleChange} />
-                        </td>
-                        <td style={{ border: '1px solid black', padding: '8px' }}>
-                          <input type="time" name="endTime" value={schedule.endTime} onChange={handleScheduleChange} />
-                        </td>
-                        <td style={{ border: '1px solid black', padding: '8px' }}>
-                          <div className='actions'>
-                            <button type='button' className='delete-btn'><FiTrash className='actions-ico' /></button>
-                            <button type='button' className='add-btn'><RiAddLargeFill className='actions-ico'/></button>
-                          </div>
-                        </td>
-                      </tr>
+                      {tableData.map((row, index) => (
+                        <tr key={index}>
+                          <td style={{ border: '1px solid black', padding: '8px' }}>
+                            <select name="day" value={row.day} onChange={(e) => handleScheduleChange(e, index)}>
+                              <option value=""></option>
+                              <option value="Monday">Monday</option>
+                              <option value="Tuesday">Tuesday</option>
+                              <option value="Wednesday">Wednesday</option>
+                              <option value="Thursday">Thursday</option>
+                              <option value="Friday">Friday</option>
+                              <option value="Saturday">Saturday</option>
+                              <option value="Sunday">Sunday</option>
+                            </select>
+                          </td>
+                          <td style={{ border: '1px solid black', padding: '8px' }}>
+                            <input type="time" name="startTime" value={row.startTime} onChange={(e) => handleScheduleChange(e, index)} />
+                          </td>
+                          <td style={{ border: '1px solid black', padding: '8px' }}>
+                            <input type="time" name="endTime" value={row.endTime} onChange={(e) => handleScheduleChange(e, index)} />
+                          </td>
+                          <td style={{ border: '1px solid black', padding: '8px' }}>
+                            <div className='actions'>
+                              <button type='button' className='delete-btn'><FiTrash className='actions-ico' /></button>
+                              <button type='button' className='add-btn' onClick={handleAddRow}><RiAddLargeFill className='actions-ico'/></button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>

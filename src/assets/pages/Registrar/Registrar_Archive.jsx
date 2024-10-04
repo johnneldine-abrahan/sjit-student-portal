@@ -5,7 +5,7 @@ import Archive_Sidebar from '../components/Registrar/Archive/Archive_Sidebar/Arc
 
 const Registrar_Archive = () => {
   useEffect(() => {
-    document.title = "Finance - Dashboard";
+    document.title = "Registrar - Archive";
   }, []);
 
   return (

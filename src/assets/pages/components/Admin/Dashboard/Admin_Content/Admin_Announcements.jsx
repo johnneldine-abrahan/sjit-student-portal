@@ -154,14 +154,17 @@ const Popup_Edit = ({ title, onClose, announcement, refreshAnnouncements }) => {
     const id = announcement.id; // Ensure you're using the correct announcement ID
 
     try {
-      const response = await fetch(`http://localhost:3000/updateAnnouncement/${id}`, {
-        method: "PUT",
- headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(announcementData), // Send updated announcement data
-      });
+      const response = await fetch(
+        `http://localhost:3000/updateAnnouncement/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(announcementData), // Send updated announcement data
+        }
+      );
 
       if (response.status === 401) {
         console.log("Unauthorized - You are not authenticated");
@@ -189,7 +192,11 @@ const Popup_Edit = ({ title, onClose, announcement, refreshAnnouncements }) => {
             <div className="input-box">
               <label>
                 Announce to
-                <select name="announce_to" value={announcementData.announce_to} onChange={handleChange}>
+                <select
+                  name="announce_to"
+                  value={announcementData.announce_to}
+                  onChange={handleChange}
+                >
                   <option value=""></option>
                   <option value="Student">Students</option>
                   <option value="Faculty">Teachers</option>
@@ -201,7 +208,11 @@ const Popup_Edit = ({ title, onClose, announcement, refreshAnnouncements }) => {
             <div className="input-box">
               <label>
                 Announcement type
-                <select name="announcement_type" value={announcementData.announcement_type} onChange={handleChange}>
+                <select
+                  name="announcement_type"
+                  value={announcementData.announcement_type}
+                  onChange={handleChange}
+                >
                   <option value=""></option>
                   <option value="Reminder">Reminder</option>
                   <option value="Event">Event</option>
@@ -250,21 +261,29 @@ const Popup_Edit = ({ title, onClose, announcement, refreshAnnouncements }) => {
       </div>
     </div>
   );
-}
+};
 
-const Popup_Delete = ({ title, onClose, selectedIds, refreshAnnouncements }) => {
+const Popup_Delete = ({
+  title,
+  onClose,
+  selectedIds,
+  refreshAnnouncements,
+}) => {
   const handleDelete = async () => {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch("http://localhost:3000/deleteAnnouncements", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ announcementIds: selectedIds }),
-      });
+      const response = await fetch(
+        "http://localhost:3000/deleteAnnouncements",
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ announcementIds: selectedIds }),
+        }
+      );
 
       if (response.status === 401) {
         console.log("Unauthorized - You are not authenticated");
@@ -274,7 +293,11 @@ const Popup_Delete = ({ title, onClose, selectedIds, refreshAnnouncements }) => 
         onClose();
       } else {
         const errorText = await response.text(); // Get the response text
-        console.error("Failed to delete announcements:", response.statusText, errorText);
+        console.error(
+          "Failed to delete announcements:",
+          response.statusText,
+          errorText
+        );
       }
     } catch (error) {
       console.error("Error deleting announcements:", error);
@@ -308,7 +331,7 @@ const Popup_ViewDetails = ({ title, onClose, announcement }) => {
       </div>
       <div className="popup-content">
         <p>Title: {announcement.title}</p>
-        <p >Preview: {announcement.preview}</p>
+        <p>Preview: {announcement.text}</p>
         <p>Date/Time: {new Date(announcement.timestamp).toLocaleString()}</p>
         <p>User ID: {announcement.userId}</p>
       </div>
@@ -356,18 +379,24 @@ const Admin_Announcements = () => {
   // Fetch a specific announcement by ID
   const fetchAnnouncementDetails = async (id) => {
     const token = localStorage.getItem("token");
-    const response = await fetch(`http://localhost:3000/getAnnouncement/${id}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `http://localhost:3000/getAnnouncement/${id}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();
       return data; // Return the fetched data
     } else {
-      console.error("Failed to fetch announcement details:", response.statusText);
+      console.error(
+        "Failed to fetch announcement details:",
+        response.statusText
+      );
     }
   };
 
@@ -405,7 +434,13 @@ const Admin_Announcements = () => {
   };
 
   const handleDeleteClick = () => {
-    setIsOpenDelete(true);
+    if (selectedIds.length > 0) {
+      setIsOpenDelete(true);
+    } else {
+      setIsOpenDelete(true);
+      setIsOpenDelete(true);
+
+    }
   };
 
   return (
@@ -433,17 +468,30 @@ const Admin_Announcements = () => {
             <RiDeleteBin6Line
               className="announcement-icon"
               onClick={handleDeleteClick}
-              disabled={selectedIds.length === 0}
             />
             {isOpenDelete && (
               <div>
                 <div className="popup-blurred-background" />
-                <Popup_Delete
-                  title="Delete Announcement"
-                  onClose={() => setIsOpenDelete(false)}
-                  selectedIds={selectedIds} // Pass selected IDs
-                  refreshAnnouncements={refreshAnnouncements}
-                />
+                {selectedIds.length > 0 ? (
+                  <Popup_Delete
+                    title="Delete Announcement"
+                    onClose={() => setIsOpenDelete(false)}
+                    selectedIds={selectedIds} // Pass selected IDs
+                    refreshAnnouncements={refreshAnnouncements}
+                  />
+                ) : (
+                  <div className="popup-announcements">
+                    <div className="popup-header">
+                      <h3 className="popup-title">Delete Announcement</h3>
+                      <button onClick={() => setIsOpenDelete(false)}>
+                        Close
+                      </button>
+                    </div>
+                    <div className="popup-content">
+                      <p>Please select at least one announcement to delete.</p>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -461,7 +509,7 @@ const Admin_Announcements = () => {
               <th>Preview</th>
               <th>Date/Time</th>
               <th>User ID</th>
-              <th>Actions</ th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -513,7 +561,7 @@ const Admin_Announcements = () => {
 
       {isOpenEdit && (
         <div>
-           <div className="popup-blurred-background" />
+          <div className="popup-blurred-background" />
           <Popup_Edit
             title="Edit Announcement"
             onClose={handleCloseEdit}
@@ -525,7 +573,10 @@ const Admin_Announcements = () => {
 
       {isOpenViewDetails && (
         <div>
-          <div className="popup-blurred-background" onClick={handleCloseViewDetails} />
+          <div
+            className="popup-blurred-background"
+            onClick={handleCloseViewDetails}
+          />
           <Popup_ViewDetails
             title="View Details"
             onClose={handleCloseViewDetails}

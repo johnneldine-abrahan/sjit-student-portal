@@ -202,7 +202,11 @@ const ManageAccounts_Content = () => {
             </thead>
             <tbody>
               {accountsRecords.map((record) => (
-                <tr key={record.user_id}>
+                <tr key={record.user_id}className={
+                  selectedAccounts.includes(record.user_id)
+                    ? "checked"
+                    : ""
+                }>
                   <td>
                     <input
                       type="checkbox"

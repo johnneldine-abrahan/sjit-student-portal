@@ -50,44 +50,6 @@
     cursor: pointer;
 }
 
-.student-records {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-
-    border-radius: 10px;
-    margin-top: 20px;
-  }
-
-
-  .student-records table {
-    width: 100%;
-    border-collapse: collapse;
-    border-style: hidden;
-    border-radius: 10px; /* Add border radius here */
-    overflow: hidden; /* Add this to ensure the border radius is applied correctly */
-  }
-
-  .student-records td {
-    border-style: hidden;
-    padding: 10px;
-    text-align: left;
-  }
-
-  .student-records th {
-    border-style: hidden;
-    padding: 10px;
-    text-align: left;
-  }
-
-  .student-records th {
-    background-color: #f0f0f0;
-  }
-
-  .student-records tr:nth-child(even) {
-    background-color: #f5f5f5;
-  }
-
   .view-details-link:hover {
     cursor: pointer;
   }

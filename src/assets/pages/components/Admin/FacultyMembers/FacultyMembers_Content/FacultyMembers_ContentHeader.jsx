@@ -1,11 +1,15 @@
-import React, {useState, useEffect} from 'react'
-import './FacultyMembers_Content.css'
+import React, { useState } from "react";
+import "./FacultyMembers_Content.css";
 import { BiSearch } from "react-icons/bi";
 import { BiEditAlt } from "react-icons/bi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 import { RiInboxUnarchiveLine } from "react-icons/ri";
 
-const FacultyMembers_ContentHeader = ({updateFacultyRecords, onDelete}) => {
+const FacultyMembers_ContentHeader = ({
+  updateFacultyRecords,
+  onDelete,
+  selectedFacultyIds,
+}) => {
   const [popup, setPopup] = useState({
     add: false,
     edit: false,
@@ -14,16 +18,15 @@ const FacultyMembers_ContentHeader = ({updateFacultyRecords, onDelete}) => {
   });
 
   const [formData, setFormData] = useState({
-    last_name: '',
-    first_name: '',
-    middle_name: '',
-  })
+    last_name: "",
+    first_name: "",
+    middle_name: "",
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
 
   const handlePopup = (type) => {
     setPopup((prevPopup) => ({ ...prevPopup, [type]: !prevPopup[type] }));
@@ -44,100 +47,118 @@ const FacultyMembers_ContentHeader = ({updateFacultyRecords, onDelete}) => {
     const adjustedData = { ...formData };
 
     try {
-      const response = await fetch('http://localhost:3000/registerFaculty', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3000/registerFaculty", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(adjustedData),
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        alert(`Failed to register faculty: ${errorText || 'Unknown error'}`);
+        alert(`Failed to register faculty: ${errorText || "Unknown error"}`);
         return;
       }
 
-      alert('Faculty successfully registered!');
+      alert("Faculty successfully registered!");
 
-      const updatedResponse = await fetch('http://localhost:3000/faculties');
+      const updatedResponse = await fetch("http://localhost:3000/faculties");
       const updatedRecords = await updatedResponse.json();
-      await updateFacultyRecords(updatedRecords);  // Call the passed function to refresh the faculty list
+      await updateFacultyRecords(updatedRecords); // Call the passed function to refresh the faculty list
 
       setFormData({
-        last_name: '',
-        first_name: '',
-        middle_name: '',
+        last_name: "",
+        first_name: "",
+        middle_name: "",
       });
 
       setPopup({ add: false });
-
-
     } catch (error) {
-      alert('Network error: Failed to reach the server.');
+      alert("Network error: Failed to reach the server.");
     }
   };
 
-  // Disable scrolling when modal is open
-  useEffect(() => {
-    if (popup.add) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset'; // Reset overflow when modal is closed
-    }
-
-    // Clean up the effect when the component unmounts or modal closes
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [popup]);
-
   return (
-    <div className='facultymembers-header'>
-      <h1 className='header-title'>Faculty Members</h1>
-      <div className='facultymembers-activity'>
-        <div className='search-box'>
-          <input type="text" placeholder='Search...' />
-          <BiSearch className='search-icon' />
+    <div className="facultymembers-header">
+      <h1 className="header-title">Faculty Members</h1>
+      <div className="facultymembers-activity">
+        <div className="search-box">
+          <input type="text" placeholder="Search..." />
+          <BiSearch className="search-icon" />
         </div>
-        <div className='buttons-header'>
-          <div className='buttons-act'>
-            <RiAddLargeFill className='buttons-icon' onClick={() => handlePopup('add')} />
+        <div className="buttons-header">
+          <div className="buttons-act">
+            <RiAddLargeFill
+              className="buttons-icon"
+              onClick={() => handlePopup("add")}
+            />
           </div>
-          <div className='buttons-act'>
-            <RiDeleteBin6Line className='buttons-icon' onClick={() => handlePopup('delete')} />
+          <div className="buttons-act">
+            <RiDeleteBin6Line
+              className="buttons-icon"
+              onClick={() => handlePopup("delete")}
+            />
           </div>
-          <div className='buttons-act'>
-            <RiInboxUnarchiveLine className='buttons-icon' onClick={() => handlePopup('archive')} />
+          <div className="buttons-act">
+            <RiInboxUnarchiveLine
+              className="buttons-icon"
+              onClick={() => handlePopup("archive")}
+            />
           </div>
 
           {/* Add Pop-up */}
           {popup.add && (
             <>
-              <div className='popup-blurred-background' onClick={handleClose} />
-              <div className='popup'>
-                <div className='popup-header'>
+              <div className="popup-blurred-background" onClick={handleClose} />
+              <div className="popup">
+                <div className="popup-header">
                   <h3>Add Teacher</h3>
                   <button onClick={handleClose}>Close</button>
                 </div>
-                <div className='popup-content'>
+                <div className="popup-content">
                   <form onSubmit={handleSubmit}>
-                    <div className='first-row'>
-                      <div className='input-box'>
-                        <label>Last Name<input type="text" name="last_name" value={formData.last_name} onChange={handleChange}/></label>
+                    <div className="first-row">
+                      <div className="input-box">
+                        <label>
+                          Last Name
+                          <input
+                            type="text"
+                            name="last_name"
+                            value={formData.last_name}
+                            onChange={handleChange}
+                          />
+                        </label>
                       </div>
-                      <div className='input-box'>
-                        <label>First Name<input type="text" name="first_name" value={formData.first_name} onChange={handleChange}/></label>
+                      <div className="input-box">
+                        <label>
+                          First Name
+                          <input
+                            type="text"
+                            name="first_name"
+                            value={formData.first_name}
+                            onChange={handleChange}
+                          />
+                        </label>
                       </div>
-                      <div className='input-box'>
-                        <label>Middle Name<input type="text" name="middle_name" value={formData.middle_name} onChange={handleChange}/></label>
+                      <div className="input-box">
+                        <label>
+                          Middle Name
+                          <input
+                            type="text"
+                            name="middle_name"
+                            value={formData.middle_name}
+                            onChange={handleChange}
+                          />
+                        </label>
                       </div>
                     </div>
 
-                    <div class='buttons'>
-                      <button type="submit" class="btn-box" name="add" id="add">Done</button>
+                    <div class="buttons">
+                      <button type="submit" class="btn-box" name="add" id="add">
+                        Done
+                      </button>
                     </div>
-
                   </form>
                 </div>
               </div>
@@ -146,47 +167,75 @@ const FacultyMembers_ContentHeader = ({updateFacultyRecords, onDelete}) => {
 
           {/* Delete Pop-up */}
           {popup.delete && (
-              <>
-                <div className='popup-blurred-background' onClick={handleClose} />
-                <div className='popup'>
-                  <div className='popup-header'>
-                    <h3>Delete Teacher</h3>
-                    <button onClick={handleClose}>Close</button>
-                  </div>
-                  <div className='popup-content'>
-                    <p>Are you sure you want to delete the selected teacher? This action is cannot be undone.</p>
-                    <div className='buttons'>
-                      <button type="submit" class="btn-box" name="delete" id="delete" onClick={() => {onDelete(); handleClose()}}>Delete</button>
-                    </div>
+            <>
+              <div className="popup-blurred-background" onClick={handleClose} />
+              <div className="popup">
+                <div className="popup-header">
+                  <h3>Delete Teacher</h3>
+                  <button onClick={handleClose}>Close</button>
+                </div>
+                <div className="popup-content">
+                  {selectedFacultyIds.length > 0 ? (
+                    <p>
+                      Are you sure you want to delete the selected teacher? This
+                      action is cannot be undone.
+                    </p>
+                  ) : (
+                    <p>
+                      No selected faculty member. Please select at least one
+                      faculty member to delete.
+                    </p>
+                  )}
+                  <div className="buttons">
+                    {selectedFacultyIds.length > 0 && (
+                      <button
+                        type="submit"
+                        class="btn-box"
+                        name="delete"
+                        id="delete"
+                        onClick={() => {
+                          onDelete();
+                          handleClose();
+                        }}
+                      >
+                        Delete
+                      </button>
+                    )}
                   </div>
                 </div>
-              </>
-            )}
+              </div>
+            </>
+          )}
 
-            {/* Archive Pop-up */}
-            {popup.archive && (
-              <>
-                <div className='popup-blurred-background' onClick={handleClose} />
-                <div className='popup'>
-                  <div className='popup-header'>
-                    <h3>Archive Teacher</h3>
-                    <button onClick={handleClose}>Close</button>
-                  </div>
-                  <div className='popup-content'>
+          {/* Archive Pop-up */}
+          {popup.archive && (
+            <>
+              <div className="popup-blurred-background" onClick={handleClose} />
+              <div className="popup">
+                <div className="popup-header">
+                  <h3>Archive Teacher</h3>
+                  <button onClick={handleClose}>Close</button>
+                </div>
+                <div className="popup-content">
                   <p>Do you want to archive the selected teacher?</p>
-                  <div className='buttons'>
-                    <button type="submit" class="btn-box" name="archive" id="archive">Archive</button>
+                  <div className="buttons">
+                    <button
+                      type="submit"
+                      class="btn-box"
+                      name="archive"
+                      id="archive"
+                    >
+                      Archive
+                    </button>
                   </div>
                 </div>
-                </div>
-              </>
-            )}
-
+              </div>
+            </>
+          )}
         </div>
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default FacultyMembers_ContentHeader
+export default FacultyMembers_ContentHeader;

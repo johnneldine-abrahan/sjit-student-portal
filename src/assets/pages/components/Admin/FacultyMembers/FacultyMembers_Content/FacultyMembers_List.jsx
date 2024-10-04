@@ -109,7 +109,6 @@ const FacultyMembers_List = ({
           </div>
         </div>
       )}
-
       {editPopup.show && (
         <div className="popup-blurred-background" onClick={handleClose} />
       )}
@@ -137,8 +136,10 @@ const FacultyMembers_List = ({
                 <label>Middle Name:</label>
                 <input type="text" value={editPopup.record.middle_name} />
               </div>
-              <div class='buttons'>
-                <button type="submit" class="btn-box" name="add" id="add">Done</button>
+              <div class="buttons">
+                <button type="submit" class="btn-box" name="add" id="add">
+                  Done
+                </button>
               </div>
             </form>
           </div>

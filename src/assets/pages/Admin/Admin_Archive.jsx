@@ -5,7 +5,7 @@ import Archive_Sidebar from '../components/Admin/Archive/Archive_Sidebar/Archive
 
 const Admin_Archive = () => {
   useEffect(() => {
-    document.title = "Finance - Dashboard";
+    document.title = "Admin - Archive";
   }, []);
 
   return (
@@ -14,9 +14,9 @@ const Admin_Archive = () => {
         <Archive_Sidebar />
             <div className='admin-main-content'>
                 <Archive_Content />
-                
+
             </div>
-      
+
         </div>
     </div>
   )

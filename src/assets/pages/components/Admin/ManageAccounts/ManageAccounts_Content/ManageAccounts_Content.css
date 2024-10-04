@@ -12,34 +12,36 @@
   color: #150f57;
 }
 .Accounts-records {
-  display: flex;
+
   flex-direction: column;
   gap: 5px;
 
-  border-radius: 10px;
-}
-.Accounts-records table {
+
   margin-top: 20px;
+}
+
+.Accounts-records table {
   width: 100%;
   border-collapse: collapse;
-  border-radius: 10px; /* Add border radius here */
-  overflow: hidden; /* Add this to ensure the border radius is applied correctly */
+
+
   text-transform: uppercase;
 }
 
 .Accounts-records td {
-  border-bottom: 1px solid #ccc; /* Add border at the bottom only */
+  border-bottom: 1px solid #000000; /* Add border at the bottom only */
   padding: 10px;
   text-align: left;
 }
 
 .Accounts-records th {
-  border-bottom: 1px solid #ccc; /* Add border at the bottom only */
+  border-bottom: 1px solid #000000; /* Add border at the bottom only */
   padding: 10px;
   text-align: left;
+  pointer-events: none; /* Prevent any hover effect */
 }
 
-.Accounts-records tbody tr:hover {
+.Accounts-records tr:hover {
   background-color: #7b8bbc; /* change this to your desired hover color */
   cursor: pointer;
 }
@@ -48,13 +50,9 @@
   background-color: #7b8bbc; /* change this to your desired checked color */
 }
 
-.Accounts-records tbody tr:nth-child(even):hover {
-  background-color: #7b8bbc;
-}
 
-.Accounts-records tbody tr.checked:nth-child(even) {
-  background-color: #7b8bbc;
-}
+
+
 
 .view-details-link:hover {
   cursor: pointer;

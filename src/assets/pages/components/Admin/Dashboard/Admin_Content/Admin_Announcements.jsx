@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "./Admin_Announcements.css";
 import { BiEditAlt } from "react-icons/bi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
-
 import { FaRegEye } from "react-icons/fa";
 
 const Popup_Add = ({ title, onClose, refreshAnnouncements }) => {
@@ -65,6 +64,7 @@ const Popup_Add = ({ title, onClose, refreshAnnouncements }) => {
                   <option value=""></option>
                   <option value="Student">Students</option>
                   <option value="Faculty">Teachers</option>
+                  <option value="Finance">Finance</option>
                   <option value="All">All</option>
                 </select>
               </label>
@@ -121,12 +121,60 @@ const Popup_Add = ({ title, onClose, refreshAnnouncements }) => {
   );
 };
 
-const Popup_Edit = ({ title, onClose }) => {
-  const handleSubmit = (e) => {
+const Popup_Edit = ({ title, onClose, announcement, refreshAnnouncements }) => {
+  const [announcementData, setAnnouncementData] = useState({
+    announce_to: "",
+    announcement_type: "",
+    announcement_title: "",
+    announcement_text: "",
+  });
+
+  useEffect(() => {
+    if (announcement) {
+      setAnnouncementData({
+        announce_to: announcement.announce_to || "",
+        announcement_type: announcement.announcement_type || "",
+        announcement_title: announcement.announcement_title || "",
+        announcement_text: announcement.announcement_text || "",
+      });
+    }
+  }, [announcement]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setAnnouncementData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted");
-    // Handle form submission logic here
-    onClose(); // Close the popup after submitting
+    const token = localStorage.getItem("token");
+    const id = announcement.id; // Ensure you're using the correct announcement ID
+
+    try {
+      const response = await fetch(`http://localhost:3000/updateAnnouncement/${id}`, {
+        method: "PUT",
+ headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(announcementData), // Send updated announcement data
+      });
+
+      if (response.status === 401) {
+        console.log("Unauthorized - You are not authenticated");
+      } else if (response.ok) {
+        console.log("Announcement updated successfully!");
+        refreshAnnouncements(); // Refresh announcements after update
+        onClose(); // Close the popup
+      } else {
+        console.error("Failed to update announcement:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error updating announcement:", error);
+    }
   };
 
   return (
@@ -141,7 +189,7 @@ const Popup_Edit = ({ title, onClose }) => {
             <div className="input-box">
               <label>
                 Announce to
-                <select>
+                <select name="announce_to" value={announcementData.announce_to} onChange={handleChange}>
                   <option value=""></option>
                   <option value="Student">Students</option>
                   <option value="Faculty">Teachers</option>
@@ -152,8 +200,8 @@ const Popup_Edit = ({ title, onClose }) => {
             </div>
             <div className="input-box">
               <label>
-                Announce type
-                <select>
+                Announcement type
+                <select name="announcement_type" value={announcementData.announcement_type} onChange={handleChange}>
                   <option value=""></option>
                   <option value="Reminder">Reminder</option>
                   <option value="Event">Event</option>
@@ -168,7 +216,12 @@ const Popup_Edit = ({ title, onClose }) => {
             <div className="input-box">
               <label>
                 Announcement Title
-                <input type="text" name="textAnnouncement" />
+                <input
+                  type="text"
+                  name="announcement_title"
+                  value={announcementData.announcement_title}
+                  onChange={handleChange}
+                />
               </label>
             </div>
           </div>
@@ -177,13 +230,19 @@ const Popup_Edit = ({ title, onClose }) => {
             <div className="input-box">
               <label>
                 Announcement Details
-                <textarea name="announcement-details" rows={5} cols={40} />
+                <textarea
+                  name="announcement_text"
+                  rows={5}
+                  cols={40}
+                  value={announcementData.announcement_text}
+                  onChange={handleChange}
+                />
               </label>
             </div>
           </div>
 
           <div className="buttons">
-            <button type="submit" className="btn-box" name="add" id="add">
+            <button type="submit" className="btn-box" name="edit" id="edit">
               Done
             </button>
           </div>
@@ -191,44 +250,48 @@ const Popup_Edit = ({ title, onClose }) => {
       </div>
     </div>
   );
-};
+}
 
-const Popup_Delete = ({ title, onClose, selectedIds, announcements, refreshAnnouncements }) => {
+const Popup_Delete = ({ title, onClose, selectedIds, refreshAnnouncements }) => {
   const handleDelete = async () => {
-    const selectedTitles = selectedIds.map(id => announcements[id].title);
     const token = localStorage.getItem("token");
 
-    const response = await fetch("http://localhost:3000/deleteAnnouncements", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ announcementTitles: selectedTitles }),
-    });
+    try {
+      const response = await fetch("http://localhost:3000/deleteAnnouncements", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ announcementIds: selectedIds }),
+      });
 
-    if (response.ok) {
-      console.log("Announcements deleted successfully!");
-      refreshAnnouncements(); // Refresh the announcements list
-      onClose(); // Close the popup
-    } else {
-      console.error("Failed to delete announcements:", response.statusText);
+      if (response.status === 401) {
+        console.log("Unauthorized - You are not authenticated");
+      } else if (response.ok) {
+        console.log("Announcements deleted successfully!");
+        refreshAnnouncements();
+        onClose();
+      } else {
+        const errorText = await response.text(); // Get the response text
+        console.error("Failed to delete announcements:", response.statusText, errorText);
+      }
+    } catch (error) {
+      console.error("Error deleting announcements:", error);
     }
   };
 
   return (
-    <div className="popup">
+    <div className="popup-announcements">
       <div className="popup-header">
         <h3 className="popup-title">{title}</h3>
         <button onClick={onClose}>Close</button>
       </div>
       <div className="popup-content">
-        <p>
-          Are you sure you want to delete the selected announcement(s)? This action cannot be undone.
-        </p>
+        <p>Are you sure you want to delete the selected announcements?</p>
         <div className="buttons">
-          <button onClick={handleDelete} className="btn-box" name="delete" id="delete">
-            Delete
+          <button type="button" className="btn-box" onClick={handleDelete}>
+            Done
           </button>
         </div>
       </div>
@@ -245,7 +308,7 @@ const Popup_ViewDetails = ({ title, onClose, announcement }) => {
       </div>
       <div className="popup-content">
         <p>Title: {announcement.title}</p>
-        <p>Preview: {announcement.text}</p>
+        <p >Preview: {announcement.preview}</p>
         <p>Date/Time: {new Date(announcement.timestamp).toLocaleString()}</p>
         <p>User ID: {announcement.userId}</p>
       </div>
@@ -271,6 +334,7 @@ const Admin_Announcements = () => {
         Authorization: `Bearer ${token}`,
       },
     });
+
     if (response.ok) {
       const data = await response.json();
       setAnnouncements(data);
@@ -284,20 +348,53 @@ const Admin_Announcements = () => {
     fetchAnnouncements();
   }, []);
 
-  // Refresh announcements after adding a new one
+  // Refresh announcements after adding or editing
   const refreshAnnouncements = () => {
     fetchAnnouncements(); // Re-fetch the announcements
   };
 
-  const handleSelectAnnouncement = (index) => {
-    setSelectedIds((prevSelectedIds) =>
-      prevSelectedIds.includes(index)
-        ? prevSelectedIds.filter((id) => id !== index)
-        : [...prevSelectedIds, index]
-    );
+  // Fetch a specific announcement by ID
+  const fetchAnnouncementDetails = async (id) => {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`http://localhost:3000/getAnnouncement/${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data; // Return the fetched data
+    } else {
+      console.error("Failed to fetch announcement details:", response.statusText);
+    }
   };
 
-  const handleViewDetails = (announcement) => {
+  // Handle selecting announcement for editing
+  const handleEdit = async (announcement) => {
+    const details = await fetchAnnouncementDetails(announcement.id); // Fetch details using ID
+    setSelectedAnnouncement(details); // Set the fetched details
+    setIsOpenEdit(true); // Open the edit popup
+  };
+
+  const handleSelectAnnouncement = (id) => {
+    setSelectedIds((prevSelectedIds) => {
+      if (prevSelectedIds.includes(id)) {
+        return prevSelectedIds.filter((selectedId) => selectedId !== id);
+      } else {
+        return [...prevSelectedIds, id];
+      }
+    });
+  };
+
+  // Closing the edit popup
+  const handleCloseEdit = () => {
+    setIsOpenEdit(false);
+    setSelectedAnnouncement(null); // Clear the selected announcement
+  };
+
+  const handleViewDetails = async (announcement) => {
     setIsOpenViewDetails(true);
     setSelectedAnnouncement(announcement);
   };
@@ -307,6 +404,9 @@ const Admin_Announcements = () => {
     setSelectedAnnouncement(null);
   };
 
+  const handleDeleteClick = () => {
+    setIsOpenDelete(true);
+  };
 
   return (
     <div className="admin-announcements">
@@ -332,7 +432,8 @@ const Admin_Announcements = () => {
           <div className="icon-act">
             <RiDeleteBin6Line
               className="announcement-icon"
-              onClick={() => setIsOpenDelete(true)}
+              onClick={handleDeleteClick}
+              disabled={selectedIds.length === 0}
             />
             {isOpenDelete && (
               <div>
@@ -340,8 +441,7 @@ const Admin_Announcements = () => {
                 <Popup_Delete
                   title="Delete Announcement"
                   onClose={() => setIsOpenDelete(false)}
-                  selectedIds={selectedIds}
-                  announcements={announcements}
+                  selectedIds={selectedIds} // Pass selected IDs
                   refreshAnnouncements={refreshAnnouncements}
                 />
               </div>
@@ -356,31 +456,35 @@ const Admin_Announcements = () => {
           <thead>
             <tr>
               <th>Select</th>
+              <th>Announcement ID</th>
               <th>Title</th>
               <th>Preview</th>
               <th>Date/Time</th>
               <th>User ID</th>
-              <th>Actions</th>
+              <th>Actions</ th>
             </tr>
           </thead>
           <tbody>
             {announcements.length > 0 ? (
-              announcements.map((announcement, index) => (
+              announcements.map((announcement) => (
                 <tr
-                  key={index}
-                  className={selectedIds.includes(index) ? "checked" : ""}
+                  key={announcement.id}
+                  className={
+                    selectedIds.includes(announcement.id) ? "checked" : ""
+                  }
                 >
                   <td>
                     <input
                       type="checkbox"
-                      checked={selectedIds.includes(index)}
-                      onChange={() => handleSelectAnnouncement(index)}
+                      checked={selectedIds.includes(announcement.id)}
+                      onChange={() => handleSelectAnnouncement(announcement.id)}
                     />
                   </td>
+                  <td>{announcement.id}</td>
                   <td>{announcement.title}</td>
                   <td>{announcement.preview}...</td>
                   <td>{new Date(announcement.timestamp).toLocaleString()}</td>
-                  <td>{announcement.userId}</td> {/* Display user_id */}
+                  <td>{announcement.userId}</td>
                   <td>
                     <button
                       className="view-details"
@@ -400,19 +504,28 @@ const Admin_Announcements = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="6">No announcements available.</td>
+                <td colSpan={6}>No announcements found.</td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
 
+      {isOpenEdit && (
+        <div>
+           <div className="popup-blurred-background" />
+          <Popup_Edit
+            title="Edit Announcement"
+            onClose={handleCloseEdit}
+            announcement={selectedAnnouncement} // Pass the selected announcement for editing
+            refreshAnnouncements={refreshAnnouncements} // Pass the function to refresh announcements
+          />
+        </div>
+      )}
+
       {isOpenViewDetails && (
         <div>
-          <div
-            className="popup-blurred-background"
-            onClick={handleCloseViewDetails}
-          />
+          <div className="popup-blurred-background" onClick={handleCloseViewDetails} />
           <Popup_ViewDetails
             title="View Details"
             onClose={handleCloseViewDetails}

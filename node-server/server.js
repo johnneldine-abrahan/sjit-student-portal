@@ -291,25 +291,25 @@ app.get('/getStudentData/:studentId', async (req, res) => {
     try {
         // Query student data from studenttbl
         const studentData = await pool.query(`
-            SELECT student_id, 
-                   first_name, 
-                   middle_name, 
-                   last_name, 
-                   lrn, 
+            SELECT student_id,
+                   first_name,
+                   middle_name,
+                   last_name,
+                   lrn,
                    TO_CHAR(birth_date, 'YYYY-MM-DD') AS birth_date, -- Convert to string
-                   sex, 
-                   place_of_birth, 
-                   nationality, 
-                   religion, 
-                   civil_status, 
-                   birth_order, 
-                   contact_number, 
-                   program, 
-                   grade_level, 
-                   strand, 
-                   financial_support, 
+                   sex,
+                   place_of_birth,
+                   nationality,
+                   religion,
+                   civil_status,
+                   birth_order,
+                   contact_number,
+                   program,
+                   grade_level,
+                   strand,
+                   financial_support,
                    scholarship_grant
-            FROM studenttbl 
+            FROM studenttbl
             WHERE student_id = $1
         `, [studentId]);
 
@@ -320,44 +320,44 @@ app.get('/getStudentData/:studentId', async (req, res) => {
 
         // Query school history data from school_historytbl
         const schoolHistoryData = await pool.query(`
-            SELECT school_name, 
-                   years_attended, 
-                   honors_awards, 
-                   school_address 
-            FROM school_historytbl 
+            SELECT school_name,
+                   years_attended,
+                   honors_awards,
+                   school_address
+            FROM school_historytbl
             WHERE student_id = $1
         `, [studentId]);
 
         // Query address data from addresstbl
         const addressData = await pool.query(`
-            SELECT address, 
-                   city_municipality, 
-                   province, 
-                   country, 
-                   zip_code 
-            FROM address_tbl 
+            SELECT address,
+                   city_municipality,
+                   province,
+                   country,
+                   zip_code
+            FROM address_tbl
             WHERE student_id = $1
         `, [studentId]);
 
         // Query contact data from contacttbl
         const contactData = await pool.query(`
-            SELECT name_father, 
-                   occupation_father, 
-                   contact_father, 
-                   name_mother, 
-                   occupation_mother, 
-                   contact_mother 
-            FROM contacttbl 
+            SELECT name_father,
+                   occupation_father,
+                   contact_father,
+                   name_mother,
+                   occupation_mother,
+                   contact_mother
+            FROM contacttbl
             WHERE student_id = $1
         `, [studentId]);
 
         // Query emergency contact data from emergency_contacttbl
         const emergencyContactData = await pool.query(`
-            SELECT guardian_name, 
-                   relationship, 
-                   guardian_address, 
-                   contact_guardian 
-            FROM emergency_contacttbl 
+            SELECT guardian_name,
+                   relationship,
+                   guardian_address,
+                   contact_guardian
+            FROM emergency_contacttbl
             WHERE student_id = $1
         `, [studentId]);
 
@@ -610,27 +610,71 @@ app.post('/addAnnouncement', authenticateToken, async (req, res) => {
     }
 });
 
+app.get('/getAnnouncement/:id', async (req, res) => {
+    const { id } = req.params;  // Assuming you will pass the announcement ID in the URL
 
+    try {
+        const query = 'SELECT announce_to, announcement_type, announcement_title, announcement_text, announcement_by FROM announcementtbl WHERE announcement_id = $1';
+        const result = await pool.query(query, [id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Announcement not found" });
+        }
+
+        // Include the announcement ID in the response
+        res.status(200).json({ id: id, ...result.rows[0] }); // Send the found data with ID
+    } catch (error) {
+        console.error('Error fetching announcement:', error);
+        res.status(500).json({ error: "Failed to fetch announcement" });
+    }
+});
+
+app.put('/updateAnnouncement/:id', async (req, res) => {
+    const { id } = req.params;  // Extract the ID from the URL
+    const { announce_to, announcement_type, announcement_title, announcement_text } = req.body;
+
+    try {
+      const query = `
+        UPDATE announcementtbl
+        SET announce_to = $1, announcement_type = $2, announcement_title = $3, announcement_text = $4
+        WHERE announcement_id = $5
+      `;
+      const result = await pool.query(query, [
+        announce_to, announcement_type, announcement_title, announcement_text, id
+      ]);
+
+      if (result.rowCount === 0) {
+        // No matching record found, return 404
+        return res.status(404).json({ message: 'Announcement not found or no changes made.' });
+      }
+
+      res.status(200).json({ message: 'Announcement updated successfully.' });
+    } catch (error) {
+      console.error("Error updating announcement:", error);
+      res.status(500).json({ message: 'Error updating announcement.', error: error.message });
+    }
+  });  
 
 app.delete('/deleteAnnouncements', async (req, res) => {
-    const { announcementTitles } = req.body;
+    const { announcementIds } = req.body;  // Change to announcementIds
 
-    console.log("Received announcement titles:", announcementTitles); // Add this line
+    console.log("Received announcement IDs:", announcementIds); // Updated log message
 
-    if (!announcementTitles || !Array.isArray(announcementTitles) || announcementTitles.length === 0) {
-      return res.status(400).json({ error: "Invalid request: No announcement titles provided" });
+    if (!announcementIds || !Array.isArray(announcementIds) || announcementIds.length === 0) {
+      return res.status(400).json({ error: "Invalid request: No announcement IDs provided" });
     }
 
     try {
-      const query = 'DELETE FROM announcementtbl WHERE announcement_title = ANY($1::text[])';
-      await pool.query(query, [announcementTitles]);
-      
+      const query = 'DELETE FROM announcementtbl WHERE announcement_id = ANY($1)';  // Update the query to use announcement_id
+      await pool.query(query, [announcementIds]);  // Use announcementIds in the query
+
       res.status(200).json({ message: "Announcements deleted successfully" });
     } catch (error) {
       console.error('Error deleting announcements:', error);
       res.status(500).json({ error: "Failed to delete announcements" });
     }
 });
+
 
 app.get('/announcements', authenticateToken, async (req, res) => {
     try {
@@ -712,11 +756,11 @@ app.put('/update-account/:id', (req, res) => {
 
     // Correct SQL Query for PostgreSQL
     const query = `
-        UPDATE accountstbl 
-        SET 
-            first_name = $1, 
-            middle_name = $2, 
-            last_name = $3, 
+        UPDATE accountstbl
+        SET
+            first_name = $1,
+            middle_name = $2,
+            last_name = $3,
             password = $4
         WHERE user_id = $5;
     `;

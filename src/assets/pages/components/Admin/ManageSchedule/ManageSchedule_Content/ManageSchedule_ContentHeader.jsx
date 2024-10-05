@@ -292,6 +292,12 @@ const ManageSchedule_ContentHeader = () => {
                       </option>
                     </select>
                   </div>
+
+                  <div className="input-box">
+                    <label>
+                      Section<input type="text" name="section" />
+                    </label>
+                  </div>
                 </div>
 
                 <div className="second-row">

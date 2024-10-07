@@ -229,8 +229,8 @@ const ManageSchedule_ContentHeader = () => {
                     <label>
                       <input type="checkbox"
                         name="program"
-                        value="jhs"
-                        checked={checked.program === "jhs"}
+                        value="Junior Highschool"
+                        checked={checked.program === "Junior Highschool"}
                         onChange={handleCheckboxChange}
                       />
                       Junior Highschool
@@ -239,8 +239,8 @@ const ManageSchedule_ContentHeader = () => {
                       <input
                         type="checkbox"
                         name="program"
-                        value="shs"
-                        checked={checked.program === "shs"}
+                        value="Senior Highschool"
+                        checked={checked.program === "Senior Highschool"}
                         onChange={handleCheckboxChange}
                       />
                       Senior Highschool
@@ -256,8 +256,8 @@ const ManageSchedule_ContentHeader = () => {
                         <input
                           type="radio"
                           name="semester"
-                          value="first"
-                          checked={formData.semester === "first"}
+                          value="FIRST"
+                          checked={formData.semester === "FIRST"}
                           onChange={handleChange}
                         />
                         FIRST
@@ -266,8 +266,8 @@ const ManageSchedule_ContentHeader = () => {
                         <input
                           type="radio"
                           name="semester"
-                          value="second"
-                          checked={formData.semester === "second"}
+                          value="FIRST"
+                          checked={formData.semester === "SECOND"}
                           onChange={handleChange}
                         />
                         SECOND

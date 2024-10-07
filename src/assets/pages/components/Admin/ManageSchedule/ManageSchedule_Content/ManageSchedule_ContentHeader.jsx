@@ -102,7 +102,7 @@ const ManageSchedule_ContentHeader = () => {
     setFormData({
       ...formData,
       subjectName: selectedSubject ? selectedSubject.subject_name : "",
-      subjectId: selectedSubject ? selectedSubject.subject_id : "", 
+      subjectId: selectedSubject ? selectedSubject.subject_id : "",
     });
   };
 
@@ -111,7 +111,7 @@ const ManageSchedule_ContentHeader = () => {
     const selectedInstructor = instructors.find(
       (instructor) => instructor.faculty_id === selectedFacultyId
     );
-    
+
     setFormData((prevData) => ({
       ...prevData,
       facultyId: selectedFacultyId,
@@ -171,22 +171,22 @@ const ManageSchedule_ContentHeader = () => {
   };
 
   // Sample fetching data for subjects and instructors
-useEffect(() => {
-  const fetchSubjects = async () => {
-    const response = await fetch('http://localhost:3000/getSubjects'); // Replace with your API endpoint
-    const data = await response.json();
-    setSubjects(data);
-  };
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      const response = await fetch('http://localhost:3000/getSubjects'); // Replace with your API endpoint
+      const data = await response.json();
+      setSubjects(data);
+    };
 
-  const fetchInstructors = async () => {
-    const response = await fetch('http://localhost:3000/getFaculty'); // Replace with your API endpoint
-    const data = await response.json();
-    setInstructors(data);
-  };
+    const fetchInstructors = async () => {
+      const response = await fetch('http://localhost:3000/getFaculty'); // Replace with your API endpoint
+      const data = await response.json();
+      setInstructors(data);
+    };
 
-  fetchSubjects();
-  fetchInstructors();
-}, []);
+    fetchSubjects();
+    fetchInstructors();
+  }, []);
 
 
   return (
@@ -311,7 +311,7 @@ useEffect(() => {
                       </select>
                     )}
                   </div>
-         
+
                   <div className="input-box">
                     <label>Strand</label>
                     <select
@@ -341,10 +341,18 @@ useEffect(() => {
                       </option>
                     </select>
                   </div>
+                </div>
 
+                <div className="second-row">
                   <div className="input-box">
                     <label>
                       Section<input type="text" name="section" />
+                    </label>
+                  </div>
+
+                  <div className="input-box">
+                    <label>
+                      School Year<input type="text" name="schoolyear" />
                     </label>
                   </div>
                 </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BiSearch } from "react-icons/bi";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
@@ -29,9 +29,14 @@ const ManageSchedule_ContentHeader = () => {
     gradeLevel: "",
     strand: "",
     subjectName: "",
+    subjectId: "",
     instructor: "",
+    facultyId: "",
     semester: "",
   });
+
+  const [subjects, setSubjects] = useState([]);
+  const [instructors, setInstructors] = useState([]); // Assuming you also need instructors
 
   const [schedule, setSchedule] = useState({
     day: "",
@@ -89,6 +94,31 @@ const ManageSchedule_ContentHeader = () => {
     });
   };
 
+  const handleSubjectChange = (event) => {
+    const selectedSubjectId = event.target.value;
+    const selectedSubject = subjects.find(
+      (subject) => subject.subject_id === selectedSubjectId
+    );
+    setFormData({
+      ...formData,
+      subjectName: selectedSubject ? selectedSubject.subject_name : "",
+      subjectId: selectedSubject ? selectedSubject.subject_id : "", 
+    });
+  };
+
+  const handleInstructorChange = (e) => {
+    const selectedFacultyId = e.target.value;
+    const selectedInstructor = instructors.find(
+      (instructor) => instructor.faculty_id === selectedFacultyId
+    );
+    
+    setFormData((prevData) => ({
+      ...prevData,
+      facultyId: selectedFacultyId,
+      instructor: selectedInstructor ? `${selectedInstructor.last_name}, ${selectedInstructor.first_name} ${selectedInstructor.middle_initial || ""}.` : ""
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
@@ -140,6 +170,25 @@ const ManageSchedule_ContentHeader = () => {
     setTableData(tableData.filter((row, i) => i !== index));
   };
 
+  // Sample fetching data for subjects and instructors
+useEffect(() => {
+  const fetchSubjects = async () => {
+    const response = await fetch('http://localhost:3000/getSubjects'); // Replace with your API endpoint
+    const data = await response.json();
+    setSubjects(data);
+  };
+
+  const fetchInstructors = async () => {
+    const response = await fetch('http://localhost:3000/getFaculty'); // Replace with your API endpoint
+    const data = await response.json();
+    setInstructors(data);
+  };
+
+  fetchSubjects();
+  fetchInstructors();
+}, []);
+
+
   return (
     <div className="manage-schedule-header">
       <h1 className="header-title">Manage Schedule</h1>
@@ -176,11 +225,10 @@ const ManageSchedule_ContentHeader = () => {
               <form onSubmit={handleSubmit}>
                 <div className="first-row">
                   <div className="grade-level">
-                    <label>Select Program</label>
+                    <label>Select Program </label>
                     <label>
-                      <input
-                        type="checkbox"
-                        name ="program"
+                      <input type="checkbox"
+                        name="program"
                         value="jhs"
                         checked={checked.program === "jhs"}
                         onChange={handleCheckboxChange}
@@ -263,31 +311,32 @@ const ManageSchedule_ContentHeader = () => {
                       </select>
                     )}
                   </div>
+         
                   <div className="input-box">
                     <label>Strand</label>
                     <select
                       name="strand"
                       value={formData.strand}
                       onChange={handleFormDataChange}
-                      disabled={checked.program === "jhs"}
+                      disabled={checked.program === "Junior Highschool"}
                     >
                       <option value=""></option>
-                      <option value="stem">
+                      <option value="Science, Technology, Engineering and Mathematics (STEM)">
                         Science, Technology, Engineering and Mathematics (STEM)
                       </option>
-                      <option value="abm">
+                      <option value="Accountancy, Business and Management (ABM)">
                         Accountancy, Business and Management (ABM)
                       </option>
-                      <option value="humss">
+                      <option value="Humanities and Social Sciences (HUMSS)">
                         Humanities and Social Sciences (HUMSS)
                       </option>
-                      <option value="tvl-ia">
+                      <option value="TVL - Industrial Arts (TVL-IA)">
                         TVL - Industrial Arts (TVL-IA)
                       </option>
-                      <option value="tvl-he">
+                      <option value="TVL - Home Economics (TVL-HE)">
                         TVL - Home Economics (TVL-HE)
                       </option>
-                      <option value="tvl-ict">
+                      <option value="TVL - Internet Communications Technology (TVL-ICT)">
                         TVL - Internet Communications Technology (TVL-ICT)
                       </option>
                     </select>
@@ -303,15 +352,59 @@ const ManageSchedule_ContentHeader = () => {
                 <div className="second-row">
                   <div className="input-box">
                     <label>Subject</label>
-                    <select>
-                      <option value=""></option>
-                    </select>
+                    <div style={{ display: "flex" }}>
+                      <select
+                        name="subjectName"
+                        onChange={handleSubjectChange} // Handle subject selection
+                      >
+                        <option value=""></option>
+                        {subjects.map((subject) => (
+                          <option key={subject.subject_id} value={subject.subject_id}>
+                            {subject.subject_name} {/* Display subject name */}
+                          </option>
+                        ))}
+                      </select>
+                      {/* Input field to show the subject ID */}
+                      <input
+                        type="text"
+                        name="subjectId"
+                        value={formData.subjectId} // Display selected subject's id
+                        onChange={handleFormDataChange}
+                        placeholder="Subject ID"
+                        style={{ marginLeft: 10 }}
+                        readOnly
+                      />
+                    </div>
                   </div>
+                </div>
+
+                <div className="second-row">
                   <div className="input-box">
                     <label>Instructor</label>
-                    <select>
-                      <option value=""></option>
-                    </select>
+                    <div style={{ display: "flex" }}>
+                      <select
+                        name="facultyName"
+                        value={formData.facultyName}
+                        onChange={handleInstructorChange} // Handle instructor selection
+                      >
+                        <option value=""></option>
+                        {instructors.map((instructor) => (
+                          <option key={instructor.faculty_id} value={instructor.faculty_id}>
+                            {instructor.full_name}
+                          </option>
+                        ))}
+                      </select>
+                      {/* Input field to show the faculty ID */}
+                      <input
+                        type="text"
+                        name="facultyId"
+                        value={formData.facultyId} // Display selected instructor's ID
+                        onChange={handleFormDataChange}
+                        placeholder="Faculty ID"
+                        style={{ marginLeft: 10 }}
+                        readOnly
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -352,7 +445,7 @@ const ManageSchedule_ContentHeader = () => {
                           >
                             <select
                               name="day"
-                              value={row .day}
+                              value={row.day}
                               onChange={(e) => handleScheduleChange(e, index)}
                             >
                               <option value=""></option>

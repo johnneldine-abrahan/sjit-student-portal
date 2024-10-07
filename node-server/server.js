@@ -814,6 +814,102 @@ app.get('/getAccounts', async (req, res) => {
 
 // Subject and Section -----------------------------------------------------------------------------
 
+app.get('/getSubjects', async (req, res) => {
+    try {
+      const result = await pool.query('SELECT subject_id, subject_name FROM subjecttbl');
+      res.json(result.rows); // Send the list of subjects to the frontend
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error');
+    }
+  });
+
+app.get('/getFaculty', async (req, res) => {
+    try {
+        // Query to select faculty_id, last_name, first_name, and middle_name
+        const result = await pool.query(`
+        SELECT 
+          faculty_id, 
+          last_name, 
+          first_name, 
+          middle_name 
+        FROM facultytbl
+      `);
+
+        // Format the data to include the middle initial
+        const formattedFaculty = result.rows.map(faculty => {
+            const middleInitial = faculty.middle_name ? `${faculty.middle_name.charAt(0)}.` : ''; // Get middle initial
+            const fullName = `${faculty.last_name}, ${faculty.first_name} ${middleInitial}`.trim(); // Format full name
+            return {
+                faculty_id: faculty.faculty_id,
+                full_name: fullName,
+            };
+        });
+
+        // Send the formatted faculty data to the frontend
+        res.json(formattedFaculty);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.post('/addSection', async (req, res) => {
+    const client = await pool.connect();
+  
+    try {
+      const { subject_id, grade_level, strand, section_name, semester, school_year, program, faculty_name, schedules, faculty_id, slot} = req.body;
+  
+      // Generate section_id
+      const section_id = `${section_name}_${subject_id}_${school_year}`;
+  
+      // Insert into sectiontbl
+      const insertSectionQuery = `
+        INSERT INTO sectiontbl (section_id, subject_id, grade_level, strand, section_name, semester, school_year, program, faculty_name, slot)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING section_id;
+      `;
+      const sectionValues = [section_id, subject_id, grade_level, strand, section_name, semester, school_year, program, faculty_name, slot];
+  
+      await client.query('BEGIN');
+      const sectionResult = await client.query(insertSectionQuery, sectionValues);
+  
+      // Insert into scheduletbl (can have multiple schedules)
+      const insertScheduleQuery = `
+        INSERT INTO scheduletbl (schedule_id, section_id, day, start_time, end_time, room)
+        VALUES ($1, $2, $3, $4, $5, $6);
+      `;
+  
+      for (const schedule of schedules) {
+        // Generate schedule_id as section_name + random 5 digit number
+        const schedule_id = `${section_name}_${Math.floor(10000 + Math.random() * 90000)}`;
+        const scheduleValues = [schedule_id, section_id, schedule.day, schedule.start_time, schedule.end_time, schedule.room];
+        await client.query(insertScheduleQuery, scheduleValues);
+      }
+  
+      // Insert into teachingload_tbl
+      const insertTeachingLoadQuery = `
+        INSERT INTO teachingload_tbl (teachingload_id, faculty_id, section_id)
+        VALUES ($1, $2, $3);
+      `;
+  
+      // Generate teachingload_id as a random 5 digit number
+      const teachingload_id = `TL_${Math.floor(10000 + Math.random() * 90000)}`;
+      const teachingLoadValues = [teachingload_id, faculty_id, section_id];
+      await client.query(insertTeachingLoadQuery, teachingLoadValues);
+  
+      // Commit the transaction
+      await client.query('COMMIT');
+      res.status(201).json({ message: 'Section, Schedule, and Teaching Load successfully added!' });
+    } catch (error) {
+      await client.query('ROLLBACK');
+      console.error(error);
+      res.status(500).json({ message: 'Error adding data', error });
+    } finally {
+      client.release();
+    }
+  });
+
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });

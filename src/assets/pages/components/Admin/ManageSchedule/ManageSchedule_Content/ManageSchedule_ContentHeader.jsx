@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { BiSearch } from "react-icons/bi";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
-import { BiEditAlt } from "react-icons/bi";
 import "./ManageSchedule_Content.css";
+import axios from 'axios';
 
 const ManageSchedule_ContentHeader = () => {
   const [popup, setPopup] = useState({
@@ -30,37 +30,30 @@ const ManageSchedule_ContentHeader = () => {
     strand: "",
     subjectName: "",
     subjectId: "",
-    instructor: "",
+    facultyName: "",
     facultyId: "",
     semester: "",
+    slot: "",
+    schoolyear: "",
+    program: "",
+    section: ""
   });
 
   const [subjects, setSubjects] = useState([]);
-  const [instructors, setInstructors] = useState([]); // Assuming you also need instructors
+  const [facultyName, setFacultyName] = useState([]); // Assuming you also need instructors
 
-  const [schedule, setSchedule] = useState({
-    day: "",
-    startTime: "",
-    endTime: "",
-  });
 
   const [tableData, setTableData] = useState([
     {
       day: "",
       startTime: "",
       endTime: "",
+      room: ""
     },
   ]);
 
   const handlePopup = (message) => {
     setPopup({
-      show: true,
-      message: message,
-    });
-  };
-
-  const handlePopupEdit = (message) => {
-    setPopupEdit({
       show: true,
       message: message,
     });
@@ -106,32 +99,90 @@ const ManageSchedule_ContentHeader = () => {
     });
   };
 
-  const handleInstructorChange = (e) => {
-    const selectedFacultyId = e.target.value;
-    const selectedInstructor = instructors.find(
-      (instructor) => instructor.faculty_id === selectedFacultyId
-    );
+  const handlefacultyNameChange = (e) => {
+    const selectedFacultyId = e.target.value; // Assuming this gets the selected faculty ID
+    const selectedFaculty = facultyName.find(faculty => faculty.faculty_id === selectedFacultyId);
+  
+    if (selectedFaculty) {
+      const fullName = `${selectedFaculty.last_name || ""}, ${selectedFaculty.first_name || ""} ${selectedFaculty.middle_initial ? selectedFaculty.middle_initial + "." : ""}`;
+      
+      // Log the full name before setting it
+      console.log("Constructed full name:", fullName);
+  
+      setFormData(prevData => ({
+        ...prevData,
+        facultyId: selectedFacultyId,
+        facultyName: fullName,  // Make sure this is set correctly
+      }));
+    } else {
+      console.warn("Faculty not found for ID:", selectedFacultyId);
+    }
+  };  
 
-    setFormData((prevData) => ({
-      ...prevData,
-      facultyId: selectedFacultyId,
-      instructor: selectedInstructor ? `${selectedInstructor.last_name}, ${selectedInstructor.first_name} ${selectedInstructor.middle_initial || ""}.` : ""
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // Prevent default form submission behavior
+  
+    // Collect schedules from the table data
+    const schedules = tableData.map((row) => ({
+      day: row.day,
+      start_time: row.startTime,
+      end_time: row.endTime,
+      room: row.room
     }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Handle form submission logic here
-    handleClose(); // Close the popup after submitting
-  };
+  
+    // Create the payload to send to the server
+    const payload = {
+      subject_id: formData.subjectId,
+      grade_level: formData.gradeLevel,
+      strand: formData.strand,
+      section_name: formData.section, // Ensure this is from your input
+      semester: formData.semester,
+      school_year: formData.schoolyear, // Ensure this is spelled correctly
+      program: formData.program,
+      faculty_name: formData.facultyName, // This should match your backend expectations
+      faculty_id: formData.facultyId,
+      schedules, // This will be an array of schedule objects
+      slot: formData.slot,
+    };
+  
+    console.log("Payload to be sent:", payload); // Log the payload
+  
+    try {
+      const response = await axios.post('http://localhost:3000/addSection', payload);
+      alert(response.data.message); // Show success message
+      handleClose(); // Close the popup
+      // Optionally reset the form or clear the table data
+      setFormData({
+        gradeLevel: "",
+        strand: "",
+        subjectName: "",
+        subjectId: "",
+        facultyName: "",
+        facultyId: "",
+        semester: "",
+        slot: "",
+        schoolyear: "", // Corrected spelling
+        program: "",
+        section: ""
+      });
+      setTableData([]); // Clear the table data if needed
+    } catch (error) {
+      console.error("Error adding section:", error.response ? error.response.data : error.message);
+      alert("Error adding section. Please try again."); // Show error message
+    }
+  };  
+  
 
   const handleCheckboxChange = (event) => {
     const { value } = event.target;
     setChecked({
-      program: value,
+        program: value,
     });
-  };
+    setFormData((prevData) => ({
+        ...prevData,
+        program: value, // Update program in formData
+    }));
+};
 
   const handleFormDataChange = (event) => {
     const { name, value } = event.target;
@@ -178,14 +229,16 @@ const ManageSchedule_ContentHeader = () => {
       setSubjects(data);
     };
 
-    const fetchInstructors = async () => {
-      const response = await fetch('http://localhost:3000/getFaculty'); // Replace with your API endpoint
+    const fetchfacultyName = async () => {
+      const response = await fetch('http://localhost:3000/getFaculty');
       const data = await response.json();
-      setInstructors(data);
+      
+      console.log("Faculty data fetched from API:", data); // Log the data structure
+      setFacultyName(data);
     };
 
     fetchSubjects();
-    fetchInstructors();
+    fetchfacultyName();
   }, []);
 
 
@@ -266,7 +319,7 @@ const ManageSchedule_ContentHeader = () => {
                         <input
                           type="radio"
                           name="semester"
-                          value="FIRST"
+                          value="SECOND"
                           checked={formData.semester === "SECOND"}
                           onChange={handleChange}
                         />
@@ -279,7 +332,7 @@ const ManageSchedule_ContentHeader = () => {
                 <div className="first-row">
                   <div className="input-box">
                     <label>Grade Level</label>
-                    {checked.program === "jhs" ? (
+                    {checked.program === "Junior Highschool" ? (
                       <select
                         name="gradeLevel"
                         value={formData.gradeLevel}
@@ -291,7 +344,7 @@ const ManageSchedule_ContentHeader = () => {
                         <option value="Grade 9">Grade 9</option>
                         <option value="Grade 10">Grade 10</option>
                       </select>
-                    ) : checked.program === "shs" ? (
+                    ) : checked.program === "Senior Highschool" ? (
                       <select
                         name="gradeLevel"
                         value={formData.gradeLevel}
@@ -346,13 +399,13 @@ const ManageSchedule_ContentHeader = () => {
                 <div className="second-row">
                   <div className="input-box">
                     <label>
-                      Section<input type="text" name="section" />
+                      Section<input type="text" value={formData.section} name="section" onChange={handleFormDataChange}/>
                     </label>
                   </div>
 
                   <div className="input-box">
                     <label>
-                      School Year<input type="text" name="schoolyear" />
+                      School Year<input type="text" value={formData.schoolyear} name="schoolyear" onChange={handleFormDataChange}/>
                     </label>
                   </div>
                 </div>
@@ -388,17 +441,17 @@ const ManageSchedule_ContentHeader = () => {
 
                 <div className="second-row">
                   <div className="input-box">
-                    <label>Instructor</label>
+                    <label>Faculty</label>
                     <div style={{ display: "flex" }}>
                       <select
                         name="facultyName"
-                        value={formData.facultyName}
-                        onChange={handleInstructorChange} // Handle instructor selection
-                      >
+                        value={formData.facultyId}
+                        onChange={handlefacultyNameChange} // Handle instructor selection
+                      > 
                         <option value=""></option>
-                        {instructors.map((instructor) => (
-                          <option key={instructor.faculty_id} value={instructor.faculty_id}>
-                            {instructor.full_name}
+                        {facultyName.map((facultyName) => (
+                          <option key={facultyName.faculty_id} value={facultyName.faculty_id}>
+                            {facultyName.full_name}
                           </option>
                         ))}
                       </select>
@@ -438,6 +491,11 @@ const ManageSchedule_ContentHeader = () => {
                         <th
                           style={{ border: "1px solid black", padding: "8px" }}
                         >
+                          Room
+                        </th>
+                        <th
+                          style={{ border: "1px solid black", padding: "8px" }}
+                        >
                           Action
                         </th>
                       </tr>
@@ -462,8 +520,6 @@ const ManageSchedule_ContentHeader = () => {
                               <option value="Wednesday">Wednesday</option>
                               <option value="Thursday">Thursday</option>
                               <option value="Friday">Friday</option>
-                              <option value="Saturday">Saturday</option>
-                              <option value="Sunday">Sunday</option>
                             </select>
                           </td>
                           <td
@@ -498,6 +554,19 @@ const ManageSchedule_ContentHeader = () => {
                               padding: "8px",
                             }}
                           >
+                            <input 
+                            type="text"
+                            name="room"
+                            value={row.room}
+                            onChange={(e) => handleScheduleChange(e, index)}
+                            />
+                          </td>
+                          <td
+                            style={{
+                              border: "1px solid black",
+                              padding: "8px",
+                            }}
+                          >
                             <div className="actions">
                               <button
                                 type="button"
@@ -522,16 +591,11 @@ const ManageSchedule_ContentHeader = () => {
                   </table>
                 </div>
 
-                <div className="thrid-row">
-                  <div className="input-box">
-                    <label>
-                      Room Assignment <input type="text" name="room" />
-                    </label>
-                  </div>
+                <div className="thrid-row">      
                   <div className="input-box">
                     <label>
                       Slot
-                      <input type="text" name="slot" />
+                      <input type="text" value={formData.slot} name="slot" onChange={handleFormDataChange}/>
                     </label>
                   </div>
                 </div>

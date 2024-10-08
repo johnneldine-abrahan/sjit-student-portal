@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { BiSearch } from "react-icons/bi";
-import { FiEdit, FiTrash } from "react-icons/fi";
+import { FiTrash } from "react-icons/fi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 import "./ManageSchedule_Content.css";
 import axios from 'axios';
 
-const ManageSchedule_ContentHeader = () => {
+const ManageSchedule_ContentHeader = ({selectedSections, handleDeleteSections, refreshSections}) => {
   const [popup, setPopup] = useState({
     show: false,
     message: null,
@@ -116,7 +116,6 @@ const ManageSchedule_ContentHeader = () => {
     }
   }
 
-
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
 
@@ -164,12 +163,28 @@ const ManageSchedule_ContentHeader = () => {
         section: ""
       });
       setTableData([]); // Clear the table data if needed
+      refreshSections();
     } catch (error) {
       console.error("Error adding section:", error.response ? error.response.data : error.message);
       alert("Error adding section. Please try again."); // Show error message
     }
   };
 
+  const handleDeleteClick = async () => {
+    if (selectedSections.length === 0) {
+      alert('Please select at least one section to delete.');
+      return;
+    }
+    
+    try {
+      await handleDeleteSections(selectedSections); // Trigger deletion
+      handleDeleteClose();
+      refreshSections(); // Refresh the sections after deletion
+    } catch (error) {
+      console.error("Error deleting sections:", error);
+      alert("Failed to delete sections. Please try again.");
+    }
+  };
 
   const handleCheckboxChange = (event) => {
     const { value } = event.target;
@@ -626,7 +641,7 @@ const ManageSchedule_ContentHeader = () => {
                 action is cannot be undone.
               </p>
               <div class="buttons">
-                <button type="submit" class="btn-box" name="add" id="add">
+                <button type="submit" class="btn-box" onClick={handleDeleteClick}>
                   Done
                 </button>
               </div>

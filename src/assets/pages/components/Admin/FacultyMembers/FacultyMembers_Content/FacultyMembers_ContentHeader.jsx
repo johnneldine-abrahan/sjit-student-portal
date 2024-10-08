@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./FacultyMembers_Content.css";
 import { BiSearch } from "react-icons/bi";
-import { BiEditAlt } from "react-icons/bi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 import { RiInboxUnarchiveLine } from "react-icons/ri";
 

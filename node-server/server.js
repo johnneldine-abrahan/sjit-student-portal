@@ -931,6 +931,53 @@ app.post('/addSection', async (req, res) => {
     }
 });
 
+app.delete('/deleteSections', async (req, res) => {
+    const { selectedSections } = req.body; // selectedSections is expected to be an array of section IDs
+  
+    if (!selectedSections || selectedSections.length === 0) {
+      return res.status(400).json({ message: 'No sections selected for deletion' });
+    }
+  
+    const client = await pool.connect(); // Connect to the database
+  
+    try {
+      await client.query('BEGIN'); // Begin transaction
+  
+      // Convert each section ID to a string to match the database type
+      const sectionIds = selectedSections.map(id => String(id));
+  
+      // Delete associated schedules from scheduletbl
+      const deleteScheduleQuery = `
+        DELETE FROM scheduletbl
+        WHERE section_id = ANY($1::text[]);
+      `;
+      await client.query(deleteScheduleQuery, [sectionIds]);
+  
+      // Delete associated teaching loads from teachingload_tbl
+      const deleteTeachingLoadQuery = `
+        DELETE FROM teachingload_tbl
+        WHERE section_id = ANY($1::text[]);
+      `;
+      await client.query(deleteTeachingLoadQuery, [sectionIds]);
+  
+      // Delete sections from sectiontbl
+      const deleteSectionsQuery = `
+        DELETE FROM sectiontbl
+        WHERE section_id = ANY($1::text[]);
+      `;
+      await client.query(deleteSectionsQuery, [sectionIds]);
+  
+      await client.query('COMMIT'); // Commit transaction
+      res.status(200).json({ message: 'Sections and their related data deleted successfully' });
+    } catch (error) {
+      await client.query('ROLLBACK'); // Rollback transaction on error
+      console.error('Error deleting sections:', error);
+      res.status(500).json({ message: 'Error deleting sections', error: error.message });
+    } finally {
+      client.release(); // Release the client back to the pool
+    }
+  });
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });

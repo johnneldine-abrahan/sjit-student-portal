@@ -3,7 +3,7 @@ import "./ManageSchedule_Content.css";
 import { BiEditAlt } from "react-icons/bi";
 import { FaRegEye } from "react-icons/fa";
 
-const ManageSchedule_Sections = () => {
+const ManageSchedule_Sections = ({ setSelectedSections, sectionsData, refreshSections }) => {
   const [popup, setPopup] = useState({
     show: false,
     record: null,
@@ -14,19 +14,12 @@ const ManageSchedule_Sections = () => {
     record: null,
   });
 
-  const [sectionsData, setSectionsData] = useState([]); // State to store sections data
+  const [selectedIds, setSelectedIds] = useState([]); // State to track selected section IDs
 
-  // Fetch data from backend API
   useEffect(() => {
-    fetch("http://localhost:3000/getSections") // This assumes the back-end server is running on the same host
-      .then((response) => response.json())
-      .then((data) => {
-        setSectionsData(data); // Set the fetched data to state
-      })
-      .catch((error) => {
-        console.error("Error fetching sections data:", error);
-      });
-  }, []);
+    // Update the selected sections in the parent component
+    setSelectedSections(selectedIds);
+  }, [selectedIds, setSelectedSections]);
 
   const handlePopup = (record) => {
     setPopup({
@@ -53,18 +46,17 @@ const ManageSchedule_Sections = () => {
     });
   };
 
-  // Disable scrolling when modal is open
-  useEffect(() => {
-    if (popup.show || editPopup.show) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset"; // Reset overflow when modal is closed
-    }
-
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [popup, editPopup]);
+  const handleCheckboxChange = (id) => {
+    setSelectedIds((prevSelectedIds) => {
+      if (prevSelectedIds.includes(id)) {
+        // If already selected, remove it from the array
+        return prevSelectedIds.filter((selectedId) => selectedId !== id);
+      } else {
+        // Otherwise, add it to the array
+        return [...prevSelectedIds, id];
+      }
+    });
+  };
 
   return (
     <div className="section-list">
@@ -87,8 +79,11 @@ const ManageSchedule_Sections = () => {
             {sectionsData.map((record) => (
               <tr key={record.section_id}>
                 <td>
-                  <input type="checkbox" name={`select-${record.section_id}`} />{" "}
-                  {/* Checkbox */}
+                  <input
+                    type="checkbox"
+                    name={`select-${record.section_id}`}
+                    onChange={() => handleCheckboxChange(record.section_id)} // Update selection
+                  />
                 </td>
                 <td>{record.section_id}</td>
                 <td>{record.section_name}</td>
@@ -102,7 +97,7 @@ const ManageSchedule_Sections = () => {
                     className="add-subject-link"
                     onClick={() => handlePopup(record)}
                   >
-                    <FaRegEye size={20}/>
+                    <FaRegEye size={20} />
                   </span>
                   <button
                     className="edit-button"
@@ -172,8 +167,8 @@ const ManageSchedule_Sections = () => {
                   <label>Instructor:</label>
                   <input type="text" value={editPopup.record.faculty_name} />
                 </div>
-                <div class="buttons">
-                  <button type="submit" class="btn-box" name="add" id="add">Done</button>
+                <div className="buttons">
+                  <button type="submit" className="btn-box" name="add" id="add">Done</button>
                 </div>
               </form>
             </div>

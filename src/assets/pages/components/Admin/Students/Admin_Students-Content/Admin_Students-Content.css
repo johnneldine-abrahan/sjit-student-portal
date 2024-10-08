@@ -330,3 +330,18 @@ select {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: auto;
 }
+
+.popup-add-edit-student::-webkit-scrollbar {
+  width: 10px; /* set the scrollbar width */
+  height: 6px; /* set the scrollbar height */
+}
+
+.popup-add-edit-student::-webkit-scrollbar-thumb {
+  background-color: #ccc; /* set the thumb color */
+  border-radius: 30px; /* set the thumb border radius */
+}
+
+.popup-add-edit-student::-webkit-scrollbar-track {
+  background-color: #f0f0f0; /* set the track color */
+  border-radius: 30px; /* set the track border radius */
+}

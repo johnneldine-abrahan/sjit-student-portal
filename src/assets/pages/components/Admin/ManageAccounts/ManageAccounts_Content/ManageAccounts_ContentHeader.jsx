@@ -13,9 +13,40 @@ const ManageAccounts_ContentHeader = ({ onNewAccount, onDelete }) => {
 
   const [formData, setFormData] = useState({});
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const validateForm = (formData) => {
+    const requiredFields = ["last_name", "first_name", "user_role"];
+
+    let isValid = true;
+    let errorMessage = "";
+    let firstErrorInput = null;
+
+    requiredFields.forEach((field) => {
+      if (!formData[field] || formData[field] === "") {
+        document.querySelector(`[name="${field}"]`).classList.add("error");
+        isValid = false;
+        errorMessage += `${field} is required\n`;
+        if (!firstErrorInput) {
+          firstErrorInput = document.querySelector(`[name="${field}"]`);
+        }
+      } else {
+        document.querySelector(`[name="${field}"]`).classList.remove("error");
+      }
+    });
+
+    if (!isValid) {
+      firstErrorInput.focus();
+      //setErrorMessage(errorMessage);
+      return false;
+    }
+
+    return true;
   };
 
   const handlePopup = (type) => {
@@ -33,12 +64,11 @@ const ManageAccounts_ContentHeader = ({ onNewAccount, onDelete }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { first_name, middle_name, last_name, user_role } = formData;
-
-    if (!first_name || !last_name || !user_role) {
-      console.log("Please fill in all required fields");
+    if (!validateForm(formData)) {
       return;
     }
+
+    const { first_name, middle_name, last_name, user_role } = formData;
 
     const payload = {
       first_name,
@@ -122,40 +152,75 @@ const ManageAccounts_ContentHeader = ({ onNewAccount, onDelete }) => {
           {/* Add Pop-up */}
           {popup.add && (
             <>
-              <div className='popup-blurred-background' onClick={handleClose} />
-              <div className='popup'>
-                <div className='popup-header'>
+              <div className="popup-blurred-background" onClick={handleClose} />
+              <div className="popup">
+                <div className="popup-header">
                   <h3>Add Account</h3>
                   <button onClick={handleClose}>Close</button>
                 </div>
-                <div className='popup-content'>
+                <div className="popup-content">
                   <form onSubmit={handleSubmit}>
-                    <div className='first-row'>
-                        <div className='input-box'>
-                          <label>Last Name<input type="text" name="last_name" value={formData.last_name} onChange={handleChange} /></label>
-                        </div>
-                        <div className='input-box'>
-                          < label>First Name<input type="text" name="first_name" value={formData.first_name} onChange={handleChange} /></label>
-                        </div>
-                        <div className='input-box'>
-                          <label>Middle Name<input type="text" name="middle_name" value={formData.middle_name} onChange={handleChange} /></label>
-                        </div>
+                    <div className="first-row">
+                      <div className="input-box">
+                        <label>
+                          Last Name
+                          <input
+                            type="text"
+                            name="last_name"
+                            value={formData.last_name}
+                            onChange={handleChange}
+                          />
+                        </label>
                       </div>
+                      <div className="input-box">
+                        <label>
+                          First Name
+                          <input
+                            type="text"
+                            name="first_name"
+                            value={formData.first_name}
+                            onChange={handleChange}
+                          />
+                        </label>
+                      </div>
+                      <div className="input-box">
+                        <label>
+                          Middle Name
+                          <input
+                            type="text"
+                            name="middle_name"
+                            value={formData.middle_name}
+                            onChange={handleChange}
+                          />
+                        </label>
+                      </div>
+                    </div>
 
-                      <div className='second-row'>
-                        <div className='input-box'>
-                          <label>User Role
-                            <select name="user_role" value={formData.user_role} onChange={handleChange}>
-                              <option value=""></option>
-                              <option value="Finance">Finance</option>
-                              <option value="Registrar">Registrar</option>
-                            </select>
-                          </label>
+                    <div className="second-row">
+                      <div className="input-box">
+                        <label>
+                          User Role
+                          <select
+                            name="user_role"
+                            value={formData.user_role}
+                            onChange={handleChange}
+                          >
+                            <option value=""></option>
+                            <option value="Finance">Finance</option>
+                            <option value="Registrar">Registrar</option>
+                          </select>
+                        </label>
                       </div>
-                      </div>
+                    </div>
 
-                    <div class='buttons'>
-                      <button type="submit" class="btn-box" name="add" id="add">Done</button>
+                    {errorMessage && (
+                      <div style={{ color: "red" }}>{errorMessage}</div>
+                    )}
+
+                    <div class="buttons">
+                      <button type="submit" class="btn-box" name="add" id="add">
+                        Done
+                      </button>
                     </div>
                   </form>
                 </div>
@@ -166,16 +231,30 @@ const ManageAccounts_ContentHeader = ({ onNewAccount, onDelete }) => {
           {/* Delete Pop-up */}
           {popup.delete && (
             <>
-              <div className='popup-blurred-background' onClick={handleClose} />
-              <div className='popup'>
-                <div className='popup-header'>
+              <div className="popup-blurred-background" onClick={handleClose} />
+              <div className="popup">
+                <div className="popup-header">
                   <h3>Delete Account</h3>
                   <button onClick={handleClose}>Close</button>
                 </div>
-                <div className='popup-content'>
-                  <p>Are you sure you want to delete the selected account? This action is cannot be undone.</p>
-                  <div className='buttons'>
-                    <button type="submit" class="btn-box" name="delete" id="delete" onClick={() => {onDelete(); handleClose();}}>Delete</button>
+                <div className="popup-content">
+                  <p>
+                    Are you sure you want to delete the selected account? This
+                    action is cannot be undone.
+                  </p>
+                  <div className="buttons">
+                    <button
+                      type="submit"
+                      class="btn-box"
+                      name="delete"
+                      id="delete"
+                      onClick={() => {
+                        onDelete();
+                        handleClose();
+                      }}
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
               </div>

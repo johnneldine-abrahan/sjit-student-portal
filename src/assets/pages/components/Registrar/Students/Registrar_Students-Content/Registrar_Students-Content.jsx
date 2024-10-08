@@ -62,6 +62,7 @@ const Students_Content = () => {
                 onSelectStudent={handleSelectStudent}
                 selectedStudentIds={selectedStudentIds}
                 studentRecords={studentRecords} // Pass records as prop
+                updateStudentRecords={updateStudentRecords}
             />
         </div>
     );

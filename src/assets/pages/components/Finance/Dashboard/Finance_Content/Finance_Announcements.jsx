@@ -4,6 +4,40 @@ import { BiEditAlt } from "react-icons/bi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 import { FaRegEye } from "react-icons/fa";
 
+const validateForm = (formData) => {
+  const requiredFields = [
+    "announce_to",
+    "announcement_type",
+    "announcement_title",
+    "announcement_text",
+  ];
+
+  let isValid = true;
+  let errorMessage = "";
+  let firstErrorInput = null;
+
+  requiredFields.forEach((field) => {
+    if (!formData[field] || formData[field] === "") {
+      document.querySelector(`[name="${field}"]`).classList.add("error");
+      isValid = false;
+      errorMessage += `${field} is required\n`;
+      if (!firstErrorInput) {
+        firstErrorInput = document.querySelector(`[name="${field}"]`);
+      }
+    } else {
+      document.querySelector(`[name="${field}"]`).classList.remove("error");
+    }
+  });
+
+  if (!isValid) {
+    firstErrorInput.focus();
+    //alert(errorMessage);
+    return false;
+  }
+
+  return isValid;
+};
+
 const Popup_Add = ({ title, onClose, refreshAnnouncements }) => {
   const [announcementData, setAnnouncementData] = useState({
     announce_to: "",
@@ -45,6 +79,9 @@ const Popup_Add = ({ title, onClose, refreshAnnouncements }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!validateForm(announcementData)) {
+      return;
+    }
     addAnnouncement(announcementData);
   };
 
@@ -150,6 +187,9 @@ const Popup_Edit = ({ title, onClose, announcement, refreshAnnouncements }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm(announcementData)) {
+      return;
+    }
     const token = localStorage.getItem("token");
     const id = announcement.id; // Ensure you're using the correct announcement ID
 
@@ -439,7 +479,6 @@ const Finance_Announcements = () => {
     } else {
       setIsOpenDelete(true);
       setIsOpenDelete(true);
-
     }
   };
 

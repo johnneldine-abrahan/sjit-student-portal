@@ -95,8 +95,8 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  max-width: 100vh;
-  max-height: 100vh;
+  max-height: 80vh;
+  width: 1000px;
   overflow-y: auto;
 }
 
@@ -261,4 +261,19 @@ select {
 .delete-btn,
 .actions-ico:hover {
   cursor: pointer;
+}
+
+.popup-manage-schedule::-webkit-scrollbar {
+  width: 10px; /* set the scrollbar width */
+  height: 6px; /* set the scrollbar height */
+}
+
+.popup-manage-schedule::-webkit-scrollbar-thumb {
+  background-color: #ccc; /* set the thumb color */
+  border-radius: 30px; /* set the thumb border radius */
+}
+
+.popup-manage-schedule::-webkit-scrollbar-track {
+  background-color: #f0f0f0; /* set the track color */
+  border-radius: 30px; /* set the track border radius */
 }

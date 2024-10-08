@@ -4,7 +4,11 @@ import { BiSearch } from "react-icons/bi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 import { RiInboxUnarchiveLine } from "react-icons/ri";
 
-const Registrar_Students_ContentHeader = ({ selectedStudentIds,onDelete, updateStudentRecords }) => {
+const Registrar_Students_ContentHeader = ({
+  selectedStudentIds,
+  onDelete,
+  updateStudentRecords,
+}) => {
   const [popup, setPopup] = useState({
     add: false,
     edit: false,
@@ -82,8 +86,62 @@ const Registrar_Students_ContentHeader = ({ selectedStudentIds,onDelete, updateS
     });
   };
 
+  const validateForm = () => {
+    const requiredFields = [
+      "program",
+      "grade_level",
+      "last_name",
+      "first_name",
+      "sex",
+      "birth_date",
+      "place_of_birth",
+      "nationality",
+      "religion",
+      "civil_status",
+      "birth_order",
+      "contact_number",
+      "city_municipality",
+      "province",
+      "country",
+      "zip_code",
+      "school_name",
+      "school_address",
+      "years_attended",
+      "financial_support"
+    ];
+
+    let isValid = true;
+    let errorMessage = "";
+    let firstErrorInput = null;
+
+    requiredFields.forEach((field) => {
+      if (!formData[field] || formData[field] === "") {
+        document.querySelector(`[name="${field}"]`).classList.add("error");
+        isValid = false;
+        errorMessage += `${field} is required\n`;
+        if (!firstErrorInput) {
+          firstErrorInput = document.querySelector(`[name="${field}"]`);
+        }
+      } else {
+        document.querySelector(`[name="${field}"]`).classList.remove("error");
+      }
+    });
+
+    if (!isValid) {
+      firstErrorInput.focus();
+      //alert(errorMessage);
+      return false;
+    }
+
+    return isValid;
+  };
+  //alert(errorMessage);
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
 
     const adjustedData = { ...formData };
 
@@ -280,7 +338,7 @@ const Registrar_Students_ContentHeader = ({ selectedStudentIds,onDelete, updateS
                                 <option value=""></option>
                                 <option value="Grade 7">Grade 7</option>
                                 <option value="Grade 8">Grade 8</option>
-                                <option value="Grade 9">Grade 9</option>
+                                <option value=" Grade 9">Grade 9</option>
                                 <option value="Grade 10">Grade 10</option>
                               </>
                             )}
@@ -828,7 +886,7 @@ const Registrar_Students_ContentHeader = ({ selectedStudentIds,onDelete, updateS
         </div>
       </div>
     </div>
-  );
+  );F
 };
 
 export default Registrar_Students_ContentHeader;

@@ -10,6 +10,21 @@ const FacultyMembers_List = ({
 }) => {
   const [popup, setPopup] = useState({ show: false, record: null });
   const [editPopup, setEditPopup] = useState({ show: false, record: null });
+  const [formData, setFormData] = useState({
+    last_name: '',
+    first_name: '',
+    middle_name: '',
+  });
+
+  const handleChange = (event) => {
+    setFormData({ ...formData, [event.target.name]: event.target.value });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // Add your form submission logic here
+    console.log('Form submitted:', formData);
+  };
 
   const handlePopup = (record) => {
     setPopup({
@@ -119,25 +134,45 @@ const FacultyMembers_List = ({
             <button onClick={handleClose}>Close</button>
           </div>
           <div className="popup-content">
-            <form>
-              <div className="input-box">
-                <label>Faculty ID:</label>
-                <input type="text" value={editPopup.record.faculty_id} />
+            <form onSubmit={handleSubmit}>
+              <div className="first-row">
+                <div className="input-box">
+                  <label>
+                    Last Name
+                    <input
+                      type="text"
+                      name="last_name"
+                      value={formData.last_name}
+                      onChange={handleChange}
+                    />
+                  </label>
+                </div>
+                <div className="input-box">
+                  <label>
+                    First Name
+                    <input
+                      type="text"
+                      name="first_name"
+                      value={formData.first_name}
+                      onChange={handleChange}
+                    />
+                  </label>
+                </div>
+                <div className="input-box">
+                  <label>
+                    Middle Name
+                    <input
+                      type="text"
+                      name="middle_name"
+                      value={formData.middle_name}
+                      onChange={handleChange}
+                    />
+                  </label>
+                </div>
               </div>
-              <div className="input-box">
-                <label>Last Name:</label>
-                <input type="text" value={editPopup.record.last_name} />
-              </div>
-              <div className="input-box">
-                <label>First Name:</label>
-                <input type="text" value={editPopup.record.first_name} />
-              </div>
-              <div className="input-box">
-                <label>Middle Name:</label>
-                <input type="text" value={editPopup.record.middle_name} />
-              </div>
-              <div class="buttons">
-                <button type="submit" class="btn-box" name="add" id="add">
+
+              <div className="buttons">
+                <button type="submit" className="btn-box" name="add" id="add">
                   Done
                 </button>
               </div>

@@ -23,9 +23,40 @@ const FacultyMembers_ContentHeader = ({
     middle_name: "",
   });
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const validateForm = (formData) => {
+    const requiredFields = ["last_name", "first_name"];
+
+    let isValid = true;
+    let errorMessage = "";
+    let firstErrorInput = null;
+
+    requiredFields.forEach((field) => {
+      if (!formData[field] || formData[field] === "") {
+        document.querySelector(`[name="${field}"]`).classList.add("error");
+        isValid = false;
+        errorMessage += `${field} is required\n`;
+        if (!firstErrorInput) {
+          firstErrorInput = document.querySelector(`[name="${field}"]`);
+        }
+      } else {
+        document.querySelector(`[name="${field}"]`).classList.remove("error");
+      }
+    });
+
+    if (!isValid) {
+      firstErrorInput.focus();
+      //setErrorMessage(errorMessage);
+      return false;
+    }
+
+    return true;
   };
 
   const handlePopup = (type) => {
@@ -43,6 +74,10 @@ const FacultyMembers_ContentHeader = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm(formData)) {
+      return;
+    }
 
     const adjustedData = { ...formData };
 
@@ -154,7 +189,11 @@ const FacultyMembers_ContentHeader = ({
                       </div>
                     </div>
 
-                    <div class="buttons">
+                    {errorMessage && (
+                      <div className="error-message">{errorMessage}</div>
+                    )}
+
+                    <div className="buttons">
                       <button type="submit" class="btn-box" name="add" id="add">
                         Done
                       </button>

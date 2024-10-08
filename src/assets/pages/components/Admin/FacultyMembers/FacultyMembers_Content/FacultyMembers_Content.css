@@ -124,3 +124,8 @@
 .faculty-list tbody tr.checked:nth-child(even) {
   background-color: #7b8bbc;
 }
+
+.error {
+  border: 1px solid red;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}

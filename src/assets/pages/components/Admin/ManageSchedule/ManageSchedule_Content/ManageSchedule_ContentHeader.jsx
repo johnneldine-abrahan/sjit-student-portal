@@ -102,26 +102,24 @@ const ManageSchedule_ContentHeader = () => {
   const handlefacultyNameChange = (e) => {
     const selectedFacultyId = e.target.value; // Assuming this gets the selected faculty ID
     const selectedFaculty = facultyName.find(faculty => faculty.faculty_id === selectedFacultyId);
-  
+
     if (selectedFaculty) {
-      const fullName = `${selectedFaculty.last_name || ""}, ${selectedFaculty.first_name || ""} ${selectedFaculty.middle_initial ? selectedFaculty.middle_initial + "." : ""}`;
-      
-      // Log the full name before setting it
-      console.log("Constructed full name:", fullName);
-  
+      console.log("Constructed full name:", selectedFaculty.full_name);  // Use the already constructed full_name
+
       setFormData(prevData => ({
         ...prevData,
         facultyId: selectedFacultyId,
-        facultyName: fullName,  // Make sure this is set correctly
+        facultyName: selectedFaculty.full_name,  // Use full_name directly
       }));
     } else {
       console.warn("Faculty not found for ID:", selectedFacultyId);
     }
-  };  
+  }
+
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
-  
+
     // Collect schedules from the table data
     const schedules = tableData.map((row) => ({
       day: row.day,
@@ -129,7 +127,7 @@ const ManageSchedule_ContentHeader = () => {
       end_time: row.endTime,
       room: row.room
     }));
-  
+
     // Create the payload to send to the server
     const payload = {
       subject_id: formData.subjectId,
@@ -144,9 +142,9 @@ const ManageSchedule_ContentHeader = () => {
       schedules, // This will be an array of schedule objects
       slot: formData.slot,
     };
-  
+
     console.log("Payload to be sent:", payload); // Log the payload
-  
+
     try {
       const response = await axios.post('http://localhost:3000/addSection', payload);
       alert(response.data.message); // Show success message
@@ -170,19 +168,19 @@ const ManageSchedule_ContentHeader = () => {
       console.error("Error adding section:", error.response ? error.response.data : error.message);
       alert("Error adding section. Please try again."); // Show error message
     }
-  };  
-  
+  };
+
 
   const handleCheckboxChange = (event) => {
     const { value } = event.target;
     setChecked({
-        program: value,
+      program: value,
     });
     setFormData((prevData) => ({
-        ...prevData,
-        program: value, // Update program in formData
+      ...prevData,
+      program: value, // Update program in formData
     }));
-};
+  };
 
   const handleFormDataChange = (event) => {
     const { name, value } = event.target;
@@ -232,7 +230,7 @@ const ManageSchedule_ContentHeader = () => {
     const fetchfacultyName = async () => {
       const response = await fetch('http://localhost:3000/getFaculty');
       const data = await response.json();
-      
+
       console.log("Faculty data fetched from API:", data); // Log the data structure
       setFacultyName(data);
     };
@@ -399,13 +397,13 @@ const ManageSchedule_ContentHeader = () => {
                 <div className="second-row">
                   <div className="input-box">
                     <label>
-                      Section<input type="text" value={formData.section} name="section" onChange={handleFormDataChange}/>
+                      Section<input type="text" value={formData.section} name="section" onChange={handleFormDataChange} />
                     </label>
                   </div>
 
                   <div className="input-box">
                     <label>
-                      School Year<input type="text" value={formData.schoolyear} name="schoolyear" onChange={handleFormDataChange}/>
+                      School Year<input type="text" value={formData.schoolyear} name="schoolyear" onChange={handleFormDataChange} />
                     </label>
                   </div>
                 </div>
@@ -447,11 +445,11 @@ const ManageSchedule_ContentHeader = () => {
                         name="facultyName"
                         value={formData.facultyId}
                         onChange={handlefacultyNameChange} // Handle instructor selection
-                      > 
+                      >
                         <option value=""></option>
-                        {facultyName.map((facultyName) => (
-                          <option key={facultyName.faculty_id} value={facultyName.faculty_id}>
-                            {facultyName.full_name}
+                        {facultyName.map((faculty) => (
+                          <option key={faculty.faculty_id} value={faculty.faculty_id}>
+                            {faculty.full_name}
                           </option>
                         ))}
                       </select>
@@ -554,11 +552,11 @@ const ManageSchedule_ContentHeader = () => {
                               padding: "8px",
                             }}
                           >
-                            <input 
-                            type="text"
-                            name="room"
-                            value={row.room}
-                            onChange={(e) => handleScheduleChange(e, index)}
+                            <input
+                              type="text"
+                              name="room"
+                              value={row.room}
+                              onChange={(e) => handleScheduleChange(e, index)}
                             />
                           </td>
                           <td
@@ -591,11 +589,11 @@ const ManageSchedule_ContentHeader = () => {
                   </table>
                 </div>
 
-                <div className="thrid-row">      
+                <div className="thrid-row">
                   <div className="input-box">
                     <label>
                       Slot
-                      <input type="text" value={formData.slot} name="slot" onChange={handleFormDataChange}/>
+                      <input type="text" value={formData.slot} name="slot" onChange={handleFormDataChange} />
                     </label>
                   </div>
                 </div>

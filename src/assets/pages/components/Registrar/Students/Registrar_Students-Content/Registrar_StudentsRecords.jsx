@@ -52,10 +52,58 @@ const Registrar_StudentsRecords = ({
     guardian_address: "",
     contact_guardian: "",
   });
-
+  const [originalFormData, setOriginalFormData] = useState({});
   const [juniorHighschoolChecked, setJuniorHighschoolChecked] = useState(false);
   const [seniorHighschoolChecked, setSeniorHighschoolChecked] = useState(false);
+  const validateForm = () => {
+    const requiredFields = [
+      "program",
+      "grade_level",
+      "last_name",
+      "first_name",
+      "sex",
+      "birth_date",
+      "place_of_birth",
+      "nationality",
+      "religion",
+      "civil_status",
+      "birth_order",
+      "contact_number",
+      "city_municipality",
+      "province",
+      "country",
+      "zip_code",
+      "school_name",
+      "years_attended",
+      "school_address",
+      "financial_support",
+    ];
 
+    let isValid = true;
+    let errorMessage = "";
+    let firstErrorInput = null;
+
+    requiredFields.forEach((field) => {
+      if (!formData[field] || formData[field] === "") {
+        document.querySelector(`[name="${field}"]`).classList.add("error");
+        isValid = false;
+        errorMessage += `${field} is required\n`;
+        if (!firstErrorInput) {
+          firstErrorInput = document.querySelector(`[name="${field}"]`);
+        }
+      } else {
+        document.querySelector(`[name="${field}"]`).classList.remove("error");
+      }
+    });
+
+    if (!isValid) {
+      firstErrorInput.focus();
+      //alert(errorMessage);
+      return false;
+    }
+
+    return isValid;
+  };
   useEffect(() => {
     console.log("Student ID:", studentId); // Add this line for debugging
     if (studentId) {
@@ -86,6 +134,17 @@ const Registrar_StudentsRecords = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!validateForm()) {
+      return;
+    }
+    const isFormDataChanged = Object.keys(formData).some((key) => {
+      return formData[key] !== originalFormData[key];
+    });
+
+    if (!isFormDataChanged) {
+      handleClose();
+      return;
+    }
     // Create a copy of the formData and ensure defaults for empty or null values
     const adjustedData = { ...formData };
 
@@ -148,7 +207,7 @@ const Registrar_StudentsRecords = ({
   const handleEditPopup = async (record) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/getStudentData/${record .student_id}`
+        `http://localhost:3000/getStudentData/${record.student_id}`
       );
       const data = response.data;
 
@@ -156,6 +215,49 @@ const Registrar_StudentsRecords = ({
         const date = new Date(dateString);
         return date.toISOString().split("T")[0]; // Converts to YYYY-MM-DD format
       };
+
+      const originalFormData = {
+        first_name: data?.accountData?.first_name || "",
+        middle_name: data?.accountData?.middle_name || "",
+        last_name: data?.accountData?.last_name || "",
+        lrn: data?.studentData?.lrn || "",
+        birth_date: data?.studentData?.birth_date
+          ? formatDate(data.studentData.birth_date)
+          : "",
+        sex: data?.studentData?.sex || "",
+        place_of_birth: data?.studentData?.place_of_birth || "",
+        nationality: data?.studentData?.nationality || "",
+        religion: data?.studentData?.religion || "",
+        civil_status: data?.studentData?.civil_status || "",
+        birth_order: data?.studentData?.birth_order || "",
+        contact_number: data?.studentData?.contact_number || "",
+        program: data?.studentData?.program || "",
+        grade_level: data?.studentData?.grade_level || "",
+        strand: data?.studentData?.strand || "",
+        financial_support: data?.studentData?.financial_support || "",
+        scholarship_grant: data?.studentData?.scholarship_grant || "",
+        school_name: data?.schoolHistoryData?.school_name || "",
+        years_attended: data?.schoolHistoryData?.years_attended || "",
+        honors_awards: data?.schoolHistoryData?.honors_awards || "",
+        school_address: data?.schoolHistoryData?.school_address || "",
+        address: data?.addressData?.address || "",
+        city_municipality: data?.addressData?.city_municipality || "",
+        province: data?.addressData?.province || "",
+        country: data?.addressData?.country || "",
+        zip_code: data?.addressData?.zip_code || "",
+        name_father: data?.contactData?.name_father || "",
+        occupation_father: data?.contactData?.occupation_father || "",
+        contact_father: data?.contactData?.contact_father || "",
+        name_mother: data?.contactData?.name_mother || "",
+        occupation_mother: data?.contactData?.occupation_mother || "",
+        contact_mother: data?.contactData?.contact_mother || "",
+        guardian_name: data?.emergencyContactData?.guardian_name || "",
+        relationship: data?.emergencyContactData?.relationship || "",
+        guardian_address: data?.emergencyContactData?.guardian_address || "",
+        contact_guardian: data?.emergencyContactData?.contact_guardian || "",
+      };
+
+      setOriginalFormData(originalFormData);
 
       setFormData({
         first_name: data?.accountData?.first_name || "",
@@ -845,7 +947,8 @@ const Registrar_StudentsRecords = ({
                 </div>
                 <div className="input-box">
                   <label>
-                    Contact Number <input
+                    Contact Number{" "}
+                    <input
                       type="tel"
                       name="contact_guardian"
                       value={formData.contact_guardian}

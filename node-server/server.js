@@ -909,6 +909,35 @@ app.post('/addSection', async (req, res) => {
     }
   });
 
+  app.get('/sections-subjects', (req, res) => {
+    const query = `
+      SELECT
+        subjecttbl.subject_id,
+        subjecttbl.subject_name,
+        sectiontbl.section_id,
+        sectiontbl.section_name,
+        sectiontbl.semester,
+        sectiontbl.school_year,
+        sectiontbl.strand,
+        sectiontbl.faculty_name
+      FROM
+        sectiontbl
+      INNER JOIN
+        subjecttbl
+      ON
+        sectiontbl.subject_id = subjecttbl.subject_id;
+    `;
+  
+    pool.query(query, (err, results) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('Error retrieving data');
+      } else {
+        res.json(results); // Send the results as JSON
+      }
+    });
+  });
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });

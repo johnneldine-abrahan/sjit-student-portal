@@ -6,10 +6,12 @@ import axios from "axios";
 
 const Admin_StudentsRecords = ({
   selectedStudentIds,
-  studentId = "",
   studentRecords,
   onSelectStudent,
   updateStudentRecords,
+  selectAllChecked,
+  onSelectAll,
+  selectAllRef,
 }) => {
   const [popup, setPopup] = useState({ show: false, record: null });
   const [editPopup, setEditPopup] = useState({ show: false, record: null });
@@ -104,24 +106,6 @@ const Admin_StudentsRecords = ({
 
     return isValid;
   };
-  useEffect(() => {
-    console.log("Student ID:", studentId); // Add this line for debugging
-    if (studentId) {
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(
-            `http://localhost:3000/getStudentData/${studentId}`
-          );
-          console.log(response.data); // Log the response data
-        } catch (error) {
-          console.error("Error:", error);
-        }
-      };
-      fetchData();
-    } else {
-      console.warn("No student ID provided");
-    }
-  }, [studentId]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -360,10 +344,17 @@ const Admin_StudentsRecords = ({
   return (
     <div className="student-records">
       <div className="recordslist-container">
-        <table className="">
+        <table>
           <thead>
             <tr>
-              <th>Select</th>
+              <th>
+                <input
+                  type="checkbox"
+                  checked={selectAllChecked}
+                  ref={selectAllRef}
+                  onChange={onSelectAll}
+                />
+              </th>
               <th>Student ID</th>
               <th>Last Name</th>
               <th>First Name</th>
@@ -375,53 +366,44 @@ const Admin_StudentsRecords = ({
               <th>Actions</th>
             </tr>
           </thead>
-          {studentRecords.length > 0 ? (
-            studentRecords.map((records) => (
-              <tr
-                key={records.student_id}
-                className={
-                  selectedStudentIds.includes(records.student_id)
-                    ? "checked"
-                    : ""
-                }
-              >
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={selectedStudentIds.includes(records.student_id)}
-                    onChange={() => onSelectStudent(records.student_id)}
-                  />
-                </td>
-                <td>{records.student_id}</td>
-                <td>{records.last_name}</td>
-                <td>{records.first_name}</td>
-                <td>{records.middle_name}</td>
-                <td>{records.program}</td>
-                <td>{records.grade_level}</td>
-                <td>{records.student_type}</td>
-                <td>{records.student_status}</td>
-                <td>
-                  <button
-                    className="view-details"
-                    onClick={() => handleViewPopup(records)}
-                  >
-                    <FaRegEye size={20} />
-                  </button>
-                  <button
-                    className="edit-button"
-                    onClick={() => handleEditPopup(records)}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    <BiEditAlt size={20} />
-                  </button>
-                </td>
+          <tbody>
+            {studentRecords.length > 0 ? (
+              studentRecords.map((records) => (
+                <tr
+                  key={records.student_id}
+                  className={selectedStudentIds.includes(records.student_id) ? "checked" : ""}
+                >
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={selectedStudentIds.includes(records.student_id)}
+                      onChange={() => onSelectStudent(records.student_id)}
+                    />
+                  </td>
+                  <td>{records.student_id}</td>
+                  <td>{records.last_name}</td>
+                  <td>{records.first_name}</td>
+                  <td>{records.middle_name}</td>
+                  <td>{records.program}</td>
+                  <td>{records.grade_level}</td>
+                  <td>{records.student_type}</td>
+                  <td>{records.student_status}</td>
+                  <td>
+                    <button className="view-details" onClick={() => handleViewPopup(records)}>
+                      <FaRegEye size={20} />
+                    </button>
+                    <button className="edit-button" onClick={() => handleEditPopup(records)} style={{ marginLeft: "10px" }}>
+                      <BiEditAlt size={20} />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="8">No student records available.</td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="8">No student records available.</td>
-            </tr>
-          )}
+            )}
+          </tbody>
         </table>
       </div>
 

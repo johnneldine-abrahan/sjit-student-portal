@@ -167,6 +167,7 @@ app.get('/students', async (req, res) => {
         const query = `
             SELECT student_id, last_name, first_name, middle_name, program, grade_level, student_type, student_status
             FROM studenttbl
+            WHERE student_status IN ('Not Enrolled', 'Enrolled')
         `;
 
         // Execute the query
@@ -487,6 +488,35 @@ app.delete('/deleteStudent', async (req, res) => {
         client.release();
     }
 });
+
+app.put('/archiveStudents', async (req, res) => {
+    const { studentIds, newStatus } = req.body;
+  
+    if (!studentIds || studentIds.length === 0) {
+      return res.status(400).json({ error: 'No student IDs provided' });
+    }
+  
+    try {
+      // Begin transaction
+      const client = await pool.connect();
+      await client.query('BEGIN');
+  
+      // Update each student_type and student_status based on the provided studentIds
+      const queryText = `UPDATE studenttbl SET student_type = 'Archived', student_status = $1 WHERE student_id = ANY($2::text[])`;
+      await client.query(queryText, [newStatus, studentIds]);
+  
+      // Commit the transaction
+      await client.query('COMMIT');
+      client.release();
+  
+      res.status(200).json({ message: 'Students updated successfully' });
+    } catch (err) {
+      // Rollback transaction in case of error
+      if (client) await client.query('ROLLBACK');
+      res.status(500).json({ error: 'Error archiving students' });
+      console.error(err.message);
+    }
+  });
 
 // Admin - Faculty (CRUD) ------------------------------------------------------------------------------------
 
@@ -981,6 +1011,9 @@ app.delete('/deleteSections', async (req, res) => {
       client.release(); // Release the client back to the pool
     }
   });
+
+// Enrollment -------------------------------------------------------------------------------------
+
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

@@ -75,47 +75,54 @@
 }
 
 .student-records {
-
   flex-direction: column;
   gap: 5px;
-
-
   margin-top: 20px;
 }
 
 .student-records table {
   width: 100%;
   border-collapse: collapse;
-
-
   text-transform: uppercase;
 }
 
-.student-records td {
+.student-records td, .student-records th {
   border-bottom: 1px solid #000000; /* Add border at the bottom only */
   padding: 10px;
   text-align: left;
 }
 
-.student-records th {
-  border-bottom: 1px solid #000000; /* Add border at the bottom only */
-  padding: 10px;
-  text-align: left;
-  pointer-events: none; /* Prevent any hover effect */
+/* Disable hover effect for the header (thead tr) */
+.student-records thead tr:hover {
+  background-color: unset; /* Prevent hover color change */
+  cursor: default; /* Disable pointer cursor */
 }
 
-.student-records tr:hover {
-  background-color: #7b8bbc; /* change this to your desired hover color */
+/* Allow interaction with the checkbox in the header */
+.student-records th input[type="checkbox"] {
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.student-records th input[type="checkbox"]:hover {
+  background-color: unset;
+  cursor: pointer;
+}
+
+/* Row hover effect for tbody */
+.student-records tbody tr:hover {
+  background-color: #7b8bbc; /* Your desired hover color */
   cursor: pointer;
 }
 
 .student-records tr.checked {
-  background-color: #7b8bbc; /* change this to your desired checked color */
+  background-color: #7b8bbc; /* Your desired checked color */
 }
 
 .view-details:hover {
   cursor: pointer;
 }
+
 
 .popup {
   position: fixed;

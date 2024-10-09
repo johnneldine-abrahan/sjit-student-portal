@@ -165,7 +165,7 @@ app.get('/students', async (req, res) => {
     try {
         // Query to fetch student_id, last_name, first_name, middle_name, program, and grade_level from studenttbl
         const query = `
-            SELECT student_id, last_name, first_name, middle_name, program, grade_level
+            SELECT student_id, last_name, first_name, middle_name, program, grade_level, student_type, student_status
             FROM studenttbl
         `;
 
@@ -199,6 +199,7 @@ app.post("/registerStudent", async (req, res) => {
     const password = student_id; // Optionally hash the password with bcrypt if needed
     const user_role = "Student";
     const student_type = "New";
+    const student_status = "Not Enrolled";
     const formattedDate = new Date(birth_date).toISOString().split('T')[0];
 
     // Default profile picture (update this to your default image URL or file path)
@@ -226,11 +227,11 @@ app.post("/registerStudent", async (req, res) => {
 
         // Insert into studentstbl
         const studentQuery = `
-            INSERT INTO studenttbl (student_id, student_type, lrn, first_name, middle_name, last_name, birth_date, sex, place_of_birth, nationality, religion, civil_status, birth_order, contact_number, program, grade_level, strand, user_id, financial_support, scholarship_grant, profile)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
+            INSERT INTO studenttbl (student_id, student_type, student_status, lrn, first_name, middle_name, last_name, birth_date, sex, place_of_birth, nationality, religion, civil_status, birth_order, contact_number, program, grade_level, strand, user_id, financial_support, scholarship_grant, profile)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
         `;
         await client.query(studentQuery, [
-            student_id, student_type, lrn, first_name, middle_name, last_name, formattedDate, sex, place_of_birth, nationality, religion,
+            student_id, student_type, student_status, lrn, first_name, middle_name, last_name, formattedDate, sex, place_of_birth, nationality, religion,
             civil_status, birth_order, contact_number, program, grade_level, strand, user_id, financial_support, scholarship_grant, defaultProfilePicture // Adding default profile picture here
         ]);
 
@@ -308,7 +309,9 @@ app.get('/getStudentData/:studentId', async (req, res) => {
                    grade_level,
                    strand,
                    financial_support,
-                   scholarship_grant
+                   scholarship_grant,
+                   student_type,
+                   student_status
             FROM studenttbl
             WHERE student_id = $1
         `, [studentId]);

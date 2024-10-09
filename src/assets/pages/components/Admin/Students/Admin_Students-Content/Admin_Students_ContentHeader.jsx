@@ -726,7 +726,7 @@ const Admin_Students_ContentHeader = ({
 
                     {/* Mother's Info */}
                     <div className="tenth-row">
-                      <div className="input -box">
+                      <div className="input-box">
                         <label>
                           Mother's Name
                           <input

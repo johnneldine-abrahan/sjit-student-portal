@@ -370,6 +370,8 @@ const Admin_StudentsRecords = ({
               <th>Middle Name </th>
               <th>Program</th>
               <th>Grade Level</th>
+              <th>Student Type</th>
+              <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -396,6 +398,8 @@ const Admin_StudentsRecords = ({
                 <td>{records.middle_name}</td>
                 <td>{records.program}</td>
                 <td>{records.grade_level}</td>
+                <td>{records.student_type}</td>
+                <td>{records.student_status}</td>
                 <td>
                   <button
                     className="view-details"
@@ -549,6 +553,7 @@ const Admin_StudentsRecords = ({
                       name="last_name"
                       value={formData.last_name}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>
@@ -560,6 +565,7 @@ const Admin_StudentsRecords = ({
                       name="first_name"
                       value={formData.first_name}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>
@@ -571,6 +577,7 @@ const Admin_StudentsRecords = ({
                       name="middle_name"
                       value={formData.middle_name}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>
@@ -638,6 +645,7 @@ const Admin_StudentsRecords = ({
                       name="nationality"
                       value={formData.nationality}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>
@@ -649,6 +657,7 @@ const Admin_StudentsRecords = ({
                       name="religion"
                       value={formData.religion}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>
@@ -660,6 +669,7 @@ const Admin_StudentsRecords = ({
                       name="civil_status"
                       value={formData.civil_status}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>
@@ -671,6 +681,7 @@ const Admin_StudentsRecords = ({
                       name="birth_order"
                       value={formData.birth_order}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>

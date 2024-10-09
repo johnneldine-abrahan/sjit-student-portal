@@ -3,7 +3,7 @@ import "./ManageSchedule_Content.css";
 import { BiEditAlt } from "react-icons/bi";
 import { FaRegEye } from "react-icons/fa";
 
-const ManageSchedule_Sections = ({ setSelectedSections, sectionsData, refreshSections }) => {
+const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
   const [popup, setPopup] = useState({
     show: false,
     record: null,
@@ -66,18 +66,24 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData, refreshSec
             <tr>
               <th>Select</th>
               <th>Section ID</th>
+              <th>Grade Level</th>
               <th>Section Name</th>
+              <th>Strand</th>
               <th>Subject</th>
               <th>Semester</th>
               <th>School Year</th>
-              <th>Strand</th>
               <th>Instructor</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {sectionsData.map((record) => (
-              <tr key={record.section_id}>
+              <tr
+                key={record.section_id}
+                className={
+                  selectedIds.includes(record.section_id) ? "checked" : ""
+                }
+              >
                 <td>
                   <input
                     type="checkbox"
@@ -86,11 +92,12 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData, refreshSec
                   />
                 </td>
                 <td>{record.section_id}</td>
+                <td>{record.grade_level}</td>
                 <td>{record.section_name}</td>
+                <td>{record.strand}</td>
                 <td>{record.subject_name}</td>
                 <td>{record.semester}</td>
                 <td>{record.school_year}</td>
-                <td>{record.strand}</td>
                 <td>{record.faculty_name}</td>
                 <td>
                   <span
@@ -168,7 +175,9 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData, refreshSec
                   <input type="text" value={editPopup.record.faculty_name} />
                 </div>
                 <div className="buttons">
-                  <button type="submit" className="btn-box" name="add" id="add">Done</button>
+                  <button type="submit" className="btn-box" name="add" id="add">
+                    Done
+                  </button>
                 </div>
               </form>
             </div>

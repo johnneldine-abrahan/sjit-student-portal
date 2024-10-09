@@ -594,6 +594,7 @@ const Admin_StudentsRecords = ({
                         value="Male"
                         checked={formData.sex === "Male"}
                         onChange={handleInputChange}
+                        disabled
                       />
                       Male
                     </label>
@@ -604,6 +605,7 @@ const Admin_StudentsRecords = ({
                         value="Female"
                         checked={formData.sex === "Female"}
                         onChange={handleInputChange}
+                        disabled
                       />
                       Female
                     </label>
@@ -620,6 +622,7 @@ const Admin_StudentsRecords = ({
                       name="birth_date"
                       value={formData.birth_date}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>
@@ -631,6 +634,7 @@ const Admin_StudentsRecords = ({
                       name="place_of_birth"
                       value={formData.place_of_birth}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>

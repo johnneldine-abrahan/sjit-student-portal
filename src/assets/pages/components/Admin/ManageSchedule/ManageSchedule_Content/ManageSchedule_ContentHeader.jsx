@@ -3,9 +3,13 @@ import { BiSearch } from "react-icons/bi";
 import { FiTrash } from "react-icons/fi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 import "./ManageSchedule_Content.css";
-import axios from 'axios';
+import axios from "axios";
 
-const ManageSchedule_ContentHeader = ({selectedSections, handleDeleteSections, refreshSections}) => {
+const ManageSchedule_ContentHeader = ({
+  selectedSections,
+  handleDeleteSections,
+  refreshSections,
+}) => {
   const [popup, setPopup] = useState({
     show: false,
     message: null,
@@ -36,22 +40,104 @@ const ManageSchedule_ContentHeader = ({selectedSections, handleDeleteSections, r
     slot: "",
     schoolyear: "",
     program: "",
-    section: ""
+    section: "",
   });
 
   const [subjects, setSubjects] = useState([]);
   const [facultyName, setFacultyName] = useState([]); // Assuming you also need instructors
-
 
   const [tableData, setTableData] = useState([
     {
       day: "",
       startTime: "",
       endTime: "",
-      room: ""
+      room: "",
     },
   ]);
+  const validateForm = (formData, tableData) => {
+    const requiredFields = [
+      "gradeLevel",
+      "subjectName",
+      "facultyName",
+      "semester",
+      "slot",
+      "schoolyear",
+      "program",
+      "section",
+    ];
 
+    let isValid = true;
+    let errorMessage = "";
+    let firstErrorInput = null;
+
+    requiredFields.forEach((field) => {
+      if (!formData[field] || formData[field] === "") {
+        document.querySelector(`[name="${field}"]`).classList.add("error");
+        isValid = false;
+        errorMessage += `${field} is required\n`;
+        if (!firstErrorInput) {
+          firstErrorInput = document.querySelector(`[name="${field}"]`);
+        }
+      } else {
+        document.querySelector(`[name="${field}"]`).classList.remove("error");
+      }
+    });
+
+    // Validate table data
+    tableData.forEach((row, index) => {
+      if (!row.day || row.day === "") {
+        document.querySelector(`[name="day"]`).classList.add("error");
+        isValid = false;
+        errorMessage += `Day is required for row ${index + 1}\n`;
+        if (!firstErrorInput) {
+          firstErrorInput = document.querySelector(`[name="day"]`);
+        }
+      } else {
+        document.querySelector(`[name="day"]`).classList.remove("error");
+      }
+
+      if (!row.startTime || row.startTime === "") {
+        document.querySelector(`[name="startTime"]`).classList.add("error");
+        isValid = false;
+        errorMessage += `Start Time is required for row ${index + 1}\n`;
+        if (!firstErrorInput) {
+          firstErrorInput = document.querySelector(`[name="startTime"]`);
+        }
+      } else {
+        document.querySelector(`[name="startTime"]`).classList.remove("error");
+      }
+
+      if (!row.endTime || row.endTime === "") {
+        document.querySelector(`[name="endTime"]`).classList.add("error");
+        isValid = false;
+        errorMessage += `End Time is required for row ${index + 1}\n`;
+        if (!firstErrorInput) {
+          firstErrorInput = document.querySelector(`[name="endTime"]`);
+        }
+      } else {
+        document.querySelector(`[name="endTime"]`).classList.remove("error");
+      }
+
+      if (!row.room || row.room === "") {
+        document.querySelector(`[name="room"]`).classList.add("error");
+        isValid = false;
+        errorMessage += `Room is required for row ${index + 1}\n`;
+        if (!firstErrorInput) {
+          firstErrorInput = document.querySelector(`[name="room"]`);
+        }
+      } else {
+        document.querySelector(`[name="room"]`).classList.remove("error");
+      }
+    });
+
+    if (!isValid) {
+      firstErrorInput.focus();
+      //setErrorMessage(errorMessage);
+      return false;
+    }
+
+    return true;
+  };
   const handlePopup = (message) => {
     setPopup({
       show: true,
@@ -59,11 +145,20 @@ const ManageSchedule_ContentHeader = ({selectedSections, handleDeleteSections, r
     });
   };
 
-  const handlePopupDelete = (message) => {
-    setPopupDelete({
-      show: true,
-      message: message,
-    });
+  const handlePopupDelete = () => {
+    if (selectedSections.length === 0) {
+      setPopupDelete({
+        show: true,
+        message:
+          "No selected section. Please select at least one section to delete.",
+      });
+    } else {
+      setPopupDelete({
+        show: true,
+        message:
+          "Are you sure you want to delete the selected section? This action cannot be undone.",
+      });
+    }
   };
 
   const handleClose = () => {
@@ -101,30 +196,37 @@ const ManageSchedule_ContentHeader = ({selectedSections, handleDeleteSections, r
 
   const handlefacultyNameChange = (e) => {
     const selectedFacultyId = e.target.value; // Assuming this gets the selected faculty ID
-    const selectedFaculty = facultyName.find(faculty => faculty.faculty_id === selectedFacultyId);
+    const selectedFaculty = facultyName.find(
+      (faculty) => faculty.faculty_id === selectedFacultyId
+    );
 
     if (selectedFaculty) {
-      console.log("Constructed full name:", selectedFaculty.full_name);  // Use the already constructed full_name
+      console.log("Constructed full name:", selectedFaculty.full_name); // Use the already constructed full_name
 
-      setFormData(prevData => ({
+      setFormData((prevData) => ({
         ...prevData,
         facultyId: selectedFacultyId,
-        facultyName: selectedFaculty.full_name,  // Use full_name directly
+        facultyName: selectedFaculty.full_name, // Use full_name directly
       }));
     } else {
       console.warn("Faculty not found for ID:", selectedFacultyId);
     }
-  }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
+
+    // Validate the form data
+    if (!validateForm(formData, tableData)) {
+      return;
+    }
 
     // Collect schedules from the table data
     const schedules = tableData.map((row) => ({
       day: row.day,
       start_time: row.startTime,
       end_time: row.endTime,
-      room: row.room
+      room: row.room,
     }));
 
     // Create the payload to send to the server
@@ -145,7 +247,10 @@ const ManageSchedule_ContentHeader = ({selectedSections, handleDeleteSections, r
     console.log("Payload to be sent:", payload); // Log the payload
 
     try {
-      const response = await axios.post('http://localhost:3000/addSection', payload);
+      const response = await axios.post(
+        "http://localhost:3000/addSection",
+        payload
+      );
       alert(response.data.message); // Show success message
       handleClose(); // Close the popup
       // Optionally reset the form or clear the table data
@@ -160,29 +265,34 @@ const ManageSchedule_ContentHeader = ({selectedSections, handleDeleteSections, r
         slot: "",
         schoolyear: "", // Corrected spelling
         program: "",
-        section: ""
+        section: "",
       });
       setTableData([]); // Clear the table data if needed
       refreshSections();
     } catch (error) {
-      console.error("Error adding section:", error.response ? error.response.data : error.message);
+      console.error(
+        "Error adding section:",
+        error.response ? error.response.data : error.message
+      );
       alert("Error adding section. Please try again."); // Show error message
     }
   };
 
   const handleDeleteClick = async () => {
     if (selectedSections.length === 0) {
-      alert('Please select at least one section to delete.');
+      alert("Please select at least one section to delete.");
       return;
     }
-    
+
     try {
       await handleDeleteSections(selectedSections); // Trigger deletion
       handleDeleteClose();
+      window.location.reload();
       refreshSections(); // Refresh the sections after deletion
+      // Reset the selectedSections state
     } catch (error) {
       console.error("Error deleting sections:", error);
-      alert("Failed to delete sections. Please try again.");
+      //alert("Failed to delete sections. Please try again.");
     }
   };
 
@@ -237,13 +347,13 @@ const ManageSchedule_ContentHeader = ({selectedSections, handleDeleteSections, r
   // Sample fetching data for subjects and instructors
   useEffect(() => {
     const fetchSubjects = async () => {
-      const response = await fetch('http://localhost:3000/getSubjects'); // Replace with your API endpoint
+      const response = await fetch("http://localhost:3000/getSubjects"); // Replace with your API endpoint
       const data = await response.json();
       setSubjects(data);
     };
 
     const fetchfacultyName = async () => {
-      const response = await fetch('http://localhost:3000/getFaculty');
+      const response = await fetch("http://localhost:3000/getFaculty");
       const data = await response.json();
 
       console.log("Faculty data fetched from API:", data); // Log the data structure
@@ -253,7 +363,6 @@ const ManageSchedule_ContentHeader = ({selectedSections, handleDeleteSections, r
     fetchSubjects();
     fetchfacultyName();
   }, []);
-
 
   return (
     <div className="manage-schedule-header">
@@ -293,7 +402,8 @@ const ManageSchedule_ContentHeader = ({selectedSections, handleDeleteSections, r
                   <div className="grade-level">
                     <label>Select Program </label>
                     <label>
-                      <input type="checkbox"
+                      <input
+                        type="checkbox"
                         name="program"
                         value="Junior Highschool"
                         checked={checked.program === "Junior Highschool"}
@@ -412,13 +522,25 @@ const ManageSchedule_ContentHeader = ({selectedSections, handleDeleteSections, r
                 <div className="second-row">
                   <div className="input-box">
                     <label>
-                      Section<input type="text" value={formData.section} name="section" onChange={handleFormDataChange} />
+                      Section
+                      <input
+                        type="text"
+                        value={formData.section}
+                        name="section"
+                        onChange={handleFormDataChange}
+                      />
                     </label>
                   </div>
 
                   <div className="input-box">
                     <label>
-                      School Year<input type="text" value={formData.schoolyear} name="schoolyear" onChange={handleFormDataChange} />
+                      School Year
+                      <input
+                        type="text"
+                        value={formData.schoolyear}
+                        name="schoolyear"
+                        onChange={handleFormDataChange}
+                      />
                     </label>
                   </div>
                 </div>
@@ -433,7 +555,10 @@ const ManageSchedule_ContentHeader = ({selectedSections, handleDeleteSections, r
                       >
                         <option value=""></option>
                         {subjects.map((subject) => (
-                          <option key={subject.subject_id} value={subject.subject_id}>
+                          <option
+                            key={subject.subject_id}
+                            value={subject.subject_id}
+                          >
                             {subject.subject_name} {/* Display subject name */}
                           </option>
                         ))}
@@ -463,7 +588,10 @@ const ManageSchedule_ContentHeader = ({selectedSections, handleDeleteSections, r
                       >
                         <option value=""></option>
                         {facultyName.map((faculty) => (
-                          <option key={faculty.faculty_id} value={faculty.faculty_id}>
+                          <option
+                            key={faculty.faculty_id}
+                            value={faculty.faculty_id}
+                          >
                             {faculty.full_name}
                           </option>
                         ))}
@@ -608,7 +736,12 @@ const ManageSchedule_ContentHeader = ({selectedSections, handleDeleteSections, r
                   <div className="input-box">
                     <label>
                       Slot
-                      <input type="text" value={formData.slot} name="slot" onChange={handleFormDataChange} />
+                      <input
+                        type="text"
+                        value={formData.slot}
+                        name="slot"
+                        onChange={handleFormDataChange}
+                      />
                     </label>
                   </div>
                 </div>
@@ -630,20 +763,25 @@ const ManageSchedule_ContentHeader = ({selectedSections, handleDeleteSections, r
             className="popup-blurred-background"
             onClick={handleDeleteClose}
           />
-          <div className="popup-manage-schedule">
+          <div className="popup">
             <div className="popup-header">
-              <h3>{popupDelete.message}</h3>
+              <h3>Delete Section</h3>
               <button onClick={handleDeleteClose}>Close</button>
             </div>
             <div className="popup-content">
-              <p>
-                Are you sure you want to delete the selected schedule? This
-                action is cannot be undone.
-              </p>
-              <div class="buttons">
-                <button type="submit" class="btn-box" onClick={handleDeleteClick}>
-                  Done
-                </button>
+              <p>{popupDelete.message}</p>
+              <div className="buttons">
+                {selectedSections.length > 0 && (
+                  <button
+                    type="submit"
+                    class="btn-box"
+                    name="delete"
+                    id="delete"
+                    onClick={handleDeleteClick}
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
             </div>
           </div>

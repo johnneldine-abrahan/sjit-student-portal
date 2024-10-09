@@ -917,6 +917,7 @@ app.post('/addSection', async (req, res) => {
         const query = `
             SELECT
                 sectiontbl.section_id,
+                sectiontbl.grade_level,
                 sectiontbl.section_name,
                 subjecttbl.subject_name,
                 sectiontbl.semester,

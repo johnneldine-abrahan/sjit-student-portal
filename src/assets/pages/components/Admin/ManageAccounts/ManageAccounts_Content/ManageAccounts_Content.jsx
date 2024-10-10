@@ -7,6 +7,8 @@ import { FaRegEye } from "react-icons/fa";
 const ManageAccounts_Content = () => {
   const [accountsRecords, setAccountsRecords] = useState([]);
   const [selectedAccounts, setSelectedAccounts] = useState([]); // Track selected accounts
+  const [selectAllChecked, setSelectAllChecked] = useState(false); // Track select all checkbox state
+  const selectAllRef = React.createRef(); // Create a ref for the select-all checkbox
   const [popup, setPopup] = useState({
     show: false,
     record: null,
@@ -55,6 +57,30 @@ const ManageAccounts_Content = () => {
         : [...prevSelected, userId]
     );
   };
+
+  // Handle select all checkbox
+  const handleSelectAll = () => {
+    const newSelectAllChecked = !selectAllChecked;
+    if (newSelectAllChecked) {
+      setSelectedAccounts(accountsRecords.map((account) => account.user_id));
+    } else {
+      setSelectedAccounts([]);
+    }
+    setSelectAllChecked(newSelectAllChecked);
+  };
+
+  useEffect(() => {
+    if (selectAllRef.current) {
+      if (
+        selectedAccounts.length > 0 &&
+        selectedAccounts.length < accountsRecords.length
+      ) {
+        selectAllRef.current.indeterminate = true;
+      } else {
+        selectAllRef.current.indeterminate = false;
+      }
+    }
+  }, [selectedAccounts, accountsRecords]);
 
   // Function to delete selected accounts
   const deleteSelectedAccounts = async () => {
@@ -191,7 +217,14 @@ const ManageAccounts_Content = () => {
           <table>
             <thead>
               <tr>
-                <th>Select</th>
+                <th>
+                  <input
+                    type="checkbox"
+                    ref={selectAllRef}
+                    checked={selectAllChecked}
+                    onChange={handleSelectAll}
+                  />
+                </th>
                 <th>Student ID</th>
                 <th>Last Name</th>
                 <th>First Name</th>
@@ -202,11 +235,12 @@ const ManageAccounts_Content = () => {
             </thead>
             <tbody>
               {accountsRecords.map((record) => (
-                <tr key={record.user_id}className={
-                  selectedAccounts.includes(record.user_id)
-                    ? "checked"
-                    : ""
-                }>
+                <tr
+                  key={record.user_id}
+                  className={
+                    selectedAccounts.includes(record.user_id) ? "checked" : ""
+                  }
+                >
                   <td>
                     <input
                       type="checkbox"
@@ -247,65 +281,57 @@ const ManageAccounts_Content = () => {
             <div className="popup-content">
               <form onSubmit={handleSubmit}>
                 <div className="first-row">
-                  <div className="input-box">
-                    <label>
-                      Last Name
-                      <input
-                        type="text"
-                        name="last_name"
-                        value={formData.last_name}
-                        onChange={handleChange}
-                      />
-                    </label>
+                  <div className="form-group">
+                    <label>First Name:</label>
+                    <input
+                      type="text"
+                      name="first_name"
+                      value={formData.first_name}
+                      onChange={handleChange}
+                    />
                   </div>
-                  <div className="input-box">
-                    <label>
-                      First Name
-                      <input
-                        type="text"
-                        name="first_name"
-                        value={formData.first_name}
-                        onChange={handleChange}
-                      />
-                    </label>
-                  </div>
-                  <div className="input-box">
-                    <label>
-                      Middle Name
-                      <input
-                        type="text"
-                        name="middle_name"
-                        value={formData.middle_name}
-                        onChange={handleChange}
-                      />
-                    </label>
+                  <div className="form-group">
+                    <label>Middle Name:</label>
+                    <input
+                      type="text"
+                      name="middle_name"
+                      value={formData.middle_name}
+                      onChange={handleChange}
+                    />
                   </div>
                 </div>
-
                 <div className="second-row">
-                  <div className="input-box">
-                  <label>
-                      Password
-                      <input
-                        type="text"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                      />
-                    </label>
+                  <div className="form-group">
+                    <label>Last Name:</label>
+                    <input
+                      type="text"
+                      name="last_name"
+                      value={formData.last_name}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>User Role:</label>
+                    <input
+                      type="text"
+                      name="user_role"
+                      value={formData.user_role}
+                      onChange={handleChange}
+                    />
                   </div>
                 </div>
-
-                <div className="buttons">
-                  <button
-                    type="submit"
-                    className="btn-box"
-                    name="edit"
-                    id="edit"
-                  >
-                    Done
-                  </button>
+                <div className="third-row">
+                  <div className="form-group">
+                    <label>Password:</label>
+                    <input
+                      type="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                    />
+                  </div>
                 </div>
+                <button type="submit">Update Account</button>
               </form>
             </div>
           </div>

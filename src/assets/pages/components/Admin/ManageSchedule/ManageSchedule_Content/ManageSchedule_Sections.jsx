@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./ManageSchedule_Content.css";
 import { BiEditAlt } from "react-icons/bi";
 import { FaRegEye } from "react-icons/fa";
@@ -17,6 +17,8 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
   });
 
   const [selectedIds, setSelectedIds] = useState([]); // State to track selected section IDs
+  const [selectAllChecked, setSelectAllChecked] = useState(false); // Add this line
+  const selectAllRef = useRef(); // Create a ref for the select-all checkbox
 
   useEffect(() => {
     // Update the selected sections in the parent component
@@ -48,16 +50,23 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
     });
   };
 
-  const handleCheckboxChange = (id) => {
-    setSelectedIds((prevSelectedIds) => {
-      if (prevSelectedIds.includes(id)) {
-        // If already selected, remove it from the array
-        return prevSelectedIds.filter((selectedId) => selectedId !== id);
+  const handleCheckboxChange = (id, isSelectAll = false) => {
+    if (isSelectAll) {
+      setSelectAllChecked(!selectAllChecked);
+      if (!selectAllChecked) {
+        setSelectedIds(sectionsData.map((section) => section.section_id));
       } else {
-        // Otherwise, add it to the array
-        return [...prevSelectedIds, id];
+        setSelectedIds([]);
       }
-    });
+    } else {
+      setSelectedIds((prevSelectedIds) => {
+        if (prevSelectedIds.includes(id)) {
+          return prevSelectedIds.filter((selectedId) => selectedId !== id);
+        } else {
+          return [...prevSelectedIds, id];
+        }
+      });
+    }
   };
 
   const [formData, setFormData] = useState({
@@ -120,7 +129,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
       ...formData,
       program: value,
     });
- };
+  };
 
   const handleSemesterChange = (event) => {
     const { name, value } = event.target;
@@ -160,14 +169,21 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
         <table>
           <thead>
             <tr>
-              <th>Select</th>
+              <th>
+                <input
+                  type="checkbox"
+                  ref={selectAllRef}
+                  checked={selectAllChecked}
+                  onChange={() => handleCheckboxChange(null, true)}
+                />
+              </th>
               <th>Section ID</th>
               <th>Grade Level</th>
               <th>Section Name</th>
               <th>Strand</th>
               <th>Subject</th>
               <th>Semester</th>
-              <th>School Year</ th>
+              <th>School Year</th>
               <th>Instructor</th>
               <th>Actions</th>
             </tr>
@@ -184,6 +200,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                   <input
                     type="checkbox"
                     name={`select-${record.section_id}`}
+                    checked={selectedIds.includes(record.section_id)} // Add this line
                     onChange={() => handleCheckboxChange(record.section_id)} // Update selection
                   />
                 </td>
@@ -269,7 +286,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                       />
                       Senior Highschool
                     </label>
-                  </div >
+                  </div>
                 </div>
 
                 <div className="second-row">

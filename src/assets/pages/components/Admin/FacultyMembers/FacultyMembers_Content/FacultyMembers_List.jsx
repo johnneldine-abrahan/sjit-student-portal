@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "./FacultyMembers_Content.css";
 import { BiEditAlt } from "react-icons/bi";
 import { FaRegEye } from "react-icons/fa";
@@ -7,13 +7,16 @@ const FacultyMembers_List = ({
   onSelectFaculty,
   selectedFacultyIds,
   facultyRecords,
+  onSelectAll,
+  selectAllRef,
+  selectAllChecked,
 }) => {
   const [popup, setPopup] = useState({ show: false, record: null });
   const [editPopup, setEditPopup] = useState({ show: false, record: null });
   const [formData, setFormData] = useState({
-    last_name: '',
-    first_name: '',
-    middle_name: '',
+    last_name: "",
+    first_name: "",
+    middle_name: "",
   });
 
   const handleChange = (event) => {
@@ -23,7 +26,7 @@ const FacultyMembers_List = ({
   const handleSubmit = (event) => {
     event.preventDefault();
     // Add your form submission logic here
-    console.log('Form submitted:', formData);
+    console.log("Form submitted:", formData);
   };
 
   const handlePopup = (record) => {
@@ -57,7 +60,14 @@ const FacultyMembers_List = ({
         <table>
           <thead>
             <tr>
-              <th>Select</th>
+              <th>
+                <input
+                  type="checkbox"
+                  checked={selectAllChecked}
+                  ref={selectAllRef}
+                  onChange={onSelectAll}
+                />
+              </th>
               <th>Faculty ID</th>
               <th>Last Name</th>
               <th>First Name</th>

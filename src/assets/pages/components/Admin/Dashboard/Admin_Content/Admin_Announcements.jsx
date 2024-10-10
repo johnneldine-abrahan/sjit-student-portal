@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Admin_Announcements.css";
 import { BiEditAlt } from "react-icons/bi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
@@ -387,6 +387,8 @@ const Admin_Announcements = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const selectAllRef = useRef(); // Create a ref for the select-all checkbox
 
   // Function to fetch announcements
   const fetchAnnouncements = async () => {
@@ -456,6 +458,27 @@ const Admin_Announcements = () => {
       }
     });
   };
+
+  const handleSelectAll = () => {
+    const newSelectAllChecked = !selectAllChecked;
+    if (newSelectAllChecked) {
+      setSelectedIds(announcements.map((announcement) => announcement.id)); // Select all
+    } else {
+      setSelectedIds([]); // Deselect all
+    }
+    setSelectAllChecked(newSelectAllChecked); // Toggle state
+  };
+
+  useEffect(() => {
+    // Apply the indeterminate state explicitly after any update
+    if (selectAllRef.current) {
+      if (selectedIds.length > 0 && selectedIds.length < announcements.length) {
+        selectAllRef.current.indeterminate = true;
+      } else {
+        selectAllRef.current.indeterminate = false;
+      }
+    }
+  }, [selectedIds, announcements]);
 
   // Closing the edit popup
   const handleCloseEdit = () => {
@@ -542,7 +565,14 @@ const Admin_Announcements = () => {
         <table>
           <thead>
             <tr>
-              <th>Select</th>
+              <th>
+                <input
+                  type="checkbox"
+                  ref={selectAllRef} // Assign the ref to the select-all checkbox
+                  checked={selectAllChecked}
+                  onChange={handleSelectAll}
+                />
+              </th>
               <th>Announcement ID</th>
               <th>Title</th>
               <th>Preview</th>

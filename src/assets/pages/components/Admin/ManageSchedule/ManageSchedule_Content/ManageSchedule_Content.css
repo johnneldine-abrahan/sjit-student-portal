@@ -1,17 +1,7 @@
 .ManageSchedule_content {
   width: 100%;
 }
-tr.checked:hover {
-  background-color: #7b8bbc;
-}
 
-tr.checked {
-  background-color: #7b8bbc;
-}
-.error {
-  border: 1px solid red;
-  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-}
 .manage-schedule-header {
   display: flex;
   align-items: center;
@@ -79,12 +69,15 @@ tr.checked {
   background-color: #7b8bbc; /* change this to your desired checked color */
 }
 
-.section-list tbody tr:nth-child(even):hover {
-  background-color: #7b8bbc;
+.section-list thead tr:hover {
+  background-color: unset; /* Prevent hover color change */
+  cursor: default; /* Disable pointer cursor */
 }
 
-.section-list tbody tr.checked:nth-child(even) {
-  background-color: #7b8bbc;
+/* Allow interaction with the checkbox in the header */
+.section-list th input[type="checkbox"] {
+  pointer-events: auto;
+  z-index: 1;
 }
 
 .add-subject-link {

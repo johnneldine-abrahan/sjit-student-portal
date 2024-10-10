@@ -12,10 +12,8 @@
   color: #150f57;
 }
 .Accounts-records {
-
   flex-direction: column;
   gap: 5px;
-
 
   margin-top: 20px;
 }
@@ -23,7 +21,6 @@
 .Accounts-records table {
   width: 100%;
   border-collapse: collapse;
-
 
   text-transform: uppercase;
 }
@@ -38,7 +35,6 @@
   border-bottom: 1px solid #000000; /* Add border at the bottom only */
   padding: 10px;
   text-align: left;
-  pointer-events: none; /* Prevent any hover effect */
 }
 
 .Accounts-records tr:hover {
@@ -49,11 +45,17 @@
 .Accounts-records tbody tr.checked {
   background-color: #7b8bbc; /* change this to your desired checked color */
 }
+/* Disable hover effect for the header (thead tr) */
+.Accounts-records thead tr:hover {
+  background-color: unset; /* Prevent hover color change */
+  cursor: default; /* Disable pointer cursor */
+}
 
-
-
-
-
+/* Allow interaction with the checkbox in the header */
+.Accounts-records th input[type="checkbox"] {
+  pointer-events: auto;
+  z-index: 1;
+}
 .view-details-link:hover {
   cursor: pointer;
 }

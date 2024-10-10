@@ -7,7 +7,12 @@
   align-items: center;
   justify-content: space-between;
 }
-
+.GradeLevel label {
+  margin-right: 10px;
+}
+.GradeLevel {
+  margin-top: 10px;
+}
 .onQueue-section {
   margin-top: 20px;
   display: flex;

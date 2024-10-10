@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import './ManageSchedule_Content.css';
-import ManageSchedule_ContentHeader from './ManageSchedule_ContentHeader';
-import ManageSchedule_Sections from './ManageSchedule_Sections';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import "./ManageSchedule_Content.css";
+import ManageSchedule_ContentHeader from "./ManageSchedule_ContentHeader";
+import ManageSchedule_Sections from "./ManageSchedule_Sections";
+import axios from "axios";
 
 const ManageSchedule_Content = () => {
   const [selectedSections, setSelectedSections] = useState([]); // Store selected section IDs
@@ -11,10 +11,10 @@ const ManageSchedule_Content = () => {
   // Function to fetch and refresh the sections data
   const refreshSections = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/getSections');
+      const response = await axios.get("http://localhost:3000/getSections");
       setSectionsData(response.data); // Update the sections data state
     } catch (error) {
-      console.error('Error fetching sections:', error);
+      console.error("Error fetching sections:", error);
     }
   };
 
@@ -26,14 +26,17 @@ const ManageSchedule_Content = () => {
     }
 
     try {
-      const response = await axios.delete('http://localhost:3000/deleteSections', {
-        data: { selectedSections },
-      });
+      const response = await axios.delete(
+        "http://localhost:3000/deleteSections",
+        {
+          data: { selectedSections },
+        }
+      );
       alert(response.data.message); // Show success message
       refreshSections(); // Refresh the sections data after deletion
     } catch (error) {
-      console.error('Error deleting sections:', error);
-      alert('Error deleting sections. Please try again.');
+      console.error("Error deleting sections:", error);
+      alert("Error deleting sections. Please try again.");
     }
   };
 
@@ -43,14 +46,14 @@ const ManageSchedule_Content = () => {
   }, []);
 
   return (
-    <div className='ManageSchedule_content'>
-      <ManageSchedule_ContentHeader 
-        selectedSections={selectedSections} 
-        handleDeleteSections={handleDeleteSections} 
+    <div className="ManageSchedule_content">
+      <ManageSchedule_ContentHeader
+        selectedSections={selectedSections}
+        handleDeleteSections={handleDeleteSections}
         refreshSections={refreshSections} // Pass refreshSections to header
       />
-      <ManageSchedule_Sections 
-        setSelectedSections={setSelectedSections} 
+      <ManageSchedule_Sections
+        setSelectedSections={setSelectedSections}
         sectionsData={sectionsData} // Pass sections data to child component
         refreshSections={refreshSections} // Pass refreshSections to sections
       />

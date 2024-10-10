@@ -41,6 +41,23 @@ const Enroll_Students_ContentHeader = () => {
       record: null,
     });
   };
+  const [juniorHighschoolChecked, setJuniorHighschoolChecked] = useState(false);
+  const [seniorHighschoolChecked, setSeniorHighschoolChecked] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    if (name === "program") {
+      if (value === "Junior Highschool") {
+        setJuniorHighschoolChecked(true);
+        setSeniorHighschoolChecked(false);
+      } else if (value === "Senior Highschool") {
+        setJuniorHighschoolChecked(false);
+        setSeniorHighschoolChecked(true);
+      }
+    }
+  };
 
   // Disable scrolling when modal is open
   useEffect(() => {
@@ -79,6 +96,70 @@ const Enroll_Students_ContentHeader = () => {
                 <button onClick={handleClose}>Close</button>
               </div>
               <div className="popup-content">
+                <div className="grade-level">
+                  <label>
+                    Select Program
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="program"
+                        value="Junior Highschool"
+                      />
+                      Junior Highschool
+                    </label>
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="program"
+                        value="Senior Highschool"
+                      />
+                      Senior Highschool
+                    </label>
+                  </label>
+                </div>
+                <div className="GradeLevel">
+                  <label>
+                    Grade Level
+                    <select name="gradeLevel">
+                      <option value="">Select Grade Level</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                      <option value="11">11</option>
+                      <option value="12">12</option>
+                    </select>
+                  </label>
+                </div>
+                <div className="input-box">
+                  <label>
+                    Strand
+                    <select name="strand">
+                      <>
+                        <option value=""></option>
+                        <option value="Science, Technology, Engineering and Mathematics (STEM)">
+                          Science, Technology, Engineering and Mathematics
+                          (STEM)
+                        </option>
+                        <option value="Accountancy, Business and Management (ABM)">
+                          Accountancy, Business and Management (ABM)
+                        </option>
+                        <option value="Humanities and Social Sciences (HUMSS)">
+                          Humanities and Social Sciences (HUMSS)
+                        </option>
+                        <option value="TVL - Industrial Arts (TVL-IA)">
+                          TVL - Industrial Arts (TVL-IA)
+                        </option>
+                        <option value="TVL - Home Economics (TVL-HE)">
+                          TVL - Home Economics (TVL-HE)
+                        </option>
+                        <option value="TVL - Internet Communications Technology (TVL-ICT)">
+                          TVL - Internet Communications Technology (TVL-ICT)
+                        </option>
+                      </>
+                    </select>
+                  </label>
+                </div>
                 <table className="enrollment-table">
                   <thead>
                     <tr>

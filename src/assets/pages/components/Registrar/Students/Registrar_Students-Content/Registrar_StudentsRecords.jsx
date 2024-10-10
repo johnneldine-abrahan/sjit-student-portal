@@ -6,10 +6,12 @@ import axios from "axios";
 
 const Registrar_StudentsRecords = ({
   selectedStudentIds,
-  studentId = "",
   studentRecords,
   onSelectStudent,
   updateStudentRecords,
+  selectAllChecked,
+  onSelectAll,
+  selectAllRef,
 }) => {
   const [popup, setPopup] = useState({ show: false, record: null });
   const [editPopup, setEditPopup] = useState({ show: false, record: null });
@@ -104,24 +106,6 @@ const Registrar_StudentsRecords = ({
 
     return isValid;
   };
-  useEffect(() => {
-    console.log("Student ID:", studentId); // Add this line for debugging
-    if (studentId) {
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(
-            `http://localhost:3000/getStudentData/${studentId}`
-          );
-          console.log(response.data); // Log the response data
-        } catch (error) {
-          console.error("Error:", error);
-        }
-      };
-      fetchData();
-    } else {
-      console.warn("No student ID provided");
-    }
-  }, [studentId]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -360,64 +344,77 @@ const Registrar_StudentsRecords = ({
   return (
     <div className="student-records">
       <div className="recordslist-container">
-        <table className="">
+        <table>
           <thead>
             <tr>
-              <th>Select</th>
+              <th>
+                <input
+                  type="checkbox"
+                  checked={selectAllChecked}
+                  ref={selectAllRef}
+                  onChange={onSelectAll}
+                />
+              </th>
               <th>Student ID</th>
               <th>Last Name</th>
               <th>First Name</th>
               <th>Middle Name </th>
               <th>Program</th>
               <th>Grade Level</th>
+              <th>Student Type</th>
+              <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
-          {studentRecords.length > 0 ? (
-            studentRecords.map((records) => (
-              <tr
-                key={records.student_id}
-                className={
-                  selectedStudentIds.includes(records.student_id)
-                    ? "checked"
-                    : ""
-                }
-              >
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={selectedStudentIds.includes(records.student_id)}
-                    onChange={() => onSelectStudent(records.student_id)}
-                  />
-                </td>
-                <td>{records.student_id}</td>
-                <td>{records.last_name}</td>
-                <td>{records.first_name}</td>
-                <td>{records.middle_name}</td>
-                <td>{records.program}</td>
-                <td>{records.grade_level}</td>
-                <td>
-                  <button
-                    className="view-details"
-                    onClick={() => handleViewPopup(records)}
-                  >
-                    <FaRegEye size={20} />
-                  </button>
-                  <button
-                    className="edit-button"
-                    onClick={() => handleEditPopup(records)}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    <BiEditAlt size={20} />
-                  </button>
-                </td>
+          <tbody>
+            {studentRecords.length > 0 ? (
+              studentRecords.map((records) => (
+                <tr
+                  key={records.student_id}
+                  className={
+                    selectedStudentIds.includes(records.student_id)
+                      ? "checked"
+                      : ""
+                  }
+                >
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={selectedStudentIds.includes(records.student_id)}
+                      onChange={() => onSelectStudent(records.student_id)}
+                    />
+                  </td>
+                  <td>{records.student_id}</td>
+                  <td>{records.last_name}</td>
+                  <td>{records.first_name}</td>
+                  <td>{records.middle_name}</td>
+                  <td>{records.program}</td>
+                  <td>{records.grade_level}</td>
+                  <td>{records.student_type}</td>
+                  <td>{records.student_status}</td>
+                  <td>
+                    <button
+                      className="view-details"
+                      onClick={() => handleViewPopup(records)}
+                    >
+                      <FaRegEye size={20} />
+                    </button>
+                    <button
+                      className="edit-button"
+                      onClick={() => handleEditPopup(records)}
+                      style={{ marginLeft: "10px" }}
+                    >
+                      <BiEditAlt size={20} />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="8">No student records available.</td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="8">No student records available.</td>
-            </tr>
-          )}
+            )}
+          </tbody>
         </table>
       </div>
 
@@ -549,6 +546,7 @@ const Registrar_StudentsRecords = ({
                       name="last_name"
                       value={formData.last_name}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>
@@ -560,6 +558,7 @@ const Registrar_StudentsRecords = ({
                       name="first_name"
                       value={formData.first_name}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>
@@ -571,6 +570,7 @@ const Registrar_StudentsRecords = ({
                       name="middle_name"
                       value={formData.middle_name}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>
@@ -587,6 +587,7 @@ const Registrar_StudentsRecords = ({
                         value="Male"
                         checked={formData.sex === "Male"}
                         onChange={handleInputChange}
+                        disabled
                       />
                       Male
                     </label>
@@ -597,6 +598,7 @@ const Registrar_StudentsRecords = ({
                         value="Female"
                         checked={formData.sex === "Female"}
                         onChange={handleInputChange}
+                        disabled
                       />
                       Female
                     </label>
@@ -613,6 +615,7 @@ const Registrar_StudentsRecords = ({
                       name="birth_date"
                       value={formData.birth_date}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>
@@ -624,6 +627,7 @@ const Registrar_StudentsRecords = ({
                       name="place_of_birth"
                       value={formData.place_of_birth}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>
@@ -638,6 +642,7 @@ const Registrar_StudentsRecords = ({
                       name="nationality"
                       value={formData.nationality}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>
@@ -649,6 +654,7 @@ const Registrar_StudentsRecords = ({
                       name="religion"
                       value={formData.religion}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>
@@ -660,6 +666,7 @@ const Registrar_StudentsRecords = ({
                       name="civil_status"
                       value={formData.civil_status}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>
@@ -671,6 +678,7 @@ const Registrar_StudentsRecords = ({
                       name="birth_order"
                       value={formData.birth_order}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>

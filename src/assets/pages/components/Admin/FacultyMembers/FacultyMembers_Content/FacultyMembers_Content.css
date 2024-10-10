@@ -107,22 +107,27 @@
   padding: 10px;
   text-align: left;
 }
-
+.faculty-list thead tr:hover {
+  background-color: unset; /* Prevent hover color change */
+  cursor: default; /* Disable pointer cursor */
+}
 .faculty-list tbody tr:hover {
   background-color: #7b8bbc; /* change this to your desired hover color */
   cursor: pointer;
 }
+.faculty-list thead tr:hover {
+  background-color: unset; /* Prevent hover color change */
+  cursor: default; /* Disable pointer cursor */
+}
+
+/* Allow interaction with the checkbox in the header */
+.faculty-list th input[type="checkbox"] {
+  pointer-events: auto;
+  z-index: 1;
+}
 
 .faculty-list tbody tr.checked {
   background-color: #7b8bbc; /* change this to your desired checked color */
-}
-
-.faculty-list tbody tr:nth-child(even):hover {
-  background-color: #7b8bbc;
-}
-
-.faculty-list tbody tr.checked:nth-child(even) {
-  background-color: #7b8bbc;
 }
 
 .error {

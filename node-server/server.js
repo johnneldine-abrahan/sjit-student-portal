@@ -1032,6 +1032,26 @@ app.get('/students/not-enrolled', async (req, res) => {
     }
   });
 
+  // Archive ---------------------------------------------------------------------------------------
+
+  app.get('/students/archived', async (req, res) => {
+    try {
+      // Query to fetch all data from studenttbl where student_type = 'Archived'
+      const query = `
+        SELECT student_id, last_name, first_name, middle_name, student_status
+        FROM studenttbl 
+        WHERE student_type = 'Archived';
+      `;
+      const result = await pool.query(query);
+      
+      // Send the result as a response
+      res.json(result.rows);
+    } catch (error) {
+      console.error('Error fetching archived students:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });

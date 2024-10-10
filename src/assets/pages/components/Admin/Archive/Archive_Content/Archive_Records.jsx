@@ -1,46 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Archive_Content.css";
 
-const ArchiveRecords = [
-  {
-    studentID: "21-05298",
-    LastName: "Sanchez",
-    FirstName: "Kim William",
-    MiddleName: "Bacsa",
-    yearGraduated: "2025",
-    viewRecords: "View Details",
-  },
-  {
-    studentID: "21-05298",
-    LastName: "Sanchez",
-    FirstName: "Kim William",
-    MiddleName: "Bacsa",
-    yearGraduated: "2025",
-    viewRecords: "View Details",
-  },
-  {
-    studentID: "21-05298",
-    LastName: "Sanchez",
-    FirstName: "Kim William",
-    MiddleName: "Bacsa",
-    yearGraduated: "2025",
-    viewRecords: "View Details",
-  },
-  {
-    studentID: "21-05298",
-    LastName: "Sanchez",
-    FirstName: "Kim ",
-    MiddleName: "Bacsa",
-    yearGraduated: "2025",
-    viewRecords: "View Details",
-  },
-];
-
 const Archive_Records = () => {
+  const [archiveRecords, setArchiveRecords] = useState([]);  // State to store fetched records
   const [popup, setPopup] = useState({
     show: false,
     record: null,
   });
+
+  // Fetch data when the component loads
+  useEffect(() => {
+    const fetchArchivedRecords = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/students/archived');  // API call to the backend
+        const data = await response.json();
+        setArchiveRecords(data);  // Update state with fetched data
+      } catch (error) {
+        console.error('Error fetching archived records:', error);
+      }
+    };
+
+    fetchArchivedRecords();
+  }, []);
 
   const handlePopup = (record) => {
     setPopup({
@@ -66,28 +47,34 @@ const Archive_Records = () => {
               <th>Last Name</th>
               <th>First Name</th>
               <th>Middle Name</th>
-              <th>Year Graduated</th>
+              <th>Student Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {ArchiveRecords.map((records) => (
-              <tr key={records.studentID}>
-                <td>{records.studentID}</td>
-                <td>{records.LastName}</td>
-                <td>{records.FirstName}</td>
-                <td>{records.MiddleName}</td>
-                <td>{records.yearGraduated}</td>
-                <td>
-                  <span
-                    className="view-details-link"
-                    onClick={() => handlePopup(records)}
-                  >
-                    View Details
-                  </span>
-                </td>
+            {archiveRecords.length > 0 ? (
+              archiveRecords.map((record) => (
+                <tr key={record.student_id}>
+                  <td>{record.student_id}</td>
+                  <td>{record.last_name}</td>
+                  <td>{record.first_name}</td>
+                  <td>{record.middle_name}</td>
+                  <td>{record.student_status}</td>
+                  <td>
+                    <span
+                      className="view-details-link"
+                      onClick={() => handlePopup(record)}
+                    >
+                      View Details
+                    </span>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6">No archived records found.</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
@@ -101,11 +88,11 @@ const Archive_Records = () => {
                 <button onClick={handleClose}>Close</button>
               </div>
               <div className="popup-content">
-                <p>Student ID: {popup.record.studentID}</p>
-                <p>Last Name: {popup.record.LastName}</p>
-                <p>First Name: {popup.record.FirstName}</p>
-                <p>Middle Name: {popup.record.MiddleName}</p>
-                <p>Year Graduated: {popup.record.yearGraduated}</p>
+                <p>Student ID: {popup.record.student_id}</p>
+                <p>Last Name: {popup.record.last_name}</p>
+                <p>First Name: {popup.record.first_name}</p>
+                <p>Middle Name: {popup.record.middle_name}</p>
+                <p>Status: {popup.record.student_status}</p>
               </div>
             </div>
           </div>

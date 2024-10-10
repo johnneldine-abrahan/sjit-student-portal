@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./FacultyMembers_Content.css";
 import { BiEditAlt } from "react-icons/bi";
 import { FaRegEye } from "react-icons/fa";
@@ -10,6 +10,7 @@ const FacultyMembers_List = ({
   onSelectAll,
   selectAllRef,
   selectAllChecked,
+  updateFacultyRecords
 }) => {
   const [popup, setPopup] = useState({ show: false, record: null });
   const [editPopup, setEditPopup] = useState({ show: false, record: null });
@@ -18,15 +19,42 @@ const FacultyMembers_List = ({
     first_name: "",
     middle_name: "",
   });
+  const [currentFacultyId, setCurrentFacultyId] = useState(null); // State to track the current faculty ID
+  
 
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Add your form submission logic here
-    console.log("Form submitted:", formData);
+    try {
+      const response = await fetch(`http://localhost:3000/faculty/${currentFacultyId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Faculty updated:", data.faculty);
+        
+        alert("Faculty successfully updated!");
+        handleClose();
+
+        const updatedResponse = await fetch("http://localhost:3000/faculties");
+        const updatedRecords = await updatedResponse.json();
+        await updateFacultyRecords(updatedRecords); // Call the passed function to refresh the faculty list
+  
+      } else {
+        const errorData = await response.json();
+        console.error("Error updating faculty:", errorData.message);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
   const handlePopup = (record) => {
@@ -36,11 +64,27 @@ const FacultyMembers_List = ({
     });
   };
 
-  const handleEditPopup = (record) => {
-    setEditPopup({
-      show: true,
-      record: record,
-    });
+  const handleEditPopup = async (facultyId) => {
+    setCurrentFacultyId(facultyId); // Set the current faculty ID
+    try {
+      const response = await fetch(`http://localhost:3000/faculty/${facultyId}`); // Fetch faculty data
+      if (response.ok) {
+        const data = await response.json();
+        setFormData({
+          last_name: data.last_name,
+          first_name: data.first_name,
+          middle_name: data.middle_name,
+        });
+        setEditPopup({
+          show: true,
+          record: data, // Save fetched data for potential use
+        });
+      } else {
+        console.error('Faculty not found');
+      }
+    } catch (error) {
+      console.error('Error fetching faculty:', error);
+    }
   };
 
   const handleClose = () => {
@@ -52,6 +96,8 @@ const FacultyMembers_List = ({
       show: false,
       record: null,
     });
+    setFormData({ last_name: "", first_name: "", middle_name: "" }); // Reset form data on close
+    setCurrentFacultyId(null); // Reset current faculty ID on close
   };
 
   return (
@@ -79,11 +125,7 @@ const FacultyMembers_List = ({
             {facultyRecords.map((record) => (
               <tr
                 key={record.faculty_id}
-                className={
-                  selectedFacultyIds.includes(record.faculty_id)
-                    ? "checked"
-                    : ""
-                }
+                className={selectedFacultyIds.includes(record.faculty_id) ? "checked" : ""}
               >
                 <td>
                   <input
@@ -105,7 +147,7 @@ const FacultyMembers_List = ({
                   </button>
                   <button
                     className="edit-button"
-                    onClick={() => handleEditPopup(record)}
+                    onClick={() => handleEditPopup(record.faculty_id)} // Pass faculty_id here
                     style={{ marginLeft: "10px" }}
                   >
                     <BiEditAlt size={20} />
@@ -134,6 +176,7 @@ const FacultyMembers_List = ({
           </div>
         </div>
       )}
+      
       {editPopup.show && (
         <div className="popup-blurred-background" onClick={handleClose} />
       )}
@@ -182,7 +225,7 @@ const FacultyMembers_List = ({
               </div>
 
               <div className="buttons">
-                <button type="submit" className="btn-box" name="add" id="add">
+                <button type="submit" className="btn-box" >
                   Done
                 </button>
               </div>

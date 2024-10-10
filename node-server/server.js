@@ -569,6 +569,50 @@ app.post('/registerFaculty', async (req, res) => {
     }
 });
 
+app.get('/faculty/:faculty_id', async (req, res) => {
+    const facultyId = req.params.faculty_id;
+    
+    try {
+        // Assuming you're using PostgreSQL and have a pool or client set up
+        const result = await pool.query(
+            'SELECT last_name, first_name, middle_name FROM facultytbl WHERE faculty_id = $1', 
+            [facultyId]
+        );
+        
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows[0]);  // Send the faculty details as JSON
+        } else {
+            res.status(404).json({ message: 'Faculty not found' });  // If no faculty is found
+        }
+    } catch (error) {
+        console.error('Error fetching faculty:', error);
+        res.status(500).json({ message: 'Internal server error' });  // Handle server errors
+    }
+});
+
+app.put('/faculty/:faculty_id', async (req, res) => {
+    const facultyId = req.params.faculty_id;
+    const { last_name, first_name, middle_name } = req.body;
+
+    try {
+        const result = await pool.query(
+            `UPDATE facultytbl 
+            SET last_name = $1, first_name = $2, middle_name = $3 
+            WHERE faculty_id = $4 RETURNING *`, 
+            [last_name, first_name, middle_name, facultyId]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Faculty not found' });
+        }
+
+        res.status(200).json({ message: 'Faculty updated successfully', faculty: result.rows[0] });
+    } catch (error) {
+        console.error('Error updating faculty:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 app.delete('/deleteFaculty', async (req, res) => {
     const { facultyIds } = req.body;
 

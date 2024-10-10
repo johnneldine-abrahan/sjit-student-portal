@@ -102,7 +102,8 @@ const FacultyMembers_Content = () => {
         facultyRecords={facultyRecords} // Pass faculty records to list
         onSelectAll={handleSelectAll} // Pass select all function
         selectAllRef={selectAllRef} // Pass select all ref
-        selectAllChecked={selectAllChecked} // Pass select all checked state
+        selectAllChecked={selectAllChecked}
+        updateFacultyRecords={updateFacultyRecords} // Pass select all checked state
       />
     </div>
   );

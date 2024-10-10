@@ -41,21 +41,54 @@ const Enroll_Students_ContentHeader = () => {
       record: null,
     });
   };
+
   const [juniorHighschoolChecked, setJuniorHighschoolChecked] = useState(false);
   const [seniorHighschoolChecked, setSeniorHighschoolChecked] = useState(false);
+  const [gradeLevel, setGradeLevel] = useState("");
+  const [strand, setStrand] = useState("");
+  const [formData, setFormData] = useState({
+    program: "",
+    gradeLevel: "",
+    strand: "",
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
 
     if (name === "program") {
+      setFormData({ ...formData, [name]: value });
+
       if (value === "Junior Highschool") {
         setJuniorHighschoolChecked(true);
         setSeniorHighschoolChecked(false);
+        setGradeLevel("");
+        setStrand("");
       } else if (value === "Senior Highschool") {
         setJuniorHighschoolChecked(false);
         setSeniorHighschoolChecked(true);
+        setGradeLevel("");
+        setStrand("");
       }
+    } else if (name === "gradeLevel") {
+      setFormData({ ...formData, [name]: value });
+    } else if (name === "strand") {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
+
+  const handleProgramChange = (e) => {
+    const { value } = e.target;
+
+    if (value === "Junior Highschool") {
+      setJuniorHighschoolChecked(true);
+      setSeniorHighschoolChecked(false);
+      setGradeLevel("");
+      setStrand("");
+    } else if (value === "Senior Highschool") {
+      setJuniorHighschoolChecked(false);
+      setSeniorHighschoolChecked(true);
+      setGradeLevel("");
+      setStrand("");
     }
   };
 
@@ -96,96 +129,122 @@ const Enroll_Students_ContentHeader = () => {
                 <button onClick={handleClose}>Close</button>
               </div>
               <div className="popup-content">
-                <div className="grade-level">
+              <div className="grade-level">
                   <label>
                     Select Program
-                    <label>
-                      <input
-                        type="checkbox"
-                        name="program"
-                        value="Junior Highschool"
-                      />
-                      Junior Highschool
-                    </label>
-                    <label>
-                      <input
-                        type="checkbox"
-                        name="program"
-                        value="Senior Highschool"
-                      />
-                      Senior Highschool
-                    </label>
                   </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="program"
+                      value="Junior Highschool"
+                      checked={juniorHighschoolChecked}
+                      onChange={(e) => {
+                        setJuniorHighschoolChecked(e.target.checked);
+                        if (e.target.checked) {
+                          setSeniorHighschoolChecked(false);
+                          setGradeLevel("");
+                          setStrand("");
+                        }
+                      }}
+                    />
+                    Junior Highschool
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="program"
+                      value="Senior Highschool"
+                      checked={seniorHighschoolChecked}
+                      onChange={(e) => {
+                        setSeniorHighschoolChecked(e.target.checked);
+                        if (e.target.checked) {
+                          setJuniorHighschoolChecked(false);
+                          setGradeLevel("");
+                          setStrand("");
+                        }
+                      }}
+                    />
+                    Senior Highschool
+                  </label>
+                </div>
                 </div>
                 <div className="GradeLevel">
                   <label>
                     Grade Level
-                    <select name="gradeLevel">
-                      <option value="">Select Grade Level</option>
-                      <option value="7">7</option>
-                      <option value="8">8</option>
-                      <option value="9">9</option>
-                      <option value="10">10</option>
-                      <option value="11">11</option>
-                      <option value="12">12</option>
+                    <select
+                      name="gradeLevel"
+                      value={gradeLevel}
+                      onChange={handleChange}
+                    >
+                      <option value=""></option>
+                      {juniorHighschoolChecked && (
+                        <>
+                          <option value="7">Grade 7</option>
+                          <option value="8">Grade 8</option>
+                          <option value="9">Grade 9</option>
+                          <option value="10">Grade 10</option>
+                        </>
+                      )}
+                      {seniorHighschoolChecked && (
+                        <>
+                          <option value="11">Grade 11</option>
+                          <option value="12">Grade 12</option>
+                        </>
+                      )}
                     </select>
                   </label>
                 </div>
                 <div className="input-box">
                   <label>
                     Strand
-                    <select name="strand">
-                      <>
-                        <option value=""></option>
-                        <option value="Science, Technology, Engineering and Mathematics (STEM)">
-                          Science, Technology, Engineering and Mathematics
-                          (STEM)
-                        </option>
-                        <option value="Accountancy, Business and Management (ABM)">
-                          Accountancy, Business and Management (ABM)
-                        </option>
-                        <option value="Humanities and Social Sciences (HUMSS)">
-                          Humanities and Social Sciences (HUMSS)
-                        </option>
-                        <option value="TVL - Industrial Arts (TVL-IA)">
-                          TVL - Industrial Arts (TVL-IA)
-                        </option>
-                        <option value="TVL - Home Economics (TVL-HE)">
-                          TVL - Home Economics (TVL-HE)
-                        </option>
-                        <option value="TVL - Internet Communications Technology (TVL-ICT)">
-                          TVL - Internet Communications Technology (TVL-ICT)
-                        </option>
-                      </>
+                    <select
+                      name="strand"
+                      value={strand}
+                      onChange={handleChange}
+                      disabled={juniorHighschoolChecked}
+                    >
+                      <option value=""></option>
+                      <option value="Science, Technology, Engineering and Mathematics (STEM)">
+                        Science, Technology, Engineering and Mathematics (STEM)
+                      </option>
+                      <option value="Accountancy, Business and Management (ABM)">
+                        Accountancy, Business and Management (ABM)
+                      </option>
+                      <option value="Humanities and Social Sciences (HUMSS)">
+                        Humanities and Social Sciences (HUMSS)
+                      </option>
+                      <option value="TVL - Industrial Arts (TVL-IA)">
+                        TVL - Industrial Arts (TVL-IA)
+                      </option>
+                      <option value="TVL - Home Economics (TVL-HE)">
+                        TVL - Home Economics (TVL-HE)
+                      </option>
+                      <option value="TVL - Internet Communications Technology (TVL-ICT)">
+                        TVL - Internet Communications Technology (TVL-ICT)
+                      </option>
                     </select>
                   </label>
                 </div>
-                <table className="enrollment-table">
-                  <thead>
-                    <tr>
-                      <th>Student ID</th>
-                      <th>Student Name</th>
-                      <th>Grade Level</th>
-                      <th>Section</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {studentData.map((data, index) => (
-                      <tr key={index}>
-                        <td>{data.studentID}</td>
-                        <td>{data.studentName}</td>
-                        <td>{data.gradeLevel}</td>
-                        <td>{data.section}</td>
-                        <td>
-                          <span className="view-details-link">Select</span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <div className="input-box">
+                  <label>
+                    Select Student
+                    <select
+                      name="select-student"
+                      value=""
+                      onChange={handleChange}
+                    >
+                      <option value=""></option>
+
+                    </select>
+                  </label>
+                </div>
+                <div class="buttons">
+                      <button type="submit" class="btn-box" name="add" id="add">
+                        Done
+                      </button>
+                    </div>
               </div>
-            </div>
           </>
         )}
       </div>

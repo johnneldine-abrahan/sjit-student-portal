@@ -107,7 +107,7 @@ const Admin_Students_ContentHeader = ({
       "school_name",
       "years_attended",
       "school_address",
-      "financial_support"
+      "financial_support",
     ];
 
     let isValid = true;
@@ -868,11 +868,21 @@ const Admin_Students_ContentHeader = ({
                   <button onClick={handleClose}>Close</button>
                 </div>
                 <div className="popup-content">
-                  <p>Do you want to archive the selected student?</p>
+                  <p>Please select the archive type of the selected student(s)</p>
                   <div className="buttons">
+                    <select
+                      className="form-select"
+                      aria-label="Select Archive Type"
+                    >
+                      <option value=""></option>
+                      <option value="Dropped">Dropped</option>
+                      <option value="Transferred">Transferred</option>
+                      <option value="Graduated">Graduated</option>
+                      <option value="Completer">Completer</option>
+                    </select>
                     <button
                       type="submit"
-                      class="btn-box"
+                      class="btn-box-archive"
                       name="archive"
                       id="archive"
                     >

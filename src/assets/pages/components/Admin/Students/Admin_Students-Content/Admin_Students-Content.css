@@ -77,52 +77,42 @@
 .student-records {
   flex-direction: column;
   gap: 5px;
+
   margin-top: 20px;
 }
 
 .student-records table {
   width: 100%;
   border-collapse: collapse;
+
   text-transform: uppercase;
 }
 
-.student-records td, .student-records th {
+.student-records td {
   border-bottom: 1px solid #000000; /* Add border at the bottom only */
   padding: 10px;
   text-align: left;
 }
 
-/* Disable hover effect for the header (thead tr) */
-.student-records thead tr:hover {
-  background-color: unset; /* Prevent hover color change */
-  cursor: default; /* Disable pointer cursor */
+.student-records th {
+  border-bottom: 1px solid #000000; /* Add border at the bottom only */
+  padding: 10px;
+  text-align: left;
+  pointer-events: none; /* Prevent any hover effect */
 }
 
-/* Allow interaction with the checkbox in the header */
-.student-records th input[type="checkbox"] {
-  pointer-events: auto;
-  z-index: 1;
-}
-
-.student-records th input[type="checkbox"]:hover {
-  background-color: unset;
-  cursor: pointer;
-}
-
-/* Row hover effect for tbody */
-.student-records tbody tr:hover {
-  background-color: #7b8bbc; /* Your desired hover color */
+.student-records tr:hover {
+  background-color: #7b8bbc; /* change this to your desired hover color */
   cursor: pointer;
 }
 
 .student-records tr.checked {
-  background-color: #7b8bbc; /* Your desired checked color */
+  background-color: #7b8bbc; /* change this to your desired checked color */
 }
 
 .view-details:hover {
   cursor: pointer;
 }
-
 
 .popup {
   position: fixed;
@@ -192,8 +182,6 @@
   margin: 0;
   text-align: justify;
 }
-
-
 
 .popup-content .first-row,
 .second-row,
@@ -304,6 +292,18 @@ select {
   align-items: center;
   justify-content: center;
 }
+.popup-content .btn-box-archive {
+  background-color: #150f57;
+  color: #fff;
+  padding: 9px 14px;
+  margin: 10px;
+  font-size: 16px;
+  border-radius: 30px;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+  display: inline;
+}
 
 .popup-view-student {
   position: fixed;
@@ -315,7 +315,6 @@ select {
   border: 1px solid #ccc;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
 }
 
 .popup-view-student .popup-header {

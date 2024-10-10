@@ -1014,6 +1014,23 @@ app.delete('/deleteSections', async (req, res) => {
 
 // Enrollment -------------------------------------------------------------------------------------
 
+app.get('/students/not-enrolled', async (req, res) => {
+    try {
+      // Query to fetch full name (last_name, first_name middle_name) of students where student_status = 'Not Enrolled'
+      const query = `
+        SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) AS full_name 
+        FROM studenttbl 
+        WHERE student_status = 'Not Enrolled';
+      `;
+      const result = await pool.query(query);
+      
+      // Send the result as a response
+      res.json(result.rows);
+    } catch (error) {
+      console.error('Error fetching not-enrolled students:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

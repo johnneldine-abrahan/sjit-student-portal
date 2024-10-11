@@ -522,13 +522,19 @@ app.put('/archiveStudents', async (req, res) => {
 
 app.get('/faculties', async (req, res) => {
     try {
-      const result = await pool.query('SELECT * FROM facultytbl');
+      // Query to fetch faculties where faculty_status is 'Active'
+      const result = await pool.query(`
+        SELECT * 
+        FROM facultytbl 
+        WHERE faculty_status = 'Active'
+      `);
+      
       res.status(200).json(result.rows);
     } catch (error) {
       console.error('Error fetching faculty data:', error);
       res.status(500).json({ error: 'Failed to fetch faculty data' });
     }
-  });
+  });  
 
 app.post('/registerFaculty', async (req, res) => {
     const client = await pool.connect();
@@ -649,6 +655,40 @@ app.delete('/deleteFaculty', async (req, res) => {
         res.status(500).send('Internal server error');
     }
 });
+
+app.put('/archiveFaculty', async (req, res) => {
+    const { facultyIds } = req.body;
+
+    if (!facultyIds || facultyIds.length === 0) {
+      return res.status(400).json({ error: 'No faculty IDs provided' });
+    }
+
+    try {
+      // Begin transaction
+      const client = await pool.connect();
+      await client.query('BEGIN');
+
+      // SQL query to update faculty_status to 'Archived' for provided facultyIds
+      const queryText = `
+        UPDATE facultytbl
+        SET faculty_status = 'Archived'
+        WHERE faculty_id = ANY($1::text[])
+      `;
+      await client.query(queryText, [facultyIds]);
+
+      // Commit the transaction
+      await client.query('COMMIT');
+      client.release();
+
+      res.status(200).json({ message: 'Faculty members archived successfully' });
+    } catch (err) {
+      // Rollback transaction in case of error
+      if (client) await client.query('ROLLBACK');
+      res.status(500).json({ error: 'Error archiving faculty members' });
+      console.error(err.message);
+    }
+});
+
 
 // Registrar & Finance Announcements ---------------------------------------------------------------------------------
 

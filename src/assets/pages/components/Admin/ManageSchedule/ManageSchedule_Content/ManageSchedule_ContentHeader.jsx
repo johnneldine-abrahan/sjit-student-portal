@@ -10,6 +10,7 @@ const ManageSchedule_ContentHeader = ({
   selectedSections,
   handleDeleteSections,
   refreshSections,
+  handleUnarchiveSections,
 }) => {
   const [popup, setPopup] = useState({
     show: false,
@@ -22,6 +23,11 @@ const ManageSchedule_ContentHeader = ({
   });
 
   const [popupDelete, setPopupDelete] = useState({
+    show: false,
+    message: null,
+  });
+
+  const [popupUnarchive, setPopupUnarchive] = useState({
     show: false,
     message: null,
   });
@@ -55,6 +61,7 @@ const ManageSchedule_ContentHeader = ({
       room: "",
     },
   ]);
+
   const validateForm = (formData, tableData) => {
     const requiredFields = [
       "gradeLevel",
@@ -139,6 +146,7 @@ const ManageSchedule_ContentHeader = ({
 
     return true;
   };
+
   const handlePopup = (message) => {
     setPopup({
       show: true,
@@ -147,17 +155,29 @@ const ManageSchedule_ContentHeader = ({
   };
 
   const handlePopupDelete = () => {
-    if (selectedSections.length === 0) {
+    if (selectedSections.length === 0 ) {
       setPopupDelete({
         show: true,
-        message:
-          "No selected section. Please select at least one section to delete.",
+        message: "No selected section. Please select at least one section to delete.",
       });
     } else {
       setPopupDelete({
         show: true,
-        message:
-          "Are you sure you want to delete the selected section? This action cannot be undone.",
+        message: "Are you sure you want to delete the selected section? This action cannot be undone.",
+      });
+    }
+  };
+
+  const handlePopupUnarchive = () => {
+    if (selectedSections.length === 0) {
+      setPopupUnarchive({
+        show: true,
+        message: "No selected section. Please select at least one section to unarchive.",
+      });
+    } else {
+      setPopupUnarchive({
+        show: true,
+        message: "Are you sure you want to unarchive the selected section?",
       });
     }
   };
@@ -181,6 +201,49 @@ const ManageSchedule_ContentHeader = ({
       show: false,
       message: null,
     });
+  };
+
+  const handleUnarchiveClose = () => {
+    setPopupUnarchive({
+      show: false,
+      message: null,
+    });
+  };
+
+  const handleDeleteClick = async () => {
+    if (selectedSections.length === 0) {
+      alert("Please select at least one section to delete.");
+      return;
+    }
+
+    try {
+      await handleDeleteSections(selectedSections);
+      handleDeleteClose();
+      window.location.reload();
+      refreshSections(); // Refresh the sections after deletion
+      // Reset the selectedSections state
+    } catch (error) {
+      console.error("Error deleting sections:", error);
+      //alert("Failed to delete sections. Please try again.");
+    }
+  };
+
+  const handleUnarchiveClick = async () => {
+    if (selectedSections.length === 0) {
+      alert("Please select at least one section to unarchive.");
+      return;
+    }
+
+    try {
+      await handleUnarchiveSections(selectedSections);
+      handleUnarchiveClose();
+      window.location.reload();
+      refreshSections(); // Refresh the sections after unarchiving
+      // Reset the selectedSections state
+    } catch (error) {
+      console.error("Error unarchiving sections:", error);
+      //alert("Failed to unarchive sections. Please try again.");
+    }
   };
 
   const handleSubjectChange = (event) => {
@@ -248,10 +311,7 @@ const ManageSchedule_ContentHeader = ({
     console.log("Payload to be sent:", payload); // Log the payload
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/addSection",
-        payload
-      );
+      const response = await axios.post("http://localhost:3000/addSection", payload);
       alert(response.data.message); // Show success message
       handleClose(); // Close the popup
       // Optionally reset the form or clear the table data
@@ -271,29 +331,8 @@ const ManageSchedule_ContentHeader = ({
       setTableData([]); // Clear the table data if needed
       refreshSections();
     } catch (error) {
-      console.error(
-        "Error adding section:",
-        error.response ? error.response.data : error.message
-      );
+      console.error("Error adding section:", error.response ? error.response.data : error.message);
       alert("Error adding section. Please try again."); // Show error message
-    }
-  };
-
-  const handleDeleteClick = async () => {
-    if (selectedSections.length === 0) {
-      alert("Please select at least one section to delete.");
-      return;
-    }
-
-    try {
-      await handleDeleteSections(selectedSections); // Trigger deletion
-      handleDeleteClose();
-      window.location.reload();
-      refreshSections(); // Refresh the sections after deletion
-      // Reset the selectedSections state
-    } catch (error) {
-      console.error("Error deleting sections:", error);
-      //alert("Failed to delete sections. Please try again.");
     }
   };
 
@@ -337,6 +376,7 @@ const ManageSchedule_ContentHeader = ({
         day: "",
         startTime: "",
         endTime: "",
+        room: "",
       },
     ]);
   };
@@ -388,7 +428,10 @@ const ManageSchedule_ContentHeader = ({
             />
           </div>
           <div className="buttons-act">
-            <RiInboxUnarchiveLine className="buttons-icon" />
+            <RiInboxUnarchiveLine
+              className="buttons-icon"
+              onClick={handlePopupUnarchive}
+            />
           </div>
         </div>
       </div>
@@ -785,6 +828,38 @@ const ManageSchedule_ContentHeader = ({
                     onClick={handleDeleteClick}
                   >
                     Delete
+                  </button>
+                )}
+              </div>
+
+            </div>
+          </div>
+        </>
+      )}
+
+      {popupUnarchive.show && (
+        <>
+          <div
+            className="popup-blurred-background"
+            onClick={handleUnarchiveClose}
+          />
+          <div className="popup">
+            <div className="popup-header">
+              <h3>Unarchive Section</h3>
+              <button onClick={handleUnarchiveClose}>Close</button>
+            </div>
+            <div className="popup-content">
+              <p>{popupUnarchive.message}</p>
+              <div className="buttons">
+                {selectedSections.length > 0 && (
+                  <button
+                    type="submit"
+                    class="btn-box"
+                    name="unarchive"
+                    id="unarchive"
+                    onClick={handleUnarchiveClick}
+                  >
+                    Unarchive
                   </button>
                 )}
               </div>

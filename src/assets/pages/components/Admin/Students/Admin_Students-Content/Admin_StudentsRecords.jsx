@@ -427,6 +427,7 @@ const Admin_StudentsRecords = ({
                       name="lrn"
                       value={formData.lrn}
                       onChange={handleInputChange}
+                      disabled
                     />
                   </label>
                 </div>
@@ -443,6 +444,7 @@ const Admin_StudentsRecords = ({
                         value="Junior Highschool"
                         checked={juniorHighschoolChecked}
                         onChange={handleInputChange}
+                        disabled
                       />
                       Junior Highschool
                     </label>
@@ -453,6 +455,7 @@ const Admin_StudentsRecords = ({
                         value="Senior Highschool"
                         checked={seniorHighschoolChecked}
                         onChange={handleInputChange}
+                        disabled
                       />
                       Senior Highschool
                     </label>

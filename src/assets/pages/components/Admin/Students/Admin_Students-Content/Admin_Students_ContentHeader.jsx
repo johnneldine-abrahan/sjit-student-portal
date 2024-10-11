@@ -993,33 +993,40 @@ const Admin_Students_ContentHeader = ({
                   <button onClick={handleClose}>Close</button>
                 </div>
                 <div className="popup-content">
-                  <p>
-                    Please select the archive type of the selected student(s)
-                  </p>
-                  <div className="buttons">
-                    <select
-                      className="form-select"
-                      aria-label="Select Archive Type"
-                      name="student_status" // Added name attribute to match the form field
-                      value={formData.student_status} // Updated to formData.student_status
-                      onChange={handleChange}
-                    >
-                      <option value=""></option>
-                      <option value="Dropped">Dropped</option>
-                      <option value="Transferred">Transferred</option>
-                      <option value="Graduated">Graduated</option>
-                      <option value="Completer">Completer</option>
-                    </select>
-                    <button
-                      type="button"
-                      className="btn-box-archive"
-                      name="archive"
-                      id="archive"
-                      onClick={handleArchive}
-                    >
-                      Archive
-                    </button>
-                  </div>
+                  {selectedStudentIds.length > 0 ? (
+                    <>
+                      <p>
+                        Please select the archive type of the selected
+                        student(s)
+                      </p>
+                      <div className="buttons">
+                        <select
+                          className="form-select"
+                          aria-label="Select Archive Type"
+                          name="student_status"
+                          value={formData.student_status}
+                          onChange={handleChange}
+                        >
+                          <option value=""></option>
+                          <option value="Dropped">Dropped</option>
+                          <option value="Transferred">Transferred</option>
+                          <option value="Graduated">Graduated</option>
+                          <option value="Completer">Completer</option>
+                        </select>
+                        <button
+                          type="button"
+                          className="btn-box-archive"
+                          name="archive"
+                          id="archive"
+                          onClick={handleArchive}
+                        >
+                          Archive
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <p>No student selected to archive.</p>
+                  )}
                 </div>
               </div>
             </>

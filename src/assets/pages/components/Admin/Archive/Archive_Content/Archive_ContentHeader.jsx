@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Archive_Content.css";
 import { BiSearch } from "react-icons/bi";
 import { RiInboxUnarchiveLine } from "react-icons/ri";
+import { FiFilter } from "react-icons/fi";
 
 const Archive_ContentHeader = () => {
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
@@ -15,7 +16,7 @@ const Archive_ContentHeader = () => {
   };
 
   const handleConfirmLogout = () => {
-    console.log('Logging out...');
+    console.log("Logging out...");
     setShowLogoutPopup(false);
     // Add navigation to login page here
   };
@@ -28,28 +29,43 @@ const Archive_ContentHeader = () => {
           <input type="text" placeholder="Search..." />
           <BiSearch className="search-icon" />
         </div>
-        <div className="buttons-act">
-          <RiInboxUnarchiveLine
-            className="buttons-icon"
-            onClick={handleLogout}
-          />
-          {showLogoutPopup && (
-            <>
-              <div className="popup-blurred-background" />
-              <div className='modal-logout'>
-                <div className='modalHeader'>
-                  <h3 className='modalTitle'>Unarchive</h3>
-                  <button className='modalCloseButton' onClick={handleClose}>Close</button>
-                </div>
-                <div className='modalBody'>
-                  <p></p>
-                  <div class='buttons'>
-                    <button type="submit" class="btn-box" name="add" id="add" onClick={handleConfirmLogout}>Done</button>
+        <div className="buttons-header">
+          <div className="buttons-act">
+            <FiFilter className="buttons-icon" onClick={handleLogout} />
+          </div>
+          <div className="buttons-act">
+            <RiInboxUnarchiveLine
+              className="buttons-icon"
+              onClick={handleLogout}
+            />
+            {showLogoutPopup && (
+              <>
+                <div className="popup-blurred-background" />
+                <div className="modal-logout">
+                  <div className="modalHeader">
+                    <h3 className="modalTitle">Unarchive</h3>
+                    <button className="modalCloseButton" onClick={handleClose}>
+                      Close
+                    </button>
+                  </div>
+                  <div className="modalBody">
+                    <p></p>
+                    <div class="buttons">
+                      <button
+                        type="submit"
+                        class="btn-box"
+                        name="add"
+                        id="add"
+                        onClick={handleConfirmLogout}
+                      >
+                        Done
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </>
-          )}
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

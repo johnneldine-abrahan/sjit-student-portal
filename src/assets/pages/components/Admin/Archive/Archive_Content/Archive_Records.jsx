@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./Archive_Content.css";
 
 const Archive_Records = () => {
-  const [archiveRecords, setArchiveRecords] = useState([]);  // State to store fetched records
+  const [archiveRecords, setArchiveRecords] = useState([]); // State to store fetched records
+  const [selectedRecords, setSelectedRecords] = useState([]); // State to store selected records
+  const [selectAllChecked, setSelectAllChecked] = useState(false); // State to store select all checkbox state
+  const selectAllRef = React.createRef(); // Create a ref for the select-all checkbox
   const [popup, setPopup] = useState({
     show: false,
     record: null,
@@ -12,11 +15,11 @@ const Archive_Records = () => {
   useEffect(() => {
     const fetchArchivedRecords = async () => {
       try {
-        const response = await fetch('http://localhost:3000/students/archived');  // API call to the backend
+        const response = await fetch("http://localhost:3000/students/archived"); // API call to the backend
         const data = await response.json();
-        setArchiveRecords(data);  // Update state with fetched data
+        setArchiveRecords(data); // Update state with fetched data
       } catch (error) {
-        console.error('Error fetching archived records:', error);
+        console.error("Error fetching archived records:", error);
       }
     };
 
@@ -37,12 +40,53 @@ const Archive_Records = () => {
     });
   };
 
+  // Function to handle the selection of a record
+  const handleSelectRecord = (studentId) => {
+    setSelectedRecords((prevSelected) =>
+      prevSelected.includes(studentId)
+        ? prevSelected.filter((id) => id !== studentId)
+        : [...prevSelected, studentId]
+    );
+  };
+
+  // Function to handle the selection of all records
+  const handleSelectAll = () => {
+    const newSelectAllChecked = !selectAllChecked;
+    if (newSelectAllChecked) {
+      setSelectedRecords(archiveRecords.map((record) => record.student_id));
+    } else {
+      setSelectedRecords([]);
+    }
+    setSelectAllChecked(newSelectAllChecked);
+  };
+
+  useEffect(() => {
+    if (selectAllRef.current) {
+      if (
+        selectedRecords.length > 0 &&
+        selectedRecords.length < archiveRecords.length
+      ) {
+        selectAllRef.current.indeterminate = true;
+      } else {
+        selectAllRef.current.indeterminate = false;
+      }
+    }
+  }, [selectedRecords, archiveRecords]);
+
   return (
     <div className="archive-records">
       <div className="recordslist-container">
         <table>
           <thead>
             <tr>
+              <th>
+                <input
+                  type="checkbox"
+                  ref={selectAllRef}
+                  checked={selectAllChecked}
+                  onChange={handleSelectAll}
+                />
+              </th>
               <th>Student ID</th>
               <th>Last Name</th>
               <th>First Name</th>
@@ -54,7 +98,20 @@ const Archive_Records = () => {
           <tbody>
             {archiveRecords.length > 0 ? (
               archiveRecords.map((record) => (
-                <tr key={record.student_id}>
+                <tr
+                  key={record.student_id}
+                  className={
+                    selectedRecords.includes(record.student_id) ? "checked" : ""
+                  }
+                >
+                  <td>
+                    <input
+                      type="checkbox"
+                      name={`select-${record.student_id}`}
+                      checked={selectedRecords.includes(record.student_id)}
+                      onChange={() => handleSelectRecord(record.student_id)}
+                    />
+                  </td>
                   <td>{record.student_id}</td>
                   <td>{record.last_name}</td>
                   <td>{record.first_name}</td>

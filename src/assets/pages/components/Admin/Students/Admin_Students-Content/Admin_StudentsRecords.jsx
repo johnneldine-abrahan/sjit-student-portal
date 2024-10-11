@@ -385,7 +385,7 @@ const Admin_StudentsRecords = ({
                   <td>{records.first_name}</td>
                   <td>{records.middle_name}</td>
                   <td>{records.program}</td>
-                  <td>{records.grade_level}</td>
+                  <td>Grade {records.grade_level}</td>
                   <td>{records.student_type}</td>
                   <td>{records.student_status}</td>
                   <td>
@@ -468,21 +468,22 @@ const Admin_StudentsRecords = ({
                       name="grade_level"
                       value={formData.grade_level}
                       onChange={handleInputChange}
+                      disabled
                     >
                       {juniorHighschoolChecked && (
                         <>
                           <option value=""></option>
-                          <option value="Grade 7">Grade 7</option>
-                          <option value="Grade 8">Grade 8</option>
-                          <option value="Grade 9">Grade 9</option>
-                          <option value="Grade 10">Grade 10</option>
+                          <option value="7">Grade 7</option>
+                          <option value="8">Grade 8</option>
+                          <option value="9">Grade 9</option>
+                          <option value="10">Grade 10</option>
                         </>
                       )}
                       {seniorHighschoolChecked && (
                         <>
                           <option value=""></option>
-                          <option value="Grade 11">Grade 11</option>
-                          <option value="Grade 12">Grade 12</option>
+                          <option value="11">Grade 11</option>
+                          <option value="12">Grade 12</option>
                         </>
                       )}
                     </select>

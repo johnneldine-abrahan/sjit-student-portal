@@ -3,6 +3,8 @@ import "./Admin_Students-Content.css";
 import { BiSearch } from "react-icons/bi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 import { RiInboxUnarchiveLine } from "react-icons/ri";
+import { BsPersonFillUp } from "react-icons/bs";
+import { FaUserGear } from "react-icons/fa6";
 
 const Admin_Students_ContentHeader = ({
   selectedStudentIds,
@@ -14,6 +16,8 @@ const Admin_Students_ContentHeader = ({
     edit: false,
     delete: false,
     archive: false,
+    promotion: false,
+    matriculation: false,
   });
 
   const [formData, setFormData] = useState({
@@ -53,6 +57,7 @@ const Admin_Students_ContentHeader = ({
     relationship: "",
     guardian_address: "",
     contact_guardian: "",
+    student_status: "", // Added for archive popup
   });
 
   const [juniorHighschoolChecked, setJuniorHighschoolChecked] = useState(false);
@@ -83,6 +88,8 @@ const Admin_Students_ContentHeader = ({
       edit: false,
       delete: false,
       archive: false,
+      promotion: false,
+      matriculation: false,
     });
   };
 
@@ -239,30 +246,100 @@ const Admin_Students_ContentHeader = ({
           newStatus: formData.student_status, // Send student_status from formData
         }),
       });
-  
+
       if (!response.ok) {
         const errorText = await response.text();
         alert(`Failed to archive student: ${errorText || "Unknown error"}`);
         return;
       }
-  
+
       alert("Student successfully archived!");
-  
+
       // Fetch updated student records
       const updatedResponse = await fetch("http://localhost:3000/students");
       const updatedRecords = await updatedResponse.json();
       updateStudentRecords(updatedRecords); // Update parent state
-  
+
       // Close the popup
       handleClose();
     } catch (error) {
       alert("Network error: Failed to reach the server.");
     }
-  };  
+  };
+
+  const handlePromotion = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/promoteStudents", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          studentIds: selectedStudentIds,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        alert(`Failed to promote student: ${errorText || "Unknown error"}`);
+        return;
+      }
+
+      alert("Student successfully promoted!");
+
+      // Fetch updated student records
+      const updatedResponse = await fetch("http://localhost:3000/students");
+      const updatedRecords = await updatedResponse.json();
+      updateStudentRecords(updatedRecords); // Update parent state
+
+      // Close the popup
+      handleClose();
+    } catch (error) {
+      alert("Network error: Failed to reach the server.");
+    }
+  };
+
+  const handleMatriculation = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/matriculateStudents",
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            studentIds: selectedStudentIds,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        alert(`Failed to matriculate student: ${errorText || "Unknown error"}`);
+        return;
+      }
+
+      alert("Student successfully matriculated!");
+
+      // Fetch updated student records
+      const updatedResponse = await fetch("http://localhost:3000/students");
+      const updatedRecords = await updatedResponse.json();
+      updateStudentRecords(updatedRecords); // Update parent state
+
+      // Close the popup
+      handleClose();
+    } catch (error) {
+      alert("Network error: Failed to reach the server.");
+    }
+  };
 
   // Disable scrolling when modal is open
   useEffect(() => {
-    if (popup.add || popup.edit || popup.delete || popup.archive) {
+    if (
+      popup.add ||
+      popup.edit ||
+      popup.delete ||
+      popup.archive ||
+      popup.promotion ||
+      popup.matriculation
+    ) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset"; // Reset overflow when modal is closed
@@ -287,6 +364,18 @@ const Admin_Students_ContentHeader = ({
             <RiAddLargeFill
               className="buttons-icon"
               onClick={() => handlePopup("add")}
+            />
+          </div>
+          <div className="buttons-act">
+            <BsPersonFillUp
+              className="buttons-icon"
+              onClick={() => handlePopup("promotion")}
+            />
+          </div>
+          <div className="buttons-act">
+            <FaUserGear
+              className="buttons-icon"
+              onClick={() => handlePopup("matriculation")}
             />
           </div>
           <div className="buttons-act">
@@ -367,17 +456,17 @@ const Admin_Students_ContentHeader = ({
                             {juniorHighschoolChecked && (
                               <>
                                 <option value=""></option>
-                                <option value="Grade 7">Grade 7</option>
-                                <option value="Grade 8">Grade 8</option>
-                                <option value=" Grade 9">Grade 9</option>
-                                <option value="Grade 10">Grade 10</option>
+                                <option value="7">Grade 7</option>
+                                <option value="8">Grade 8</option>
+                                <option value="9">Grade 9</option>
+                                <option value="10">Grade 10</option>
                               </>
                             )}
                             {seniorHighschoolChecked && (
                               <>
                                 <option value=""></option>
-                                <option value="Grade 11">Grade 11</option>
-                                <option value="Grade 12">Grade 12</option>
+                                <option value="11">Grade 11</option>
+                                <option value="12">Grade 12</option>
                               </>
                             )}
                           </select>
@@ -399,7 +488,7 @@ const Admin_Students_ContentHeader = ({
                                   Science, Technology, Engineering and
                                   Mathematics (STEM)
                                 </option>
-                                <option value="Accountancy, Business and Management (ABM)">
+                                <option value="Accountancy , Business and Management (ABM)">
                                   Accountancy, Business and Management (ABM)
                                 </option>
                                 <option value="Humanities and Social Sciences (HUMSS)">
@@ -840,8 +929,13 @@ const Admin_Students_ContentHeader = ({
                       </div>
                     </div>
 
-                    <div class="buttons">
-                      <button type="submit" class="btn-box" name="add" id="add">
+                    <div className="buttons">
+                      <button
+                        type="submit"
+                        className="btn-box"
+                        name="add"
+                        id="add"
+                      >
                         Done
                       </button>
                     </div>
@@ -870,7 +964,7 @@ const Admin_Students_ContentHeader = ({
                       <div className="buttons">
                         <button
                           type="button"
-                          class="btn-box"
+                          className="btn-box"
                           onClick={() => {
                             onDelete();
                             handleClose();
@@ -899,7 +993,9 @@ const Admin_Students_ContentHeader = ({
                   <button onClick={handleClose}>Close</button>
                 </div>
                 <div className="popup-content">
-                  <p>Please select the archive type of the selected student(s)</p>
+                  <p>
+                    Please select the archive type of the selected student(s)
+                  </p>
                   <div className="buttons">
                     <select
                       className="form-select"
@@ -916,7 +1012,7 @@ const Admin_Students_ContentHeader = ({
                     </select>
                     <button
                       type="button"
-                      class="btn-box-archive"
+                      className="btn-box-archive"
                       name="archive"
                       id="archive"
                       onClick={handleArchive}
@@ -924,6 +1020,82 @@ const Admin_Students_ContentHeader = ({
                       Archive
                     </button>
                   </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Promotion Pop-up */}
+          {popup.promotion && (
+            <>
+              <div className="popup-blurred-background" onClick={handleClose} />
+              <div className="popup">
+                <div className="popup-header">
+                  <h3>Promote Student</h3>
+                  <button onClick={handleClose}>Close</button>
+                </div>
+                <div className="popup-content">
+                  {selectedStudentIds.length > 0 ? (
+                    <>
+                      <p>
+                        Are you sure you want to promote the selected student?
+                        This action cannot be undone.
+                      </p>
+                      <div className="buttons">
+                        <button
+                          type="button"
+                          className="btn-box"
+                          onClick={() => {
+                            handlePromotion();
+                            handleClose();
+                            window.location.reload();
+                          }}
+                        >
+                          Promote
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <p>No student selected.</p>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Matriculation Pop-up */}
+          {popup.matriculation && (
+            <>
+              <div className="popup-blurred-background" onClick={handleClose} />
+              <div className="popup">
+                <div className="popup-header">
+                  <h3>Matriculate Student</h3>
+                  <button onClick={handleClose}>Close</button>
+                </div>
+                <div className="popup-content">
+                  {selectedStudentIds.length > 0 ? (
+                    <>
+                      <p>
+                        Are you sure you want to matriculate the selected
+                        student? This action cannot be undone.
+                      </p>
+                      <div className="buttons">
+                        <button
+                          type="button"
+                          className="btn-box"
+                          onClick={() => {
+                            handleMatriculation();
+                            handleClose();
+                            window.location.reload();
+                          }}
+                        >
+                          Matriculate
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <p>No student selected.</p>
+                  )}
                 </div>
               </div>
             </>

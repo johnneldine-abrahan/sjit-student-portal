@@ -98,42 +98,50 @@
   margin: 0;
 }
 
-.archive-records table {
+.archive-records {
+  flex-direction: column;
+  gap: 5px;
   margin-top: 20px;
+}
+
+.archive-records table {
   width: 100%;
   border-collapse: collapse;
-  border-radius: 10px; /* Add border radius here */
-  overflow: hidden; /* Add this to ensure the border radius is applied correctly */
   text-transform: uppercase;
 }
 
-.archive-records td {
-  border-bottom: 1px solid #ccc; /* Add border at the bottom only */
-  padding: 10px;
-  text-align: left;
-}
-
+.archive-records td,
 .archive-records th {
-  border-bottom: 1px solid #ccc; /* Add border at the bottom only */
+  border-bottom: 1px solid #000000; /* Add border at the bottom only */
   padding: 10px;
   text-align: left;
 }
 
-.archive-records tbody tr:hover {
-  background-color: #7b8bbc; /* change this to your desired hover color */
+/* Disable hover effect for the header (thead tr) */
+.archive-records thead tr:hover {
+  background-color: unset; /* Prevent hover color change */
+  cursor: default; /* Disable pointer cursor */
+}
+
+/* Allow interaction with the checkbox in the header */
+.archive-records th input[type="checkbox"] {
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.archive-records th input[type="checkbox"]:hover {
+  background-color: unset;
   cursor: pointer;
 }
 
-.archive-records tbody tr.checked {
-  background-color: #7b8bbc; /* change this to your desired checked color */
+/* Row hover effect for tbody */
+.archive-records tbody tr:hover {
+  background-color: #7b8bbc; /* Your desired hover color */
+  cursor: pointer;
 }
 
-.archive-records tbody tr:nth-child(even):hover {
-  background-color: #7b8bbc;
-}
-
-.archive-records tbody tr.checked:nth-child(even) {
-  background-color: #7b8bbc;
+.archive-records tr.checked {
+  background-color: #7b8bbc; /* Your desired checked color */
 }
 
 .view-details-link {

@@ -205,7 +205,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                   />
                 </td>
                 <td>{record.section_id}</td>
-                <td>{record.grade_level}</td>
+                <td>Grade {record.grade_level}</td>
                 <td>{record.section_name}</td>
                 <td>{record.strand}</td>
                 <td>{record.subject_name}</td>
@@ -327,10 +327,10 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                         onChange={handleFormDataChange}
                       >
                         <option value=""></option>
-                        <option value="Grade 7">Grade 7</option>
-                        <option value="Grade 8">Grade 8</option>
-                        <option value="Grade 9">Grade 9</option>
-                        <option value="Grade 10">Grade 10</option>
+                        <option value="7">Grade 7</option>
+                        <option value="8">Grade 8</option>
+                        <option value="9">Grade 9</option>
+                        <option value="10">Grade 10</option>
                       </select>
                     ) : formData.program === "Senior Highschool" ? (
                       <select
@@ -339,8 +339,8 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                         onChange={handleFormDataChange}
                       >
                         <option value=""></option>
-                        <option value="Grade 11">Grade 11</option>
-                        <option value="Grade 12">Grade 12</option>
+                        <option value="11">Grade 11</option>
+                        <option value="12">Grade 12</option>
                       </select>
                     ) : (
                       <select

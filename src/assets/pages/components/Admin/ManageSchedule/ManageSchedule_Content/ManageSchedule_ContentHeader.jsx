@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BiSearch } from "react-icons/bi";
 import { FiTrash } from "react-icons/fi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
+import { RiInboxUnarchiveLine } from "react-icons/ri";
 import "./ManageSchedule_Content.css";
 import axios from "axios";
 
@@ -379,11 +380,15 @@ const ManageSchedule_ContentHeader = ({
               onClick={() => handlePopup("Add Subject and Section")}
             />
           </div>
+
           <div className="buttons-act">
             <RiDeleteBin6Line
               className="buttons-icon"
               onClick={() => handlePopupDelete("Delete Subject and Section")}
             />
+          </div>
+          <div className="buttons-act">
+            <RiInboxUnarchiveLine className="buttons-icon" />
           </div>
         </div>
       </div>
@@ -462,10 +467,10 @@ const ManageSchedule_ContentHeader = ({
                         onChange={handleFormDataChange}
                       >
                         <option value=""></option>
-                        <option value="Grade 7">Grade 7</option>
-                        <option value="Grade 8">Grade 8</option>
-                        <option value="Grade 9">Grade 9</option>
-                        <option value="Grade 10">Grade 10</option>
+                        <option value="7">Grade 7</option>
+                        <option value="8">Grade 8</option>
+                        <option value="9">Grade 9</option>
+                        <option value="10">Grade 10</option>
                       </select>
                     ) : checked.program === "Senior Highschool" ? (
                       <select
@@ -474,8 +479,8 @@ const ManageSchedule_ContentHeader = ({
                         onChange={handleFormDataChange}
                       >
                         <option value=""></option>
-                        <option value="Grade 11">Grade 11</option>
-                        <option value="Grade 12">Grade 12</option>
+                        <option value="11">Grade 11</option>
+                        <option value="12">Grade 12</option>
                       </select>
                     ) : (
                       <select

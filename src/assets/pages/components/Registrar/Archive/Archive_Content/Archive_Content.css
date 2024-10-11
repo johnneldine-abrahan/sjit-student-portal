@@ -98,40 +98,6 @@
     margin: 0;
   }
 
-  .archive-records table {
-    width: 100%;
-    margin-top: 25px;
-    border-collapse: collapse;
-    border-radius: 10px; /* Add border radius here */
-    overflow: hidden; /* Add this to ensure the border radius is applied correctly */
-  }
-  .archive-records th,
-  .archive-records td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-  }
-
-  .archive-records th {
-    background-color: #f0f0f0;
-  }
-
-  .archive-records tr:nth-child(even) {
-    background-color: #f5f5f5;
-  }
-
-  .archive-records td {
-    border-style: hidden;
-    padding: 10px;
-    text-align: left;
-  }
-
-  .archive-records th {
-    border-style: hidden;
-    padding: 10px;
-    text-align: left;
-  }
-
   .view-details-link {
     color: #0000ff;
   }

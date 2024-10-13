@@ -40,7 +40,7 @@ const ProfileSidebar_Student = () => {
           <h2 className='studentName'>{studentData.fullName}</h2>
           <div className='sub-details'>
             <p className='studentClass'>{studentData.program}</p>
-            <p className='studentClass'>{studentData.gradeLevel}</p>
+            <p className='studentClass'>Grade {studentData.gradeLevel}</p>
             <p className='academicYear'>{studentData.schoolYear}, {studentData.semester}</p>
             <p className='enrollmentStatus'>{studentData.enrollmentStatus}</p>
           </div>

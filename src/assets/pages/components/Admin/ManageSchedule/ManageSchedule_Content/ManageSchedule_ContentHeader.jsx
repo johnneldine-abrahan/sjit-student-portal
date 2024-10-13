@@ -249,16 +249,29 @@ const ManageSchedule_ContentHeader = ({
     }
   };
 
-  const handleSubjectChange = (event) => {
-    const selectedSubjectId = event.target.value;
-    const selectedSubject = subjects.find(
-      (subject) => subject.subject_id === selectedSubjectId
-    );
-    setFormData({
-      ...formData,
-      subjectName: selectedSubject ? selectedSubject.subject_name : "",
-      subjectId: selectedSubject ? selectedSubject.subject_id : "",
-    });
+  const handleSubjectChange = async (event) => {
+    const selectedSubjectId = event.target.value; // Ensure this is the correct subject ID from the dropdown
+      
+    try {
+      const response = await axios.get('http://localhost:3000/getSubjects', {
+        params: {
+          subjectId: selectedSubjectId,
+        },
+      });
+  
+      const subject = response.data.find((subject) => subject.subject_id === selectedSubjectId);
+      if (subject) {
+        setFormData({
+          ...formData,
+          subjectName: subject.subject_name, // Set the subject name from the response
+          subjectId: subject.subject_id,     // Set the subject ID from the response
+        });
+      } else {
+        console.error(`Subject not found: ${selectedSubjectId}`);
+      }
+    } catch (error) {
+      console.error('Error fetching subject:', error);
+    }
   };
 
   const handlefacultyNameChange = (e) => {
@@ -281,13 +294,13 @@ const ManageSchedule_ContentHeader = ({
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent default form submission behavior
-
+    event.preventDefault();
+  
     // Validate the form data
     if (!validateForm(formData, tableData)) {
       return;
     }
-
+  
     // Collect schedules from the table data
     const schedules = tableData.map((row) => ({
       day: row.day,
@@ -295,31 +308,26 @@ const ManageSchedule_ContentHeader = ({
       end_time: row.endTime,
       room: row.room,
     }));
-
+  
     // Create the payload to send to the server
     const payload = {
       subject_id: formData.subjectId,
       grade_level: formData.gradeLevel,
       strand: formData.strand,
-      section_name: formData.section, // Ensure this is from your input
+      section_name: formData.section,
       semester: formData.semester,
-      school_year: formData.schoolyear, // Ensure this is spelled correctly
+      school_year: formData.schoolyear,
       program: formData.program,
-      faculty_name: formData.facultyName, // This should match your backend expectations
+      faculty_name: formData.facultyName,
       faculty_id: formData.facultyId,
-      schedules, // This will be an array of schedule objects
+      schedules,
       slot: formData.slot,
     };
-
-    console.log("Payload to be sent:", payload); // Log the payload
-
+  
     try {
-      const response = await axios.post(
-        "http://localhost:3000/addSection",
-        payload
-      );
-      alert(response.data.message); // Show success message
-      handleClose(); // Close the popup
+      const response = await axios.post("http://localhost:3000/addSection", payload);
+      alert(response.data.message);
+      handleClose();
       // Optionally reset the form or clear the table data
       setFormData({
         gradeLevel: "",
@@ -330,18 +338,15 @@ const ManageSchedule_ContentHeader = ({
         facultyId: "",
         semester: "",
         slot: "",
-        schoolyear: "", // Corrected spelling
+        schoolyear: "",
         program: "",
         section: "",
       });
-      setTableData([]); // Clear the table data if needed
+      setTableData([]);
       refreshSections();
     } catch (error) {
-      console.error(
-        "Error adding section:",
-        error.response ? error.response.data : error.message
-      );
-      alert("Error adding section. Please try again."); // Show error message
+      console.error("Error adding section:", error.response ? error.response.data : error.message);
+      alert("Error adding section. Please try again.");
     }
   };
 
@@ -419,6 +424,21 @@ const ManageSchedule_ContentHeader = ({
     fetchSubjects();
     fetchFacultyName();
   }, [formData.gradeLevel]);
+
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      const response = await axios.get(`http://localhost:3000/getSubjects`, {
+        params: {
+          gradeLevel: formData.gradeLevel,
+          strand: formData.strand,
+        },
+      });
+      const data = response.data;
+      setSubjects(data);
+    };
+  
+    fetchSubjects();
+  }, [formData.gradeLevel, formData.strand]);
 
   return (
     <div className="manage-schedule-header">

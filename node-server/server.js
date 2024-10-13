@@ -933,24 +933,50 @@ app.get('/getAccounts', async (req, res) => {
 
 app.get('/getSubjects', async (req, res) => {
     try {
-      const gradeLevel = req.query.gradeLevel;
-      let query = 'SELECT subject_id, subject_name FROM subjecttbl';
-      let params = [];
-      if (gradeLevel) {
-        query += ' WHERE grade_level = $1';
-        params = [gradeLevel];
-      }
-      const result = await pool.query(query, params);
-      res.json(result.rows); // Send the list of subjects to the frontend
+        const gradeLevel = req.query.gradeLevel;
+        const strand = req.query.strand; // Get the strand from query parameters
+        let query = 'SELECT subject_id, subject_name FROM subjecttbl';
+        let params = [];
+        
+        if (gradeLevel) {
+            query += ' WHERE grade_level = $1';
+            params = [gradeLevel];
+        }
+        
+        // Handle strand filtering
+        if (strand) {
+            if (strand === "Science, Technology, Engineering and Mathematics (STEM)") {
+                query += (params.length ? ' AND' : ' WHERE') + ' (strand_classification = $' + (params.length + 1) + ' OR strand_classification = \'All\')';
+                params.push('Science, Technology, Engineering and Mathematics (STEM)');
+            } else if (strand === "Accountancy, Business and Management (ABM)") {
+                query += (params.length ? ' AND' : ' WHERE') + ' (strand_classification = $' + (params.length + 1) + ' OR strand_classification = \'All\')';
+                params.push('Accountancy, Business and Management (ABM)');
+            } else if (strand === "Humanities and Social Sciences (HUMSS)") {
+                query += (params.length ? ' AND' : ' WHERE') + ' (strand_classification = $' + (params.length + 1) + ' OR strand_classification = \'All\')';
+                params.push('Humanities and Social Sciences (HUMSS)');
+            } else if (strand === "TVL - Industrial Arts (TVL-IA)") {
+                query += (params.length ? ' AND' : ' WHERE') + ' (strand_classification = $' + (params.length + 1) + ' OR strand_classification = \'All\' OR strand_classification = \'TVL\')';
+                params.push('TVL - Industrial Arts (TVL-IA)');
+            } else if (strand === "TVL - Home Economics (TVL-HE)") {
+                query += (params.length ? ' AND' : ' WHERE') + ' (strand_classification = $' + (params.length + 1) + ' OR strand_classification = \'All\' OR strand_classification = \'TVL\')';
+                params.push('TVL - Home Economics (TVL-HE)');
+            } else if (strand === "TVL - Internet Communications Technology (TVL-ICT)") {
+                query += (params.length ? ' AND' : ' WHERE') + ' (strand_classification = $' + (params.length + 1) + ' OR strand_classification = \'All\' OR strand_classification = \'TVL\')';
+                params.push('TVL - Internet Communications Technology (TVL-ICT)');
+            }
+        }
+
+        const result = await pool.query(query, params);
+        res.json(result.rows); // Send the list of subjects to the frontend
     } catch (error) {
-      console.error(error.message);
-      res.status(500).send('Server Error');
+        console.error(error.message);
+        res.status(500).send('Server Error');
     }
-  });
+});
 
 app.get('/getFaculty', async (req, res) => {
     try {
-        // Query to select faculty_id, last_name, first_name, and middle_name
+        // Query to select faculty_id, last_name, first_name, and middle_name where faculty_status is 'Active'
         const result = await pool.query(`
         SELECT 
           faculty_id, 
@@ -958,6 +984,7 @@ app.get('/getFaculty', async (req, res) => {
           first_name, 
           middle_name 
         FROM facultytbl
+        WHERE faculty_status = 'Active'
       `);
 
         // Format the data to include the middle initial
@@ -977,6 +1004,7 @@ app.get('/getFaculty', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
 
 app.post('/addSection', async (req, res) => {
     const client = await pool.connect();

@@ -1,26 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Enroll_Students_Content.css";
-
-const studentData = [
-  {
-    studentID: "S-001",
-    studentName: "John Doe",
-    gradeLevel: "9",
-    section: "A",
-  },
-  {
-    studentID: "S-002",
-    studentName: "Jane Doe",
-    gradeLevel: "9",
-    section: "B",
-  },
-  {
-    studentID: "S-003",
-    studentName: "Bob Smith",
-    gradeLevel: "9",
-    section: "C",
-  },
-];
+import axios from "axios";
 
 const Enroll_Students_ContentHeader = () => {
   const [popup, setPopup] = useState({
@@ -51,6 +31,7 @@ const Enroll_Students_ContentHeader = () => {
     gradeLevel: "",
     strand: "",
   });
+  const [students, setStudents] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,7 +52,11 @@ const Enroll_Students_ContentHeader = () => {
       }
     } else if (name === "gradeLevel") {
       setFormData({ ...formData, [name]: value });
+      fetchStudents(value, strand);
     } else if (name === "strand") {
+      setFormData({ ...formData, [name]: value });
+      fetchStudents(gradeLevel, value);
+    } else if (name === "select-student") {
       setFormData({ ...formData, [name]: value });
     }
   };
@@ -89,6 +74,20 @@ const Enroll_Students_ContentHeader = () => {
       setSeniorHighschoolChecked(true);
       setGradeLevel("");
       setStrand("");
+    }
+  };
+
+  const fetchStudents = async (gradeLevel, strand) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/students/not-enrolled`, {
+        params: {
+          grade_level: gradeLevel,
+          strand: strand,
+        },
+      });
+      setStudents(response.data);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -129,7 +128,7 @@ const Enroll_Students_ContentHeader = () => {
                 <button onClick={handleClose}>Close</button>
               </div>
               <div className="popup-content">
-              <div className="grade-level">
+                <div className="grade-level">
                   <label>
                     Select Program
                   </label>
@@ -150,7 +149,7 @@ const Enroll_Students_ContentHeader = () => {
                     />
                     Junior Highschool
                   </label>
-                  <label>
+ <label>
                     <input
                       type="checkbox"
                       name="program"
@@ -167,7 +166,6 @@ const Enroll_Students_ContentHeader = () => {
                     />
                     Senior Highschool
                   </label>
-                </div>
                 </div>
                 <div className="GradeLevel">
                   <label>
@@ -235,16 +233,21 @@ const Enroll_Students_ContentHeader = () => {
                       onChange={handleChange}
                     >
                       <option value=""></option>
-
+                      {students.map((student) => (
+                        <option key={student.full_name} value={student.full_name}>
+                          {student.full_name}
+                        </option>
+                      ))}
                     </select>
                   </label>
                 </div>
                 <div class="buttons">
-                      <button type="submit" class="btn-box" name="add" id="add">
-                        Done
-                      </button>
-                    </div>
+                  <button type="submit" class="btn-box" name="add" id="add">
+                    Done
+                  </button>
+                </div>
               </div>
+            </div>
           </>
         )}
       </div>

@@ -1134,14 +1134,30 @@ app.delete('/deleteSections', async (req, res) => {
 // Enrollment -------------------------------------------------------------------------------------
 
 app.get('/students/not-enrolled', async (req, res) => {
+    const { grade_level, strand } = req.query;  // Get grade_level and strand from query params
+  
     try {
-      // Query to fetch full name (last_name, first_name middle_name) of students where student_status = 'Not Enrolled'
-      const query = `
+      // Build the query to fetch full name (last_name, first_name, middle_name) of students 
+      // where student_status is 'Not Enrolled' and grade_level and strand match the provided values
+      let query = `
         SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) AS full_name 
         FROM studenttbl 
-        WHERE student_status = 'Not Enrolled';
+        WHERE student_status = 'Not Enrolled'
       `;
-      const result = await pool.query(query);
+  
+      // Add conditions for grade_level and strand if provided
+      const params = [];
+      if (grade_level) {
+        query += ` AND grade_level = $${params.length + 1}`;
+        params.push(grade_level);
+      }
+      if (strand) {
+        query += ` AND strand = $${params.length + 1}`;
+        params.push(strand);
+      }
+  
+      // Execute the query
+      const result = await pool.query(query, params);
       
       // Send the result as a response
       res.json(result.rows);
@@ -1150,6 +1166,7 @@ app.get('/students/not-enrolled', async (req, res) => {
       res.status(500).json({ error: 'Server error' });
     }
   });
+  
 
   // Archive ---------------------------------------------------------------------------------------
 

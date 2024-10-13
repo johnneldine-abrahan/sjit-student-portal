@@ -933,7 +933,14 @@ app.get('/getAccounts', async (req, res) => {
 
 app.get('/getSubjects', async (req, res) => {
     try {
-      const result = await pool.query('SELECT subject_id, subject_name FROM subjecttbl');
+      const gradeLevel = req.query.gradeLevel;
+      let query = 'SELECT subject_id, subject_name FROM subjecttbl';
+      let params = [];
+      if (gradeLevel) {
+        query += ' WHERE grade_level = $1';
+        params = [gradeLevel];
+      }
+      const result = await pool.query(query, params);
       res.json(result.rows); // Send the list of subjects to the frontend
     } catch (error) {
       console.error(error.message);

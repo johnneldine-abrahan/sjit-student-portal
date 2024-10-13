@@ -155,15 +155,17 @@ const ManageSchedule_ContentHeader = ({
   };
 
   const handlePopupDelete = () => {
-    if (selectedSections.length === 0 ) {
+    if (selectedSections.length === 0) {
       setPopupDelete({
         show: true,
-        message: "No selected section. Please select at least one section to delete.",
+        message:
+          "No selected section. Please select at least one section to delete.",
       });
     } else {
       setPopupDelete({
         show: true,
-        message: "Are you sure you want to delete the selected section? This action cannot be undone.",
+        message:
+          "Are you sure you want to delete the selected section? This action cannot be undone.",
       });
     }
   };
@@ -172,7 +174,8 @@ const ManageSchedule_ContentHeader = ({
     if (selectedSections.length === 0) {
       setPopupUnarchive({
         show: true,
-        message: "No selected section. Please select at least one section to unarchive.",
+        message:
+          "No selected section. Please select at least one section to unarchive.",
       });
     } else {
       setPopupUnarchive({
@@ -311,7 +314,10 @@ const ManageSchedule_ContentHeader = ({
     console.log("Payload to be sent:", payload); // Log the payload
 
     try {
-      const response = await axios.post("http://localhost:3000/addSection", payload);
+      const response = await axios.post(
+        "http://localhost:3000/addSection",
+        payload
+      );
       alert(response.data.message); // Show success message
       handleClose(); // Close the popup
       // Optionally reset the form or clear the table data
@@ -331,7 +337,10 @@ const ManageSchedule_ContentHeader = ({
       setTableData([]); // Clear the table data if needed
       refreshSections();
     } catch (error) {
-      console.error("Error adding section:", error.response ? error.response.data : error.message);
+      console.error(
+        "Error adding section:",
+        error.response ? error.response.data : error.message
+      );
       alert("Error adding section. Please try again."); // Show error message
     }
   };
@@ -388,12 +397,18 @@ const ManageSchedule_ContentHeader = ({
   // Sample fetching data for subjects and instructors
   useEffect(() => {
     const fetchSubjects = async () => {
-      const response = await fetch("http://localhost:3000/getSubjects"); // Replace with your API endpoint
-      const data = await response.json();
-      setSubjects(data);
+      if (formData.gradeLevel) {
+        const response = await fetch(
+          `http://localhost:3000/getSubjects?gradeLevel=${formData.gradeLevel}`
+        );
+        const data = await response.json();
+        setSubjects(data);
+      } else {
+        setSubjects([]);
+      }
     };
 
-    const fetchfacultyName = async () => {
+    const fetchFacultyName = async () => {
       const response = await fetch("http://localhost:3000/getFaculty");
       const data = await response.json();
 
@@ -402,8 +417,8 @@ const ManageSchedule_ContentHeader = ({
     };
 
     fetchSubjects();
-    fetchfacultyName();
-  }, []);
+    fetchFacultyName();
+  }, [formData.gradeLevel]);
 
   return (
     <div className="manage-schedule-header">
@@ -597,17 +612,14 @@ const ManageSchedule_ContentHeader = ({
                   <div className="input-box">
                     <label>Subject</label>
                     <div style={{ display: "flex" }}>
-                      <select
-                        name="subjectName"
-                        onChange={handleSubjectChange} // Handle subject selection
-                      >
+                      <select name="subjectName" onChange={handleSubjectChange}>
                         <option value=""></option>
                         {subjects.map((subject) => (
                           <option
                             key={subject.subject_id}
                             value={subject.subject_id}
                           >
-                            {subject.subject_name} {/* Display subject name */}
+                            {subject.subject_name}
                           </option>
                         ))}
                       </select>
@@ -831,7 +843,6 @@ const ManageSchedule_ContentHeader = ({
                   </button>
                 )}
               </div>
-
             </div>
           </div>
         </>

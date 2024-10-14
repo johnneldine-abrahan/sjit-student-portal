@@ -142,6 +142,12 @@
 .student-enroll-info h2 {
   color: #150f57;
   font-size: 32px;
+  text-transform: uppercase;
+}
+
+.student-enroll-info .status{
+  text-transform: uppercase;
+  color: red;
 }
 
 .popup-enroll {

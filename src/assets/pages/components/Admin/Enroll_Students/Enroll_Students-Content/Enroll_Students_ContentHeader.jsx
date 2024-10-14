@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./Enroll_Students_Content.css";
 import axios from "axios";
 
-const Enroll_Students_ContentHeader = () => {
+const Enroll_Students_ContentHeader = (props) => {
   const [popup, setPopup] = useState({
     show: false,
     record: null,
@@ -63,6 +63,33 @@ const Enroll_Students_ContentHeader = () => {
     } else if (name === "select-student") {
       setSelectedStudent(value);
       setFormData({ ...formData, [name]: value });
+    }
+    
+    if (name === "select-student") {
+      setSelectedStudent(value);
+      console.log("Selected Student:", selectedStudent); // Add this line to verify the selected student
+      setFormData({ ...formData, [name]: value });
+    }
+  };
+
+  const handleDoneClick = async () => {
+    if (!selectedStudent) {
+      console.error("No student selected.");
+      return; // Exit early if no student is selected
+    }
+  
+    try {
+      const response = await axios.get(`http://localhost:3000/students/details`, {
+        params: {
+          fullName: selectedStudent,
+        },
+      });
+      const studentDetails = response.data;
+      // Pass the student details to the parent component
+      props.onStudentSelected(studentDetails);
+      handleClose();
+    } catch (error) {
+      console.error('Error fetching student details:', error);
     }
   };
 
@@ -251,7 +278,7 @@ const Enroll_Students_ContentHeader = () => {
                   </label>
                 </div>
                 <div class="buttons">
-                  <button type="submit" class="btn-box" name="add" id="add">
+                  <button type="submit" class="btn-box" name="add" id="add" onClick={handleDoneClick}>
                     Done
                   </button>
                 </div>

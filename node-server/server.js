@@ -1168,27 +1168,33 @@ app.get('/students/not-enrolled', async (req, res) => {
   });
 
   app.get('/students/details', async (req, res) => {
-    const { fullName } = req.query;  // Get the concatenated full name from query params
+    const { fullName } = req.query;
   
     try {
-      // Build the query to fetch student_id, grade_level, strand, and profile based on the full name
       let query = `
-        SELECT student_id, grade_level, strand, profile
+        SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) AS full_name, 
+               student_id, grade_level, strand, profile, program, student_status
         FROM studenttbl
         WHERE CONCAT(last_name, ', ', first_name, ' ', middle_name) = $1
       `;
   
-      // Execute the query
       const result = await pool.query(query, [fullName]);
   
-      // Send the result as a response
-      res.json(result.rows[0]);
+      if (!result.rows[0] || !result.rows[0].profile) {
+        console.error('Error fetching profile data:', result.rows);
+        res.status(500).json({ error: 'Profile data is missing or undefined' });
+        return;
+      }
+  
+      const profileBuffer = result.rows[0].profile;
+      const base64String = profileBuffer.toString('base64');
+  
+      res.json({ ...result.rows[0], profile: base64String });
     } catch (error) {
       console.error('Error fetching student details:', error);
       res.status(500).json({ error: 'Server error' });
     }
   });
-
   
   // Archive ---------------------------------------------------------------------------------------
 

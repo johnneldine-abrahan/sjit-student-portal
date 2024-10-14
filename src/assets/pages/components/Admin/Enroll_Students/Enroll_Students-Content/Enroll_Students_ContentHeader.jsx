@@ -33,12 +33,14 @@ const Enroll_Students_ContentHeader = () => {
   });
   const [students, setStudents] = useState([]);
 
+  const [selectedStudent, setSelectedStudent] = useState("");
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-
+  
     if (name === "program") {
       setFormData({ ...formData, [name]: value });
-
+  
       if (value === "Junior Highschool") {
         setJuniorHighschoolChecked(true);
         setSeniorHighschoolChecked(false);
@@ -51,12 +53,15 @@ const Enroll_Students_ContentHeader = () => {
         setStrand("");
       }
     } else if (name === "gradeLevel") {
-      setFormData({ ...formData, [name]: value });
+      setFormData({ ...formData, gradeLevel: value });
+      setGradeLevel(value); // Make sure to update gradeLevel state here
       fetchStudents(value, strand);
     } else if (name === "strand") {
-      setFormData({ ...formData, [name]: value });
+      setFormData({ ...formData, strand: value });
+      setStrand(value);
       fetchStudents(gradeLevel, value);
     } else if (name === "select-student") {
+      setSelectedStudent(value);
       setFormData({ ...formData, [name]: value });
     }
   };
@@ -172,7 +177,7 @@ const Enroll_Students_ContentHeader = () => {
                     Grade Level
                     <select
                       name="gradeLevel"
-                      value={gradeLevel}
+                      value={formData.gradeLevel}
                       onChange={handleChange}
                     >
                       <option value=""></option>
@@ -198,7 +203,7 @@ const Enroll_Students_ContentHeader = () => {
                     Strand
                     <select
                       name="strand"
-                      value={strand}
+                      value={formData.strand}
                       onChange={handleChange}
                       disabled={juniorHighschoolChecked}
                     >
@@ -229,15 +234,19 @@ const Enroll_Students_ContentHeader = () => {
                     Select Student
                     <select
                       name="select-student"
-                      value=""
+                      value={selectedStudent} // Use selectedStudent here
                       onChange={handleChange}
                     >
                       <option value=""></option>
-                      {students.map((student) => (
-                        <option key={student.full_name} value={student.full_name}>
-                          {student.full_name}
-                        </option>
-                      ))}
+                      {students && students.length > 0 ? (
+                        students.map((student) => (
+                          <option key={student.full_name} value={student.full_name}>
+                            {student.full_name}
+                          </option>
+                        ))
+                      ) : (
+                        <option value="">No students available</option> // Fallback in case the array is empty
+                      )}
                     </select>
                   </label>
                 </div>

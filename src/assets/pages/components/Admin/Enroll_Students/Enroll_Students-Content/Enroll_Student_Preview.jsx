@@ -10,6 +10,7 @@ const Enroll_Student_Preview = () => {
           <img src={Profile} className='profile-pic' alt='' />
         </div>
         <div className='student-enroll-info'>
+          <h3>24-12345</h3>
           <h2>DELA CRUZ, JUAN A.</h2>
           <h3>Junior Highschool</h3>
           <h3>2024-2025, FIRST</h3>

@@ -240,3 +240,7 @@
   justify-content: flex-end;
   margin-top: 16px;
 }
+
+.subject-list {
+  margin-top: 20px; /* adjust the value as needed */
+}

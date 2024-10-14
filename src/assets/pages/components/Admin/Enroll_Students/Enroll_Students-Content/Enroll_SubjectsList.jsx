@@ -55,6 +55,7 @@ const enrollmentData = [
 ];
 
 const Enroll_SubjectsList = () => {
+  const [viewMode, setViewMode] = useState('list'); // 'list' or 'table'
   const [popup, setPopup] = useState({
     show: false,
     record: null,
@@ -87,9 +88,20 @@ const Enroll_SubjectsList = () => {
     };
   }, [popup]);
 
+  const handleAddSubject = (data) => {
+    // Add the subject to the queue or perform any other necessary action
+    console.log("Add subject:", data);
+  };
+
   return (
     <div className="subject-list">
-      <table>
+      <div className="view-toggle">
+        <button className="left" onClick={() => setViewMode('list')}>List View</button>
+        <button className="right" onClick={() => setViewMode('table')}>Table View</button>
+      </div>
+
+      {viewMode === 'list' ? (
+        <table>
         <thead>
           <tr>
             <th>Subject ID</th>
@@ -116,6 +128,35 @@ const Enroll_SubjectsList = () => {
           ))}
         </tbody>
       </table>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Subject ID</th>
+              <th>Subject Name</th>
+              <th>Semester</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {subjectList.map((records) => (
+              <tr key={records.subjectID}>
+                <td>{records.subjectID}</td>
+                <td>{records.subjectName}</td>
+                <td>{records.semester}</td>
+                <td>
+                  <span
+                    className="view-details-link"
+                    onClick={() => handlePopup(records)}
+                  >
+                    Add Subject
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
       {popup.show && (
         <>
@@ -139,16 +180,25 @@ const Enroll_SubjectsList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {enrollmentData.map((data, index) => (
-                    <tr key={index}>
-                      <td>{data.gradeLevel}</td>
-                      <td>{data.section}</td>
-                      <td>{data.subject}</td>
-                      <td>{data.instructor}</td>
-                      <td>{data.schedule}</td>
-                      <td><span className='view-details-link'>Add Subject</span></td>
-                    </tr>
-                  ))}
+                  {enrollmentData
+                    .filter((data) => data.subject === popup.record.subjectName)
+                    .map((data, index) => (
+                      <tr key={index}>
+                        <td>{data.gradeLevel}</td>
+                        <td>{data.section}</td>
+                        <td>{data.subject}</td>
+                        <td>{data.instructor}</td>
+                        <td>{data.schedule}</td>
+                        <td>
+                          <span
+                            className="view-details-link"
+                            onClick={() => handleAddSubject(data)}
+                          >
+                            Add Subject
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
@@ -162,6 +212,6 @@ const Enroll_SubjectsList = () => {
 
     </div>
   );
-};
+ };
 
 export default Enroll_SubjectsList;

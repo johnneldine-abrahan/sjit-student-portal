@@ -1166,8 +1166,30 @@ app.get('/students/not-enrolled', async (req, res) => {
       res.status(500).json({ error: 'Server error' });
     }
   });
-  
 
+  app.get('/students/details', async (req, res) => {
+    const { fullName } = req.query;  // Get the concatenated full name from query params
+  
+    try {
+      // Build the query to fetch student_id, grade_level, strand, and profile based on the full name
+      let query = `
+        SELECT student_id, grade_level, strand, profile
+        FROM studenttbl
+        WHERE CONCAT(last_name, ', ', first_name, ' ', middle_name) = $1
+      `;
+  
+      // Execute the query
+      const result = await pool.query(query, [fullName]);
+  
+      // Send the result as a response
+      res.json(result.rows[0]);
+    } catch (error) {
+      console.error('Error fetching student details:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+  
+  
   // Archive ---------------------------------------------------------------------------------------
 
   app.get('/students/archived', async (req, res) => {

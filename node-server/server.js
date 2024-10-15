@@ -542,7 +542,6 @@ app.post('/registerFaculty', async (req, res) => {
         const randomNum = Math.floor(10000 + Math.random() * 90000);
         const user_id = `FC-${randomNum}`;
         const password = user_id; // Same as user_id
-        const defaultProfilePicture = "src\assets\img\Profile\default_profile.png";
 
         // SQL transaction to insert into both facultytbl and accountstbl
         await client.query('BEGIN');
@@ -556,10 +555,10 @@ app.post('/registerFaculty', async (req, res) => {
 
         // Insert into facultytbl
         const facultyQuery = `
-            INSERT INTO facultytbl (faculty_id, first_name, middle_name, last_name, user_role, user_id, profile, faculty_status)
-            VALUES ($1, $2, $3, $4, 'Faculty', $5, $6, 'Active')
+            INSERT INTO facultytbl (faculty_id, first_name, middle_name, last_name, user_role, user_id, faculty_status)
+            VALUES ($1, $2, $3, $4, 'Faculty', $5, 'Active')
         `;
-        await client.query(facultyQuery, [user_id, first_name, middle_name, last_name, user_id, defaultProfilePicture]);
+        await client.query(facultyQuery, [user_id, first_name, middle_name, last_name, user_id]);
 
         await client.query('COMMIT');
         res.status(201).send('Faculty registered successfully.');

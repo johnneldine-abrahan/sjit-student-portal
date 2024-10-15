@@ -96,38 +96,38 @@ const Enroll_SubjectsList = () => {
   return (
     <div className="subject-list">
       <div className="view-toggle">
-        <button className="left" onClick={() => setViewMode('list')}>List View</button>
-        <button className="right" onClick={() => setViewMode('table')}>Table View</button>
+        <button className="left" onClick={() => setViewMode('list')}>Subjects to Enroll</button>
+        <button className="right" onClick={() => setViewMode('table')}>Subjects Added</button>
       </div>
 
       {viewMode === 'list' ? (
         <table>
-        <thead>
-          <tr>
-            <th>Subject ID</th>
-            <th>Subject Name</th>
-            <th>Semester</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {subjectList.map((records) => (
-            <tr key={records.subjectID}>
-              <td>{records.subjectID}</td>
-              <td>{records.subjectName}</td>
-              <td>{records.semester}</td>
-              <td>
-                <span
-                  className="view-details-link"
-                  onClick={() => handlePopup(records)}
-                >
-                  Add Subject
-                </span>
-              </td>
+          <thead>
+            <tr>
+              <th>Subject ID</th>
+              <th>Subject Name</th>
+              <th>Semester</th>
+              <th>Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {subjectList.map((records) => (
+              <tr key={records.subjectID}>
+                <td>{records.subjectID}</td>
+                <td>{records.subjectName}</td>
+                <td>{records.semester}</td>
+                <td>
+                  <span
+                    className="view-details-link"
+                    onClick={() => handlePopup(records)}
+                  >
+                    Add Subject
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       ) : (
         <table>
           <thead>
@@ -207,11 +207,13 @@ const Enroll_SubjectsList = () => {
       )}
 
       <div className="onQueue-section">
-        <button type='submit' className='queue'>Queue</button>
+        {viewMode === 'table' && (
+          <button type='submit' className='queue'>Queue</button>
+        )}
       </div>
 
     </div>
   );
- };
+};
 
 export default Enroll_SubjectsList;

@@ -559,8 +559,8 @@ app.post('/registerFaculty', async (req, res) => {
 
         // Insert into facultytbl
         const facultyQuery = `
-            INSERT INTO facultytbl (faculty_id, first_name, middle_name, last_name, user_role, user_id, profile)
-            VALUES ($1, $2, $3, $4, 'Faculty', $5, $6)
+            INSERT INTO facultytbl (faculty_id, first_name, middle_name, last_name, user_role, user_id, profile, faculty_status)
+            VALUES ($1, $2, $3, $4, 'Faculty', $5, $6, 'Active')
         `;
         await client.query(facultyQuery, [user_id, first_name, middle_name, last_name, user_id, defaultProfilePicture]);
 
@@ -851,16 +851,32 @@ app.post('/registerAccount', async (req, res) => {
         }
 
         const password = user_id; // Set password as the same value as user_id
+        const finance_id = user_id;
+        const registrar_id = user_id;
 
         // Insert into accountstbl
         const accountQuery = `
             INSERT INTO accountstbl (user_id, first_name, middle_name, last_name, password, user_role)
             VALUES ($1, $2, $3, $4, $5, $6)
         `;
-
         await pool.query(accountQuery, [user_id, first_name, middle_name, last_name, password, user_role]);
 
-        res.status(200).json({ message: "Account registered successfully!", user_id });
+        // Insert into role-specific table
+        if (user_role === 'Finance') {
+            const financeQuery = `
+                INSERT INTO financetbl (finance_id, first_name, middle_name, last_name, user_role, user_id, finance_status)
+                VALUES ($1, $2, $3, $4, $5, $6, 'Active')
+            `;
+            await pool.query(financeQuery, [finance_id, first_name, middle_name, last_name, user_role, user_id]);
+        } else if (user_role === 'Registrar') {
+            const registrarQuery = `
+                INSERT INTO registrartbl (registrar_id, first_name, middle_name, last_name, user_role, user_id, registrar_status)
+                VALUES ($1, $2, $3, $4, $5, $6, 'Active')
+            `;
+            await pool.query(registrarQuery, [registrar_id, first_name, middle_name, last_name, user_role, user_id]);
+        }
+
+        res.status(200).json({ message: "Account registered successfully!", user_id});
     } catch (error) {
         console.error("Error registering account:", error);
         res.status(500).json({ message: "Error registering account." });
@@ -897,25 +913,71 @@ app.put('/update-account/:id', (req, res) => {
     });
 });
 
-
 app.delete('/deleteAccounts', async (req, res) => {
     const { user_ids } = req.body;
 
     if (!Array.isArray(user_ids) || user_ids.length === 0) {
-      return res.status(400).json({ message: "No accounts selected for deletion." });
+        return res.status(400).json({ message: "No accounts selected for deletion." });
     }
 
     try {
-      // Delete accounts whose user_id is in the user_ids array
-      const deleteQuery = 'DELETE FROM accountstbl WHERE user_id = ANY($1)';
-      await pool.query(deleteQuery, [user_ids]);
+        // Begin a transaction to ensure atomicity
+        await pool.query('BEGIN');
 
-      res.status(200).json({ message: "Accounts deleted successfully!" });
+        // Fetch user roles for each user_id to determine which tables to delete from
+        const roleQuery = 'SELECT user_id, user_role FROM accountstbl WHERE user_id = ANY($1)';
+        const roleResult = await pool.query(roleQuery, [user_ids]);
+
+        // Separate the user_ids by their roles
+        const financeIds = [];
+        const registrarIds = [];
+
+        roleResult.rows.forEach(row => {
+            if (row.user_role === 'Finance') {
+                financeIds.push(row.user_id);
+            } else if (row.user_role === 'Registrar') {
+                registrarIds.push(row.user_id);
+            }
+        });
+
+        // Delete from role-specific tables based on the user_id's role
+        if (financeIds.length > 0) {
+            const deleteFinanceQuery = 'DELETE FROM financetbl WHERE user_id = ANY($1)';
+            await pool.query(deleteFinanceQuery, [financeIds]);
+        }
+
+        if (registrarIds.length > 0) {
+            const deleteRegistrarQuery = 'DELETE FROM registrartbl WHERE user_id = ANY($1)';
+            await pool.query(deleteRegistrarQuery, [registrarIds]);
+        }
+
+        // Now delete from accountstbl after role-specific tables are cleared
+        const deleteAccountQuery = 'DELETE FROM accountstbl WHERE user_id = ANY($1)';
+        await pool.query(deleteAccountQuery, [user_ids]);
+
+        // Commit the transaction if all deletes succeed
+        await pool.query('COMMIT');
+
+        res.status(200).json({ message: "Accounts and role-specific records deleted successfully!" });
     } catch (error) {
-      console.error("Error deleting accounts:", error);
-      res.status(500).json({ message: "Error deleting accounts." });
+        // Rollback in case of error
+        await pool.query('ROLLBACK');
+
+        // Improved error logging
+        console.error("Error deleting accounts:", {
+            message: error.message,
+            stack: error.stack,
+            detail: error.detail || 'No additional details'
+        });
+
+        // Send back a more informative response
+        res.status(500).json({ 
+            message: "Error deleting accounts.", 
+            error: error.message, 
+            detail: error.detail 
+        });
     }
-  });
+});
 
 
 app.get('/getAccounts', async (req, res) => {

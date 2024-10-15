@@ -344,6 +344,7 @@ const ManageSchedule_ContentHeader = ({
       });
       setTableData([]);
       refreshSections();
+      window.location.reload();
     } catch (error) {
       console.error("Error adding section:", error.response ? error.response.data : error.message);
       alert("Error adding section. Please try again.");

@@ -225,7 +225,7 @@ const ManageAccounts_Content = () => {
                     onChange={handleSelectAll}
                   />
                 </th>
-                <th>Student ID</th>
+                <th>User ID</th>
                 <th>Last Name</th>
                 <th>First Name</th>
                 <th>Middle Name</th>

@@ -1,5 +1,6 @@
-import React from 'react'
-import './Enroll_Students_Content.css'
+import React from 'react';
+import './Enroll_Students_Content.css';
+import defaultProfile from '../../../../../img/Profile/default_profile.png';
 
 const Enroll_Student_Preview = ({ studentDetails }) => {
   if (!studentDetails) {
@@ -8,14 +9,14 @@ const Enroll_Student_Preview = ({ studentDetails }) => {
 
   const { student_id, grade_level, strand, profile, program, student_status, full_name } = studentDetails;
 
-  // Convert Base64-encoded string to a URL
-  const profileUrl = `data:image/jpeg;base64,${profile}`;
+  // Use the default profile image if the profile is null
+  const profileUrl = profile ? `data:image/jpeg;base64,${profile}` : defaultProfile;
 
   return (
     <div className='student-profile-preview'>
       <div className='preview-details'>
         <div className='user-profile-preview'>
-          <img src={profileUrl} className='profile-pic' alt='' />
+          <img src={profileUrl} className='profile-pic' alt='Profile' />
         </div>
         <div className='student-enroll-info'>
           <h3>{student_id}</h3>

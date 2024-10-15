@@ -203,9 +203,6 @@ app.post("/registerStudent", async (req, res) => {
     const student_status = "Not Enrolled";
     const formattedDate = new Date(birth_date).toISOString().split('T')[0];
 
-    // Default profile picture (update this to your default image URL or file path)
-    const defaultProfilePicture = "src\assets\img\Profile\default_profile.png"; // Replace with actual path or URL
-
     const client = await pool.connect();
 
     // Define the generateUniqueId function
@@ -228,12 +225,12 @@ app.post("/registerStudent", async (req, res) => {
 
         // Insert into studentstbl
         const studentQuery = `
-            INSERT INTO studenttbl (student_id, student_type, student_status, lrn, first_name, middle_name, last_name, birth_date, sex, place_of_birth, nationality, religion, civil_status, birth_order, contact_number, program, grade_level, strand, user_id, financial_support, scholarship_grant, profile)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
+            INSERT INTO studenttbl (student_id, student_type, student_status, lrn, first_name, middle_name, last_name, birth_date, sex, place_of_birth, nationality, religion, civil_status, birth_order, contact_number, program, grade_level, strand, user_id, financial_support, scholarship_grant)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
         `;
         await client.query(studentQuery, [
             student_id, student_type, student_status, lrn, first_name, middle_name, last_name, formattedDate, sex, place_of_birth, nationality, religion,
-            civil_status, birth_order, contact_number, program, grade_level, strand, user_id, financial_support, scholarship_grant, defaultProfilePicture // Adding default profile picture here
+            civil_status, birth_order, contact_number, program, grade_level, strand, user_id, financial_support, scholarship_grant // Adding default profile picture here
         ]);
 
         // Insert into school_historytbl

@@ -1169,32 +1169,37 @@ app.get('/students/not-enrolled', async (req, res) => {
 
   app.get('/students/details', async (req, res) => {
     const { fullName } = req.query;
-  
+
     try {
-      let query = `
-        SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) AS full_name, 
-               student_id, grade_level, strand, profile, program, student_status
-        FROM studenttbl
-        WHERE CONCAT(last_name, ', ', first_name, ' ', middle_name) = $1
-      `;
-  
-      const result = await pool.query(query, [fullName]);
-  
-      if (!result.rows[0] || !result.rows[0].profile) {
-        console.error('Error fetching profile data:', result.rows);
-        res.status(500).json({ error: 'Profile data is missing or undefined' });
-        return;
-      }
-  
-      const profileBuffer = result.rows[0].profile;
-      const base64String = profileBuffer.toString('base64');
-  
-      res.json({ ...result.rows[0], profile: base64String });
+        let query = `
+            SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) AS full_name, 
+                   student_id, grade_level, strand, profile, program, student_status
+            FROM studenttbl
+            WHERE CONCAT(last_name, ', ', first_name, ' ', middle_name) = $1
+        `;
+
+        const result = await pool.query(query, [fullName]);
+
+        // Check if the result exists and handle profile being null
+        if (!result.rows[0]) {
+            console.error('No student found for the given full name:', fullName);
+            res.status(404).json({ error: 'Student not found' });
+            return;
+        }
+
+        const studentData = result.rows[0];
+
+        // If profile is present, convert it to base64; otherwise, set it to null
+        const profileBuffer = studentData.profile;
+        const base64String = profileBuffer ? profileBuffer.toString('base64') : null;
+
+        res.json({ ...studentData, profile: base64String });
     } catch (error) {
-      console.error('Error fetching student details:', error);
-      res.status(500).json({ error: 'Server error' });
+        console.error('Error fetching student details:', error);
+        res.status(500).json({ error: 'Server error' });
     }
-  });
+});
+
   
   // Archive ---------------------------------------------------------------------------------------
 

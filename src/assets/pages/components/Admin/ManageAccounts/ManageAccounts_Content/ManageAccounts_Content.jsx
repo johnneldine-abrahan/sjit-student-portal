@@ -210,6 +210,7 @@ const ManageAccounts_Content = () => {
       <ManageAccounts_ContentHeader
         onNewAccount={addNewAccount}
         onDelete={deleteSelectedAccounts} // Pass the delete function to header
+        selectedAccounts={selectedAccounts}
       />
 
       <div className="Accounts-records">

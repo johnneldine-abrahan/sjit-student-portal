@@ -4,12 +4,19 @@ import { BiSearch } from "react-icons/bi";
 import { BiEditAlt } from "react-icons/bi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 
-const ManageAccounts_ContentHeader = ({ onNewAccount, onDelete }) => {
+const ManageAccounts_ContentHeader = ({
+  onNewAccount,
+  onDelete,
+  selectedAccounts,
+}) => {
   const [popup, setPopup] = useState({
     add: false,
     edit: false,
     delete: false,
   });
+  const handleDelete = (selectedAccounts) => {
+    onDelete(selectedAccounts);
+  };
 
   const [formData, setFormData] = useState({});
 
@@ -148,7 +155,6 @@ const ManageAccounts_ContentHeader = ({ onNewAccount, onDelete }) => {
               onClick={() => handlePopup("delete")}
             />
           </div>
-
           {/* Add Pop-up */}
           {popup.add && (
             <>
@@ -227,8 +233,8 @@ const ManageAccounts_ContentHeader = ({ onNewAccount, onDelete }) => {
               </div>
             </>
           )}
-
           {/* Delete Pop-up */}
+
           {popup.delete && (
             <>
               <div className="popup-blurred-background" onClick={handleClose} />
@@ -238,23 +244,32 @@ const ManageAccounts_ContentHeader = ({ onNewAccount, onDelete }) => {
                   <button onClick={handleClose}>Close</button>
                 </div>
                 <div className="popup-content">
-                  <p>
-                    Are you sure you want to delete the selected account? This
-                    action is cannot be undone.
-                  </p>
+                  {selectedAccounts?.length > 0 ? (
+                    <p>
+                      Are you sure you want to delete the selected account? This
+                      action is cannot be undone.
+                    </p>
+                  ) : (
+                    <p>
+                      No selected account. Please select at least one account to
+                      delete.
+                    </p>
+                  )}
                   <div className="buttons">
-                    <button
-                      type="submit"
-                      class="btn-box"
-                      name="delete"
-                      id="delete"
-                      onClick={() => {
-                        onDelete();
-                        handleClose();
-                      }}
-                    >
-                      Delete
-                    </button>
+                    {selectedAccounts?.length > 0 && (
+                      <button
+                        type="submit"
+                        class="btn-box"
+                        name="delete"
+                        id="delete"
+                        onClick={() => {
+                          handleDelete(selectedAccounts);
+                          handleClose();
+                        }}
+                      >
+                        Delete
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

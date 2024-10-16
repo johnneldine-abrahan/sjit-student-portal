@@ -15,7 +15,9 @@ const Enroll_Students_Content = () => {
     <div className="admin-enroll_content">
       <Enroll_Students_ContentHeader onStudentSelected={handleStudentSelected} />
       <Enroll_Student_Preview studentDetails={selectedStudent} />
-      <Enroll_SubjectsList />
+      {selectedStudent && (
+        <Enroll_SubjectsList gradeLevel={selectedStudent.grade_level} />
+      )}
     </div>
   );
 };

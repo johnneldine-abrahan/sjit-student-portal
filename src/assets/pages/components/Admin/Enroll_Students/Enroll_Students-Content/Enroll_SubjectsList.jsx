@@ -1,65 +1,45 @@
 import React, { useState, useEffect } from "react";
 import "./Enroll_Students_Content.css";
 
-const subjectList = [
-  {
-    subjectID: "FILI-9",
-    subjectName: "Filipino 9",
-    semester: "FIRST",
-  },
-  {
-    subjectID: "ENG-9",
-    subjectName: "English 9",
-    semester: "FIRST",
-  },
-  {
-    subjectID: "MATH-9",
-    subjectName: "Mathematics 9",
-    semester: "FIRST",
-  },
-  {
-    subjectID: "SCI-9",
-    subjectName: "Science 9",
-    semester: "FIRST",
-  },
-  {
-    subjectID: "AP-9",
-    subjectName: "Araling Panlipunan 9",
-    semester: "FIRST",
-  },
-];
-
-// Example data for grade levels, sections, instructors, etc.
-const enrollmentData = [
-  {
-    gradeLevel: "9",
-    section: "A",
-    subject: "Mathematics 9",
-    instructor: "Mr. Smith",
-    schedule: "Monday, 9:00 AM - 10:30 AM",
-  },
-  {
-    gradeLevel: "9",
-    section: "B",
-    subject: "Science 9",
-    instructor: "Ms. Johnson",
-    schedule: "Wednesday, 11:00 AM - 12:30 PM",
-  },
-  {
-    gradeLevel: "9",
-    section: "C",
-    subject: "Filipino 9",
-    instructor: "Mr. Reyes",
-    schedule: "Friday, 2:00 PM - 3:30 PM",
-  },
-];
-
-const Enroll_SubjectsList = () => {
-  const [viewMode, setViewMode] = useState('list'); // 'list' or 'table'
+const Enroll_SubjectsList = ({ gradeLevel }) => {
+  const [subjects, setSubjects] = useState([]);
+  const [viewMode, setViewMode] = useState('list');
   const [popup, setPopup] = useState({
     show: false,
     record: null,
   });
+
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/subjects/${gradeLevel}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        console.log('Received data:', data); // Log the entire response
+
+        // Access subjects from the 'rows' property
+        const subjects = data.rows || [];
+        console.log('Subjects:', subjects); // Log the extracted subjects
+
+        // Update the subjects state
+        setSubjects(subjects);
+      } catch (error) {
+        console.error('Error fetching subjects:', error);
+      }
+    };
+
+    if (gradeLevel) {
+      fetchSubjects();
+    } else {
+      console.warn('Grade level is not set:', gradeLevel);
+    }
+  }, [gradeLevel]);
+
+  useEffect(() => {
+    console.log('Updated subjects state:', subjects);
+  }, [subjects]);
 
   const handlePopup = (record) => {
     setPopup({
@@ -75,21 +55,7 @@ const Enroll_SubjectsList = () => {
     });
   };
 
-  // Disable scrolling when modal is open
-  useEffect(() => {
-    if (popup.show) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset"; // Reset overflow when modal is closed
-    }
-
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [popup]);
-
   const handleAddSubject = (data) => {
-    // Add the subject to the queue or perform any other necessary action
     console.log("Add subject:", data);
   };
 
@@ -106,26 +72,30 @@ const Enroll_SubjectsList = () => {
             <tr>
               <th>Subject ID</th>
               <th>Subject Name</th>
-              <th>Semester</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {subjectList.map((records) => (
-              <tr key={records.subjectID}>
-                <td>{records.subjectID}</td>
-                <td>{records.subjectName}</td>
-                <td>{records.semester}</td>
-                <td>
-                  <span
-                    className="view-details-link"
-                    onClick={() => handlePopup(records)}
-                  >
-                    Add Subject
-                  </span>
-                </td>
+            {Array.isArray(subjects) && subjects.length > 0 ? (
+              subjects.map((subject) => (
+                <tr key={subject.subject_id}>
+                  <td>{subject.subject_id}</td>
+                  <td>{subject.subject_name}</td>
+                  <td>
+                    <span
+                      className="view-details-link"
+                      onClick={() => handlePopup(subject)}
+                    >
+                      Add Subject
+                    </span>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="3">No subjects found</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       ) : (
@@ -134,26 +104,11 @@ const Enroll_SubjectsList = () => {
             <tr>
               <th>Subject ID</th>
               <th>Subject Name</th>
-              <th>Semester</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {subjectList.map((records) => (
-              <tr key={records.subjectID}>
-                <td>{records.subjectID}</td>
-                <td>{records.subjectName}</td>
-                <td>{records.semester}</td>
-                <td>
-                  <span
-                    className="view-details-link"
-                    onClick={() => handlePopup(records)}
-                  >
-                    Add Subject
-                  </span>
-                </td>
-              </tr>
-            ))}
+            {/* Similar rendering for the table view can go here */}
           </tbody>
         </table>
       )}
@@ -167,51 +122,11 @@ const Enroll_SubjectsList = () => {
               <button onClick={handleClose}>Close</button>
             </div>
             <div className="popup-content">
-              {/* New table inside the popup */}
-              <table className="enrollment-table">
-                <thead>
-                  <tr>
-                    <th>Grade Level</th>
-                    <th>Section</th>
-                    <th>Subject</th>
-                    <th>Instructor</th>
-                    <th>Schedule</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {enrollmentData
-                    .filter((data) => data.subject === popup.record.subjectName)
-                    .map((data, index) => (
-                      <tr key={index}>
-                        <td>{data.gradeLevel}</td>
-                        <td>{data.section}</td>
-                        <td>{data.subject}</td>
-                        <td>{data.instructor}</td>
-                        <td>{data.schedule}</td>
-                        <td>
-                          <span
-                            className="view-details-link"
-                            onClick={() => handleAddSubject(data)}
-                          >
-                            Add Subject
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
+              {/* Additional content can go here */}
             </div>
           </div>
         </>
       )}
-
-      <div className="onQueue-section">
-        {viewMode === 'table' && (
-          <button type='submit' className='queue'>Queue</button>
-        )}
-      </div>
-
     </div>
   );
 };

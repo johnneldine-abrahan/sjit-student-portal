@@ -5,19 +5,19 @@ import { RiInboxUnarchiveLine } from "react-icons/ri";
 import { FiFilter } from "react-icons/fi";
 
 const Archive_ContentHeader = () => {
-  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+  const [showUnarchivePopup, setShowUnarchivePopup] = useState(false);
 
-  const handleLogout = () => {
-    setShowLogoutPopup(true);
+  const handleUnarchive = () => {
+    setShowUnarchivePopup(true);
   };
 
   const handleClose = () => {
-    setShowLogoutPopup(false);
+    setShowUnarchivePopup(false);
   };
 
-  const handleConfirmLogout = () => {
+  const handleConfirmUnarchive = () => {
     console.log("Logging out...");
-    setShowLogoutPopup(false);
+    setShowUnarchivePopup(false);
     // Add navigation to login page here
   };
 
@@ -31,14 +31,14 @@ const Archive_ContentHeader = () => {
         </div>
         <div className="buttons-header">
           <div className="buttons-act">
-            <FiFilter className="buttons-icon" onClick={handleLogout} />
+            <FiFilter className="buttons-icon" onClick={handleUnarchive} />
           </div>
           <div className="buttons-act">
             <RiInboxUnarchiveLine
               className="buttons-icon"
-              onClick={handleLogout}
+              onClick={handleUnarchive}
             />
-            {showLogoutPopup && (
+            {showUnarchivePopup && (
               <>
                 <div className="popup-blurred-background" />
                 <div className="modal-logout">
@@ -48,15 +48,15 @@ const Archive_ContentHeader = () => {
                       Close
                     </button>
                   </div>
-                  <div className="modalBody">
-                    <p></p>
+                  <div className="popup-content">
+                    <p>Do you want to unarchive this account?</p>
                     <div class="buttons">
                       <button
                         type="submit"
                         class="btn-box"
                         name="add"
                         id="add"
-                        onClick={handleConfirmLogout}
+                        onClick={handleConfirmUnarchive}
                       >
                         Done
                       </button>

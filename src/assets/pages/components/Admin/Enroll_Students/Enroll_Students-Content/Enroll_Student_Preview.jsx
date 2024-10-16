@@ -18,7 +18,7 @@ const Enroll_Student_Preview = ({ studentDetails }) => {
     );
   }
 
-  const { student_id, grade_level, strand, profile, program, student_status, full_name } = studentDetails;
+  const { student_id, grade_level, strand, profile, program, student_status, full_name, semester, school_year } = studentDetails;
 
   console.log('defaultProfile:', defaultProfile); // Add this line to log the defaultProfile value
 
@@ -37,7 +37,7 @@ const Enroll_Student_Preview = ({ studentDetails }) => {
           <h3>{student_id}</h3>
           <h2>{full_name}</h2>
           <h3>{program}</h3>
-          <h3>2024-2025, FIRST</h3>
+          <h3>{school_year}, {semester}</h3>
           <h3>Grade {grade_level}</h3>
           <h3>{strand}</h3>
           <h3 className='status'>{student_status}</h3>

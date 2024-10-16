@@ -1071,7 +1071,7 @@ app.post('/addSection', async (req, res) => {
       const { subject_id, grade_level, strand, section_name, semester, school_year, program, faculty_name, schedules, faculty_id, slot} = req.body;
   
       // Generate section_id
-      const section_id = `${section_name}_${subject_id}_${school_year}`;
+      const section_id = `${section_name}_${subject_id}_${school_year}_${semester}`;
   
       // Insert into sectiontbl
       const insertSectionQuery = `
@@ -1229,29 +1229,44 @@ app.get('/students/not-enrolled', async (req, res) => {
     const { fullName } = req.query;
 
     try {
-        let query = `
+        // Query to get student details
+        let studentQuery = `
             SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) AS full_name, 
                    student_id, grade_level, strand, profile, program, student_status
             FROM studenttbl
             WHERE CONCAT(last_name, ', ', first_name, ' ', middle_name) = $1
         `;
 
-        const result = await pool.query(query, [fullName]);
+        // Query to get the latest school_year and semester
+        let sectionQuery = `
+            SELECT school_year, semester
+            FROM sectiontbl
+            ORDER BY school_year DESC, semester DESC
+            LIMIT 1
+        `;
 
-        // Check if the result exists and handle profile being null
-        if (!result.rows[0]) {
+        // Execute both queries
+        const studentResult = await pool.query(studentQuery, [fullName]);
+        const sectionResult = await pool.query(sectionQuery);
+
+        // Check if the student exists
+        if (!studentResult.rows[0]) {
             console.error('No student found for the given full name:', fullName);
             res.status(404).json({ error: 'Student not found' });
             return;
         }
 
-        const studentData = result.rows[0];
+        const studentData = studentResult.rows[0];
 
         // If profile is present, convert it to base64; otherwise, set it to null
         const profileBuffer = studentData.profile;
         const base64String = profileBuffer ? profileBuffer.toString('base64') : null;
 
-        res.json({ ...studentData, profile: base64String });
+        // Get the latest school_year and semester
+        const { school_year, semester } = sectionResult.rows[0];
+
+        // Send response with both student details and school year/semester
+        res.json({ ...studentData, profile: base64String, school_year, semester });
     } catch (error) {
         console.error('Error fetching student details:', error);
         res.status(500).json({ error: 'Server error' });

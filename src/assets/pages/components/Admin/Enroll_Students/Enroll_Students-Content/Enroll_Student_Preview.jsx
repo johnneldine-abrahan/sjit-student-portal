@@ -4,13 +4,28 @@ import defaultProfile from '../../../../../img/Profile/default_profile.png';
 
 const Enroll_Student_Preview = ({ studentDetails }) => {
   if (!studentDetails) {
-    return <div>Loading...</div>;
+    return (
+      <div className='student-profile-preview'>
+        <div className='preview-details'>
+          <div className='user-profile-preview'>
+            <img src={defaultProfile} className='profile-pic' alt='Profile' />
+          </div>
+          <div className='student-enroll-info'>
+            <h2>No data available</h2>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const { student_id, grade_level, strand, profile, program, student_status, full_name } = studentDetails;
 
+  console.log('defaultProfile:', defaultProfile); // Add this line to log the defaultProfile value
+
   // Use the default profile image if the profile is null
-  const profileUrl = profile ? `data:image/jpeg;base64,${profile}` : defaultProfile;
+  const profileUrl = profile !== null ? `data:image/jpeg;base64,${profile}` : defaultProfile;
+
+  console.log('profileUrl:', profileUrl); // Add this line to log the profileUrl value
 
   return (
     <div className='student-profile-preview'>

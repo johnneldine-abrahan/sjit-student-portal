@@ -1258,7 +1258,28 @@ app.get('/students/not-enrolled', async (req, res) => {
     }
 });
 
-  
+app.get('/subjects/:gradeLevel', (req, res) => {
+    const gradeLevel = req.params.gradeLevel;  // Extract grade level from URL params
+
+    // SQL query to retrieve subject_id and subject_name for the selected grade level
+    const query = `SELECT subject_id, subject_name FROM subjecttbl WHERE grade_level = $1`;
+
+    // Query the database, passing the gradeLevel as an array
+    pool.query(query, [gradeLevel], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Error retrieving subjects' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'No subjects found for this grade level' });
+        }
+
+        // Sending the subjects as JSON
+        res.json(results);
+    });
+});
+
   // Archive ---------------------------------------------------------------------------------------
 
   app.get('/students/archived', async (req, res) => {

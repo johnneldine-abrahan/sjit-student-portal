@@ -37,10 +37,10 @@ const Enroll_Students_ContentHeader = (props) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
+
     if (name === "program") {
       setFormData({ ...formData, [name]: value });
-  
+
       if (value === "Junior Highschool") {
         setJuniorHighschoolChecked(true);
         setSeniorHighschoolChecked(false);
@@ -64,7 +64,7 @@ const Enroll_Students_ContentHeader = (props) => {
       setSelectedStudent(value);
       setFormData({ ...formData, [name]: value });
     }
-    
+
     if (name === "select-student") {
       setSelectedStudent(value);
       console.log("Selected Student:", selectedStudent); // Add this line to verify the selected student
@@ -77,7 +77,7 @@ const Enroll_Students_ContentHeader = (props) => {
       console.error("No student selected.");
       return; // Exit early if no student is selected
     }
-  
+
     try {
       const response = await axios.get(`http://localhost:3000/students/details`, {
         params: {
@@ -140,9 +140,6 @@ const Enroll_Students_ContentHeader = (props) => {
     <div className="admin-enroll-header">
       <h1 className="header-title">Enroll Students</h1>
       <div className="admin-enroll-activity">
-        <button type="submit" className="setyr-btn" onClick={() => hands(null)}>
-          Set School Year
-        </button>
         <button
           type="submit"
           className="select-btn"

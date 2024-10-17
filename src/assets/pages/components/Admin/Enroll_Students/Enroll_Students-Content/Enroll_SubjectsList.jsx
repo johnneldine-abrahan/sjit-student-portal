@@ -17,13 +17,7 @@ const Enroll_SubjectsList = ({ gradeLevel }) => {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log('Received data:', data); // Log the entire response
-
-        // Access subjects from the 'rows' property
         const subjects = data.rows || [];
-        console.log('Subjects:', subjects); // Log the extracted subjects
-
-        // Update the subjects state
         setSubjects(subjects);
       } catch (error) {
         console.error('Error fetching subjects:', error);
@@ -32,14 +26,8 @@ const Enroll_SubjectsList = ({ gradeLevel }) => {
 
     if (gradeLevel) {
       fetchSubjects();
-    } else {
-      console.warn('Grade level is not set:', gradeLevel);
     }
   }, [gradeLevel]);
-
-  useEffect(() => {
-    console.log('Updated subjects state:', subjects);
-  }, [subjects]);
 
   const handlePopup = (record) => {
     setPopup({
@@ -53,10 +41,6 @@ const Enroll_SubjectsList = ({ gradeLevel }) => {
       show: false,
       record: null,
     });
-  };
-
-  const handleAddSubject = (data) => {
-    console.log("Add subject:", data);
   };
 
   return (
@@ -99,18 +83,25 @@ const Enroll_SubjectsList = ({ gradeLevel }) => {
           </tbody>
         </table>
       ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Subject ID</th>
-              <th>Subject Name</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* Similar rendering for the table view can go here */}
-          </tbody>
-        </table>
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th>Subject ID</th>
+                <th>Subject Name</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* Similar rendering for the table view can go here */}
+            </tbody>
+          </table>
+          <div className="onQueue-section">
+            {viewMode === 'table' && (
+              <button type='submit' className='queue'>Queue</button>
+            )}
+          </div>
+        </div>
       )}
 
       {popup.show && (
@@ -122,7 +113,33 @@ const Enroll_SubjectsList = ({ gradeLevel }) => {
               <button onClick={handleClose}>Close</button>
             </div>
             <div className="popup-content">
-              {/* Additional content can go here */}
+              <table>
+                <thead>
+                  <tr>
+                    <th>Grade Level</th>
+                    <th>Section</th>
+                    <th>Schedule</th>
+                    <th>Professor</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* You can populate this with actual data if available */}
+                  <tr>
+                    <td>10</td>
+                    <td>A</td>
+                    <td>MWF 10-11 AM</td>
+                    <td>Dr. Smith</td>
+                  </tr>
+                  <tr>
+                    <td>11</td>
+                    <td>B</td>
+                    <td>TR 1-2 PM</td>
+                    <td>Prof. Johnson</td>
+                  </tr>
+                  {/* Add more rows as needed */}
+                </tbody>
+              </table>
             </div>
           </div>
         </>

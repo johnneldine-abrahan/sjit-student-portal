@@ -10,7 +10,7 @@ const ManageSchedule_ContentHeader = ({
   selectedSections,
   handleDeleteSections,
   refreshSections,
-  handleUnarchiveSections,
+  handleArchiveSections,
 }) => {
   const [popup, setPopup] = useState({
     show: false,
@@ -27,7 +27,7 @@ const ManageSchedule_ContentHeader = ({
     message: null,
   });
 
-  const [popupUnarchive, setPopupUnarchive] = useState({
+  const [popupArchive, setPopupArchive] = useState({
     show: false,
     message: null,
   });
@@ -170,17 +170,17 @@ const ManageSchedule_ContentHeader = ({
     }
   };
 
-  const handlePopupUnarchive = () => {
+  const handlePopupArchive = () => {
     if (selectedSections.length === 0) {
-      setPopupUnarchive({
+      setPopupArchive({
         show: true,
         message:
-          "No selected section. Please select at least one section to unarchive.",
+          "No selected section. Please select at least one section to archive.",
       });
     } else {
-      setPopupUnarchive({
+      setPopupArchive({
         show: true,
-        message: "Are you sure you want to unarchive the selected section?",
+        message: "Are you sure you want to archive the selected section?",
       });
     }
   };
@@ -206,8 +206,8 @@ const ManageSchedule_ContentHeader = ({
     });
   };
 
-  const handleUnarchiveClose = () => {
-    setPopupUnarchive({
+  const handleArchiveClose = () => {
+    setPopupArchive({
       show: false,
       message: null,
     });
@@ -231,46 +231,48 @@ const ManageSchedule_ContentHeader = ({
     }
   };
 
-  const handleUnarchiveClick = async () => {
+  const handleArchiveClick = async () => {
     if (selectedSections.length === 0) {
-      alert("Please select at least one section to unarchive.");
+      alert("Please select at least one section to archive.");
       return;
     }
 
     try {
-      await handleUnarchiveSections(selectedSections);
-      handleUnarchiveClose();
+      await handleArchiveSections(selectedSections);
+      handleArchiveClose();
       window.location.reload();
       refreshSections(); // Refresh the sections after unarchiving
       // Reset the selectedSections state
     } catch (error) {
-      console.error("Error unarchiving sections:", error);
-      //alert("Failed to unarchive sections. Please try again.");
+      console.error("Error archiving sections:", error);
+      //alert("Failed to archive sections. Please try again.");
     }
   };
 
   const handleSubjectChange = async (event) => {
     const selectedSubjectId = event.target.value; // Ensure this is the correct subject ID from the dropdown
-      
+
     try {
-      const response = await axios.get('http://localhost:3000/getSubjects', {
+      const response = await axios.get("http://localhost:3000/getSubjects", {
         params: {
           subjectId: selectedSubjectId,
         },
       });
-  
-      const subject = response.data.find((subject) => subject.subject_id === selectedSubjectId);
+
+      const subject = response.data.find(
+        (subject) => subject.subject_id === selectedSubjectId
+      );
       if (subject) {
         setFormData({
           ...formData,
           subjectName: subject.subject_name, // Set the subject name from the response
-          subjectId: subject.subject_id,     // Set the subject ID from the response
+          subjectId: subject.subject_id, // Set the subject ID from the response
         });
       } else {
         console.error(`Subject not found: ${selectedSubjectId}`);
       }
     } catch (error) {
-      console.error('Error fetching subject:', error);
+      console.error("Error fetching subject:", error);
     }
   };
 
@@ -295,12 +297,12 @@ const ManageSchedule_ContentHeader = ({
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     // Validate the form data
     if (!validateForm(formData, tableData)) {
       return;
     }
-  
+
     // Collect schedules from the table data
     const schedules = tableData.map((row) => ({
       day: row.day,
@@ -308,7 +310,7 @@ const ManageSchedule_ContentHeader = ({
       end_time: row.endTime,
       room: row.room,
     }));
-  
+
     // Create the payload to send to the server
     const payload = {
       subject_id: formData.subjectId,
@@ -323,9 +325,12 @@ const ManageSchedule_ContentHeader = ({
       schedules,
       slot: formData.slot,
     };
-  
+
     try {
-      const response = await axios.post("http://localhost:3000/addSection", payload);
+      const response = await axios.post(
+        "http://localhost:3000/addSection",
+        payload
+      );
       alert(response.data.message);
       handleClose();
       // Optionally reset the form or clear the table data
@@ -346,7 +351,10 @@ const ManageSchedule_ContentHeader = ({
       refreshSections();
       window.location.reload();
     } catch (error) {
-      console.error("Error adding section:", error.response ? error.response.data : error.message);
+      console.error(
+        "Error adding section:",
+        error.response ? error.response.data : error.message
+      );
       alert("Error adding section. Please try again.");
     }
   };
@@ -437,7 +445,7 @@ const ManageSchedule_ContentHeader = ({
       const data = response.data;
       setSubjects(data);
     };
-  
+
     fetchSubjects();
   }, [formData.gradeLevel, formData.strand]);
 
@@ -466,7 +474,7 @@ const ManageSchedule_ContentHeader = ({
           <div className="buttons-act">
             <RiInboxUnarchiveLine
               className="buttons-icon"
-              onClick={handlePopupUnarchive}
+              onClick={handlePopupArchive}
             />
           </div>
         </div>
@@ -869,29 +877,29 @@ const ManageSchedule_ContentHeader = ({
         </>
       )}
 
-      {popupUnarchive.show && (
+      {popupArchive.show && (
         <>
           <div
             className="popup-blurred-background"
-            onClick={handleUnarchiveClose}
+            onClick={handleArchiveClose}
           />
           <div className="popup">
             <div className="popup-header">
-              <h3>Unarchive Section</h3>
-              <button onClick={handleUnarchiveClose}>Close</button>
+              <h3>Archive Section</h3>
+              <button onClick={handleArchiveClose}>Close</button>
             </div>
             <div className="popup-content">
-              <p>{popupUnarchive.message}</p>
+              <p>{popupArchive.message}</p>
               <div className="buttons">
                 {selectedSections.length > 0 && (
                   <button
                     type="submit"
                     class="btn-box"
-                    name="unarchive"
-                    id="unarchive"
-                    onClick={handleUnarchiveClick}
+                    name="archive"
+                    id="archive"
+                    onClick={handleArchiveClick}
                   >
-                    Unarchive
+                    Archive
                   </button>
                 )}
               </div>

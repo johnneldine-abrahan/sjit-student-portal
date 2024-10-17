@@ -978,7 +978,9 @@ app.delete('/deleteAccounts', async (req, res) => {
 
 app.get('/getAccounts', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM accountstbl');
+        const result = await pool.query(
+            "SELECT * FROM accountstbl WHERE user_role = 'Registrar' OR user_role = 'Finance'"
+        );
         const accounts = result.rows;
         res.status(200).json(accounts);
     } catch (error) {
@@ -1294,6 +1296,41 @@ app.get('/subjects/:gradeLevel', (req, res) => {
         res.json(results);
     });
 });
+
+app.get('/getSectionsAndSchedules/:subject_id', async (req, res) => {
+    const { subject_id } = req.params;
+    
+    try {
+        const result = await pool.query(`
+            SELECT 
+                s.section_name, 
+                s.semester, 
+                s.school_year, 
+                s.program, 
+                s.strand, 
+                s.faculty_name, 
+                s.grade_level, 
+                s.slot,
+                array_agg(json_build_object(
+                    'day', sc.day, 
+                    'start_time', sc.start_time, 
+                    'end_time', sc.end_time, 
+                    'room', sc.room
+                )) AS schedules
+            FROM sectiontbl s
+            JOIN scheduletbl sc
+            ON s.section_id = sc.section_id
+            WHERE s.subject_id = $1
+            GROUP BY s.section_name, s.semester, s.school_year, s.program, s.strand, s.faculty_name, s.grade_level, s.slot
+        `, [subject_id]);
+
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error("Error fetching sections and schedules:", error);
+        res.status(500).json({ message: "Error fetching sections and schedules." });
+    }
+});
+
 
   // Archive ---------------------------------------------------------------------------------------
 

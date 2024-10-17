@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./Enroll_Students_Content.css";
 
-const Enroll_SubjectsList = ({ gradeLevel }) => {
+const Enroll_SubjectsList = ({ gradeLevel, studentId }) => {
   const [subjects, setSubjects] = useState([]);
   const [viewMode, setViewMode] = useState('list');
   const [popup, setPopup] = useState({
     show: false,
     record: null,
+    sectionsAndSchedules: [],
   });
 
   useEffect(() => {
@@ -29,28 +30,86 @@ const Enroll_SubjectsList = ({ gradeLevel }) => {
     }
   }, [gradeLevel]);
 
-  const handlePopup = (record) => {
-    setPopup({
-      show: true,
-      record: record,
-    });
+  const handlePopup = async (record) => {
+    try {
+      const response = await fetch(`http://localhost:3000/getSectionsAndSchedules/${record.subject_id}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      const sectionsAndSchedules = data || [];
+      setPopup({
+        show: true,
+        record: record,
+        sectionsAndSchedules: sectionsAndSchedules,
+      });
+    } catch (error) {
+      console.error('Error fetching sections and schedules:', error);
+    }
   };
 
   const handleClose = () => {
     setPopup({
       show: false,
       record: null,
+      sectionsAndSchedules: [],
     });
   };
+
+  const handleAddSubject = async (sectionAndSchedule) => {
+    try {
+      const response = await fetch('http://localhost:3000/addSubject', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          student_id: studentId,
+          subject_id: popup.record.subject_id,
+          section_name: sectionAndSchedule.section_name,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      console.log('Subject added successfully:', data);
+    } catch (error) {
+      console.error('Error adding subject:', error);
+    }
+  };
+
+  const formatTime = (time) => {
+    const [hours, minutes] = time.split(":");
+    const period = hours >= 12 ? "PM" : "AM";
+    const formattedHours = hours % 12 || 12;
+    return `${formattedHours}:${minutes} ${period}`;
+  };
+
+  useEffect(() => {
+    if (popup.show) {
+      document.body.style.overflow = 'hidden'; // Disable scroll
+    } else {
+      document.body.style.overflow = 'unset'; // Enable scroll
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset'; // Cleanup on unmount
+    };
+  }, [popup.show]);
 
   return (
     <div className="subject-list">
       <div className="view-toggle">
-        <button className="left" onClick={() => setViewMode('list')}>Subjects to Enroll</button>
-        <button className="right" onClick={() => setViewMode('table')}>Subjects Added</button>
+        <button className="left" onClick={() => setViewMode("list")}>
+          Subjects to Enroll
+        </button>
+        <button className="right" onClick={() => setViewMode("table")}>
+          Subjects Added
+        </button>
       </div>
 
-      {viewMode === 'list' ? (
+      {viewMode === "list" ? (
         <table>
           <thead>
             <tr>
@@ -88,7 +147,7 @@ const Enroll_SubjectsList = ({ gradeLevel }) => {
             <thead>
               <tr>
                 <th>Subject ID</th>
-                <th>Subject Name</th>
+                <th >Subject Name</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -97,8 +156,10 @@ const Enroll_SubjectsList = ({ gradeLevel }) => {
             </tbody>
           </table>
           <div className="onQueue-section">
-            {viewMode === 'table' && (
-              <button type='submit' className='queue'>Queue</button>
+            {viewMode === "table" && (
+              <button type="submit" className="queue">
+                Queue
+              </button>
             )}
           </div>
         </div>
@@ -124,20 +185,46 @@ const Enroll_SubjectsList = ({ gradeLevel }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {/* You can populate this with actual data if available */}
-                  <tr>
-                    <td>10</td>
-                    <td>A</td>
-                    <td>MWF 10-11 AM</td>
-                    <td>Dr. Smith</td>
-                  </tr>
-                  <tr>
-                    <td>11</td>
-                    <td>B</td>
-                    <td>TR 1-2 PM</td>
-                    <td>Prof. Johnson</td>
-                  </tr>
-                  {/* Add more rows as needed */}
+                  {Array.isArray(popup.sectionsAndSchedules) &&
+                  popup.sectionsAndSchedules.length > 0 ? (
+                    popup.sectionsAndSchedules.map((sectionAndSchedule) => (
+                      <tr key={sectionAndSchedule.section_name}>
+                        <td>Grade {sectionAndSchedule.grade_level}</td>
+                        <td>{sectionAndSchedule.section_name}</td>
+                        <td>
+                          {Array.isArray(sectionAndSchedule.schedules) &&
+                          sectionAndSchedule.schedules.length > 0 ? (
+                            sectionAndSchedule.schedules.map((schedule) => (
+                              <div key={schedule.day}>
+                                {schedule.day} / {formatTime(schedule.start_time)} -{" "}
+                                {formatTime(schedule.end_time)} / {schedule.room}
+                              </div>
+                            ))
+                          ) : (
+                            <div>No schedule available</div>
+                          )}
+                        </td>
+                        <td>{sectionAndSchedule.faculty_name}</td>
+                        <td>
+                          <button
+                            style={{
+                              background: "none",
+                              border: "none",
+                              color: "blue",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleAddSubject(sectionAndSchedule)}
+                          >
+                            Add
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5">No sections or schedules found.</td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

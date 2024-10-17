@@ -255,16 +255,26 @@ const FacultyMembers_ContentHeader = ({
                   <button onClick={handleClose}>Close</button>
                 </div>
                 <div className="popup-content">
-                  <p>Do you want to archive the selected teacher?</p>
+                  {selectedFacultyIds.length > 0 ? (
+                    <p>Do you want to archive the selected teacher?</p>
+                  ) : (
+                    <p>
+                      No selected faculty member. Please select at least one
+                      faculty member to archive.
+                    </p>
+                  )}
+
                   <div className="buttons">
-                    <button
-                      type="submit"
-                      class="btn-box"
-                      name="archive"
-                      id="archive"
-                    >
-                      Archive
-                    </button>
+                    {selectedFacultyIds.length > 0 && (
+                      <button
+                        type="submit"
+                        class="btn-box"
+                        name="archive"
+                        id="archive"
+                      >
+                        Archive
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

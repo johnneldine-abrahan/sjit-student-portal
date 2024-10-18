@@ -1432,6 +1432,7 @@ app.get('/getSectionsAndSchedules/:subject_id', async (req, res) => {
             JOIN scheduletbl sc
             ON s.section_id = sc.section_id
             WHERE s.subject_id = $1
+              AND s.section_status = 'Active'  -- Filter for active sections
             GROUP BY s.section_name, s.semester, s.school_year, s.program, s.strand, s.faculty_name, s.grade_level, s.slot
         `, [subject_id]);
 

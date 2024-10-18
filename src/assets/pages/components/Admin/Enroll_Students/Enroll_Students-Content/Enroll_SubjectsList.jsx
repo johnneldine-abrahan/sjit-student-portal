@@ -3,6 +3,7 @@ import "./Enroll_Students_Content.css";
 
 const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
   const [subjects, setSubjects] = useState([]);
+  const [addedSubjects, setAddedSubjects] = useState([]); // New state for added subjects
   const [viewMode, setViewMode] = useState('list');
   const [popup, setPopup] = useState({
     show: false,
@@ -54,29 +55,6 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
     });
   };
 
-  const handleAddSubject = async (sectionAndSchedule) => {
-    try {
-      const response = await fetch('http://localhost:3000/addSubject', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          student_id: studentId,
-          subject_id: popup.record.subject_id,
-          section_name: sectionAndSchedule.section_name,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      console.log('Subject added successfully:', data);
-    } catch (error) {
-      console.error('Error adding subject:', error);
-    }
-  };
-
   const formatTime = (time) => {
     const [hours, minutes] = time.split(":");
     const period = hours >= 12 ? "PM" : "AM";
@@ -95,6 +73,22 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
       document.body.style.overflow = 'unset'; // Cleanup on unmount
     };
   }, [popup.show]);
+
+  const handleAddSubject = (subject, sectionAndSchedule) => {
+    // Add the subject to the addedSubjects state
+    setAddedSubjects((prevAddedSubjects) => [
+      ...prevAddedSubjects,
+      { subject, sectionAndSchedule },
+    ]);
+
+    // Remove the subject from the subjects state
+    setSubjects((prevSubjects) =>
+      prevSubjects.filter((prevSubject) => prevSubject.subject_id !== subject.subject_id)
+    );
+
+    // Close the popup
+    handleClose();
+  };
 
   return (
     <div className="subject-list">
@@ -146,14 +140,52 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
               <tr>
                 <th>Subject ID</th>
                 <th>Subject Name</th>
-                <th> Section</th>
+                <th>Section</th>
                 <th>Schedule</th>
-                <th>Professor</th>
+                <th> Professor</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {/* Similar rendering for the table view can go here */}
+              {Array.isArray(addedSubjects) && addedSubjects.length > 0 ? (
+                addedSubjects.map((addedSubject, index) => (
+                  <tr key={index}>
+                    <td>{addedSubject.subject.subject_id}</td>
+                    <td>{addedSubject.subject.subject_name}</td>
+                    <td>{addedSubject.sectionAndSchedule.section_name}</td>
+                    <td>
+                      {Array.isArray(addedSubject.sectionAndSchedule.schedules) &&
+                      addedSubject.sectionAndSchedule.schedules.length > 0 ? (
+                        addedSubject.sectionAndSchedule.schedules.map((schedule) => (
+                          <div key={schedule.day}>
+                            {schedule.day} / {formatTime(schedule.start_time)} -{" "}
+                            {formatTime(schedule.end_time)} / {schedule.room}
+                          </div>
+                        ))
+                      ) : (
+                        <div>No schedule available</div>
+                      )}
+                    </td>
+                    <td>{addedSubject.sectionAndSchedule.faculty_name}</td>
+                    <td>
+                      <button
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: "blue",
+                          cursor: "pointer"
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6">No subjects added.</td>
+                </tr>
+              )}
             </tbody>
           </table>
           <div className="onQueue-section">
@@ -212,9 +244,9 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
                               background: "none",
                               border: "none",
                               color: "blue",
-                              cursor: "pointer",
+                              cursor: "pointer"
                             }}
-                            onClick={() => handleAddSubject(sectionAndSchedule)}
+                            onClick={() => handleAddSubject(popup.record, sectionAndSchedule)}
                           >
                             Add
                           </button>

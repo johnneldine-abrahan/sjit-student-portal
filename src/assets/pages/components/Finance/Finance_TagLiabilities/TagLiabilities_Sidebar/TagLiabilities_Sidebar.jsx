@@ -13,11 +13,11 @@ const TagLiabilities_Sidebar = () => {
         </div>
         <div className='menu-list'>
             <a href='/finance/dashboard' className='item'><BiHome size={18}/>Dashboard</a>
-            <a href='/finance/confirm-enrollment' className='item'><GiConfirmed size={18}/>Confirm Enrollment</a>
+            <a href='/finance/enrollment-queue' className='item'><GiConfirmed size={18}/>Enrollment  Queue</a>
             <a href='/finance/tag-liabilities' className='item active'><GiInjustice size={18}/>Tag Liabilities</a>
             <a href='/finance/student-records' className='item'><FaFileAlt />Student Records</a>
         </div>
-      
+
     </div>
   )
 }

@@ -6,6 +6,7 @@ import Login from './assets/pages/Login'
 import Admin_Dashboard from './assets/pages/Admin/Admin_Dashboard'
 import Admin_Students from './assets/pages/Admin/Admin_Students'
 import Admin_Enroll_Students from './assets/pages/Admin/Admin_Enroll_Students'
+import Admin_ConfirmEnrollment from './assets/pages/Admin/Admin_ConfirmEnrollment'
 import Admin_FacultyMembers from './assets/pages/Admin/Admin_FacultyMembers'
 import Admin_ManageSchedule from './assets/pages/Admin/Admin_ManageSchedule'
 import Admin_ManageAccounts from './assets/pages/Admin/Admin_ManageAccounts'
@@ -15,7 +16,7 @@ import Registrar_Enroll_Students from './assets/pages/Registrar/Registrar_Enroll
 import Registrar_Students from './assets/pages/Registrar/Registrar_Students'
 import Registrar_Archive from  './assets/pages/Registrar/Registrar_Archive'
 import Finance_Dashboard from './assets/pages/Finance/Finance_Dashboard'
-import Finance_ConfirmEnrollment from './assets/pages/Finance/Finance_ConfirmEnrollment'
+import Finance_EnrollmentQueue from './assets/pages/Finance/Finance_EnrollmentQueue'
 import Finance_TagLiabilities from './assets/pages/Finance/Finance_TagLiabilities'
 import Finance_StudentRecords from './assets/pages/Finance/Finance_StudentRecords'
 import Students_Dashboard from './assets/pages/Students/Students_Dashboard'
@@ -31,6 +32,7 @@ const App = () => {
         <Route path="/admin/dashboard" element={<Admin_Dashboard />} />
         <Route path="/admin/student-list" element={<Admin_Students />} />
         <Route path="/admin/enroll-students" element={<Admin_Enroll_Students />} />
+        <Route path="/admin/confirm-enrollment" element={<Admin_ConfirmEnrollment />} />
         <Route path="/admin/faculty-members" element={<Admin_FacultyMembers />} />
         <Route path="/admin/manage-schedule" element={<Admin_ManageSchedule />} />
         <Route path="/admin/manage-accounts" element={<Admin_ManageAccounts />} />
@@ -40,7 +42,7 @@ const App = () => {
         <Route path="/registrar/enroll-students" element={<Registrar_Enroll_Students />} />
         <Route path="/registrar/archive" element={<Registrar_Archive />} />
         <Route path="/finance/dashboard" element={<Finance_Dashboard />} />
-        <Route path="finance/confirm-enrollment" element={<Finance_ConfirmEnrollment />} />
+        <Route path="finance/enrollment-queue" element={<Finance_EnrollmentQueue />} />
         <Route path="/finance/tag-liabilities" element={<Finance_TagLiabilities />} />
         <Route path="/finance/student-records" element={<Finance_StudentRecords />} />
         <Route path="/student/dashboard" element={<Students_Dashboard />} />

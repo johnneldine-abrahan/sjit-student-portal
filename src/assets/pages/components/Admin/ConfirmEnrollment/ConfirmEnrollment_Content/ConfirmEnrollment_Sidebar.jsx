@@ -10,7 +10,7 @@ import { IoCheckmarkDoneSharp } from "react-icons/io5";
 
 import menu_logo from '../../../../../img/Sidebar/menu-logo.png'
 
-const FacultyMembers_Sidebar = () => {
+const ConfirmEnrollment_Sidebar = () => {
   return (
     <div className='menu'>
         <div className='menu-logo'>
@@ -21,8 +21,8 @@ const FacultyMembers_Sidebar = () => {
             <a href='/admin/dashboard' className='item'><BiHome size={18}/>Dashboard</a>
             <a href='/admin/student-list' className='item'><PiStudentBold size={18}/>Students</a>
             <a href='/admin/enroll-students' className='item'><GiArchiveRegister size={18}/>Enroll Student</a>
-            <a href='/admin/confirm-enrollment' className='item'><IoCheckmarkDoneSharp size={18}/>Confirm Enrollment</a>
-            <a href='/admin/faculty-members' className='item active'><FaChalkboardTeacher size={18}/>Faculty Members</a>
+            <a href='/admin/confirm-enrollment' className='item active'><IoCheckmarkDoneSharp size={18}/>Confirm Enrollment</a>
+            <a href='/admin/faculty-members' className='item'><FaChalkboardTeacher size={18}/>Faculty Members</a>
             <a href='/admin/manage-schedule' className='item'><AiFillSchedule size={18} />Manage Schedule</a>
             <a href='/admin/manage-accounts' className='item'><MdOutlineSwitchAccount size={18}/>Manage Accounts</a>
             <a href='/admin/archive' className='item'><BiArchiveIn size={18}/>Archive</a>
@@ -32,4 +32,4 @@ const FacultyMembers_Sidebar = () => {
   )
 }
 
-export default FacultyMembers_Sidebar
+export default ConfirmEnrollment_Sidebar

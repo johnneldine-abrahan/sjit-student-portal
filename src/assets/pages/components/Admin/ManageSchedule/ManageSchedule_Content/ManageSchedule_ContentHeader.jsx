@@ -10,7 +10,6 @@ const ManageSchedule_ContentHeader = ({
   selectedSections,
   handleDeleteSections,
   refreshSections,
-  handleArchiveSections,
 }) => {
   const [popup, setPopup] = useState({
     show: false,
@@ -169,7 +168,36 @@ const ManageSchedule_ContentHeader = ({
       });
     }
   };
+  const handleArchiveSections = async (sections) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/archiveSections",
+        {
+          selectedSections: sections,
+        }
+      );
+      alert(response.data.message); // Show success message
+      refreshSections(); // Refresh the sections data after archiving
+    } catch (error) {
+      console.error("Error archiving sections:", error);
+      alert("Error archiving sections. Please try again.");
+    }
+  };
 
+  const handleArchiveClick = async () => {
+    if (selectedSections.length === 0) {
+      alert("Please select at least one section to archive.");
+      return;
+    }
+
+    try {
+      await handleArchiveSections(selectedSections);
+      handleArchiveClose();
+      refreshSections(); // Refresh the sections after archiving
+    } catch (error) {
+      console.error("Error archiving sections:", error);
+    }
+  };
   const handlePopupArchive = () => {
     if (selectedSections.length === 0) {
       setPopupArchive({
@@ -228,24 +256,6 @@ const ManageSchedule_ContentHeader = ({
     } catch (error) {
       console.error("Error deleting sections:", error);
       //alert("Failed to delete sections. Please try again.");
-    }
-  };
-
-  const handleArchiveClick = async () => {
-    if (selectedSections.length === 0) {
-      alert("Please select at least one section to archive.");
-      return;
-    }
-
-    try {
-      await handleArchiveSections(selectedSections);
-      handleArchiveClose();
-      window.location.reload();
-      refreshSections(); // Refresh the sections after unarchiving
-      // Reset the selectedSections state
-    } catch (error) {
-      console.error("Error archiving sections:", error);
-      //alert("Failed to archive sections. Please try again.");
     }
   };
 
@@ -894,7 +904,7 @@ const ManageSchedule_ContentHeader = ({
                 {selectedSections.length > 0 && (
                   <button
                     type="submit"
-                    class="btn-box"
+                    className="btn-box"
                     name="archive"
                     id="archive"
                     onClick={handleArchiveClick}

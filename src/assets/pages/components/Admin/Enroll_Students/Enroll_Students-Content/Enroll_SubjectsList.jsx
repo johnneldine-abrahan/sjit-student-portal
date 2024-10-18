@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import "./Enroll_Students_Content.css";
 
 const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
-  const [subjects, setSubjects] = useState([]);
-  const [addedSubjects, setAddedSubjects] = useState([]); // New state for added subjects
+  const [subjects, setSubjects] = useState([]); // Current subjects to enroll
+  const [originalSubjects, setOriginalSubjects] = useState([]); // Original subjects for maintaining order
+  const [addedSubjects, setAddedSubjects] = useState([]); // State for added subjects
   const [viewMode, setViewMode] = useState('list');
   const [popup, setPopup] = useState({
     show: false,
@@ -20,6 +21,7 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
         }
         const data = await response.json();
         setSubjects(data || []);
+        setOriginalSubjects(data || []); // Store the original subjects
       } catch (error) {
         console.error('Error fetching subjects:', error);
       }
@@ -90,6 +92,26 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
     handleClose();
   };
 
+  const handleRemoveSubject = (subjectId) => {
+    // Find the subject that is being removed
+    const subjectToRemove = addedSubjects.find(addedSubject => addedSubject.subject.subject_id === subjectId);
+
+    if (subjectToRemove) {
+      // Remove the subject from the addedSubjects state
+      setAddedSubjects((prevAddedSubjects) =>
+        prevAddedSubjects.filter((addedSubject) => addedSubject.subject.subject_id !== subjectId)
+      );
+
+      // Add the subject back to the subjects state while maintaining original order
+      setSubjects((prevSubjects) => {
+        const newSubjects = [...prevSubjects, subjectToRemove.subject];
+        return originalSubjects.filter(originalSubject => 
+          newSubjects.some(newSubject => newSubject.subject_id === originalSubject.subject_id)
+        );
+      });
+    }
+  };
+
   return (
     <div className="subject-list">
       <div className="view-toggle">
@@ -105,7 +127,7 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
         <table>
           <thead>
             <tr>
-              <th>Subject ID</th>
+ <th>Subject ID</th>
               <th>Subject Name</th>
               <th>Action</th>
             </tr>
@@ -175,6 +197,7 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
                           color: "blue",
                           cursor: "pointer"
                         }}
+                        onClick={() => handleRemoveSubject(addedSubject.subject.subject_id)}
                       >
                         Remove
                       </button>
@@ -229,7 +252,7 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
                           sectionAndSchedule.schedules.length > 0 ? (
                             sectionAndSchedule.schedules.map((schedule) => (
                               <div key={schedule.day}>
-                                {schedule.day} / {formatTime(schedule.start_time)} -{" "}
+                                 • {schedule.day} / {formatTime(schedule.start_time)} -{" "}
                                 {formatTime(schedule.end_time)} / {schedule.room}
                               </div>
                             ))

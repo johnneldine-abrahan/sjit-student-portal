@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./StudentRecords_Content.css";
+import "./EnrollmentQueue_Content.css";
 import { FaRegEye } from "react-icons/fa"; // Make sure to import this if you're using the icon
 
 const Studentlist = [
@@ -16,7 +16,7 @@ const Studentlist = [
   // You can add more student records here
 ];
 
-const StudentRecords = () => {
+const EnrollmentQueue_List = () => {
   const [viewPopup, setViewPopup] = useState({ show: false, record: null });
 
   const handleViewPopup = (record) => {
@@ -39,7 +39,8 @@ const StudentRecords = () => {
               <th>Last Name</th>
               <th>First Name</th>
               <th>Middle Name</th>
-              <th>Year Graduated</th>
+              <th>Grade Level</th>
+              <th>Strand</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -50,7 +51,8 @@ const StudentRecords = () => {
                 <td>{record.LastName}</td>
                 <td>{record.FirstName}</td>
                 <td>{record.MiddleName}</td>
-                <td>{record.yearGraduated}</td>
+                <td>{record.gradeLevel}</td>
+                <td>{record.Strand}</td>
                 <td>
                   <button
                     className="view-details"
@@ -89,4 +91,4 @@ const StudentRecords = () => {
   );
 };
 
-export default StudentRecords;
+export default EnrollmentQueue_List;

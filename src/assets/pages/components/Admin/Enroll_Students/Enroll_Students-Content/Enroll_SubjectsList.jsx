@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Enroll_Students_Content.css";
 
-const Enroll_SubjectsList = ({ gradeLevel, studentId }) => {
+const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
   const [subjects, setSubjects] = useState([]);
   const [viewMode, setViewMode] = useState('list');
   const [popup, setPopup] = useState({
@@ -13,13 +13,12 @@ const Enroll_SubjectsList = ({ gradeLevel, studentId }) => {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/subjects/${gradeLevel}`);
+        const response = await fetch(`http://localhost:3000/subjectsPreview?gradeLevel=${gradeLevel}&strand=${strand}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        const subjects = data.rows || [];
-        setSubjects(subjects);
+        setSubjects(data || []);
       } catch (error) {
         console.error('Error fetching subjects:', error);
       }
@@ -28,7 +27,7 @@ const Enroll_SubjectsList = ({ gradeLevel, studentId }) => {
     if (gradeLevel) {
       fetchSubjects();
     }
-  }, [gradeLevel]);
+  }, [gradeLevel, strand]);
 
   const handlePopup = async (record) => {
     try {
@@ -37,11 +36,10 @@ const Enroll_SubjectsList = ({ gradeLevel, studentId }) => {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-      const sectionsAndSchedules = data || [];
       setPopup({
         show: true,
         record: record,
-        sectionsAndSchedules: sectionsAndSchedules,
+        sectionsAndSchedules: data || [],
       });
     } catch (error) {
       console.error('Error fetching sections and schedules:', error);
@@ -147,7 +145,10 @@ const Enroll_SubjectsList = ({ gradeLevel, studentId }) => {
             <thead>
               <tr>
                 <th>Subject ID</th>
-                <th >Subject Name</th>
+                <th>Subject Name</th>
+                <th> Section</th>
+                <th>Schedule</th>
+                <th>Professor</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -170,7 +171,7 @@ const Enroll_SubjectsList = ({ gradeLevel, studentId }) => {
           <div className="popup-blurred-background" onClick={handleClose} />
           <div className="popup-enroll">
             <div className="popup-header">
-              <h3>Add Subject</h3>
+              <h3>{popup.record ? `Add ${popup.record.subject_name}` : 'Add Subject'}</h3>
               <button onClick={handleClose}>Close</button>
             </div>
             <div className="popup-content">

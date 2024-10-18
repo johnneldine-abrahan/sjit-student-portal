@@ -488,24 +488,24 @@ app.delete('/deleteStudent', async (req, res) => {
 
 app.put('/archiveStudents', async (req, res) => {
     const { studentIds, newStatus } = req.body;
-  
+
     if (!studentIds || studentIds.length === 0) {
       return res.status(400).json({ error: 'No student IDs provided' });
     }
-  
+
     try {
       // Begin transaction
       const client = await pool.connect();
       await client.query('BEGIN');
-  
+
       // Update each student_type and student_status based on the provided studentIds
       const queryText = `UPDATE studenttbl SET student_type = 'Archived', student_status = $1 WHERE student_id = ANY($2::text[])`;
       await client.query(queryText, [newStatus, studentIds]);
-  
+
       // Commit the transaction
       await client.query('COMMIT');
       client.release();
-  
+
       res.status(200).json({ message: 'Students updated successfully' });
     } catch (err) {
       // Rollback transaction in case of error
@@ -521,11 +521,11 @@ app.get('/faculties', async (req, res) => {
     try {
       // Query to fetch faculties where faculty_status is 'Active'
       const result = await pool.query(`
-        SELECT * 
-        FROM facultytbl 
+        SELECT *
+        FROM facultytbl
         WHERE faculty_status = 'Active'
       `);
-      
+
       res.status(200).json(result.rows);
     } catch (error) {
       console.error('Error fetching faculty data:', error);
@@ -573,14 +573,14 @@ app.post('/registerFaculty', async (req, res) => {
 
 app.get('/faculty/:faculty_id', async (req, res) => {
     const facultyId = req.params.faculty_id;
-    
+
     try {
         // Assuming you're using PostgreSQL and have a pool or client set up
         const result = await pool.query(
-            'SELECT last_name, first_name, middle_name FROM facultytbl WHERE faculty_id = $1', 
+            'SELECT last_name, first_name, middle_name FROM facultytbl WHERE faculty_id = $1',
             [facultyId]
         );
-        
+
         if (result.rows.length > 0) {
             res.status(200).json(result.rows[0]);  // Send the faculty details as JSON
         } else {
@@ -598,9 +598,9 @@ app.put('/faculty/:faculty_id', async (req, res) => {
 
     try {
         const result = await pool.query(
-            `UPDATE facultytbl 
-            SET last_name = $1, first_name = $2, middle_name = $3 
-            WHERE faculty_id = $4 RETURNING *`, 
+            `UPDATE facultytbl
+            SET last_name = $1, first_name = $2, middle_name = $3
+            WHERE faculty_id = $4 RETURNING *`,
             [last_name, first_name, middle_name, facultyId]
         );
 
@@ -967,10 +967,10 @@ app.delete('/deleteAccounts', async (req, res) => {
         });
 
         // Send back a more informative response
-        res.status(500).json({ 
-            message: "Error deleting accounts.", 
-            error: error.message, 
-            detail: error.detail 
+        res.status(500).json({
+            message: "Error deleting accounts.",
+            error: error.message,
+            detail: error.detail
         });
     }
 });
@@ -997,12 +997,12 @@ app.get('/getSubjects', async (req, res) => {
         const strand = req.query.strand; // Get the strand from query parameters
         let query = 'SELECT subject_id, subject_name FROM subjecttbl';
         let params = [];
-        
+
         if (gradeLevel) {
             query += ' WHERE grade_level = $1';
             params = [gradeLevel];
         }
-        
+
         // Handle strand filtering
         if (strand) {
             if (strand === "Science, Technology, Engineering and Mathematics (STEM)") {
@@ -1038,11 +1038,11 @@ app.get('/getFaculty', async (req, res) => {
     try {
         // Query to select faculty_id, last_name, first_name, and middle_name where faculty_status is 'Active'
         const result = await pool.query(`
-        SELECT 
-          faculty_id, 
-          last_name, 
-          first_name, 
-          middle_name 
+        SELECT
+          faculty_id,
+          last_name,
+          first_name,
+          middle_name
         FROM facultytbl
         WHERE faculty_status = 'Active'
       `);
@@ -1068,47 +1068,47 @@ app.get('/getFaculty', async (req, res) => {
 
 app.post('/addSection', async (req, res) => {
     const client = await pool.connect();
-  
+
     try {
       const { subject_id, grade_level, strand, section_name, semester, school_year, program, faculty_name, schedules, faculty_id, slot} = req.body;
-  
+
       // Generate section_id
       const section_id = `${section_name}_${subject_id}_${school_year}_${semester}`;
-  
+
       // Insert into sectiontbl
       const insertSectionQuery = `
         INSERT INTO sectiontbl (section_id, subject_id, grade_level, strand, section_name, semester, school_year, program, faculty_name, slot)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING section_id;
       `;
       const sectionValues = [section_id, subject_id, grade_level, strand, section_name, semester, school_year, program, faculty_name, slot];
-  
+
       await client.query('BEGIN');
       const sectionResult = await client.query(insertSectionQuery, sectionValues);
-  
+
       // Insert into scheduletbl (can have multiple schedules)
       const insertScheduleQuery = `
         INSERT INTO scheduletbl (schedule_id, section_id, day, start_time, end_time, room)
         VALUES ($1, $2, $3, $4, $5, $6);
       `;
-  
+
       for (const schedule of schedules) {
         // Generate schedule_id as section_name + random 5 digit number
         const schedule_id = `${section_name}_${Math.floor(10000 + Math.random() * 90000)}`;
         const scheduleValues = [schedule_id, section_id, schedule.day, schedule.start_time, schedule.end_time, schedule.room];
         await client.query(insertScheduleQuery, scheduleValues);
       }
-  
+
       // Insert into teachingload_tbl
       const insertTeachingLoadQuery = `
         INSERT INTO teachingload_tbl (teachingload_id, faculty_id, section_id)
         VALUES ($1, $2, $3);
       `;
-  
+
       // Generate teachingload_id as a random 5 digit number
       const teachingload_id = `TL_${Math.floor(10000 + Math.random() * 90000)}`;
       const teachingLoadValues = [teachingload_id, faculty_id, section_id];
       await client.query(insertTeachingLoadQuery, teachingLoadValues);
-  
+
       // Commit the transaction
       await client.query('COMMIT');
       res.status(201).json({ message: 'Section, Schedule, and Teaching Load successfully added!' });
@@ -1146,40 +1146,40 @@ app.post('/addSection', async (req, res) => {
 
 app.delete('/deleteSections', async (req, res) => {
     const { selectedSections } = req.body; // selectedSections is expected to be an array of section IDs
-  
+
     if (!selectedSections || selectedSections.length === 0) {
       return res.status(400).json({ message: 'No sections selected for deletion' });
     }
-  
+
     const client = await pool.connect(); // Connect to the database
-  
+
     try {
       await client.query('BEGIN'); // Begin transaction
-  
+
       // Convert each section ID to a string to match the database type
       const sectionIds = selectedSections.map(id => String(id));
-  
+
       // Delete associated schedules from scheduletbl
       const deleteScheduleQuery = `
         DELETE FROM scheduletbl
         WHERE section_id = ANY($1::text[]);
       `;
       await client.query(deleteScheduleQuery, [sectionIds]);
-  
+
       // Delete associated teaching loads from teachingload_tbl
       const deleteTeachingLoadQuery = `
         DELETE FROM teachingload_tbl
         WHERE section_id = ANY($1::text[]);
       `;
       await client.query(deleteTeachingLoadQuery, [sectionIds]);
-  
+
       // Delete sections from sectiontbl
       const deleteSectionsQuery = `
         DELETE FROM sectiontbl
         WHERE section_id = ANY($1::text[]);
       `;
       await client.query(deleteSectionsQuery, [sectionIds]);
-  
+
       await client.query('COMMIT'); // Commit transaction
       res.status(200).json({ message: 'Sections and their related data deleted successfully' });
     } catch (error) {
@@ -1195,16 +1195,16 @@ app.delete('/deleteSections', async (req, res) => {
 
 app.get('/students/not-enrolled', async (req, res) => {
     const { grade_level, strand } = req.query;  // Get grade_level and strand from query params
-  
+
     try {
-      // Build the query to fetch full name (last_name, first_name, middle_name) of students 
+      // Build the query to fetch full name (last_name, first_name, middle_name) of students
       // where student_status is 'Not Enrolled' and grade_level and strand match the provided values
       let query = `
-        SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) AS full_name 
-        FROM studenttbl 
+        SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) AS full_name
+        FROM studenttbl
         WHERE student_status = 'Not Enrolled'
       `;
-  
+
       // Add conditions for grade_level and strand if provided
       const params = [];
       if (grade_level) {
@@ -1215,10 +1215,10 @@ app.get('/students/not-enrolled', async (req, res) => {
         query += ` AND strand = $${params.length + 1}`;
         params.push(strand);
       }
-  
+
       // Execute the query
       const result = await pool.query(query, params);
-      
+
       // Send the result as a response
       res.json(result.rows);
     } catch (error) {
@@ -1233,7 +1233,7 @@ app.get('/students/not-enrolled', async (req, res) => {
     try {
         // Query to get student details
         let studentQuery = `
-            SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) AS full_name, 
+            SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) AS full_name,
                    student_id, grade_level, strand, profile, program, student_status
             FROM studenttbl
             WHERE CONCAT(last_name, ', ', first_name, ' ', middle_name) = $1
@@ -1275,46 +1275,73 @@ app.get('/students/not-enrolled', async (req, res) => {
     }
 });
 
-app.get('/subjects/:gradeLevel', (req, res) => {
-    const gradeLevel = req.params.gradeLevel;  // Extract grade level from URL params
+app.get('/subjectsPreview', async (req, res) => {
+    try {
+        const gradeLevel = req.query.gradeLevel; // Get the grade level from query parameters
+        const strand = req.query.strand; // Get the strand from query parameters
+        let query = 'SELECT subject_id, subject_name FROM subjecttbl';
+        let params = [];
 
-    // SQL query to retrieve subject_id and subject_name for the selected grade level
-    const query = `SELECT subject_id, subject_name FROM subjecttbl WHERE grade_level = $1`;
-
-    // Query the database, passing the gradeLevel as an array
-    pool.query(query, [gradeLevel], (err, results) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ message: 'Error retrieving subjects' });
+        // Build the query based on the presence of parameters
+        if (gradeLevel) {
+            query += ' WHERE grade_level = $1';
+            params.push(gradeLevel);
         }
 
-        if (results.length === 0) {
-            return res.status(404).json({ message: 'No subjects found for this grade level' });
+        // Handle strand filtering
+        if (strand) {
+            if (strand === "Science, Technology, Engineering and Mathematics (STEM)") {
+                query += (params.length ? ' AND' : ' WHERE') + ' (strand_classification = $' + (params.length + 1) + ' OR strand_classification = \'All\')';
+                params.push('Science, Technology, Engineering and Mathematics (STEM)');
+            } else if (strand === "Accountancy, Business and Management (ABM)") {
+                query += (params.length ? ' AND' : ' WHERE') + ' (strand_classification = $' + (params.length + 1) + ' OR strand_classification = \'All\')';
+                params.push('Accountancy, Business and Management (ABM)');
+            } else if (strand === "Humanities and Social Sciences (HUMSS)") {
+                query += (params.length ? ' AND' : ' WHERE') + ' (strand_classification = $' + (params.length + 1) + ' OR strand_classification = \'All\')';
+                params.push('Humanities and Social Sciences (HUMSS)');
+            } else if (strand === "TVL - Industrial Arts (TVL-IA)") {
+                query += (params.length ? ' AND' : ' WHERE') + ' (strand_classification = $' + (params.length + 1) + ' OR strand_classification = \'All\' OR strand_classification = \'TVL\')';
+                params.push('TVL - Industrial Arts (TVL-IA)');
+            } else if (strand === "TVL - Home Economics (TVL-HE)") {
+                query += (params.length ? ' AND' : ' WHERE') + ' (strand_classification = $' + (params.length + 1) + ' OR strand_classification = \'All\' OR strand_classification = \'TVL\')';
+                params.push('TVL - Home Economics (TVL-HE)');
+            } else if (strand === "TVL - Internet Communications Technology (TVL-ICT)") {
+                query += (params.length ? ' AND' : ' WHERE') + ' (strand_classification = $' + (params.length + 1) + ' OR strand_classification = \'All\' OR strand_classification = \'TVL\')';
+                params.push('TVL - Internet Communications Technology (TVL-ICT)');
+            }
         }
 
-        // Sending the subjects as JSON
-        res.json(results);
-    });
+        const result = await pool.query(query, params);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'No subjects found for the specified criteria' });
+        }
+
+        res.json(result.rows); // Send the list of subjects to the frontend
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Server Error');
+    }
 });
 
 app.get('/getSectionsAndSchedules/:subject_id', async (req, res) => {
     const { subject_id } = req.params;
-    
+
     try {
         const result = await pool.query(`
-            SELECT 
-                s.section_name, 
-                s.semester, 
-                s.school_year, 
-                s.program, 
-                s.strand, 
-                s.faculty_name, 
-                s.grade_level, 
+            SELECT
+                s.section_name,
+                s.semester,
+                s.school_year,
+                s.program,
+                s.strand,
+                s.faculty_name,
+                s.grade_level,
                 s.slot,
                 array_agg(json_build_object(
-                    'day', sc.day, 
-                    'start_time', sc.start_time, 
-                    'end_time', sc.end_time, 
+                    'day', sc.day,
+                    'start_time', sc.start_time,
+                    'end_time', sc.end_time,
                     'room', sc.room
                 )) AS schedules
             FROM sectiontbl s
@@ -1339,11 +1366,11 @@ app.get('/getSectionsAndSchedules/:subject_id', async (req, res) => {
       // Query to fetch all data from studenttbl where student_type = 'Archived'
       const query = `
         SELECT student_id, last_name, first_name, middle_name, student_status
-        FROM studenttbl 
+        FROM studenttbl
         WHERE student_type = 'Archived';
       `;
       const result = await pool.query(query);
-      
+
       // Send the result as a response
       res.json(result.rows);
     } catch (error) {

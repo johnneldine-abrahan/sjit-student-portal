@@ -70,6 +70,38 @@ const FacultyMembers_ContentHeader = ({
       archive: false,
     });
   };
+  // Inside the FacultyMembers_ContentHeader component
+  const handleArchiveFaculty = async () => {
+    if (selectedFacultyIds.length === 0) {
+      alert("No faculty selected for archiving.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3000/archiveFaculty", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ facultyIds: selectedFacultyIds }),
+      });
+
+      if (response.ok) {
+        alert("Selected faculty archived successfully.");
+
+        // Fetch the updated list of faculty
+        const updatedResponse = await fetch("http://localhost:3000/faculties");
+        const updatedRecords = await updatedResponse.json();
+        await updateFacultyRecords(updatedRecords); // Refresh the faculty list
+
+        handleClose(); // Close the popup after successful archiving
+      } else {
+        const errorText = await response.text();
+        alert(`Failed to archive faculty: ${errorText}`);
+      }
+    } catch (error) {
+      console.error("Error archiving faculty:", error);
+      alert("Network error, please try again later.");
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -246,12 +278,13 @@ const FacultyMembers_ContentHeader = ({
           )}
 
           {/* Archive Pop-up */}
+
           {popup.archive && (
             <>
               <div className="popup-blurred-background" onClick={handleClose} />
               <div className="popup">
                 <div className="popup-header">
-                  <h3>Archive Teacher</h3>
+                  <h3>Archive Faculty</h3>
                   <button onClick={handleClose}>Close</button>
                 </div>
                 <div className="popup-content">
@@ -267,10 +300,11 @@ const FacultyMembers_ContentHeader = ({
                   <div className="buttons">
                     {selectedFacultyIds.length > 0 && (
                       <button
-                        type="submit"
-                        class="btn-box"
+                        type="button"
+                        className="btn-box"
                         name="archive"
                         id="archive"
+                        onClick={handleArchiveFaculty} // Call the archive function
                       >
                         Archive
                       </button>

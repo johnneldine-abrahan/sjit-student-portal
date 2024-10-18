@@ -1066,126 +1066,210 @@ app.get('/getFaculty', async (req, res) => {
 });
 
 
-app.post('/addSection', async (req, res) => {
+app.post("/addSection", async (req, res) => {
     const client = await pool.connect();
-
+  
     try {
-      const { subject_id, grade_level, strand, section_name, semester, school_year, program, faculty_name, schedules, faculty_id, slot} = req.body;
-
+      const {
+        subject_id,
+        grade_level,
+        strand,
+        section_name,
+        semester,
+        school_year,
+        program,
+        faculty_name,
+        schedules,
+        faculty_id,
+        slot,
+      } = req.body;
+  
       // Generate section_id
       const section_id = `${section_name}_${subject_id}_${school_year}_${semester}`;
-
+  
+      // Set section_status to 'Active'
+      const section_status = "Active";
+  
       // Insert into sectiontbl
       const insertSectionQuery = `
-        INSERT INTO sectiontbl (section_id, subject_id, grade_level, strand, section_name, semester, school_year, program, faculty_name, slot)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING section_id;
-      `;
-      const sectionValues = [section_id, subject_id, grade_level, strand, section_name, semester, school_year, program, faculty_name, slot];
-
-      await client.query('BEGIN');
+              INSERT INTO sectiontbl (section_id, subject_id, grade_level, strand, section_name, semester, school_year, program, faculty_name, slot, section_status)
+              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING section_id;
+          `;
+      const sectionValues = [
+        section_id,
+        subject_id,
+        grade_level,
+        strand,
+        section_name,
+        semester,
+        school_year,
+        program,
+        faculty_name,
+        slot,
+        section_status,
+      ];
+  
+      await client.query("BEGIN");
       const sectionResult = await client.query(insertSectionQuery, sectionValues);
-
+  
       // Insert into scheduletbl (can have multiple schedules)
       const insertScheduleQuery = `
-        INSERT INTO scheduletbl (schedule_id, section_id, day, start_time, end_time, room)
-        VALUES ($1, $2, $3, $4, $5, $6);
-      `;
-
+              INSERT INTO scheduletbl (schedule_id, section_id, day, start_time, end_time, room)
+              VALUES ($1, $2, $3, $4, $5, $6);
+          `;
+  
       for (const schedule of schedules) {
         // Generate schedule_id as section_name + random 5 digit number
-        const schedule_id = `${section_name}_${Math.floor(10000 + Math.random() * 90000)}`;
-        const scheduleValues = [schedule_id, section_id, schedule.day, schedule.start_time, schedule.end_time, schedule.room];
+        const schedule_id = `${section_name}_${Math.floor(
+          10000 + Math.random() * 90000
+        )}`;
+        const scheduleValues = [
+          schedule_id,
+          section_id,
+          schedule.day,
+          schedule.start_time,
+          schedule.end_time,
+          schedule.room,
+        ];
         await client.query(insertScheduleQuery, scheduleValues);
       }
-
+  
       // Insert into teachingload_tbl
       const insertTeachingLoadQuery = `
-        INSERT INTO teachingload_tbl (teachingload_id, faculty_id, section_id)
-        VALUES ($1, $2, $3);
-      `;
-
+              INSERT INTO teachingload_tbl (teachingload_id, faculty_id, section_id)
+              VALUES ($1, $2, $3);
+          `;
+  
       // Generate teachingload_id as a random 5 digit number
       const teachingload_id = `TL_${Math.floor(10000 + Math.random() * 90000)}`;
       const teachingLoadValues = [teachingload_id, faculty_id, section_id];
       await client.query(insertTeachingLoadQuery, teachingLoadValues);
-
+  
       // Commit the transaction
-      await client.query('COMMIT');
-      res.status(201).json({ message: 'Section, Schedule, and Teaching Load successfully added!' });
+      await client.query("COMMIT");
+      res.status(201).json({
+        message: "Section, Schedule, and Teaching Load successfully added!",
+      });
     } catch (error) {
-      await client.query('ROLLBACK');
+      await client.query("ROLLBACK");
       console.error(error);
-      res.status(500).json({ message: 'Error adding data', error });
+      res.status(500).json({ message: "Error adding data", error });
     } finally {
       client.release();
     }
   });
-
-  app.get('/getSections', async (req, res) => {
+  
+  app.get("/getSections", async (req, res) => {
     try {
-        const query = `
-            SELECT
-                sectiontbl.section_id,
-                sectiontbl.grade_level,
-                sectiontbl.section_name,
-                subjecttbl.subject_name,
-                sectiontbl.semester,
-                sectiontbl.school_year,
-                sectiontbl.strand,
-                sectiontbl.faculty_name
-            FROM sectiontbl
-            JOIN subjecttbl ON sectiontbl.subject_id = subjecttbl.subject_id;
+      const query = `
+          SELECT
+              sectiontbl.section_id,
+              sectiontbl.grade_level,
+              sectiontbl.section_name,
+              subjecttbl.subject_name,
+              sectiontbl.semester,
+              sectiontbl.school_year,
+              sectiontbl.strand,
+              sectiontbl.faculty_name,
+              sectiontbl.section_status
+          FROM sectiontbl
+          JOIN subjecttbl ON sectiontbl.subject_id = subjecttbl.subject_id
+          WHERE sectiontbl.section_status = 'Active';  -- Filter for active sections
         `;
-        const result = await pool.query(query);
-        res.status(200).json(result.rows);
+      const result = await pool.query(query);
+      res.status(200).json(result.rows);
     } catch (error) {
-        console.error('Error executing query:', error);
-        res.status(500).send('Internal Server Error');
+      console.error("Error executing query:", error);
+      res.status(500).send("Internal Server Error");
     }
-});
-
-app.delete('/deleteSections', async (req, res) => {
+  });
+  
+  app.delete("/deleteSections", async (req, res) => {
     const { selectedSections } = req.body; // selectedSections is expected to be an array of section IDs
-
+  
     if (!selectedSections || selectedSections.length === 0) {
-      return res.status(400).json({ message: 'No sections selected for deletion' });
+      return res
+        .status(400)
+        .json({ message: "No sections selected for deletion" });
     }
-
+  
     const client = await pool.connect(); // Connect to the database
-
+  
     try {
-      await client.query('BEGIN'); // Begin transaction
-
+      await client.query("BEGIN"); // Begin transaction
+  
       // Convert each section ID to a string to match the database type
-      const sectionIds = selectedSections.map(id => String(id));
-
+      const sectionIds = selectedSections.map((id) => String(id));
+  
       // Delete associated schedules from scheduletbl
       const deleteScheduleQuery = `
-        DELETE FROM scheduletbl
-        WHERE section_id = ANY($1::text[]);
-      `;
+          DELETE FROM scheduletbl
+          WHERE section_id = ANY($1::text[]);
+        `;
       await client.query(deleteScheduleQuery, [sectionIds]);
-
+  
       // Delete associated teaching loads from teachingload_tbl
       const deleteTeachingLoadQuery = `
-        DELETE FROM teachingload_tbl
-        WHERE section_id = ANY($1::text[]);
-      `;
+          DELETE FROM teachingload_tbl
+          WHERE section_id = ANY($1::text[]);
+        `;
       await client.query(deleteTeachingLoadQuery, [sectionIds]);
-
+  
       // Delete sections from sectiontbl
       const deleteSectionsQuery = `
-        DELETE FROM sectiontbl
+          DELETE FROM sectiontbl
+          WHERE section_id = ANY($1::text[]);
+        `;
+      await client.query(deleteSectionsQuery, [sectionIds]);
+  
+      await client.query("COMMIT"); // Commit transaction
+      res.status(200).json({
+        message: "Sections and their related data deleted successfully",
+      });
+    } catch (error) {
+      await client.query("ROLLBACK"); // Rollback transaction on error
+      console.error("Error deleting sections:", error);
+      res
+        .status(500)
+        .json({ message: "Error deleting sections", error: error.message });
+    } finally {
+      client.release(); // Release the client back to the pool
+    }
+  });
+  // archive sections
+  app.post("/archiveSections", async (req, res) => {
+    const { selectedSections } = req.body; // selectedSections is expected to be an array of section IDs
+  
+    if (!selectedSections || selectedSections.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "No sections selected for archiving" });
+    }
+  
+    const client = await pool.connect(); // Connect to the database
+  
+    try {
+      await client.query("BEGIN"); // Begin transaction
+  
+      // Convert each section ID to a string to match the database type
+      const sectionIds = selectedSections.map((id) => String(id));
+  
+      // Update section status in sectiontbl
+      const archiveSectionsQuery = `
+        UPDATE sectiontbl
+        SET section_status = 'Archive'
         WHERE section_id = ANY($1::text[]);
       `;
-      await client.query(deleteSectionsQuery, [sectionIds]);
-
-      await client.query('COMMIT'); // Commit transaction
-      res.status(200).json({ message: 'Sections and their related data deleted successfully' });
+      await client.query(archiveSectionsQuery, [sectionIds]);
+  
+      await client.query("COMMIT"); // Commit transaction
+      res.status(200).json({ message: "Sections archived successfully" });
     } catch (error) {
-      await client.query('ROLLBACK'); // Rollback transaction on error
-      console.error('Error deleting sections:', error);
-      res.status(500).json({ message: 'Error deleting sections', error: error.message });
+      await client.query("ROLLBACK"); // Rollback transaction on error
+      console.error("Error archiving sections:", error);
+      res
+        .status(500)
+        .json({ message: "Error archiving sections", error: error.message });
     } finally {
       client.release(); // Release the client back to the pool
     }

@@ -112,6 +112,42 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
     }
   };
 
+  const handleQueueEnrollment = async () => {
+    try {
+        const section_ids = addedSubjects.map(subject => subject.sectionAndSchedule.section_id);
+        console.log({
+            student_id: studentId,
+            section_ids: section_ids
+        });
+
+        if (!studentId || section_ids.length === 0) {
+            alert('Student ID or section IDs are missing.');
+            return;
+        }
+
+        const response = await fetch('http://localhost:3000/enroll', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                student_id: studentId,
+                section_ids: section_ids
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const result = await response.json();
+        alert(result.message);
+    } catch (error) {
+        console.error('Error during enrollment:', error);
+        alert('Enrollment failed. Please try again.');
+    }
+};
+
   return (
     <div className="subject-list">
       <div className="view-toggle">
@@ -213,7 +249,7 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
           </table>
           <div className="onQueue-section">
             {viewMode === "table" && (
-              <button type="submit" className="queue">
+              <button type="submit" className="queue" onClick={handleQueueEnrollment}>
                 Queue
               </button>
             )}

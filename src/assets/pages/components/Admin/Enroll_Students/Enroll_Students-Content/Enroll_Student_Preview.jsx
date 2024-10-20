@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Enroll_Students_Content.css';
 import defaultProfile from '../../../../../img/Profile/default_profile.png';
 
-const Enroll_Student_Preview = ({ studentDetails }) => {
+const Enroll_Student_Preview = ({ studentDetails, onStudentIdChange }) => {
+  useEffect(() => {
+    // Call the callback to pass student_id to the parent component when studentDetails changes
+    if (studentDetails) {
+      onStudentIdChange(studentDetails.student_id);
+    }
+  }, [studentDetails, onStudentIdChange]);
+
   if (!studentDetails) {
     return (
       <div className='student-profile-preview'>
@@ -18,14 +25,9 @@ const Enroll_Student_Preview = ({ studentDetails }) => {
     );
   }
 
-  const { student_id, grade_level, strand, profile, program, student_status, full_name, semester, school_year } = studentDetails;
+  const { grade_level, strand, profile, program, student_status, full_name, semester, school_year } = studentDetails;
 
-  console.log('defaultProfile:', defaultProfile); // Add this line to log the defaultProfile value
-
-  // Use the default profile image if the profile is null
   const profileUrl = profile !== null ? `data:image/jpeg;base64,${profile}` : defaultProfile;
-
-  console.log('profileUrl:', profileUrl); // Add this line to log the profileUrl value
 
   return (
     <div className='student-profile-preview'>
@@ -34,7 +36,7 @@ const Enroll_Student_Preview = ({ studentDetails }) => {
           <img src={profileUrl} className='profile-pic' alt='Profile' />
         </div>
         <div className='student-enroll-info'>
-          <h3>{student_id}</h3>
+          <h3>{studentDetails.student_id}</h3>
           <h2>{full_name}</h2>
           <h3>{program}</h3>
           <h3>{school_year}, {semester}</h3>

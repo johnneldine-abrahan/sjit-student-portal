@@ -1,33 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./EnrollmentQueue_Content.css";
 import { FaRegEye } from "react-icons/fa"; // Make sure to import this if you're using the icon
 
-const Studentlist = [
-  {
-    studentID: "21-05298",
-    LastName: "Sanchez",
-    FirstName: "Kim William",
-    MiddleName: "Bacsa",
-    yearGraduated: "2025",
-    viewRecords: "!",
-    program: "Computer Science", // Added for demonstration
-    gradeLevel: "Senior", // Added for demonstration
-  },
-  // You can add more student records here
-];
-
 const EnrollmentQueue_List = () => {
+  const [students, setStudents] = useState([]); // State to hold fetched student data
   const [viewPopup, setViewPopup] = useState({ show: false, record: null });
 
   const handleViewPopup = (record) => {
-    // Function to handle view button click
     setViewPopup({ show: true, record: record });
   };
 
   const handleClose = () => {
-    // Function to close the popup
     setViewPopup({ show: false, record: null });
   };
+
+  // Fetch student data from the back-end API
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/students/pending'); // Ensure the API URL is correct
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setStudents(data); // Update state with fetched data
+      } catch (error) {
+        console.error('Error fetching students:', error);
+      }
+    };
+
+    fetchStudents();
+  }, []); // Empty dependency array means this runs once on component mount
 
   return (
     <div className="student-record-list">
@@ -40,19 +43,19 @@ const EnrollmentQueue_List = () => {
               <th>First Name</th>
               <th>Middle Name</th>
               <th>Grade Level</th>
-              <th>Strand</th>
+              <th>Payment Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {Studentlist.map((record, index) => (
+            {students.map((record, index) => (
               <tr key={index}>
-                <td>{record.studentID}</td>
-                <td>{record.LastName}</td>
-                <td>{record.FirstName}</td>
-                <td>{record.MiddleName}</td>
-                <td>{record.gradeLevel}</td>
-                <td>{record.Strand}</td>
+                <td>{record.student_id}</td>
+                <td>{record.last_name}</td>
+                <td>{record.first_name}</td>
+                <td>{record.middle_name}</td>
+                <td>Grade {record.grade_level}</td>
+                <td>{record.payment_status}</td>
                 <td>
                   <button
                     className="view-details"
@@ -76,13 +79,12 @@ const EnrollmentQueue_List = () => {
               <button onClick={handleClose}>Close</button>
             </div>
             <div className="popup-content">
-              <p>Student ID: {viewPopup.record.studentID}</p>
-              <p>Last Name: {viewPopup.record.LastName}</p>
-              <p>First Name: {viewPopup.record.FirstName}</p>
-              <p>Middle Name: {viewPopup.record.MiddleName}</p>
-              <p>Year Graduated: {viewPopup.record.yearGraduated}</p>
-              <p>Program: {viewPopup.record.program}</p>
-              <p>Grade Level: {viewPopup.record.gradeLevel}</p>
+              <p>Student ID: {viewPopup.record.student_id}</p>
+              <p>Last Name: {viewPopup.record.last_name}</p>
+              <p>First Name: {viewPopup.record.first_name}</p>
+              <p>Middle Name: {viewPopup.record.middle_name}</p>
+              <p>Grade Level: {viewPopup.record.grade_level}</p>
+              <p>Payment Status: {viewPopup.record.payment_status}</p>
             </div>
           </div>
         )}

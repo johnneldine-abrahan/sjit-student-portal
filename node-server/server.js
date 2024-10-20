@@ -1516,6 +1516,33 @@ app.post('/enroll', async (req, res) => {
     }
 });
 
+// Finance side
+app.get('/students/pending', async (req, res) => {
+    try {
+      const query = `
+        SELECT DISTINCT 
+          s.student_id, 
+          s.last_name, 
+          s.first_name, 
+          s.middle_name, 
+          s.grade_level,
+          'Pending' AS payment_status
+        FROM enrollmenttbl e
+        JOIN studenttbl s ON e.student_id = s.student_id
+        WHERE e.payment_status = $1
+      `;
+      const values = ['Pending'];
+  
+      const result = await pool.query(query, values);
+      
+      // Send the merged student details and payment statuses as a response
+      res.status(200).json(result.rows);
+    } catch (error) {
+      console.error('Error fetching students:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
   // Archive ---------------------------------------------------------------------------------------
 
   app.get('/students/archived', async (req, res) => {

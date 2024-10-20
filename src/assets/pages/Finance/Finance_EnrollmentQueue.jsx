@@ -5,7 +5,7 @@ import EnrollmentQueue_Content from '../components/Finance/EnrollmentQueue/Enrol
 
 const Finance_EnrollmentQueue = () => {
     useEffect(() => {
-        document.title = "Finance - History";
+        document.title = "Finance - Enrollment Queue";
     }, []);
 
   return (

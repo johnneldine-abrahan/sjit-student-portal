@@ -5,7 +5,7 @@ import ConfirmEnrollment_Sidebar from '../components/Admin/ConfirmEnrollment/Con
 
 const Admin_ConfirmEnrollment = () => {
   useEffect(() => {
-    document.title = "Admin - ConfirmEnrollment";
+    document.title = "Admin - Confirm Enrollment";
   }, []);
 
   return (

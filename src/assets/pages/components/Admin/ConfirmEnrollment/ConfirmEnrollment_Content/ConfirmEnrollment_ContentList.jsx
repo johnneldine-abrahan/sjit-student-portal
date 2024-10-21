@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import "./EnrollmentQueue_Content.css";
-import { FaCheck } from "react-icons/fa6"; // Import the new check icon
+import "./ConfirmEnrollment_Content.css";
 
-const EnrollmentQueue_List = () => {
+const ConfirmEnrollment_ContentList = () => {
   const [students, setStudents] = useState([]); // State to hold fetched student data
   const [viewPopup, setViewPopup] = useState({ show: false, record: null });
 
@@ -67,7 +66,7 @@ const EnrollmentQueue_List = () => {
                     className="view-details"
                     onClick={() => handleViewPopup(record)}
                   >
-                    <FaCheck size={20} /> {/* Replace the icon here */}
+                    Confirm Enrollment {/* Replace the icon with text */}
                   </button>
                 </td>
               </tr>
@@ -85,7 +84,7 @@ const EnrollmentQueue_List = () => {
               <button onClick={handleClose}>Close</button>
             </div>
             <div className="popup-content">
-              <p>Do you want to confirm the payment of {viewPopup.record.first_name} {viewPopup.record.last_name}?</p>
+              <p>Do you want to confirm the enrollment of {viewPopup.record.first_name} {viewPopup.record.last_name}?</p>
               <div className="buttons">
                 <button type="submit" className="btn-box" name="add" id="add" onClick={handleDone}>
                   Confirm
@@ -99,4 +98,4 @@ const EnrollmentQueue_List = () => {
   );
 };
 
-export default EnrollmentQueue_List;
+export default ConfirmEnrollment_ContentList;

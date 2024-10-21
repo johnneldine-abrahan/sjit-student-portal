@@ -1506,11 +1506,11 @@ app.post('/enroll', async (req, res) => {
         }
 
         await client.query('COMMIT');
-        res.status(200).json({ message: 'Enrollment successful' });
+        res.status(200).json({ message: 'Enrollment successfully queued' });
     } catch (error) {
         await client.query('ROLLBACK');
         console.error(error.message || error);
-        res.status(500).json({ error: error.message || 'Enrollment failed' });
+        res.status(500).json({ error: error.message || 'Enrollment queueing failed' });
     } finally {
         client.release();
     }

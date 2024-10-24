@@ -1,18 +1,18 @@
-.confirm-enrollment-content{
+.confirm-enrollment-content {
   width: 100%;
 }
 
-.header-title{
+.header-title {
   color: #150f57;
 }
 
-.confirm-enrollment-header{
+.confirm-enrollment-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.confirm-enrollment-activity{
+.confirm-enrollment-activity {
   display: flex;
   align-items: center;
   gap: 20px;
@@ -23,13 +23,14 @@
   margin-top: 25px;
   border-collapse: collapse;
   border-radius: 10px; /* Add border radius here */
-  overflow: hidden; /* Add this to ensure the border radius is applied correctly */
+  overflow: hidden; /* Ensure the border radius is applied correctly */
 }
+
 .on-queue th,
 .on-queue td {
   border: 1px solid #ddd;
   padding: 10px;
-  text-align: left;
+  text-align: left; /* Ensure text is left-aligned */
 }
 
 .on-queue th {
@@ -38,18 +39,6 @@
 
 .on-queue tr:nth-child(even) {
   background-color: #f5f5f5;
-}
-
-.on-queue td {
-  border-style: hidden;
-  padding: 10px;
-  text-align: left;
-}
-
-.on-queue th {
-  border-style: hidden;
-  padding: 10px;
-  text-align: left;
 }
 
 .view-details-link {
@@ -118,7 +107,7 @@
   background-color: #150f57;
   color: #fff;
   padding: 10px 25px;
-  font-size: 16px;
+  font-size: 18px;
   border-radius: 26px;
   cursor: pointer;
   border: 0;

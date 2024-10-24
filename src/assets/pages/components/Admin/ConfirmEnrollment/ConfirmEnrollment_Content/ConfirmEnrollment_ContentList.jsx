@@ -1,40 +1,58 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./ConfirmEnrollment_Content.css";
 
+const studentRecords = [
+  {
+    student_id: "21-05298",
+    last_name: "Sanchez",
+    first_name: "Kim William",
+    middle_name: "Bacsa",
+    grade_level: "12",
+    payment_status: "Pending",
+  },
+  {
+    student_id: "21-05299",
+    last_name: "Doe",
+    first_name: "John",
+    middle_name: "A.",
+    grade_level: "11",
+    payment_status: "Confirmed",
+  },
+  {
+    student_id: "21-05300",
+    last_name: "Smith",
+    first_name: "Jane",
+    middle_name: "B.",
+    grade_level: "10",
+    payment_status: "Pending",
+  },
+  {
+    student_id: "21-05301",
+    last_name: "Brown",
+    first_name: "Chris",
+    middle_name: "C.",
+    grade_level: "12",
+    payment_status: "Pending",
+  },
+];
+
 const ConfirmEnrollment_ContentList = () => {
-  const [students, setStudents] = useState([]); // State to hold fetched student data
-  const [viewPopup, setViewPopup] = useState({ show: false, record: null });
+  const [students] = useState(studentRecords); // State to hold student data
+  const [viewPopup, setViewPopup] = useState({ show: false, record: null }); // State for popup
 
   const handleViewPopup = (record) => {
-    setViewPopup({ show: true, record: record });
+    setViewPopup({ show: true, record: record }); // Show the popup with selected record
   };
 
   const handleClose = () => {
-    setViewPopup({ show: false, record: null });
+    setViewPopup({ show: false, record: null }); // Close the popup
   };
 
-  // Fetch student data from the back-end API
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/students/pending'); // Ensure the API URL is correct
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        setStudents(data); // Update state with fetched data
-      } catch (error) {
-        console.error('Error fetching students:', error);
-      }
-    };
-
-    fetchStudents();
-  }, []); // Empty dependency array means this runs once on component mount
-
   const handleDone = () => {
-    // Placeholder for Done button functionality
-    console.log(`Payment confirmed for ${viewPopup.record.first_name} ${viewPopup.record.last_name}`);
-    handleClose(); // Close the popup after clicking Done
+    console.log(
+      `Payment confirmed for ${viewPopup.record.first_name} ${viewPopup.record.last_name}`
+    );
+    handleClose();
   };
 
   return (
@@ -59,14 +77,14 @@ const ConfirmEnrollment_ContentList = () => {
                 <td>{record.last_name}</td>
                 <td>{record.first_name}</td>
                 <td>{record.middle_name}</td>
-                <td>Grade {record.grade_level}</td>
+                <td>{record.grade_level}</td>
                 <td>{record.payment_status}</td>
                 <td>
                   <button
                     className="view-details"
                     onClick={() => handleViewPopup(record)}
                   >
-                    Confirm Enrollment {/* Replace the icon with text */}
+                    Confirm
                   </button>
                 </td>
               </tr>
@@ -75,20 +93,26 @@ const ConfirmEnrollment_ContentList = () => {
         </table>
 
         {viewPopup.show && (
-          <div className="popup-blurred-background" onClick={handleClose} />
-        )}
-        {viewPopup.show && (
-          <div className="popup-view-student">
-            <div className="popup-header">
-              <h3>Confirm Payment</h3>
-              <button onClick={handleClose}>Close</button>
-            </div>
-            <div className="popup-content">
-              <p>Do you want to confirm the enrollment of {viewPopup.record.first_name} {viewPopup.record.last_name}?</p>
-              <div className="buttons">
-                <button type="submit" className="btn-box" name="add" id="add" onClick={handleDone}>
-                  Confirm
-                </button>
+          <div className="popup-blurred-background" onClick={handleClose}>
+            <div className="popup-view-student">
+              <div className="popup-header">
+                <h3>Confirm Payment</h3>
+                <button onClick={handleClose}>Close</button>
+              </div>
+              <div className="popup-content">
+                <p>
+                  Do you want to confirm the enrollment of{" "}
+                  {viewPopup.record.first_name} {viewPopup.record.last_name}?
+                </p>
+                <div className="buttons">
+                  <button
+                    type="button"
+                    className="btn-box"
+                    onClick={handleDone}
+                  >
+                    Confirm
+                  </button>
+                </div>
               </div>
             </div>
           </div>

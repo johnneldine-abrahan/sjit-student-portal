@@ -1543,6 +1543,60 @@ app.get('/students/pending', async (req, res) => {
     }
   });
 
+  app.put('/students/:student_id/payment-status', async (req, res) => {
+    const { student_id } = req.params; // Get the student_id from the URL parameters
+    const newStatus = 'Paid'; // New payment status to be set
+
+    try {
+        const query = `
+            UPDATE enrollmenttbl 
+            SET payment_status = $1 
+            WHERE student_id = $2 AND payment_status = 'Pending'
+        `;
+        const values = [newStatus, student_id];
+
+        const result = await pool.query(query, values);
+
+        // Check if any row was updated
+        if (result.rowCount > 0) {
+            res.status(200).json({ message: 'Payment status updated successfully' });
+        } else {
+            res.status(404).json({ error: 'Student not found or payment status not pending' });
+        }
+    } catch (error) {
+        console.error('Error updating payment status:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+  // Admin Side - Confirm Enrollment
+
+app.get('/students/paid', async (req, res) => {
+    try {
+        const query = `
+            SELECT DISTINCT 
+                s.student_id, 
+                s.last_name, 
+                s.first_name, 
+                s.middle_name, 
+                s.grade_level,
+                'Paid' AS payment_status
+            FROM enrollmenttbl e
+            JOIN studenttbl s ON e.student_id = s.student_id
+            WHERE e.payment_status = $1
+        `;
+        const values = ['Paid'];
+
+        const result = await pool.query(query, values);
+        
+        // Send the merged student details and payment statuses as a response
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error('Error fetching students:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
   // Archive ---------------------------------------------------------------------------------------
 
   app.get('/students/archived', async (req, res) => {

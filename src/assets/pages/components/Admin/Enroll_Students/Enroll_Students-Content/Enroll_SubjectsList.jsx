@@ -5,7 +5,7 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
   const [subjects, setSubjects] = useState([]); // Current subjects to enroll
   const [originalSubjects, setOriginalSubjects] = useState([]); // Original subjects for maintaining order
   const [addedSubjects, setAddedSubjects] = useState([]); // State for added subjects
-  const [viewMode, setViewMode] = useState('list');
+  const [viewMode, setViewMode] = useState("list");
   const [popup, setPopup] = useState({
     show: false,
     record: null,
@@ -15,15 +15,17 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/subjectsPreview?gradeLevel=${gradeLevel}&strand=${strand}`);
+        const response = await fetch(
+          `http://localhost:3000/subjectsPreview?gradeLevel=${gradeLevel}&strand=${strand}`
+        );
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         const data = await response.json();
         setSubjects(data || []);
         setOriginalSubjects(data || []); // Store the original subjects
       } catch (error) {
-        console.error('Error fetching subjects:', error);
+        console.error("Error fetching subjects:", error);
       }
     };
 
@@ -34,9 +36,11 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
 
   const handlePopup = async (record) => {
     try {
-      const response = await fetch(`http://localhost:3000/getSectionsAndSchedules/${record.subject_id}`);
+      const response = await fetch(
+        `http://localhost:3000/getSectionsAndSchedules/${record.subject_id}`
+      );
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
       const data = await response.json();
       setPopup({
@@ -45,7 +49,7 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
         sectionsAndSchedules: data || [],
       });
     } catch (error) {
-      console.error('Error fetching sections and schedules:', error);
+      console.error("Error fetching sections and schedules:", error);
     }
   };
 
@@ -66,13 +70,13 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
 
   useEffect(() => {
     if (popup.show) {
-      document.body.style.overflow = 'hidden'; // Disable scroll
+      document.body.style.overflow = "hidden"; // Disable scroll
     } else {
-      document.body.style.overflow = 'unset'; // Enable scroll
+      document.body.style.overflow = "unset"; // Enable scroll
     }
 
     return () => {
-      document.body.style.overflow = 'unset'; // Cleanup on unmount
+      document.body.style.overflow = "unset"; // Cleanup on unmount
     };
   }, [popup.show]);
 
@@ -85,7 +89,9 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
 
     // Remove the subject from the subjects state
     setSubjects((prevSubjects) =>
-      prevSubjects.filter((prevSubject) => prevSubject.subject_id !== subject.subject_id)
+      prevSubjects.filter(
+        (prevSubject) => prevSubject.subject_id !== subject.subject_id
+      )
     );
 
     // Close the popup
@@ -94,19 +100,25 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
 
   const handleRemoveSubject = (subjectId) => {
     // Find the subject that is being removed
-    const subjectToRemove = addedSubjects.find(addedSubject => addedSubject.subject.subject_id === subjectId);
+    const subjectToRemove = addedSubjects.find(
+      (addedSubject) => addedSubject.subject.subject_id === subjectId
+    );
 
     if (subjectToRemove) {
       // Remove the subject from the addedSubjects state
       setAddedSubjects((prevAddedSubjects) =>
-        prevAddedSubjects.filter((addedSubject) => addedSubject.subject.subject_id !== subjectId)
+        prevAddedSubjects.filter(
+          (addedSubject) => addedSubject.subject.subject_id !== subjectId
+        )
       );
 
       // Add the subject back to the subjects state while maintaining original order
       setSubjects((prevSubjects) => {
         const newSubjects = [...prevSubjects, subjectToRemove.subject];
-        return originalSubjects.filter(originalSubject => 
-          newSubjects.some(newSubject => newSubject.subject_id === originalSubject.subject_id)
+        return originalSubjects.filter((originalSubject) =>
+          newSubjects.some(
+            (newSubject) => newSubject.subject_id === originalSubject.subject_id
+          )
         );
       });
     }
@@ -114,39 +126,41 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
 
   const handleQueueEnrollment = async () => {
     try {
-        const section_ids = addedSubjects.map(subject => subject.sectionAndSchedule.section_id);
-        console.log({
-            student_id: studentId,
-            section_ids: section_ids
-        });
+      const section_ids = addedSubjects.map(
+        (subject) => subject.sectionAndSchedule.section_id
+      );
+      console.log({
+        student_id: studentId,
+        section_ids: section_ids,
+      });
 
-        if (!studentId || section_ids.length === 0) {
-            alert('Student ID or section IDs are missing.');
-            return;
-        }
+      if (!studentId || section_ids.length === 0) {
+        alert("Student ID or section IDs are missing.");
+        return;
+      }
 
-        const response = await fetch('http://localhost:3000/enroll', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                student_id: studentId,
-                section_ids: section_ids
-            }),
-        });
+      const response = await fetch("http://localhost:3000/enroll", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          student_id: studentId,
+          section_ids: section_ids,
+        }),
+      });
 
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
 
-        const result = await response.json();
-        alert(result.message);
+      const result = await response.json();
+      alert(result.message);
     } catch (error) {
-        console.error('Error during enrollment:', error);
-        alert('Enrollment failed. Please try again.');
+      console.error("Error during enrollment:", error);
+      alert("Enrollment failed. Please try again.");
     }
-};
+  };
 
   return (
     <div className="subject-list">
@@ -163,7 +177,7 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
         <table>
           <thead>
             <tr>
- <th>Subject ID</th>
+              <th>Subject ID</th>
               <th>Subject Name</th>
               <th>Action</th>
             </tr>
@@ -212,14 +226,19 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
                     <td>{addedSubject.subject.subject_name}</td>
                     <td>{addedSubject.sectionAndSchedule.section_name}</td>
                     <td>
-                      {Array.isArray(addedSubject.sectionAndSchedule.schedules) &&
+                      {Array.isArray(
+                        addedSubject.sectionAndSchedule.schedules
+                      ) &&
                       addedSubject.sectionAndSchedule.schedules.length > 0 ? (
-                        addedSubject.sectionAndSchedule.schedules.map((schedule) => (
-                          <div key={schedule.day}>
-                            {schedule.day} / {formatTime(schedule.start_time)} -{" "}
-                            {formatTime(schedule.end_time)} / {schedule.room}
-                          </div>
-                        ))
+                        addedSubject.sectionAndSchedule.schedules.map(
+                          (schedule) => (
+                            <div key={schedule.day}>
+                              {schedule.day} / {formatTime(schedule.start_time)}{" "}
+                              - {formatTime(schedule.end_time)} /{" "}
+                              {schedule.room}
+                            </div>
+                          )
+                        )
                       ) : (
                         <div>No schedule available</div>
                       )}
@@ -231,9 +250,12 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
                           background: "none",
                           border: "none",
                           color: "blue",
-                          cursor: "pointer"
+                          cursor: "pointer",
+                          fontSize: "18px",
                         }}
-                        onClick={() => handleRemoveSubject(addedSubject.subject.subject_id)}
+                        onClick={() =>
+                          handleRemoveSubject(addedSubject.subject.subject_id)
+                        }
                       >
                         Remove
                       </button>
@@ -249,7 +271,11 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
           </table>
           <div className="onQueue-section">
             {viewMode === "table" && (
-              <button type="submit" className="queue" onClick={handleQueueEnrollment}>
+              <button
+                type="submit"
+                className="queue"
+                onClick={handleQueueEnrollment}
+              >
                 Queue
               </button>
             )}
@@ -262,7 +288,11 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
           <div className="popup-blurred-background" onClick={handleClose} />
           <div className="popup-enroll">
             <div className="popup-header">
-              <h3>{popup.record ? `Add ${popup.record.subject_name}` : 'Add Subject'}</h3>
+              <h3>
+                {popup.record
+                  ? `Add ${popup.record.subject_name}`
+                  : "Add Subject"}
+              </h3>
               <button onClick={handleClose}>Close</button>
             </div>
             <div className="popup-content">
@@ -272,7 +302,7 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
                     <th>Grade Level</th>
                     <th>Section</th>
                     <th>Schedule</th>
-                    <th>Professor</th>
+                    <th>Faculty</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -288,8 +318,10 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
                           sectionAndSchedule.schedules.length > 0 ? (
                             sectionAndSchedule.schedules.map((schedule) => (
                               <div key={schedule.day}>
-                                 • {schedule.day} / {formatTime(schedule.start_time)} -{" "}
-                                {formatTime(schedule.end_time)} / {schedule.room}
+                                • {schedule.day} /{" "}
+                                {formatTime(schedule.start_time)} -{" "}
+                                {formatTime(schedule.end_time)} /{" "}
+                                {schedule.room}
                               </div>
                             ))
                           ) : (
@@ -303,9 +335,12 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
                               background: "none",
                               border: "none",
                               color: "blue",
-                              cursor: "pointer"
+                              cursor: "pointer",
+                              fontSize: "18px",
                             }}
-                            onClick={() => handleAddSubject(popup.record, sectionAndSchedule)}
+                            onClick={() =>
+                              handleAddSubject(popup.record, sectionAndSchedule)
+                            }
                           >
                             Add
                           </button>

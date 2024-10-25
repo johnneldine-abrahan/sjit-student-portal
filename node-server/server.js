@@ -1543,7 +1543,7 @@ app.get('/students/pending', async (req, res) => {
     }
   });
 
-  app.put('/students/:student_id/payment-status', async (req, res) => {
+app.put('/students/:student_id/payment-status', async (req, res) => {
     const { student_id } = req.params; // Get the student_id from the URL parameters
     const newStatus = 'Paid'; // New payment status to be set
 

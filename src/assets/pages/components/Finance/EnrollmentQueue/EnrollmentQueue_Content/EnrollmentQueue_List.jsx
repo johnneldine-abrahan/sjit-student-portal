@@ -5,6 +5,8 @@ import { FaCheck } from "react-icons/fa6"; // Import the new check icon
 const EnrollmentQueue_List = () => {
   const [students, setStudents] = useState([]); // State to hold fetched student data
   const [viewPopup, setViewPopup] = useState({ show: false, record: null });
+  const [error, setError] = useState(null); // State to hold error messages
+  const [successMessage, setSuccessMessage] = useState(null); // State to hold success messages
 
   const handleViewPopup = (record) => {
     setViewPopup({ show: true, record: record });
@@ -12,35 +14,61 @@ const EnrollmentQueue_List = () => {
 
   const handleClose = () => {
     setViewPopup({ show: false, record: null });
+    setError(null); // Clear error on close
+    setSuccessMessage(null); // Clear success message on close
   };
 
   // Fetch student data from the back-end API
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/students/pending'); // Ensure the API URL is correct
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        setStudents(data); // Update state with fetched data
-      } catch (error) {
-        console.error('Error fetching students:', error);
+  const fetchStudents = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/students/pending'); // Ensure the API URL is correct
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
-    };
+      const data = await response.json();
+      setStudents(data); // Update state with fetched data
+    } catch (error) {
+      console.error('Error fetching students:', error);
+    }
+  };
 
-    fetchStudents();
+  useEffect(() => {
+    fetchStudents(); // Fetch students when the component mounts
   }, []); // Empty dependency array means this runs once on component mount
 
-  const handleDone = () => {
-    // Placeholder for Done button functionality
-    console.log(`Payment confirmed for ${viewPopup.record.first_name} ${viewPopup.record.last_name}`);
-    handleClose(); // Close the popup after clicking Done
+  const handleDone = async () => {
+    const studentId = viewPopup.record.student_id; // Get the student ID from the record
+
+    try {
+      const response = await fetch(`http://localhost:3000/students/${studentId}/payment-status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update payment status');
+      }
+
+      const result = await response.json();
+      setSuccessMessage(result.message); // Set success message
+      handleClose(); // Close the popup after clicking Done
+      
+      // Re-fetch students to reflect changes
+      fetchStudents();
+    } catch (error) {
+      setError(error.message); // Set error message
+      console.error('Error updating payment status:', error);
+    }
   };
 
   return (
     <div className="student-record-list">
       <div className="recordslist-container">
+        {error && <div className="error-message">{error}</div>} {/* Display error message */}
+        {successMessage && <div className="success-message">{successMessage}</div>} {/* Display success message */}
         <table>
           <thead>
             <tr>
@@ -82,7 +110,7 @@ const EnrollmentQueue_List = () => {
           <div className="popup-view-student">
             <div className="popup-header">
               <h3>Confirm Payment</h3>
-              <button onClick={handleClose}>Close</button>
+              <button onClick={ handleClose}>Close</button>
             </div>
             <div className="popup-content">
               <p>Do you want to confirm the payment of {viewPopup.record.first_name} {viewPopup.record.last_name}?</p>

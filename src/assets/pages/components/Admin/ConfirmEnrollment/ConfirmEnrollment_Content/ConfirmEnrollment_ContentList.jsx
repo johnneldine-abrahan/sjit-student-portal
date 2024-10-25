@@ -1,44 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ConfirmEnrollment_Content.css";
 
-const studentRecords = [
-  {
-    student_id: "21-05298",
-    last_name: "Sanchez",
-    first_name: "Kim William",
-    middle_name: "Bacsa",
-    grade_level: "12",
-    payment_status: "Pending",
-  },
-  {
-    student_id: "21-05299",
-    last_name: "Doe",
-    first_name: "John",
-    middle_name: "A.",
-    grade_level: "11",
-    payment_status: "Confirmed",
-  },
-  {
-    student_id: "21-05300",
-    last_name: "Smith",
-    first_name: "Jane",
-    middle_name: "B.",
-    grade_level: "10",
-    payment_status: "Pending",
-  },
-  {
-    student_id: "21-05301",
-    last_name: "Brown",
-    first_name: "Chris",
-    middle_name: "C.",
-    grade_level: "12",
-    payment_status: "Pending",
-  },
-];
-
 const ConfirmEnrollment_ContentList = () => {
-  const [students] = useState(studentRecords); // State to hold student data
+  const [students, setStudents] = useState([]); // State to hold student data
   const [viewPopup, setViewPopup] = useState({ show: false, record: null }); // State for popup
+  const [loading, setLoading] = useState(true); // State for loading
+  const [error, setError] = useState(null); // State for error messages
 
   const handleViewPopup = (record) => {
     setViewPopup({ show: true, record: record }); // Show the popup with selected record
@@ -48,12 +15,60 @@ const ConfirmEnrollment_ContentList = () => {
     setViewPopup({ show: false, record: null }); // Close the popup
   };
 
-  const handleDone = () => {
-    console.log(
-      `Payment confirmed for ${viewPopup.record.first_name} ${viewPopup.record.last_name}`
-    );
-    handleClose();
+  const handleDone = async () => {
+    try {
+      const studentId = viewPopup.record.student_id; // Get the student ID
+      const response = await fetch(`http://localhost:3000/students/${studentId}/enroll`, {
+        method: 'PUT', // HTTP method for updating
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update student status');
+      }
+
+      const data = await response.json();
+      console.log(data.message); // Log success message
+      // Optionally, you can refresh the student list after successful enrollment
+      fetchStudents(); // Refresh the student list
+    } catch (error) {
+      setError(error.message); // Set error message
+      console.error('Error confirming enrollment:', error);
+    } finally {
+      handleClose(); // Close the popup
+    }
   };
+
+  // Fetch student data from the back-end API
+  const fetchStudents = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/students/paid'); // Ensure the API URL is correct
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setStudents(data); // Update state with fetched data
+    } catch (error) {
+      setError(error.message); // Set error message
+      console.error('Error fetching students:', error);
+    } finally {
+      setLoading(false); // Set loading to false after fetching
+    }
+  };
+
+  useEffect(() => {
+    fetchStudents(); // Fetch students when the component mounts
+  }, []); // Empty dependency array means this runs once on component mount
+
+  if (loading) {
+    return <div>Loading...</div>; // Display loading message while fetching
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>; // Display error message if there is an error
+  }
 
   return (
     <div className="student-record-list">
@@ -77,11 +92,17 @@ const ConfirmEnrollment_ContentList = () => {
                 <td>{record.last_name}</td>
                 <td>{record.first_name}</td>
                 <td>{record.middle_name}</td>
-                <td>{record.grade_level}</td>
+                <td>Grade {record.grade_level}</td>
                 <td>{record.payment_status}</td>
                 <td>
                   <button
-                    className="view-details"
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "blue",
+                      cursor: "pointer",
+                      fontSize: "16px",
+                    }}
                     onClick={() => handleViewPopup(record)}
                   >
                     Confirm
@@ -97,7 +118,7 @@ const ConfirmEnrollment_ContentList = () => {
             <div className="popup-view-student">
               <div className="popup-header">
                 <h3>Confirm Payment</h3>
-                <button onClick={handleClose}>Close</button>
+ <button onClick={handleClose}>Close</button>
               </div>
               <div className="popup-content">
                 <p>

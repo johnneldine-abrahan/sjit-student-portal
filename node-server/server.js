@@ -30,7 +30,7 @@ app.post("/login", async (req, res) => {
 
         // Check if the user exists
         if (!user) {
-            console.error("User not found");
+            console.error("User  not found");
             return res.status(401).json("Invalid username or password!");
         }
 
@@ -38,20 +38,25 @@ app.post("/login", async (req, res) => {
         if (user.user_role === 'Student') {
             // Query to join enrollmenttbl, sectiontbl, and studenttbl
             const studentQuery = `
-            SELECT s.last_name, s.first_name, s.middle_name, sec.program, sec.grade_level, sec.school_year, sec.semester, e.enrollment_status
-            FROM enrollmenttbl e
+            SELECT s.last_name, s.first_name, s.middle_name, sec.program, sec.grade_level, sec.school_year, sec.semester, s.student_status
+            FROM studenttbl s
+            INNER JOIN enrollmenttbl e ON s.student_id = e.student_id
             INNER JOIN sectiontbl sec ON e.section_id = sec.section_id
-            INNER JOIN studenttbl s ON e.student_id = s.student_id
             WHERE e.student_id = $1
             ORDER BY sec.school_year DESC, sec.semester DESC
             LIMIT 1
-        `;
+        `;        
 
             const studentResult = await pool.query(studentQuery, [user.user_id]);
             const studentData = studentResult.rows[0];
 
             if (!studentData) {
                 return res.status(404).json("Student data not found!");
+            }
+
+            // Check if the student's enrollment status is 'Enrolled'
+            if (studentData.student_status !== 'Enrolled') {
+                return res.status(403).json("Access denied: Student is not enrolled.");
             }
 
             // Format the full name with middle initial
@@ -68,7 +73,7 @@ app.post("/login", async (req, res) => {
                     gradeLevel: studentData.grade_level,
                     schoolYear: studentData.school_year,
                     semester: studentData.semester,
-                    enrollmentStatus: studentData.enrollment_status
+                    enrollmentStatus: studentData.student_status
                 },
                 SECRET_KEY,
                 { expiresIn: "1h" }
@@ -135,7 +140,6 @@ app.post("/login", async (req, res) => {
     }
 });
 
-// Middleware to protect routes
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -148,6 +152,7 @@ function authenticateToken(req, res, next) {
         next();
     });
 }
+
 
 // Example protected route
 app.get('/profile', authenticateToken, (req, res) => {

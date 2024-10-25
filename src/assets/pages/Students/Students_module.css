@@ -169,6 +169,7 @@ ul.thumbs.animated {
 
 .enrollmentStatus {
   color: #008000;
+  text-transform: uppercase;
 }
 
 .notificationSection {

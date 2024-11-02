@@ -1744,6 +1744,52 @@ app.get('/teacher/students/:section_id/:subject_id', authenticateToken, async (r
     }
 });
 
+// Student ------------------------------------------------------------------------------------------
+
+app.get('/schedule', authenticateToken, async (req, res) => {
+    const userId = req.user.userId; // Ensure this matches your JWT payload
+
+    const query = `
+        SELECT DISTINCT 
+            sub.subject_id,  -- Include subject_id in the selection
+            sub.subject_name,
+            sec.section_name,
+            sch.day,
+            sch.start_time,
+            sch.end_time,
+            sec.faculty_name
+        FROM 
+            accountstbl AS acc
+        JOIN 
+            studenttbl AS stu ON acc.user_id = stu.user_id
+        JOIN 
+            enrollmenttbl AS enroll ON stu.student_id = enroll.student_id
+        JOIN 
+            sectiontbl AS sec ON enroll.section_id = sec.section_id
+        JOIN 
+            subjecttbl AS sub ON sec.subject_id = sub.subject_id
+        JOIN 
+            scheduletbl AS sch ON sec.section_id = sch.section_id
+        WHERE 
+            acc.user_id = $1
+        ORDER BY
+            sch.day, sch.start_time;
+    `;
+
+    try {
+        const { rows } = await pool.query(query, [userId]);
+
+        if (rows.length > 0) {
+            return res.status(200).json(rows);
+        } else {
+            return res.status(404).json({ message: 'No schedule found for this user.' });
+        }
+    } catch (error) {
+        console.error('Database error:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });

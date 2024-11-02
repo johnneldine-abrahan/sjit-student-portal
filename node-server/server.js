@@ -1649,6 +1649,55 @@ app.put('/students/:student_id/enroll', async (req, res) => {
     }
   });
 
+// Faculty ------------------------------------------------------------------------------------------
+
+app.get('/teacher/subjects', authenticateToken, async (req, res) => {
+    const userId = req.user.userId; // Get the user_id from the JWT token
+
+    try {
+        // Step 1: Get the faculty_id based on the user_id
+        const facultyResult = await pool.query(`
+            SELECT faculty_id FROM facultytbl WHERE user_id = $1
+        `, [userId]);
+
+        if (facultyResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Faculty not found for the given user ID.' });
+        }
+
+        const facultyId = facultyResult.rows[0].faculty_id;
+
+        // Step 2: Get the teaching loads for the faculty_id
+        const teachingLoadResult = await pool.query(`
+            SELECT section_id FROM teachingload_tbl WHERE faculty_id = $1
+        `, [facultyId]);
+
+        const sectionIds = teachingLoadResult.rows.map(row => row.section_id);
+
+        if (sectionIds.length === 0) {
+            return res.status(404).json({ message: 'No teaching loads found for this faculty.' });
+        }
+
+        // Step 3: Get the subjects based on the section_ids
+        const subjectsResult = await pool.query(`
+            SELECT 
+                sec.subject_id, 
+                sub.subject_name, 
+                sec.grade_level, 
+                sec.strand, 
+                sec.section_name 
+            FROM sectiontbl sec
+            JOIN subjecttbl sub ON sec.subject_id = sub.subject_id
+            WHERE sec.section_id = ANY($1::text[])
+        `, [sectionIds]);
+
+        // Step 4: Return the subjects
+        res.status(200).json(subjectsResult.rows);
+    } catch (error) {
+        console.error('Error fetching subjects for teacher:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });

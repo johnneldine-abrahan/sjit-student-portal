@@ -1680,6 +1680,7 @@ app.get('/teacher/subjects', authenticateToken, async (req, res) => {
         // Step 3: Get the subjects based on the section_ids
         const subjectsResult = await pool.query(`
             SELECT 
+                sec.section_id,  -- Added section_id to the SELECT statement
                 sec.subject_id, 
                 sub.subject_name, 
                 sec.grade_level, 
@@ -1694,6 +1695,51 @@ app.get('/teacher/subjects', authenticateToken, async (req, res) => {
         res.status(200).json(subjectsResult.rows);
     } catch (error) {
         console.error('Error fetching subjects for teacher:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.get('/teacher/students/:section_id/:subject_id', authenticateToken, async (req, res) => {
+    const userId = req.user.userId; // Get the user_id from the JWT token
+    const { section_id, subject_id } = req.params; // Get section_id and subject_id from the request parameters
+
+    try {
+        // Step 1: Get the faculty_id based on the user_id
+        const facultyResult = await pool.query(`
+            SELECT faculty_id FROM facultytbl WHERE user_id = $1
+        `, [userId]);
+
+        if (facultyResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Faculty not found for the given user ID.' });
+        }
+
+        const facultyId = facultyResult.rows[0].faculty_id;
+
+        // Step 2: Check if the faculty teaches the given section and subject
+        const teachingLoadResult = await pool.query(`
+            SELECT section_id FROM teachingload_tbl 
+            WHERE faculty_id = $1 AND section_id = $2
+        `, [facultyId, section_id]);
+
+        if (teachingLoadResult.rows.length === 0) {
+            return res.status(404).json({ message: 'No teaching load found for this faculty in the specified section.' });
+        }
+
+        // Step 3: Fetch students enrolled in the specified section
+        const studentsResult = await pool.query(`
+            SELECT 
+                s.student_id, 
+                CONCAT(s.last_name, ', ', s.first_name, ' ', s.middle_name) AS full_name
+            FROM studenttbl s
+            JOIN enrollmenttbl e ON s.student_id = e.student_id
+            JOIN sectiontbl sec ON e.section_id = sec.section_id
+            WHERE sec.section_id = $1 AND sec.subject_id = $2
+        `, [section_id, subject_id]);
+
+        // Step 4: Return the students
+        res.status(200).json(studentsResult.rows);
+    } catch (error) {
+        console.error('Error fetching students for section and subject:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 });

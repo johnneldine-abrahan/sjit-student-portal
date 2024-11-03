@@ -253,17 +253,17 @@ ul.thumbs.animated{
 
 .modal {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1001;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  overflow-y: auto;
-  max-height: 100vh;
-  max-width: 100vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1001;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    width: 1000px;
+    max-height: 80vh;
+    overflow: auto;
 }
 
 .modal-logout {
@@ -326,4 +326,61 @@ ul.thumbs.animated{
   display: inline;
   align-items: center;
   justify-content: center;
+}
+
+.popup-content input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0 10px 0;
+  border-radius: 10px;
+  background: #f1f1f1;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+}
+
+.popup-content .first-row,
+.second-row,
+.thrid-row {
+  margin-top: 10px;
+  display: flex;
+  column-gap: 16px;
+}
+
+.popup-content .input-box {
+  width: 100%;
+}
+
+.popup-content .buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.popup-content .btn-box {
+  background-color: #150f57;
+  color: #fff;
+  padding: 10px 25px;
+  font-size: 16px;
+  border-radius: 26px;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+  display: inline;
+  align-items: center;
+  justify-content: center;
+}
+
+.profileHeader {
+  display: flex;
+  justify-content: space-between; /* This will push the icon to the right */
+  align-items: center; /* Center items vertically */
+}
+
+.profileTitle {
+  margin: 0; /* Reset margin for better alignment */
+}
+
+.profile-icon {
+  cursor: pointer; /* Change cursor to pointer for better UX */
+  font-size: 1.5em; /* Adjust size as needed */
 }

@@ -1,24 +1,60 @@
 .student-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  .student-table th,
-  .student-table td {
-    padding: 12px;
-    border: 1px solid #ddd;
-    text-align: left;
-  }
-  
-  .student-table th {
-    background-color: #f4f4f4;
-  }
-  
-  .student-table td {
-    vertical-align: middle;
-  }
-  
-  .view-details-link:hover{
-      cursor: pointer;
-  }
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px; /* Space above the table */
+}
+
+.student-table th,
+.student-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.student-table th {
+  background-color: #f4f4f4;
+}
+
+.student-table td {
+  vertical-align: middle;
+}
+
+.view-details-link:hover {
+  cursor: pointer;
+}
+
+.btn-box {
+  background-color: #150f57;
+  color: #fff;
+  padding: 10px 25px;
+  font-size: 16px;
+  border-radius: 26px;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+  display: inline;
+  align-items: center;
+  justify-content: center;
+}
+
+/* New styles for button alignment and spacing */
+.button-container {
+  display: flex;
+  justify-content: flex-end; /* Aligns the button to the right */
+  margin-top: 20px; /* Space above the button */
+}
+
+.modal {
+  position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1001;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    width: 1000px;
+    max-height: 80vh;
+    overflow: auto;
+}

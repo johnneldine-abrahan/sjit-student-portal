@@ -106,7 +106,9 @@ const StudentList = () => {
         </table>
       )}
       {viewingStudents && (
-        <button onClick={() => setViewingStudents(false)}>Back to Subjects</button>
+        <div className="button-container">
+          <button className="btn-box" onClick={() => setViewingStudents(false)}>Back to Subjects</button>
+        </div>
       )}
     </div>
   );

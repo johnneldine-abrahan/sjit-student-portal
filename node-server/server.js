@@ -1677,15 +1677,17 @@ app.get('/teacher/subjects', authenticateToken, async (req, res) => {
             return res.status(404).json({ message: 'No teaching loads found for this faculty.' });
         }
 
-        // Step 3: Get the subjects based on the section_ids
+        // Step 3: Get the subjects based on the section_ids, including school_year and semester
         const subjectsResult = await pool.query(`
             SELECT 
-                sec.section_id,  -- Added section_id to the SELECT statement
+                sec.section_id,  -- Section ID
                 sec.subject_id, 
                 sub.subject_name, 
                 sec.grade_level, 
                 sec.strand, 
-                sec.section_name 
+                sec.section_name,
+                sec.school_year,   -- Added school_year
+                sec.semester       -- Added semester
             FROM sectiontbl sec
             JOIN subjecttbl sub ON sec.subject_id = sub.subject_id
             WHERE sec.section_id = ANY($1::text[])
@@ -1754,6 +1756,8 @@ app.get('/schedule', authenticateToken, async (req, res) => {
             sub.subject_id,  -- Include subject_id in the selection
             sub.subject_name,
             sec.section_name,
+            sec.school_year,   -- Added school_year
+            sec.semester,      -- Added semester
             sch.day,
             sch.start_time,
             sch.end_time,

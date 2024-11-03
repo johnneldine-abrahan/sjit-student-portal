@@ -1746,6 +1746,63 @@ app.get('/teacher/students/:section_id/:subject_id', authenticateToken, async (r
     }
 });
 
+app.get('/faculty-schedules', authenticateToken, async (req, res) => {
+    const userId = req.user.userId;
+
+    try {
+        // Check if the faculty exists
+        const facultyCheckQuery = 'SELECT faculty_id FROM facultytbl WHERE user_id = $1';
+        const facultyCheckResult = await pool.query(facultyCheckQuery, [userId]);
+
+        if (facultyCheckResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Faculty not found for this user ID.' });
+        }
+
+        const facultyId = facultyCheckResult.rows[0].faculty_id;
+
+        // Fetch schedules
+        const query = `
+            SELECT
+                st.subject_id,
+                st.subject_name,
+                sec.grade_level,
+                sec.strand,
+                sec.section_name,
+                sch.day,
+                sch.start_time,
+                sch.end_time,
+                sch.room
+            FROM
+                accountstbl acc
+            JOIN
+                facultytbl fac ON acc.user_id = fac.user_id
+            JOIN
+                teachingload_tbl tl ON fac.faculty_id = tl.faculty_id
+            JOIN
+                sectiontbl sec ON tl.section_id = sec.section_id
+            JOIN
+                subjecttbl st ON sec.subject_id = st.subject_id
+            JOIN
+                scheduletbl sch ON sec.section_id = sch.section_id
+            WHERE
+                acc.user_id = $1
+            `;
+
+        const result = await pool.query(query, [userId]);
+        console.log('Query result:', result.rows); // Log the result for debugging
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'No schedule found for this faculty member.' });
+        }
+
+        // Return the schedules
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error executing query:', error);
+        return res.status(500).json({ error: 'Database query failed' });
+    }
+});
+
 // Student ------------------------------------------------------------------------------------------
 
 app.get('/schedule', authenticateToken, async (req, res) => {
@@ -1761,6 +1818,7 @@ app.get('/schedule', authenticateToken, async (req, res) => {
             sch.day,
             sch.start_time,
             sch.end_time,
+            sch.room,
             sec.faculty_name
         FROM 
             accountstbl AS acc

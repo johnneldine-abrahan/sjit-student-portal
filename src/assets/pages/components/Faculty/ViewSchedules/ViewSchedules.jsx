@@ -89,11 +89,17 @@ const FacultyScheduleList = ({ facultyRecords }) => {
     return acc;
   }, {});
 
+  // Sort the schedule days to ensure "Monday" comes first
   const groupedArray = Object.values(groupedRecords);
 
   groupedArray.forEach(subjectInfo => {
     subjectInfo.schedule.forEach(schedule => {
       schedule.days.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b));
+    });
+  
+    // Sort the schedule array within each subject by the first day of each schedule
+    subjectInfo.schedule.sort((a, b) => {
+      return dayOrder.indexOf(a.days[0]) - dayOrder.indexOf(b.days[0]);
     });
   });
 

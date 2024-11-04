@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Subjects_and_Schedule.css';
 
 const ScheduleItem = ({ day, time, room, code, description, units, section, instructor }) => {
@@ -16,13 +16,13 @@ const ScheduleList = ({ schedules }) => {
         <ScheduleItem
           key={index}
           day={schedule.day}
-          time={schedule.time}
+          time={`${schedule.start_time} - ${schedule.end_time}`} // Format time correctly
           room={schedule.room}
-          code={schedule.code}
-          description={schedule.description}
-          units={schedule.units}
-          section={schedule.section}
-          instructor={schedule.instructor}
+          code={schedule.subject_id} // Assuming subject_id is used as code
+          description={schedule.subject_name} // Assuming subject_name is used as description
+          units={schedule.units} // You may need to adjust this based on your data
+          section={schedule.section_name} // Adjust as per your data structure
+          instructor={schedule.faculty_name} // Assuming faculty_name is used as instructor
         />
       ))}
     </div>
@@ -31,50 +31,39 @@ const ScheduleList = ({ schedules }) => {
 
 const Subjects_and_Schedule = () => {
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'table'
+  const [schedules, setSchedules] = useState([]); // State to hold fetched schedules
+  const [loading, setLoading] = useState(true); // State to handle loading
 
-  const schedules = [
-    {
-      day: "Monday",
-      time: "08:30 AM-10:00 AM",
-      room: "401",
-      code: "IT 412",
-      description: "Platform Technologies",
-      units: 3,
-      section: "IT-BA-4104 / ALANGILAN",
-      instructor: "LUTERO, LIGAYA F.",
-    },
-    {
-      day: "Monday",
-      time: "01:00 PM-03:00 PM",
-      room: "401",
-      code: "IT 414",
-      description: "Systems Quality Assurance",
-      units: 3,
-      section: "IT-BA-4104 / ALANGILAN",
-      instructor: "LUTERO, LIGAYA F.",
-    },
-    {
-      day: "Tuesday",
-      time: "10:00 AM-01:00 PM",
-      room: "ITL",
-      code: "IT 414",
-      description: "Systems Quality Assurance",
-      units: 3,
-      section: "IT-BA-4104 / ALANGILAN",
-      instructor: "LUTERO, LIGAYA F.",
-    },
-    {
-      day: "Wednesday",
-      time: "02:30 PM-04:00 PM",
-      room: "106",
-      code: "IT 412",
-      description: "Platform Technologies",
-      units: 3,
-      section: "IT-BA-4104 / ALANGILAN",
-      instructor: "LUTERO, LIGAYA F.",
-    },
-    // Add more schedules here
-  ];
+  useEffect(() => {
+    const fetchSchedules = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/schedule', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming you're using token-based auth
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        
+        const data = await response.json();
+        setSchedules(data);
+      } catch (error) {
+        console.error('Error fetching schedules:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSchedules();
+  }, []); // Empty dependency array to run only once on mount
+
+  if (loading) {
+    return <div>Loading...</div>; // Loading state
+  }
 
   return (
     <div className="schedule-view-container">
@@ -93,8 +82,7 @@ const Subjects_and_Schedule = () => {
               <th>Time</th>
               <th>Room</th>
               <th>Code</th>
-              <th>Description</th>
-              <th>Units</th>
+              <th>Subject</th>
               <th>Section</th>
               <th>Instructor</th>
             </tr>
@@ -103,13 +91,12 @@ const Subjects_and_Schedule = () => {
             {schedules.map((schedule, index) => (
               <tr key={index}>
                 <td>{schedule.day}</td>
-                <td>{schedule.time}</td>
+                <td>{`${schedule.start_time} - ${schedule.end_time}`}</td> {/* Format time correctly */}
                 <td>{schedule.room}</td>
-                <td>{schedule.code}</td>
-                <td>{schedule.description}</td>
-                <td>{schedule.units}</td>
-                <td>{schedule.section}</td>
-                <td>{schedule.instructor}</td>
+                <td>{schedule.subject_id}</td>
+                <td>{schedule.subject_name}</td>
+                <td>{schedule.section_name}</td> {/* Adjust based on your data */}
+                <td>{schedule.faculty_name}</td> {/* Adjust based on your data */}
               </tr>
             ))}
           </tbody>

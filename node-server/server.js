@@ -1812,6 +1812,7 @@ app.get('/schedule', authenticateToken, async (req, res) => {
             sec.section_name,
             sec.school_year,   -- Added school_year
             sec.semester,      -- Added semester
+            sec.grade_level,    -- Added grade_level from sectiontbl
             sch.day,
             sch.start_time,
             sch.end_time,

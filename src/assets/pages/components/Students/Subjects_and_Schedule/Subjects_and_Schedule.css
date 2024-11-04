@@ -2,40 +2,52 @@
   padding: 20px;
 }
 
-.view-toggle{
+.view-toggle {
   display: flex;
   margin-bottom: 10px;
 }
 
-.view-toggle .left{
+.view-toggle .left {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
   width: 50%;
+  font-size: large; /* Added font size for consistency */
 }
 
-.view-toggle .right{
+.view-toggle .right {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   width: 50%;
+  font-size: large; /* Added font size for consistency */
 }
 
 .view-toggle button {
-
   padding: 8px 12px;
   cursor: pointer;
-  border: none
+  border: none;
 }
 
 .schedule-list {
   display: flex;
   flex-direction: column;
+  font-size: large; /* Added font size for consistency */
 }
 
 .schedule-item {
-  display: flex;
-  justify-content: space-between;
   padding: 10px;
   border-bottom: 1px solid #ddd;
+}
+
+.schedule-item p {
+  margin: 0; /* Remove default margin to avoid extra spacing */
+}
+
+.subject_student, .faculty_student, .section_student {
+  margin-bottom: 10px; /* Added margin for spacing */
+}
+
+.schedule_faculty {
+  margin-bottom: 5px; /* Added margin for spacing */
 }
 
 .schedule-details {
@@ -43,19 +55,15 @@
   flex-direction: column;
 }
 
-.schedule-time {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 .schedule-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  font-size: medium; /* Adjusted font size for the table */
 }
 
-.schedule-table th, .schedule-table td {
+.schedule-table th,
+.schedule-table td {
   padding: 12px;
   border: 1px solid #ddd;
   text-align: left;

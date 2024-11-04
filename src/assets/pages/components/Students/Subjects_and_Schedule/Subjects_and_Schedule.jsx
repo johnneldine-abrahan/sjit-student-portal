@@ -1,38 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import './Subjects_and_Schedule.css';
 
-const ScheduleItem = ({ day, time, room, code, description, units, section, instructor }) => {
-  return (
-    <div className="schedule-item">
-      <p>{day} - {time} / {room} / {code} / {description} / {instructor}</p>
-    </div>
-  );
+// Function to format time
+const formatTime = (time) => {
+  const [hours, minutes] = time.split(':');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const formattedHours = hours % 12 || 12; // Convert 0 to 12 for midnight
+  return `${formattedHours}:${minutes} ${ampm}`;
 };
 
-const ScheduleList = ({ schedules }) => {
-  return (
-    <div className="schedule-list">
-      {schedules.map((schedule, index) => (
-        <ScheduleItem
-          key={index}
-          day={schedule.day}
-          time={`${schedule.start_time} - ${schedule.end_time}`} // Format time correctly
-          room={schedule.room}
-          code={schedule.subject_id} // Assuming subject_id is used as code
-          description={schedule.subject_name} // Assuming subject_name is used as description
-          units={schedule.units} // You may need to adjust this based on your data
-          section={schedule.section_name} // Adjust as per your data structure
-          instructor={schedule.faculty_name} // Assuming faculty_name is used as instructor
-        />
+// Define the order of days
+const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+const ScheduleItem = ({ subjectInfo }) => (
+  <div className="schedule-item">
+    <div className="subject_student">
+      <p style={{ fontWeight: 'bold', fontSize: '22px' }}>
+        {subjectInfo.subject_id} - {subjectInfo.subject_name}
+      </p>
+    </div>
+    <div className='faculty_student'>
+      <p>{subjectInfo.faculty_name}</p>
+    </div>
+    <div className='section_student'>
+      {subjectInfo.sections.map((section, index) => (
+        <p key={index}>Grade {section.grade_level} - {section.section_name}</p>
       ))}
     </div>
-  );
-};
+    {subjectInfo.schedule.map((schedule, index) => (
+      <div className='schedule_faculty' key={index}>
+        {/* Ensure days are sorted according to dayOrder */}
+        <p style={{ fontWeight: 'bold'}}>
+          {schedule.days.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b)).join(', ')}
+        </p>
+        <p>
+          {formatTime(schedule.start_time)} - {formatTime(schedule.end_time)} / {schedule.room}
+        </p>
+      </div>
+    ))}
+  </div>
+);
+
+const ScheduleList = ({ schedules }) => (
+  <div className="schedule-list">
+    {schedules.map((subjectInfo, index) => (
+      <ScheduleItem key={index} subjectInfo={subjectInfo} />
+    ))}
+  </div>
+);
 
 const Subjects_and_Schedule = () => {
-  const [viewMode, setViewMode] = useState('list'); // 'list' or 'table'
-  const [schedules, setSchedules] = useState([]); // State to hold fetched schedules
-  const [loading, setLoading] = useState(true); // State to handle loading
+  const [viewMode, setViewMode] = useState('list');
+  const [schedules, setSchedules] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchSchedules = async () => {
@@ -41,16 +61,70 @@ const Subjects_and_Schedule = () => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming you're using token-based auth
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         });
-        
+
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-        
+
         const data = await response.json();
-        setSchedules(data);
+
+        // Group records by subject
+        const groupedSchedules = Object.values(data.reduce((acc, record) => {
+          const key = `${record.subject_id}-${record.subject_name}`;
+          
+          if (!acc[key]) {
+            acc[key] = {
+              subject_id: record.subject_id,
+              subject_name: record.subject_name,
+              faculty_name: record.faculty_name,
+              sections: [],
+              schedule: []
+            };
+          }
+
+          // Add section info
+          if (!acc[key].sections.some(section => section.section_name === record.section_name)) {
+            acc[key].sections.push({
+              grade_level: record.grade_level,
+              section_name: record.section_name
+            });
+          }
+
+          // Add schedule info
+          const existingSchedule = acc[key].schedule.find(schedule => 
+            schedule.start_time === record.start_time &&
+            schedule.end_time === record.end_time &&
+            schedule.room === record.room
+          );
+
+          if (existingSchedule) {
+            if (!existingSchedule.days.includes(record.day)) {
+              existingSchedule.days.push(record.day);
+            }
+          } else {
+            acc[key].schedule.push({
+              days: [record.day],
+              start_time: record.start_time,
+              end_time: record.end_time,
+              room: record.room
+            });
+          }
+
+          return acc;
+        }, {}));
+
+        // Sort the schedules based on the day order within each subject's schedule
+        groupedSchedules.forEach(subjectInfo => {
+          subjectInfo.schedule.sort((a, b) => {
+            // Compare the first day in each schedule's days array to determine order
+            return dayOrder.indexOf(a.days[0]) - dayOrder.indexOf(b.days[0]);
+          });
+        });
+
+        setSchedules(groupedSchedules);
       } catch (error) {
         console.error('Error fetching schedules:', error);
       } finally {
@@ -59,10 +133,10 @@ const Subjects_and_Schedule = () => {
     };
 
     fetchSchedules();
-  }, []); // Empty dependency array to run only once on mount
+  }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // Loading state
+    return <div>Loading...</div>;
   }
 
   return (
@@ -88,16 +162,18 @@ const Subjects_and_Schedule = () => {
             </tr>
           </thead>
           <tbody>
-            {schedules.map((schedule, index) => (
-              <tr key={index}>
-                <td>{schedule.day}</td>
-                <td>{`${schedule.start_time} - ${schedule.end_time}`}</td> {/* Format time correctly */}
-                <td>{schedule.room}</td>
-                <td>{schedule.subject_id}</td>
-                <td>{schedule.subject_name}</td>
-                <td>{schedule.section_name}</td> {/* Adjust based on your data */}
-                <td>{schedule.faculty_name}</td> {/* Adjust based on your data */}
-              </tr>
+            {schedules.map((scheduleGroup, index) => (
+              scheduleGroup.schedule.map((schedule, idx) => (
+                <tr key={idx}>
+                  <td>{schedule.days.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b)).join(', ')}</td>
+                  <td>{formatTime(schedule.start_time)} - {formatTime(schedule.end_time)}</td>
+                  <td>{schedule.room}</td>
+                  <td>{scheduleGroup.subject_id}</td>
+                  <td>{scheduleGroup.subject_name}</td>
+                  <td>Grade {scheduleGroup.sections[0].grade_level} - {scheduleGroup.sections[0].section_name}</td>
+                  <td>{scheduleGroup.faculty_name}</td>
+                </tr>
+              ))
             ))}
           </tbody>
         </table>

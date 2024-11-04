@@ -154,6 +154,21 @@ ul.thumbs.animated{
   border-radius: 50%;
   height: 184px;
   width: 184px;
+  overflow: hidden;
+}
+
+.profile-picture {
+  height: 100%;
+  width: 100%;
+  object-fit: cover; /* Ensures the image covers the container while maintaining aspect ratio */
+  border-radius: 50%;
+}
+
+.change-profile .profile-picture {
+  height: 100%;
+  width: 100%;
+  object-fit: cover; /* Ensures the image covers the container while maintaining aspect ratio */
+  border-radius: 50%;
 }
 
 .facultyName,

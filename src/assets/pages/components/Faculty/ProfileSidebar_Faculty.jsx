@@ -2,9 +2,16 @@ import React, { useEffect, useState } from 'react';
 import '../../Faculty/Faculty_module.css'; // Import the CSS file
 import Notifications_Faculty from './Notifications_Faculty';
 import { BiEditAlt } from "react-icons/bi";
+import defaultProfilePic from '../../../img/Profile/default_profile.png'; // Adjust the path as necessary
 
 const ProfileSidebar_Faculty = () => {
-  const [facultyData, setFacultyData] = useState({ fullName: '', role: '', schoolYear: '', semester: '' });
+  const [facultyData, setFacultyData] = useState({ 
+    fullName: '', 
+    role: '', 
+    schoolYear: '', 
+    semester: '', 
+    profile: defaultProfilePic // Set default profile picture
+  });
   const [showPopup, setShowPopup] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -23,6 +30,7 @@ const ProfileSidebar_Faculty = () => {
         role: decodedToken.role,
         schoolYear: decodedToken.schoolYear,
         semester: decodedToken.semester,
+        profile: decodedToken.profile && decodedToken.profile.trim() !== '' ? decodedToken.profile : defaultProfilePic // Use default if profile is null or empty
       });
       setFormData({
         firstName: decodedToken.firstName || '',
@@ -55,7 +63,7 @@ const ProfileSidebar_Faculty = () => {
           <BiEditAlt className='profile-icon' onClick={() => setShowPopup(true)} />
         </div>
         <div className='profileImage'>
-          {/* Profile image can go here */}
+          <img src={facultyData.profile} alt="Profile" className="profile-picture" /> {/* Display profile picture */}
         </div>
         <div className='faculty-details'>
           <h2 className='facultyName'>{facultyData.fullName}</h2>
@@ -79,24 +87,24 @@ const ProfileSidebar_Faculty = () => {
               <form onSubmit={handleEditProfile}>
                 <div className='change-profile'>
                   <div className='profileImage'>
-                    {/* Profile image can go here */}
+                    <img src={facultyData.profile} alt="Profile" className="profile-picture" /> {/* Display profile picture in popup */}
                   </div>
                 </div>
                 <div className="first-row">
                   <div className="input-box">
-                    <label>First Name <input type='text' name='first_name' /></label>
+                    <label>First Name <input type='text' name='first_name' value={formData.firstName} onChange={(e) => setFormData({ ...formData, firstName: e.target.value })} /></label>
                   </div>
                   <div className='input-box'>
-                    <label>Last Name <input type='text' name='last_name' /></label>
+                    <label>Last Name <input type='text' name='last_name' value={formData.lastName} onChange={(e) => setFormData({ ...formData, lastName: e.target.value })} /></label>
                   </div>
                 </div>
 
                 <div className='second-row'>
                   <div className='input-box'>
-                    <label>Username <input type='text' name='username' /></label>
+                    <label>Username <input type='text' name='username ' value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} /></label>
                   </div>
                   <div className='input-box'>
-                    <label>Password <input type='text' name='password' /></label>
+                    <label>Password <input type='text' name='password' value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} /></label>
                   </div>
                 </div>
 

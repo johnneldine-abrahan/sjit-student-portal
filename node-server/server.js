@@ -36,9 +36,8 @@ app.post("/login", async (req, res) => {
 
         // If user is a student, fetch additional data from studenttbl
         if (user.user_role === 'Student') {
-            // Query to join enrollmenttbl, sectiontbl, and studenttbl
             const studentQuery = `
-            SELECT s.last_name, s.first_name, s.middle_name, sec.program, sec.grade_level, sec.school_year, sec.semester, s.student_status
+            SELECT s.last_name, s.first_name, s.middle_name, sec.program, sec.grade_level, sec.school_year, sec.semester, s.student_status, s.profile
             FROM studenttbl s
             INNER JOIN enrollmenttbl e ON s.student_id = e.student_id
             INNER JOIN sectiontbl sec ON e.section_id = sec.section_id
@@ -59,7 +58,6 @@ app.post("/login", async (req, res) => {
                 return res.status(403).json("Access denied: Student is not enrolled.");
             }
 
-            // Format the full name with middle initial
             const middleInitial = studentData.middle_name ? studentData.middle_name.charAt(0) + "." : "";
             const fullName = `${studentData.last_name}, ${studentData.first_name} ${middleInitial}`;
 
@@ -73,7 +71,8 @@ app.post("/login", async (req, res) => {
                     gradeLevel: studentData.grade_level,
                     schoolYear: studentData.school_year,
                     semester: studentData.semester,
-                    enrollmentStatus: studentData.student_status
+                    enrollmentStatus: studentData.student_status,
+                    profile: studentData.profile // Include profile data
                 },
                 SECRET_KEY,
                 { expiresIn: "1h" }
@@ -83,9 +82,8 @@ app.post("/login", async (req, res) => {
         }
 
         if (user.user_role === 'Faculty') {
-            // Query to join facultytbl, teachingload_tbl, and sectiontbl
             const facultyQuery = `
-                SELECT f.last_name, f.first_name, f.middle_name, f.user_role, sec.school_year, sec.semester
+                SELECT f.last_name, f.first_name, f.middle_name, f.user_role, sec.school_year, sec.semester, f.profile
                 FROM facultytbl f
                 INNER JOIN teachingload_tbl t ON f.faculty_id = t.faculty_id
                 INNER JOIN sectiontbl sec ON t.section_id = sec.section_id
@@ -101,7 +99,6 @@ app.post("/login", async (req, res) => {
                 return res.status(404).json("Faculty or schedule data not found!");
             }
 
-            // Format the full name with middle initial
             const middleInitial = facultyData.middle_name ? facultyData.middle_name.charAt(0) + "." : "";
             const fullName = `${facultyData.last_name}, ${facultyData.first_name} ${middleInitial}`;
 
@@ -112,7 +109,8 @@ app.post("/login", async (req, res) => {
                     role: facultyData.user_role,
                     fullName,
                     schoolYear: facultyData.school_year,
-                    semester: facultyData.semester
+                    semester: facultyData.semester,
+                    profile: facultyData.profile // Include profile data
                 },
                 SECRET_KEY,
                 { expiresIn: "1h" }
@@ -121,7 +119,72 @@ app.post("/login", async (req, res) => {
             return res.json({ message: "Login successful!", token, userRole: user.user_role });
         }
 
-        // Create JWT token for other roles (Admin, Finance, etc.)
+        // Handle other roles (Admin, Finance, Registrar, etc.)
+        if (user.user_role === 'Registrar') {
+            const registrarQuery = `
+                SELECT r.last_name, r.first_name, r.middle_name, r.user_role, r.profile
+                FROM registrartbl r
+                WHERE r.registrar_id = $1
+            `;
+
+            const registrarResult = await pool.query(registrarQuery, [user.user_id]);
+            const registrarData = registrarResult.rows[0];
+
+            if (!registrarData) {
+                return res.status(404).json("Registrar data not found!");
+            }
+
+            const middleInitial = registrarData.middle_name ? registrarData.middle_name.charAt(0) + "." : "";
+            const fullName = `${registrarData.last_name}, ${registrarData.first_name} ${middleInitial}`;
+
+            // Create JWT token with registrar data
+            const token = jwt.sign(
+                {
+                    userId: user.user_id,
+                    role: registrarData.user_role,
+                    fullName,
+                    profile: registrarData.profile // Include profile data
+                },
+                SECRET_KEY,
+                { expiresIn: "1h" }
+            );
+
+            return res.json({ message: "Login successful!", token, userRole: user.user_role });
+        }
+
+        if (user.user_role === 'Finance') {
+            const financeQuery = `
+                SELECT f.last_name, f.first_name, f.middle_name, f.user_role, f.profile
+                FROM financetbl f
+                WHERE f.finance_id = $1
+            `;
+
+            const financeResult = await pool.query(financeQuery, [user.user_id]);
+            const financeData = financeResult.rows[0];
+
+            if (!financeData) {
+                return res.status(404).json("Finance data not found!");
+            }
+
+            const middleInitial = financeData.middle_name ? financeData.middle_name.charAt(0) + "." : "";
+            const fullName = `${financeData.last_name}, ${financeData.first_name} ${middleInitial}`;
+
+            // Create JWT token with finance data
+            const token = jwt.sign(
+                {
+                    userId: user.user_id,
+                    role: financeData.user_role,
+                    fullName,
+                    profile: financeData.profile // Include profile data
+                },
+                SECRET_KEY,
+                { expiresIn: "1h" }
+            );
+
+            return res.json({ message: "Login successful!", token, userRole: user.user_role });
+        }
+
+        // Create JWT token for other roles (Admin, etc.)
         const token = jwt.sign(
             {
                 userId: user.user_id,
@@ -152,7 +215,6 @@ function authenticateToken(req, res, next) {
         next();
     });
 }
-
 
 // Example protected route
 app.get('/profile', authenticateToken, (req, res) => {

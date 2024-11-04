@@ -1,28 +1,56 @@
 .student-table {
-  width: 100%;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 20px;
   border-collapse: collapse;
-  margin-top: 20px; /* Space above the table */
+  border-spacing: 0;
+  max-width: 1200px; /* Set to your desired max width */
+  width: 100%; /* Optional: Allows it to take full width up to max-width */
 }
 
-.student-table th,
-.student-table td {
-  padding: 12px;
-  border: 1px solid #ddd;
+.student-table td,
+.student-table th {
+  border-bottom: 1px solid #000000; /* Only keep the bottom border */
+  padding: 10px;
   text-align: left;
 }
 
-.student-table th {
-  background-color: #f4f4f4;
+/* Disable hover effect for the header (thead tr) */
+.student-table thead tr:hover {
+  background-color: unset; /* Prevent hover color change */
+  cursor: default; /* Disable pointer cursor */
 }
 
-.student-table td {
-  vertical-align: middle;
+/* Allow interaction with the checkbox in the header */
+.student-table th input[type="checkbox"] {
+  pointer-events: auto;
+  z-index: 1;
 }
 
-.view-details-link:hover {
+.student-table th input[type="checkbox"]:hover {
+  background-color: unset;
   cursor: pointer;
 }
 
+/* Row hover effect for tbody */
+.student-table tbody tr:hover {
+  background-color: #7b8bbc; /* Your desired hover color */
+  cursor: pointer;
+}
+
+/* Remove borders on hover to prevent vertical lines */
+.student-table tbody tr:hover td {
+  background-color: #7b8bbc; /* Your desired hover color */
+  border-left: none; /* Ensure no left border on hover */
+  border-right: none; /* Ensure no right border on hover */
+}
+
+/* Checked row effect */
+.student-table tr.checked {
+  background-color: #7b8bbc; /* Your desired checked color */
+}
+
+/* Button styles */
 .btn-box {
   background-color: #150f57;
   color: #fff;
@@ -44,17 +72,18 @@
   margin-top: 20px; /* Space above the button */
 }
 
+/* Modal styles */
 .modal {
   position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1001;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    width: 1000px;
-    max-height: 80vh;
-    overflow: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  width: 1000px;
+  max-height: 80vh; /* Set the maximum height */
+  overflow: auto; /* Add scroll when the form is too long */
 }

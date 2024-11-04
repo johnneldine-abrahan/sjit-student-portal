@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ViewSchedules.css';
 
 const FacultyScheduleItem = ({ day, time, subject, section, room }) => {
@@ -12,14 +12,14 @@ const FacultyScheduleItem = ({ day, time, subject, section, room }) => {
 const FacultyScheduleList = ({ facultyRecords }) => {
   return (
     <div className="faculty-schedule-list">
-      {facultyRecords.map((records, index) => (
+      {facultyRecords.map((record, index) => (
         <FacultyScheduleItem
           key={index}
-          day={records.day}
-          time={records.time}
-          subject={records.subject}
-          section={records.section}
-          room={records.room}
+          day={record.day}
+          time={`${record.start_time} - ${record.end_time}`} // Format time correctly
+          subject={record.subject_name}
+          section={`Grade ${record.grade_level} - ${record.section_name} ${record.strand}`} // Combine section details
+          room={record.room}
         />
       ))}
     </div>
@@ -28,32 +28,39 @@ const FacultyScheduleList = ({ facultyRecords }) => {
 
 const FacultySchedule = () => {
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'table'
+  const [facultyRecords, setFacultyRecords] = useState([]); // State to hold fetched schedules
+  const [loading, setLoading] = useState(true); // State to handle loading
 
-  const facultyRecords = [
-    {
-      day: "Monday",
-      time: "LUTERO",
-      subject: "LIGAYA F.",
-      section: "F",
-      room: "Ph.D.",
-    },
-    {
-      day: "Monday",
-      time: "LUTERO",
-      subject: "LIGAYA F.",
-      section: "F",
-      room: "Ph.D.",
-    },
-    {
-      day: "Monday",
-      time: "LUTERO",
-      subject: "LIGAYA F.",
-      section: "D",
-      room: "Ph.D.",
-    },
+  useEffect(() => {
+    const fetchSchedules = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/faculty-schedules', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming you're using token-based auth
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        
+        const data = await response.json();
+        setFacultyRecords(data);
+      } catch (error) {
+        console.error('Error fetching schedules:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    // Add more faculty records here
-  ];
+    fetchSchedules();
+  }, []); // Empty dependency array to run only once on mount
+
+  if (loading) {
+    return <div>Loading...</div>; // Loading state
+  }
 
   return (
     <div className="faculty-schedule-view-container">
@@ -76,13 +83,13 @@ const FacultySchedule = () => {
             </tr>
           </thead>
           <tbody>
-            {facultyRecords.map((records, index) => (
+            {facultyRecords.map((record, index) => (
               <tr key={index}>
-                <td>{records.day}</td>
-                <td>{records.time}</td>
-                <td>{records.subject}</td>
-                <td>{records.section}</td>
-                <td>{records.room}</td>
+                <td>{record.day}</td>
+                <td>{`${record.start_time} - ${record.end_time}`}</td> {/* Format time correctly */}
+                <td>{record.subject_name}</td>
+                <td>Grade {`${record.grade_level} - ${record.section_name} ${record.strand}`}</td> {/* Combine section details */}
+                <td>{record.room}</td>
               </tr>
             ))}
           </tbody>

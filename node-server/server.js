@@ -38,7 +38,7 @@ app.post("/login", async (req, res) => {
         if (user.user_role === 'Student') {
             // Query to join enrollmenttbl, sectiontbl, and studenttbl
             const studentQuery = `
-            SELECT s.last_name, s.first_name, s.middle_name, s.profile, sec.program, sec.grade_level, sec.school_year, sec.semester, e.enrollment_status
+            SELECT s.last_name, s.first_name, s.middle_name, s.profile, sec.program, sec.grade_level, sec.school_year, sec.semester, s.student_status
             FROM enrollmenttbl e
             INNER JOIN sectiontbl sec ON e.section_id = sec.section_id
             INNER JOIN studenttbl s ON e.student_id = s.student_id
@@ -68,7 +68,7 @@ app.post("/login", async (req, res) => {
                     gradeLevel: studentData.grade_level,
                     schoolYear: studentData.school_year,
                     semester: studentData.semester,
-                    enrollmentStatus: studentData.enrollment_status,
+                    enrollmentStatus: studentData.student_status,
                     profile: studentData.profile
                 },
                 SECRET_KEY,

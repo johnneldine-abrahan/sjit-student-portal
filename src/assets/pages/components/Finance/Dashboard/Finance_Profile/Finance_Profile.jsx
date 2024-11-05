@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Finance_Profile.css";
 import Finance_ProfileHeader from "./Finance_ProfileHeader";
-import Profile from "../../../../../img/Profile/ProfileSample.jpg";
+import defaultProfilePic from '../../../../../img/Profile/default_profile.png'; // Adjust the path as necessary
 
 const Finance_Profile = () => {
   const [dateTime, setDateTime] = useState(new Date());
@@ -15,7 +15,7 @@ const Finance_Profile = () => {
     return () => clearInterval(interval); // Cleanup interval on component unmount
   }, []);
 
-  const [userData, setUserData] = useState({ firstName: '', lastName: '', role: '' });
+  const [userData, setUserData] = useState({ firstName: '', lastName: '', role: '', profile: '' }); // Fixed the state setter name
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -23,10 +23,11 @@ const Finance_Profile = () => {
     if (token) {
       // Decode JWT token to extract user info
       const decodedToken = JSON.parse(atob(token.split('.')[1]));
-      setUserData({
+      setUserData({ // Fixed the state setter name here as well
         firstName: decodedToken.firstName,
         lastName: decodedToken.lastName,
-        role: decodedToken.role
+        role: decodedToken.role,
+        profile: decodedToken.profile || defaultProfilePic // Use default if profile is not available
       });
     }
   }, []);
@@ -51,7 +52,7 @@ const Finance_Profile = () => {
 
       <div className="user-profile">
         <div className="user-details">
-          <img src={Profile} alt="" />
+          <img src={userData.profile} alt="Profile" /> {/* Use profile picture from userData */}
           <h3 className="admin-fullname">{userData.firstName} {userData.lastName}</h3>
           <span className="position">{userData.role}</span>
         </div>

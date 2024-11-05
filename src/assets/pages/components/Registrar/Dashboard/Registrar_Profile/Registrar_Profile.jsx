@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Registrar_Profile.css";
 import Registrar_ProfileHeader from "./Registrar_ProfileHeader";
-import Profile from "../../../../../img/Profile/ProfileSample.jpg";
+import defaultProfilePic from "../../../../../img/Profile/default_profile.png"; // Adjust the path as necessary
 
 const Registrar_Profile = () => {
   const [dateTime, setDateTime] = useState(new Date());
@@ -15,7 +15,7 @@ const Registrar_Profile = () => {
     return () => clearInterval(interval); // Cleanup interval on component unmount
   }, []);
 
-  const [userData, setUserData] = useState({ firstName: '', lastName: '', role: '' });
+  const [userData, setUserData] = useState({ firstName: '', lastName: '', role: '', profile: '' });
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -26,7 +26,8 @@ const Registrar_Profile = () => {
       setUserData({
         firstName: decodedToken.firstName,
         lastName: decodedToken.lastName,
-        role: decodedToken.role
+        role: decodedToken.role,
+        profile: decodedToken.profile || defaultProfilePic // Use default if profile is not available
       });
     }
   }, []);
@@ -51,7 +52,7 @@ const Registrar_Profile = () => {
 
       <div className="user-profile">
         <div className="user-details">
-          <img src={Profile} alt="" />
+          <img src={userData.profile} alt="Profile" /> {/* Use profile picture from userData */}
           <h3 className="Registrar-fullname">{userData.firstName} {userData.lastName}</h3>
           <span className="position">{userData.role}</span>
         </div>

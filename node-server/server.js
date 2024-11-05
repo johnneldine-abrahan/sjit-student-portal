@@ -290,14 +290,14 @@ app.get('/getStudentData/:studentId', async (req, res) => {
     const { studentId } = req.params;
 
     try {
-        // Query student data from studenttbl
+        // Query student data
         const studentData = await pool.query(`
             SELECT student_id,
                    first_name,
                    middle_name,
                    last_name,
                    lrn,
-                   TO_CHAR(birth_date, 'YYYY-MM-DD') AS birth_date, -- Convert to string
+                   TO_CHAR(birth_date, 'YYYY-MM-DD') AS birth_date,
                    sex,
                    place_of_birth,
                    nationality,
@@ -316,12 +316,16 @@ app.get('/getStudentData/:studentId', async (req, res) => {
             WHERE student_id = $1
         `, [studentId]);
 
-        // Query account data from accountstbl
+        // Check if student data exists
+        if (!studentData.rows.length) {
+            return res.status(404).json({ error: "Student data not found" });
+        }
+
+        // Query other related data
         const accountData = await pool.query(`
             SELECT first_name, middle_name, last_name FROM accountstbl WHERE user_id = $1
         `, [studentId]);
 
-        // Query school history data from school_historytbl
         const schoolHistoryData = await pool.query(`
             SELECT school_name,
                    years_attended,
@@ -331,7 +335,6 @@ app.get('/getStudentData/:studentId', async (req, res) => {
             WHERE student_id = $1
         `, [studentId]);
 
-        // Query address data from addresstbl
         const addressData = await pool.query(`
             SELECT address,
                    city_municipality,
@@ -342,7 +345,6 @@ app.get('/getStudentData/:studentId', async (req, res) => {
             WHERE student_id = $1
         `, [studentId]);
 
-        // Query contact data from contacttbl
         const contactData = await pool.query(`
             SELECT name_father,
                    occupation_father,
@@ -354,7 +356,6 @@ app.get('/getStudentData/:studentId', async (req, res) => {
             WHERE student_id = $1
         `, [studentId]);
 
-        // Query emergency contact data from emergency_contacttbl
         const emergencyContactData = await pool.query(`
             SELECT guardian_name,
                    relationship,
@@ -364,31 +365,24 @@ app.get('/getStudentData/:studentId', async (req, res) => {
             WHERE student_id = $1
         `, [studentId]);
 
-        // Check if all required data exists, if not, return a 404 error
-        if (!studentData.rows.length || !accountData.rows.length ||
-            !schoolHistoryData.rows.length || !addressData.rows.length ||
-            !contactData.rows.length || !emergencyContactData.rows.length) {
-            return res.status(404).json({ error: "Student data not found" });
-        }
-
-        // Combine the data from different tables into a single response object
+        // Combine the data into a single response object
         const combinedData = {
             studentData: studentData.rows[0],
-            accountData: accountData.rows[0],
-            schoolHistoryData: schoolHistoryData.rows[0],
-            addressData: addressData.rows[0],
-            contactData: contactData.rows[0],
-            emergencyContactData: emergencyContactData.rows[0],
+            accountData: accountData.rows[0] || null, // Optional
+            schoolHistoryData: schoolHistoryData.rows[0] || null, // Optional
+            addressData: addressData.rows[0] || null, // Optional
+            contactData: contactData.rows[0] || null, // Optional
+            emergencyContactData: emergencyContactData.rows[0] || null, // Optional
         };
 
         // Send the combined data as the response
         res.json(combinedData);
     } catch (error) {
-        // Log the error and return a 500 status code for server errors
         console.error('Error fetching student data:', error);
         res.status(500).send('Error fetching student data');
     }
 });
+
 
 app.put('/updateStudentData/:studentId', async (req, res) => {
     const { studentId } = req.params;
@@ -1070,7 +1064,7 @@ app.get('/getFaculty', async (req, res) => {
 
 app.post("/addSection", async (req, res) => {
     const client = await pool.connect();
-  
+
     try {
       const {
         subject_id,
@@ -1085,13 +1079,13 @@ app.post("/addSection", async (req, res) => {
         faculty_id,
         slot,
       } = req.body;
-  
+
       // Generate section_id
       const section_id = `${section_name}_${subject_id}_${school_year}_${semester}`;
-  
+
       // Set section_status to 'Active'
       const section_status = "Active";
-  
+
       // Insert into sectiontbl
       const insertSectionQuery = `
               INSERT INTO sectiontbl (section_id, subject_id, grade_level, strand, section_name, semester, school_year, program, faculty_name, slot, section_status)
@@ -1110,16 +1104,16 @@ app.post("/addSection", async (req, res) => {
         slot,
         section_status,
       ];
-  
+
       await client.query("BEGIN");
       const sectionResult = await client.query(insertSectionQuery, sectionValues);
-  
+
       // Insert into scheduletbl (can have multiple schedules)
       const insertScheduleQuery = `
               INSERT INTO scheduletbl (schedule_id, section_id, day, start_time, end_time, room)
               VALUES ($1, $2, $3, $4, $5, $6);
           `;
-  
+
       for (const schedule of schedules) {
         // Generate schedule_id as section_name + random 5 digit number
         const schedule_id = `${section_name}_${Math.floor(
@@ -1135,18 +1129,18 @@ app.post("/addSection", async (req, res) => {
         ];
         await client.query(insertScheduleQuery, scheduleValues);
       }
-  
+
       // Insert into teachingload_tbl
       const insertTeachingLoadQuery = `
               INSERT INTO teachingload_tbl (teachingload_id, faculty_id, section_id)
               VALUES ($1, $2, $3);
           `;
-  
+
       // Generate teachingload_id as a random 5 digit number
       const teachingload_id = `TL_${Math.floor(10000 + Math.random() * 90000)}`;
       const teachingLoadValues = [teachingload_id, faculty_id, section_id];
       await client.query(insertTeachingLoadQuery, teachingLoadValues);
-  
+
       // Commit the transaction
       await client.query("COMMIT");
       res.status(201).json({
@@ -1160,7 +1154,7 @@ app.post("/addSection", async (req, res) => {
       client.release();
     }
   });
-  
+
   app.get("/getSections", async (req, res) => {
     try {
       const query = `
@@ -1185,45 +1179,45 @@ app.post("/addSection", async (req, res) => {
       res.status(500).send("Internal Server Error");
     }
   });
-  
+
   app.delete("/deleteSections", async (req, res) => {
     const { selectedSections } = req.body; // selectedSections is expected to be an array of section IDs
-  
+
     if (!selectedSections || selectedSections.length === 0) {
       return res
         .status(400)
         .json({ message: "No sections selected for deletion" });
     }
-  
+
     const client = await pool.connect(); // Connect to the database
-  
+
     try {
       await client.query("BEGIN"); // Begin transaction
-  
+
       // Convert each section ID to a string to match the database type
       const sectionIds = selectedSections.map((id) => String(id));
-  
+
       // Delete associated schedules from scheduletbl
       const deleteScheduleQuery = `
           DELETE FROM scheduletbl
           WHERE section_id = ANY($1::text[]);
         `;
       await client.query(deleteScheduleQuery, [sectionIds]);
-  
+
       // Delete associated teaching loads from teachingload_tbl
       const deleteTeachingLoadQuery = `
           DELETE FROM teachingload_tbl
           WHERE section_id = ANY($1::text[]);
         `;
       await client.query(deleteTeachingLoadQuery, [sectionIds]);
-  
+
       // Delete sections from sectiontbl
       const deleteSectionsQuery = `
           DELETE FROM sectiontbl
           WHERE section_id = ANY($1::text[]);
         `;
       await client.query(deleteSectionsQuery, [sectionIds]);
-  
+
       await client.query("COMMIT"); // Commit transaction
       res.status(200).json({
         message: "Sections and their related data deleted successfully",
@@ -1241,21 +1235,21 @@ app.post("/addSection", async (req, res) => {
   // archive sections
   app.post("/archiveSections", async (req, res) => {
     const { selectedSections } = req.body; // selectedSections is expected to be an array of section IDs
-  
+
     if (!selectedSections || selectedSections.length === 0) {
       return res
         .status(400)
         .json({ message: "No sections selected for archiving" });
     }
-  
+
     const client = await pool.connect(); // Connect to the database
-  
+
     try {
       await client.query("BEGIN"); // Begin transaction
-  
+
       // Convert each section ID to a string to match the database type
       const sectionIds = selectedSections.map((id) => String(id));
-  
+
       // Update section status in sectiontbl
       const archiveSectionsQuery = `
         UPDATE sectiontbl
@@ -1263,7 +1257,7 @@ app.post("/addSection", async (req, res) => {
         WHERE section_id = ANY($1::text[]);
       `;
       await client.query(archiveSectionsQuery, [sectionIds]);
-  
+
       await client.query("COMMIT"); // Commit transaction
       res.status(200).json({ message: "Sections archived successfully" });
     } catch (error) {
@@ -1522,11 +1516,11 @@ app.post('/enroll', async (req, res) => {
 app.get('/students/pending', async (req, res) => {
     try {
       const query = `
-        SELECT DISTINCT 
-          s.student_id, 
-          s.last_name, 
-          s.first_name, 
-          s.middle_name, 
+        SELECT DISTINCT
+          s.student_id,
+          s.last_name,
+          s.first_name,
+          s.middle_name,
           s.grade_level,
           'Pending' AS payment_status
         FROM enrollmenttbl e
@@ -1534,9 +1528,9 @@ app.get('/students/pending', async (req, res) => {
         WHERE e.payment_status = $1
       `;
       const values = ['Pending'];
-  
+
       const result = await pool.query(query, values);
-      
+
       // Send the merged student details and payment statuses as a response
       res.status(200).json(result.rows);
     } catch (error) {
@@ -1551,8 +1545,8 @@ app.put('/students/:student_id/payment-status', async (req, res) => {
 
     try {
         const query = `
-            UPDATE enrollmenttbl 
-            SET payment_status = $1 
+            UPDATE enrollmenttbl
+            SET payment_status = $1
             WHERE student_id = $2 AND payment_status = 'Pending'
         `;
         const values = [newStatus, student_id];
@@ -1576,11 +1570,11 @@ app.put('/students/:student_id/payment-status', async (req, res) => {
   app.get('/students/paid', async (req, res) => {
     try {
         const query = `
-            SELECT DISTINCT 
-                s.student_id, 
-                s.last_name, 
-                s.first_name, 
-                s.middle_name, 
+            SELECT DISTINCT
+                s.student_id,
+                s.last_name,
+                s.first_name,
+                s.middle_name,
                 s.grade_level,
                 'Paid' AS payment_status
             FROM enrollmenttbl e
@@ -1591,7 +1585,7 @@ app.put('/students/:student_id/payment-status', async (req, res) => {
         const values = ['Paid', 'Not Enrolled'];
 
         const result = await pool.query(query, values);
-        
+
         // Send the merged student details and payment statuses as a response
         res.status(200).json(result.rows);
     } catch (error) {
@@ -1606,8 +1600,8 @@ app.put('/students/:student_id/enroll', async (req, res) => {
 
     try {
         const query = `
-            UPDATE studenttbl 
-            SET student_status = $1 
+            UPDATE studenttbl
+            SET student_status = $1
             WHERE student_id = $2 AND student_status = 'Not Enrolled'
         `;
         const values = [newStatus, student_id];
@@ -1676,12 +1670,12 @@ app.get('/teacher/subjects', authenticateToken, async (req, res) => {
 
         // Step 3: Get the subjects based on the section_ids, including school_year and semester
         const subjectsResult = await pool.query(`
-            SELECT 
+            SELECT
                 sec.section_id,  -- Section ID
-                sec.subject_id, 
-                sub.subject_name, 
-                sec.grade_level, 
-                sec.strand, 
+                sec.subject_id,
+                sub.subject_name,
+                sec.grade_level,
+                sec.strand,
                 sec.section_name,
                 sec.school_year,   -- Added school_year
                 sec.semester       -- Added semester
@@ -1716,7 +1710,7 @@ app.get('/teacher/students/:section_id/:subject_id', authenticateToken, async (r
 
         // Step 2: Check if the faculty teaches the given section and subject
         const teachingLoadResult = await pool.query(`
-            SELECT section_id FROM teachingload_tbl 
+            SELECT section_id FROM teachingload_tbl
             WHERE faculty_id = $1 AND section_id = $2
         `, [facultyId, section_id]);
 
@@ -1726,8 +1720,8 @@ app.get('/teacher/students/:section_id/:subject_id', authenticateToken, async (r
 
         // Step 3: Fetch students enrolled in the specified section
         const studentsResult = await pool.query(`
-            SELECT 
-                s.student_id, 
+            SELECT
+                s.student_id,
                 CONCAT(s.last_name, ', ', s.first_name, ' ', s.middle_name) AS full_name
             FROM studenttbl s
             JOIN enrollmenttbl e ON s.student_id = e.student_id
@@ -1806,7 +1800,7 @@ app.get('/schedule', authenticateToken, async (req, res) => {
     const userId = req.user.userId; // Ensure this matches your JWT payload
 
     const query = `
-        SELECT DISTINCT 
+        SELECT DISTINCT
             sub.subject_id,  -- Include subject_id in the selection
             sub.subject_name,
             sec.section_name,
@@ -1818,19 +1812,19 @@ app.get('/schedule', authenticateToken, async (req, res) => {
             sch.end_time,
             sch.room,
             sec.faculty_name
-        FROM 
+        FROM
             accountstbl AS acc
-        JOIN 
+        JOIN
             studenttbl AS stu ON acc.user_id = stu.user_id
-        JOIN 
+        JOIN
             enrollmenttbl AS enroll ON stu.student_id = enroll.student_id
-        JOIN 
+        JOIN
             sectiontbl AS sec ON enroll.section_id = sec.section_id
-        JOIN 
+        JOIN
             subjecttbl AS sub ON sec.subject_id = sub.subject_id
-        JOIN 
+        JOIN
             scheduletbl AS sch ON sec.section_id = sch.section_id
-        WHERE 
+        WHERE
             acc.user_id = $1
         ORDER BY
             sch.day, sch.start_time;

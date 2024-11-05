@@ -184,12 +184,11 @@ const Subjects_and_Schedule = () => {
                 <td>
                   {scheduleGroup.schedule.map((schedule, idx) => (
                     <div className="schedule_student" key={idx}>
-                      <strong>
-                        {schedule.days
+                      {schedule.days
                           .sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b))
                           .map(day => dayAbbreviations[day]) // Convert to abbreviations
                           .join(', ')}
-                      </strong> - {formatTime(schedule.start_time)} - {formatTime(schedule.end_time)} / {schedule.room}
+                      - {formatTime(schedule.start_time)} - {formatTime(schedule.end_time)} / {schedule.room}
                     </div>
                   ))}
                 </td>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Admin_Profile.css";
 import Admin_ProfileHeader from "./Admin_ProfileHeader";
-import Profile from "../../../../../img/Profile/ProfileSample.jpg";
+import defaultProfilePic from '../../../../../img/Profile/default_profile.png';
 
 const Admin_Profile = () => {
   const [dateTime, setDateTime] = useState(new Date());
@@ -12,21 +12,20 @@ const Admin_Profile = () => {
       setDateTime(new Date());
     }, 1000);
 
-    return () => clearInterval(interval); // Cleanup interval on component unmount
+    return () => clearInterval(interval);
   }, []);
   
-  const [userData, setUserData] = useState({ firstName: '', lastName: '', role: '' });
+  const [userData, setUserData] = useState({ firstName: '', lastName: '', role: '', profile: '' });
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-
     if (token) {
-      // Decode JWT token to extract user info
       const decodedToken = JSON.parse(atob(token.split('.')[1]));
       setUserData({
         firstName: decodedToken.firstName,
         lastName: decodedToken.lastName,
-        role: decodedToken.role
+        role: decodedToken.role,
+        profile: decodedToken.profile || defaultProfilePic // Default if profile is missing
       });
     }
   }, []);
@@ -51,7 +50,7 @@ const Admin_Profile = () => {
 
       <div className="user-profile">
         <div className="user-details">
-          <img src={Profile} alt="" />
+          <img src={userData.profile || defaultProfilePic} alt="User Profile" />
           <h3 className="admin-fullname">{userData.firstName} {userData.lastName}</h3>
           <span className="position">{userData.role}</span>
         </div>

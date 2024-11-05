@@ -87,3 +87,19 @@
   max-height: 80vh; /* Set the maximum height */
   overflow: auto; /* Add scroll when the form is too long */
 }
+
+.header-container-list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.header-title-list {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.back-button {
+  margin-right: auto; /* Push the button to the left */
+}

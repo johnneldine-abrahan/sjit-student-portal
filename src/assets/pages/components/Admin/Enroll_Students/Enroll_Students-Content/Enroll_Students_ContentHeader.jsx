@@ -178,7 +178,7 @@ const Enroll_Students_ContentHeader = (props) => {
                     />
                     Junior Highschool
                   </label>
- <label>
+                <label>
                     <input
                       type="checkbox"
                       name="program"

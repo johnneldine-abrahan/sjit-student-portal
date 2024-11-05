@@ -8,6 +8,9 @@ const StudentList = () => {
   const [loading, setLoading] = useState(true); // State to manage loading state
   const [error, setError] = useState(null); // State to manage error messages
   const [viewingStudents, setViewingStudents] = useState(false); // State to manage viewing students
+  const [currentGradeLevel, setCurrentGradeLevel] = useState(''); // State to hold the current grade level
+  const [currentSectionName, setCurrentSectionName] = useState(''); // State to hold the current section name
+  const [currentSubjectName, setCurrentSubjectName] = useState(''); // State to hold the current subject name
 
   useEffect(() => {
     const fetchSubjects = async () => {
@@ -39,6 +42,9 @@ const StudentList = () => {
         }
       });
       setStudents(response.data); // Update state with fetched students
+      setCurrentGradeLevel(`Grade ${subject.grade_level}`); // Set current grade level
+      setCurrentSectionName(subject.section_name); // Set current section name
+      setCurrentSubjectName(subject.subject_name); // Set current subject name
       setViewingStudents(true); // Set viewingStudents to true to show students table
     } catch (err) {
       console.error('Error fetching students:', err);
@@ -61,22 +67,28 @@ const StudentList = () => {
   return (
     <div>
       {viewingStudents ? (
-        <table className="student-table">
-          <thead>
-            <tr>
-              <th>Student ID</th>
-              <th>Student Name</th>
-            </tr>
-          </thead>
-          <tbody>
-            {students.map((student) => (
-              <tr key={student.student_id}>
-                <td>{student.student_id}</td>
-                <td>{student.full_name}</td>
+        <div>
+          <div className="header-container-list">
+            <button className="back-button" onClick={() => setViewingStudents(false)}>Back to Subjects</button>
+            <h2 className="header-title-list">{`${currentGradeLevel} - ${currentSectionName} / ${currentSubjectName}`}</h2>
+          </div>
+          <table className="student-table">
+            <thead>
+              <tr>
+                <th>Student ID</th>
+                <th>Student Name</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {students.map((student) => (
+                <tr key={student.student_id}>
+                  <td>{student.student_id}</td>
+                  <td>{student.full_name}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <table className="student-table">
           <thead>
@@ -104,11 +116,6 @@ const StudentList = () => {
             ))}
           </tbody>
         </table>
-      )}
-      {viewingStudents && (
-        <div className="button-container">
-          <button className="btn-box" onClick={() => setViewingStudents(false)}>Back to Subjects</button>
-        </div>
       )}
     </div>
   );

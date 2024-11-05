@@ -1277,37 +1277,40 @@ app.get('/students/not-enrolled', async (req, res) => {
     const { grade_level, strand } = req.query;  // Get grade_level and strand from query params
 
     try {
-      // Build the query to fetch full name (last_name, first_name, middle_name) of students
-      // where student_status is 'Not Enrolled' and grade_level and strand match the provided values
-      let query = `
-        SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) AS full_name
-        FROM studenttbl
-        WHERE student_status = 'Not Enrolled'
-      `;
+        // Build the query to fetch full name (last_name, first_name, middle_name) of students
+        // where student_status is 'Not Enrolled' and grade_level and strand match the provided values
+        let query = `
+            SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) AS full_name, grade_level, strand
+            FROM studenttbl
+            WHERE student_status = 'Not Enrolled'
+        `;
 
-      // Add conditions for grade_level and strand if provided
-      const params = [];
-      if (grade_level) {
-        query += ` AND grade_level = $${params.length + 1}`;
-        params.push(grade_level);
-      }
-      if (strand) {
-        query += ` AND strand = $${params.length + 1}`;
-        params.push(strand);
-      }
+        // Add conditions for grade_level and strand if provided
+        const params = [];
+        if (grade_level) {
+            query += ` AND grade_level = $${params.length + 1}`;
+            params.push(grade_level);
+        }
+        if (strand) {
+            query += ` AND strand = $${params.length + 1}`;
+            params.push(strand);
+        }
 
-      // Execute the query
-      const result = await pool.query(query, params);
+        // Sort by grade_level, strand, and full_name
+        query += ` ORDER BY grade_level ASC, strand ASC NULLS LAST, full_name ASC`;
 
-      // Send the result as a response
-      res.json(result.rows);
+        // Execute the query
+        const result = await pool.query(query, params);
+
+        // Send the result as a response
+        res.json(result.rows);
     } catch (error) {
-      console.error('Error fetching not-enrolled students:', error);
-      res.status(500).json({ error: 'Server error' });
+        console.error('Error fetching not-enrolled students:', error);
+        res.status(500).json({ error: 'Server error' });
     }
-  });
+});
 
-  app.get('/students/details', async (req, res) => {
+app.get('/students/details', async (req, res) => {
     const { fullName } = req.query;
 
     try {
@@ -1718,7 +1721,7 @@ app.get('/teacher/students/:section_id/:subject_id', authenticateToken, async (r
             return res.status(404).json({ message: 'No teaching load found for this faculty in the specified section.' });
         }
 
-        // Step 3: Fetch students enrolled in the specified section
+        // Step 3: Fetch students enrolled in the specified section, check student_status, and sort by full_name
         const studentsResult = await pool.query(`
             SELECT
                 s.student_id,
@@ -1726,7 +1729,10 @@ app.get('/teacher/students/:section_id/:subject_id', authenticateToken, async (r
             FROM studenttbl s
             JOIN enrollmenttbl e ON s.student_id = e.student_id
             JOIN sectiontbl sec ON e.section_id = sec.section_id
-            WHERE sec.section_id = $1 AND sec.subject_id = $2
+            WHERE sec.section_id = $1 
+              AND sec.subject_id = $2
+              AND s.student_status = 'Enrolled'  -- Check if the student is enrolled
+            ORDER BY full_name ASC  -- Sort by full_name in ascending order
         `, [section_id, subject_id]);
 
         // Step 4: Return the students

@@ -73,7 +73,27 @@
   transform: scale(1.3);
   cursor: pointer;
 }
+.button-container-pagination-student {
+  display: flex;
+  justify-content: center; /* Aligns the button to the right */
+  margin-top: 20px; /* Space above the button */
+}
 
+.btn-box-pagination-student {
+  background-color: #150f57;
+  color: #fff;
+  padding: 10px 25px;
+  font-size: 18px;
+  border-radius: 26px;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+  display: inline;
+  align-items: center;
+  justify-content: center;
+  margin-left: 20px;
+  margin-right: 20px;
+}
 .student-records {
   flex-direction: column;
   gap: 5px;
@@ -84,13 +104,27 @@
   width: 100%;
   border-collapse: collapse;
   text-transform: uppercase;
+  table-layout: fixed; /* Ensures that the table respects the widths set */
 }
 
 .student-records td, .student-records th {
   border-bottom: 1px solid #000000; /* Add border at the bottom only */
   padding: 10px;
   text-align: left;
+  overflow: hidden; /* Prevent overflow of content */
 }
+
+/* Set fixed widths for each column */
+.student-records td:nth-child(1) { width: 10px; } /* Checkbox */
+.student-records td:nth-child(2) { width: 100px; } /* Student ID */
+.student-records td:nth-child(3) { width: 150px; } /* Last Name */
+.student-records td:nth-child(4) { width: 200px; } /* First Name */
+.student-records td:nth-child(5) { width: 150px; } /* Middle Name */
+.student-records td:nth-child(6) { width: 150px; } /* Program */
+.student-records td:nth-child(7) { width: 100px; } /* Grade Level */
+.student-records td:nth-child(8) { width: 100px; } /* Student Type */
+.student-records td:nth-child(9) { width: 100px; } /* Student Status */
+.student-records td:nth-child(10) { width: 100px; } /* Actions */
 
 /* Disable hover effect for the header (thead tr) */
 .student-records thead tr:hover {

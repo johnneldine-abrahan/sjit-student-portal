@@ -54,9 +54,38 @@ const Admin_StudentsRecords = ({
     guardian_address: "",
     contact_guardian: "",
   });
+
   const [originalFormData, setOriginalFormData] = useState({});
   const [juniorHighschoolChecked, setJuniorHighschoolChecked] = useState(false);
   const [seniorHighschoolChecked, setSeniorHighschoolChecked] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 7;
+
+  // Calculate the index of the last and first record on the current page
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+
+  // Get the current records
+  const currentRecords = studentRecords.slice(
+    indexOfFirstRecord,
+    indexOfLastRecord
+  );
+
+  // Calculate total pages
+  const totalPages = Math.ceil(studentRecords.length / recordsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  }; // <-- Add the closing bracket here
+
   const validateForm = () => {
     const requiredFields = [
       "program",
@@ -100,7 +129,7 @@ const Admin_StudentsRecords = ({
 
     if (!isValid) {
       firstErrorInput.focus();
-      //alert(errorMessage);
+      alert(errorMessage); // Display error message
       return false;
     }
 
@@ -129,13 +158,10 @@ const Admin_StudentsRecords = ({
       handleClose();
       return;
     }
-    // Create a copy of the formData and ensure defaults for empty or null values
-    const adjustedData = { ...formData };
 
-    // Convert 'lrn' to null if it is empty or invalid, otherwise to an integer
+    const adjustedData = { ...formData };
     adjustedData.lrn = formData.lrn ? parseInt(formData.lrn) : null;
 
-    // Set default empty strings for optional fields
     const optionalFields = [
       "contact_father",
       "contact_mother",
@@ -147,30 +173,25 @@ const Admin_StudentsRecords = ({
     ];
 
     optionalFields.forEach((field) => {
-      adjustedData[field] = formData[field] || ""; // Set to empty string if undefined or null
+      adjustedData[field] = formData[field] || "";
     });
 
     console.log("Submitting adjusted data:", adjustedData);
 
     try {
-      // Perform the update request
       const response = await axios.put(
         `http://localhost:3000/updateStudentData/${editPopup.record.student_id}`,
         adjustedData
       );
       alert("Student data updated successfully");
 
-      // Re-fetch updated student records to sync the UI
       const updatedResponse = await axios.get("http://localhost:3000/students");
       const updatedRecords = updatedResponse.data;
 
-      // Update the parent component with new student data (this can be passed down as a prop)
-      updateStudentRecords(updatedRecords); // Assuming this method is passed in props
-
-      setEditPopup({ show: false, record: null }); // Close the edit popup
+      updateStudentRecords(updatedRecords);
+      setEditPopup({ show: false, record: null });
     } catch (error) {
       console.error("Error occurred while updating student data:", error);
-
       if (error.response) {
         alert(
           `Failed to update student data. Server responded with status: ${error.response.status}`
@@ -197,7 +218,7 @@ const Admin_StudentsRecords = ({
 
       const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toISOString().split("T")[0]; // Converts to YYYY-MM-DD format
+        return date.toISOString().split("T")[0];
       };
 
       const originalFormData = {
@@ -224,7 +245,7 @@ const Admin_StudentsRecords = ({
         years_attended: data?.schoolHistoryData?.years_attended || "",
         honors_awards: data?.schoolHistoryData?.honors_awards || "",
         school_address: data?.schoolHistoryData?.school_address || "",
-        address: data?.addressData?.address || "",
+        address: data?.addressData?.address || "", // Corrected this line
         city_municipality: data?.addressData?.city_municipality || "",
         province: data?.addressData?.province || "",
         country: data?.addressData?.country || "",
@@ -341,6 +362,20 @@ const Admin_StudentsRecords = ({
     });
   };
 
+  useEffect(() => {
+    if (
+      editPopup.show ||
+      viewPopup.show
+    ){
+      document.body.style.overflow = "hidden";
+    } else{
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [editPopup, viewPopup])
+
   return (
     <div className="student-records">
       <div className="recordslist-container">
@@ -367,11 +402,15 @@ const Admin_StudentsRecords = ({
             </tr>
           </thead>
           <tbody>
-            {studentRecords.length > 0 ? (
-              studentRecords.map((records) => (
+            {currentRecords.length > 0 ? (
+              currentRecords.map((records) => (
                 <tr
                   key={records.student_id}
-                  className={selectedStudentIds.includes(records.student_id) ? "checked" : ""}
+                  className={
+                    selectedStudentIds.includes(records.student_id)
+                      ? "checked"
+                      : ""
+                  }
                 >
                   <td>
                     <input
@@ -389,10 +428,17 @@ const Admin_StudentsRecords = ({
                   <td>{records.student_type}</td>
                   <td>{records.student_status}</td>
                   <td>
-                    <button className="view-details" onClick={() => handleViewPopup(records)}>
+                    <button
+                      className="view-details"
+                      onClick={() => handleViewPopup(records)}
+                    >
                       <FaRegEye size={20} />
                     </button>
-                    <button className="edit-button" onClick={() => handleEditPopup(records)} style={{ marginLeft: "10px" }}>
+                    <button
+                      className="edit-button"
+                      onClick={() => handleEditPopup(records)}
+                      style={{ marginLeft: "10px" }}
+                    >
                       <BiEditAlt size={20} />
                     </button>
                   </td>
@@ -400,7 +446,7 @@ const Admin_StudentsRecords = ({
               ))
             ) : (
               <tr>
-                <td colSpan="8">No student records available.</td>
+                <td colSpan="10">No student records available.</td>
               </tr>
             )}
           </tbody>
@@ -987,6 +1033,27 @@ const Admin_StudentsRecords = ({
           </div>
         </div>
       )}
+      <div className="button-container-pagination-student">
+        <div className="pagination-controls">
+          <button
+            className="btn-box-pagination-student"
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="btn-box-pagination-student"
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

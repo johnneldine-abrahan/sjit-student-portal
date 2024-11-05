@@ -12,6 +12,15 @@ const formatTime = (time) => {
 // Define the order of days
 const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
+// Mapping for day abbreviations
+const dayAbbreviations = {
+  Monday: 'Mon',
+  Tuesday: 'Tue',
+  Wednesday: 'Wed',
+  Thursday: 'Thu',
+  Friday: 'Fri'
+};
+
 const ScheduleItem = ({ subjectInfo }) => (
   <div className="schedule-item">
     <div className="subject_student">
@@ -28,7 +37,7 @@ const ScheduleItem = ({ subjectInfo }) => (
       ))}
     </div>
     {subjectInfo.schedule.map((schedule, index) => (
-      <div className='schedule_faculty' key={index}>
+      <div className='schedule_student' key={index}>
         {/* Ensure days are sorted according to dayOrder */}
         <p style={{ fontWeight: 'bold'}}>
           {schedule.days.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b)).join(', ')}
@@ -116,7 +125,7 @@ const Subjects_and_Schedule = () => {
           return acc;
         }, {}));
 
-        // Sort the schedules based on the day order within each subject's schedule
+        // Sort the schedules within each subject by day order
         groupedSchedules.forEach(subjectInfo => {
           subjectInfo.schedule.sort((a, b) => {
             // Compare the first day in each schedule's days array to determine order
@@ -152,28 +161,39 @@ const Subjects_and_Schedule = () => {
         <table className="schedule-table">
           <thead>
             <tr>
-              <th>Day</th>
-              <th>Time</th>
-              <th>Room</th>
-              <th>Code</th>
+              <th>Subject Code</th>
               <th>Subject</th>
-              <th>Section</th>
+              <th>Grade and Section</th>
               <th>Instructor</th>
+              <th>Schedules</th>
             </tr>
           </thead>
           <tbody>
             {schedules.map((scheduleGroup, index) => (
-              scheduleGroup.schedule.map((schedule, idx) => (
-                <tr key={idx}>
-                  <td>{schedule.days.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b)).join(', ')}</td>
-                  <td>{formatTime(schedule.start_time)} - {formatTime(schedule.end_time)}</td>
-                  <td>{schedule.room}</td>
-                  <td>{scheduleGroup.subject_id}</td>
-                  <td>{scheduleGroup.subject_name}</td>
-                  <td>Grade {scheduleGroup.sections[0].grade_level} - {scheduleGroup.sections[0].section_name}</td>
-                  <td>{scheduleGroup.faculty_name}</td>
-                </tr>
-              ))
+              <tr key={index}>
+                <td>{scheduleGroup.subject_id}</td>
+                <td>{scheduleGroup.subject_name}</td>
+                <td>
+                  {scheduleGroup.sections.map((section, secIdx) => (
+                    <div key={secIdx}>
+                      Grade {section.grade_level} - {section.section_name}
+                    </div>
+                  ))}
+                </td>
+                <td>{scheduleGroup.faculty_name}</td>
+                <td>
+                  {scheduleGroup.schedule.map((schedule, idx) => (
+                    <div className="schedule_student" key={idx}>
+                      <strong>
+                        {schedule.days
+                          .sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b))
+                          .map(day => dayAbbreviations[day]) // Convert to abbreviations
+                          .join(', ')}
+                      </strong> - {formatTime(schedule.start_time)} - {formatTime(schedule.end_time)} / {schedule.room}
+                    </div>
+                  ))}
+                </td>
+              </tr>
             ))}
           </tbody>
         </table>

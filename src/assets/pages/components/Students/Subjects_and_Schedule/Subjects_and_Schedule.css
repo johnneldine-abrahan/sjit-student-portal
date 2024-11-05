@@ -1,7 +1,23 @@
 .schedule-view-container {
   padding: 20px;
+  max-width: 1000vh;
 }
 
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  width: 100px;
+  max-width: 1000vh;
+  max-height: 80vh; /* Set the maximum height */
+  overflow: auto; /* Add scroll when the form is too long */
+}
 .view-toggle {
   display: flex;
   margin-bottom: 10px;
@@ -42,7 +58,9 @@
   margin: 0; /* Remove default margin to avoid extra spacing */
 }
 
-.subject_student, .faculty_student, .section_student {
+.subject_student,
+.faculty_student,
+.section_student {
   margin-bottom: 10px; /* Added margin for spacing */
 }
 
@@ -75,4 +93,19 @@
 
 .schedule-table td {
   vertical-align: middle;
+}
+
+.modal::-webkit-scrollbar {
+  width: 10px; /* set the scrollbar width */
+  height: 6px; /* set the scrollbar height */
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background-color: #ccc; /* set the thumb color */
+  border-radius: 30px; /* set the thumb border radius */
+}
+
+.modal::-webkit-scrollbar-track {
+  background-color: #f0f0f0; /* set the track color */
+  border-radius: 30px; /* set the track border radius */
 }

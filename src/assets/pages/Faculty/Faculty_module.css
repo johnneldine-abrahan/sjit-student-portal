@@ -54,11 +54,11 @@
   width: 100%;
 }
 
-p.carousel-status{
+p.carousel-status {
   display: none;
 }
 
-ul.thumbs.animated{
+ul.thumbs.animated {
   display: none;
 }
 
@@ -178,7 +178,7 @@ ul.thumbs.animated{
   text-align: center;
 }
 
-.facultyName{
+.facultyName {
   text-transform: uppercase;
 }
 
@@ -189,7 +189,23 @@ ul.thumbs.animated{
   margin-top: 16px;
   padding: 18px 0;
 }
-
+.btn-box {
+  background-color: #150f57;
+  color: #fff;
+  padding: 10px 25px;
+  font-size: 16px;
+  border-radius: 26px;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+  display: inline-block; /* Change from inline to inline-block */
+  align-items: center;
+  justify-content: center;
+  margin-left: auto; /* Pushes the button to the right */
+}
+.button-container {
+  display: flex; /* Use flexbox to enable margin auto */
+}
 .notificationHeader {
   align-items: center;
   display: flex;
@@ -200,17 +216,17 @@ ul.thumbs.animated{
   color: #150f57;
 }
 
-.filterheader-section{
+.filterheader-section {
   display: flex;
 }
 
-.filter-section{
+.filter-section {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.filter-section p{
+.filter-section p {
   font-size: 18px;
   margin-top: -10px;
 }
@@ -231,12 +247,12 @@ ul.thumbs.animated{
   margin-left: 5px;
 }
 
-.info-ico{
+.info-ico {
   margin-bottom: -9px;
   margin-right: 10px;
 }
 
-.filterheader .filter-ico{
+.filterheader .filter-ico {
   margin-left: 10px;
 }
 
@@ -245,7 +261,8 @@ ul.thumbs.animated{
   cursor: pointer;
 }
 
-.faculty-details, .sub-details{
+.faculty-details,
+.sub-details {
   margin-top: 20px;
 }
 
@@ -268,17 +285,17 @@ ul.thumbs.animated{
 
 .modal {
   position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1001;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    width: 1000px;
-    max-height: 80vh;
-    overflow: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  width: 1000px;
+  max-height: 80vh;
+  overflow: auto;
 }
 
 .modal-logout {

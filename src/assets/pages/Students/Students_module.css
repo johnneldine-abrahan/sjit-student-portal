@@ -5,7 +5,23 @@
   overflow: hidden;
   padding-bottom: 60px;
 }
-
+.btn-box {
+  background-color: #150f57;
+  color: #fff;
+  padding: 10px 25px;
+  font-size: 16px;
+  border-radius: 26px;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+  display: inline-block; /* Change from inline to inline-block */
+  align-items: center;
+  justify-content: center;
+  margin-left: auto; /* Pushes the button to the right */
+}
+.button-container {
+  display: flex; /* Use flexbox to enable margin auto */
+}
 .headerStudent {
   background-color: #7b8bbc;
   display: flex;
@@ -151,7 +167,8 @@ ul.thumbs.animated {
   width: 184px;
 }
 
-.student-details, .sub-details{
+.student-details,
+.sub-details {
   margin-top: 20px;
 }
 
@@ -163,7 +180,7 @@ ul.thumbs.animated {
   text-align: center;
 }
 
-.studentName{
+.studentName {
   text-transform: uppercase;
 }
 
@@ -190,17 +207,17 @@ ul.thumbs.animated {
   color: #150f57;
 }
 
-.filterheader-section{
+.filterheader-section {
   display: flex;
 }
 
-.filter-section{
+.filter-section {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.filter-section p{
+.filter-section p {
   font-size: 18px;
   margin-top: -10px;
 }
@@ -221,12 +238,12 @@ ul.thumbs.animated {
   margin-left: 5px;
 }
 
-.info-ico{
+.info-ico {
   margin-bottom: -9px;
   margin-right: 10px;
 }
 
-.filterheader .filter-ico{
+.filterheader .filter-ico {
   margin-left: 10px;
 }
 
@@ -234,7 +251,6 @@ ul.thumbs.animated {
   transform: scale(1.04);
   cursor: pointer;
 }
-
 
 .actionCard {
   cursor: pointer;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import "../../Students/Students_module.css";
 import ActionCard_Student from "./ActionCard_Student";
 import { GrCertificate } from "react-icons/gr";
@@ -55,8 +55,8 @@ const actionItems = [
 
 const FilterModal = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [schoolYear, setSchoolYear] = useState('');
-  const [semester, setSemester] = useState('');
+  const [schoolYear, setSchoolYear] = useState("");
+  const [semester, setSemester] = useState("");
 
   const handleFilterClick = () => {
     setIsModalOpen(true);
@@ -76,14 +76,14 @@ const FilterModal = () => {
 
   useEffect(() => {
     if (isModalOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset'; // Reset overflow when modal is closed
+      document.body.style.overflow = "unset"; // Reset overflow when modal is closed
     }
 
     // Clean up the effect when the component unmounts or modal closes
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isModalOpen]);
 
@@ -97,13 +97,15 @@ const FilterModal = () => {
       </div>
 
       {isModalOpen && (
-        <div className='modalOverlay'>
-          <div className='modal'>
-            <div className='modalHeader'>
-              <span className='modalTitle'>Filter</span>
-              <button className='modalCloseButton' onClick={handleCloseModal}>Close</button>
+        <div className="modalOverlay">
+          <div className="modal">
+            <div className="modalHeader">
+              <span className="modalTitle">Filter</span>
+              <button className="modalCloseButton" onClick={handleCloseModal}>
+                Close
+              </button>
             </div>
-            <div className='modalBody'>
+            <div className="modalBody">
               <form>
                 <label>School Year:</label>
                 <select value={schoolYear} onChange={handleSchoolYearChange}>
@@ -119,8 +121,11 @@ const FilterModal = () => {
                   <option value="First Semester">First Semester</option>
                   <option value="Second Semester">Second Semester</option>
                 </select>
-
-                <button type="submit">Apply Filter</button>
+                <div className="button-container">
+                  <button type="submit" className="btn-box">
+                    Apply Filter
+                  </button>
+                </div>
               </form>
             </div>
           </div>
@@ -150,7 +155,11 @@ const MainContent_Student = () => {
       </Carousel>
 
       <div className="filter-section">
-        <p><IoIosInformationCircleOutline size={30} className="info-ico"/>Please click "Filter" button to change the current school year / semester</p>
+        <p>
+          <IoIosInformationCircleOutline size={30} className="info-ico" />
+          Please click "Filter" button to change the current school year /
+          semester
+        </p>
         <FilterModal />
       </div>
 

@@ -16,6 +16,7 @@ import { Carousel } from "react-responsive-carousel";
 import image1 from "../../../img/Faculty/Pinas.jpg";
 import image2 from "../../../img/Faculty/RHU.jpg";
 import image3 from "../../../img/Faculty/Aids.jpg";
+import axios from "axios"; // Import Axios
 
 const actionItems = [
   {
@@ -43,8 +44,9 @@ const actionItems = [
 const FilterModal = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [schoolYear, setSchoolYear] = useState("");
-  const [semester, setSemester] = useState("");
-  const [quarter, setQuarter] = useState("");
+  const [semester, setSemester] = useState("FIRST"); // Set default semester to FIRST
+  const [quarter, setQuarter] = useState("1st"); // Set default quarter to 1st
+  const [schoolYears, setSchoolYears] = useState([]); // State to hold school years
 
   const handleFilterClick = () => {
     setIsModalOpen(true);
@@ -60,15 +62,38 @@ const FilterModal = () => {
 
   const handleSemesterChange = (e) => {
     setSemester(e.target.value);
-    setQuarter(""); // Reset quarter when semester changes
+    if (e.target.value === "FIRST") {
+      setQuarter("1st"); // Reset quarter to 1st when FIRST semester is selected
+    } else {
+      setQuarter(""); // Reset quarter when semester changes
+    }
   };
 
   const handleQuarterChange = (e) => {
     setQuarter(e.target.value);
   };
 
+  // Fetch school years when the modal opens
   useEffect(() => {
+    const fetchSchoolYears = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/school_years'); // Adjust the URL as needed
+        console.log('API Response:', response.data); // Log the full response
+    
+        // Check if rows exist and extract school years
+        if (response.data.rows && Array.isArray(response.data.rows)) {
+          const years = response.data.rows.map(row => row.school_year); // Assuming each row contains a school_year field
+          setSchoolYears(years);
+        } else {
+          console.error('Unexpected response structure:', response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching school years:', error);
+      }
+    };
+
     if (isModalOpen) {
+      fetchSchoolYears();
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset"; // Reset overflow when modal is closed
@@ -82,8 +107,7 @@ const FilterModal = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle filter application logic here
-    console.log("Filters applied:", { schoolYear, semester, quarter });
+    // Handle filter application logic here console.log("Filters applied:", { schoolYear, semester, quarter });
     handleCloseModal(); // Close the modal after applying filters
   };
 
@@ -108,34 +132,33 @@ const FilterModal = () => {
             <div className="modalBody">
               <form onSubmit={handleSubmit}>
                 <label>School Year:</label>
-                <select className="select-gray" value={schoolYear} onChange={handleSchoolYearChange}>
-                <option value="">Select School Year</option>
-                <option value="2022-2023">2022-2023</option>
-                <option value="2023-2024">2023-2024</option>
-                <option value="2024-2025">2024-2025</option>
-              </select>
+                <select value={schoolYear} onChange={handleSchoolYearChange}>
+                  {schoolYears.map((year, index) => (
+                    <option key={index} value={year}>{year}</option>
+                  ))}
+                </select>
 
-              <select className="select-gray" value={semester} onChange={handleSemesterChange}>
-                <option value="">Select Semester</option>
-                <option value="First Semester">First Semester</option>
-                <option value="Second Semester">Second Semester</option>
-              </select>
+                <label>Semester:</label>
+                <select value={semester} onChange={handleSemesterChange}>
+                  <option value="FIRST">First Semester</option>
+                  <option value="SECOND">Second Semester</option>
+                </select>
 
-              <select className="select-gray" value={quarter} onChange={handleQuarterChange} disabled={!semester}>
-                <option value="">Select Quarter</option>
-                {semester === "First Semester" && (
-                  <>
-                    <option value="1st Quarter">1st Quarter</option>
-                    <option value="2nd Quarter">2nd Quarter</option>
-                  </>
-                )}
-                {semester === "Second Semester" && (
-                  <>
-                    <option value="3rd Quarter">3rd Quarter</option>
-                    <option value="4th Quarter">4th Quarter</option>
-                  </>
-                )}
-              </select>
+                <label>Quarter:</label>
+                <select value={quarter} onChange={handleQuarterChange} disabled={!semester}>
+                  {semester === "FIRST" && (
+                    <>
+                      <option value="1st">1st Quarter</option>
+                      <option value="2nd">2nd Quarter</option>
+                    </>
+                  )}
+                  {semester === "SECOND" && (
+                    <>
+                      <option value="3rd">3rd Quarter</option>
+                      <option value="4th">4th Quarter</option>
+                    </>
+                  )}
+                </select>
 
                 <div className="button-container">
                   <button type="submit" className="btn-box">

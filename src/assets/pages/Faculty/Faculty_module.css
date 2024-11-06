@@ -416,7 +416,3 @@ ul.thumbs.animated {
   cursor: pointer; /* Change cursor to pointer for better UX */
   font-size: 1.5em; /* Adjust size as needed */
 }
-
-.select-gray option:first-child {
-  color: gray; /* This specifically targets the first option */
-}

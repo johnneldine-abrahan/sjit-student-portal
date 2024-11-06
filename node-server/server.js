@@ -1647,6 +1647,21 @@ app.put('/students/:student_id/enroll', async (req, res) => {
 
 // Faculty ------------------------------------------------------------------------------------------
 
+app.get('/school_years', (req, res) => {
+    // Update the query to sort by school_year in descending order
+    const query = 'SELECT DISTINCT school_year FROM sectiontbl ORDER BY school_year DESC';
+
+    // Use the pool to get a connection
+    pool.query(query, (error, results) => {
+        if (error) {
+            console.error('Error fetching school years:', error);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+        res.json(results);
+    });
+});
+
 app.get('/teacher/subjects', authenticateToken, async (req, res) => {
     const userId = req.user.userId; // Get the user_id from the JWT token
 

@@ -47,21 +47,21 @@ const FilterModal = () => {
   const [semester, setSemester] = useState("FIRST");
   const [quarter, setQuarter] = useState("1st");
   const [schoolYears, setSchoolYears] = useState([]);
-  
-  // Store default values
-  const [defaultSchoolYear, setDefaultSchoolYear] = useState("");
-  const [defaultSemester, setDefaultSemester] = useState("FIRST");
-  const [defaultQuarter, setDefaultQuarter] = useState("1st");
+
+  // Store last applied values
+  const [lastAppliedSchoolYear, setLastAppliedSchoolYear] = useState("");
+  const [lastAppliedSemester, setLastAppliedSemester] = useState("FIRST");
+  const [lastAppliedQuarter, setLastAppliedQuarter] = useState("1st");
 
   const handleFilterClick = () => {
+    // Open modal and set current state to last applied values
+    setSchoolYear(lastAppliedSchoolYear);
+    setSemester(lastAppliedSemester);
+    setQuarter(lastAppliedQuarter);
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    // Reset to defaults when closing the modal
-    setSchoolYear(defaultSchoolYear);
-    setSemester(defaultSemester);
-    setQuarter(defaultQuarter);
     setIsModalOpen(false);
   };
 
@@ -71,11 +71,7 @@ const FilterModal = () => {
 
   const handleSemesterChange = (e) => {
     setSemester(e.target.value);
-    if (e.target.value === "FIRST") {
-      setQuarter("1st");
-    } else {
-      setQuarter("");
-    }
+    setQuarter(e.target.value === "FIRST" ? "1st" : ""); // Reset quarter for semester change
   };
 
   const handleQuarterChange = (e) => {
@@ -89,50 +85,33 @@ const FilterModal = () => {
         if (response.data.rows && Array.isArray(response.data.rows)) {
           const years = response.data.rows.map(row => row.school_year);
           setSchoolYears(years);
-          // Set default school year if available
-          if (years.length > 0) {
-            setDefaultSchoolYear(years[0]); // Set the first year as default
-            setSchoolYear(years[0]); // Set initial selected year
+          if (!schoolYear && years.length > 0) {
+            setSchoolYear(lastAppliedSchoolYear || years[0]);
           }
         }
       } catch (error) {
         console.error('Error fetching school years:', error);
       }
     };
-
+  
     if (isModalOpen) {
       fetchSchoolYears();
       document.body.style.overflow = "hidden";
-
-      // Decode the token to get the semester
-      const token = localStorage.getItem("token"); // Assuming token is stored in localStorage
-      if (token) {
-        const parts = token.split('.');
-        if (parts.length === 3) {
-          const payload = parts[1]; // Get the payload part
-          const decodedPayload = JSON.parse(atob(payload)); // Decode and parse the payload
-
-          if (decodedPayload.semester) {
-            setSemester(decodedPayload.semester); // Set the semester from the decoded token
-            setQuarter(decodedPayload.semester === "FIRST" ? "1st" : ""); // Set quarter based on semester
-          }
-        }
-      }
     } else {
       document.body.style.overflow = "unset";
     }
-
+  
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isModalOpen]);
-
+  }, [isModalOpen, lastAppliedSchoolYear, schoolYear]);
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     // Apply filter logic here
-    setDefaultSchoolYear (schoolYear);
-    setDefaultSemester(semester);
-    setDefaultQuarter(quarter);
+    setLastAppliedSchoolYear(schoolYear);
+    setLastAppliedSemester(semester);
+    setLastAppliedQuarter(quarter);
     console.log("Filters applied:", { schoolYear, semester, quarter });
     handleCloseModal(); // Close the modal after applying filters
   };
@@ -157,7 +136,7 @@ const FilterModal = () => {
             </div>
             <div className="modalBody">
               <form onSubmit={handleSubmit}>
-                <label>School Year:</label>
+                <label>School Year :</label>
                 <select value={schoolYear} onChange={handleSchoolYearChange}>
                   {schoolYears.map((year, index) => (
                     <option key={index} value={year}>{year}</option>
@@ -199,6 +178,7 @@ const FilterModal = () => {
     </>
   );
 };
+
 
 const MainContent_Faculty = () => {
   const bannerImages = [image1, image2, image3];

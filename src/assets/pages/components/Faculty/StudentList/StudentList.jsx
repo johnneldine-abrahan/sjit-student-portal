@@ -5,7 +5,8 @@ import './StudentList.css';
 
 const StudentList = () => {
   const [subjects, setSubjects] = useState([]); // State to hold the subjects data
-  const [students, setStudents] = useState([]); // State to hold the students data
+  const [maleStudents, setMaleStudents] = useState([]); // State to hold the male students data
+  const [femaleStudents, setFemaleStudents] = useState([]); // State to hold the female students data
   const [loading, setLoading] = useState(true); // State to manage loading state
   const [error, setError] = useState(null); // State to manage error messages
   const [viewingStudents, setViewingStudents] = useState(false); // State to manage viewing students
@@ -42,7 +43,8 @@ const StudentList = () => {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       });
-      setStudents(response.data); // Update state with fetched students
+      setMaleStudents(response.data.male); // Update state with fetched male students
+      setFemaleStudents(response.data.female); // Update state with fetched female students
       setCurrentGradeLevel(`Grade ${subject.grade_level}`); // Set current grade level
       setCurrentSectionName(subject.section_name); // Set current section name
       setCurrentSubjectName(subject.subject_name); // Set current subject name
@@ -80,7 +82,8 @@ const StudentList = () => {
             </button>
             <h2 className="header-title-list">{`${currentGradeLevel} - ${currentSectionName} / ${currentSubjectName}`}</h2>
           </div>
-          <table className="student-table">
+          <h3>Male Students</h3>
+          <table className="student-table student-table-margin">
             <thead>
               <tr>
                 <th>Student ID</th>
@@ -88,9 +91,28 @@ const StudentList = () => {
               </tr>
             </thead>
             <tbody>
-              {students.map((student) => (
+              {maleStudents.map((student) => (
                 <tr key={student.student_id}>
-                  <td>{student.student_id}</td> <td>{student.full_name}</td>
+                  <td>{student.student_id}</td>
+                  <td>{student.full_name}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <h3>Female Students</h3>
+          <table className="student-table student-table-margin">
+            <thead>
+              <tr>
+                <th>Student ID</th>
+                <th>Student Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              {femaleStudents.map((student) => (
+                <tr key={student.student_id}>
+                  <td>{student.student_id}</td>
+                  <td>{student.full_name}</td>
                 </tr>
               ))}
             </tbody>

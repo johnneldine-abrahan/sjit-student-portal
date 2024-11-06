@@ -1,0 +1,25 @@
+.btn-box {
+    background-color: #150f57; /* Dark blue background */
+    color: #fff; /* White text color */
+    padding: 10px 25px; /* Padding around the button */
+    font-size: 16px; /* Font size for the button text */
+    border-radius: 26px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    border: 0; /* No border */
+    outline: 0; /* No outline */
+    display: inline-block; /* Allows margin and padding */
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center items horizontally */
+    margin-left: auto; /* Pushes the button to the right */
+  }
+  
+  .button-container {
+    display: flex; /* Use flexbox for layout */
+  }
+  
+  .print-icon {
+    font-size: 19px; /* Set the desired size */
+    margin-right: 5px; /* Space between the icon and text */
+    vertical-align: middle; /* Align vertically to the middle */
+    display: inline-block; /* Ensure it is treated as an inline-block element */
+  }

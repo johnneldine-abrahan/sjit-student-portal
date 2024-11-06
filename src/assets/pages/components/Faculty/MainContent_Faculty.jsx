@@ -16,7 +16,7 @@ import { Carousel } from "react-responsive-carousel";
 import image1 from "../../../img/Faculty/Pinas.jpg";
 import image2 from "../../../img/Faculty/RHU.jpg";
 import image3 from "../../../img/Faculty/Aids.jpg";
-import axios from "axios"; // Import Axios
+import axios from "axios";
 
 const actionItems = [
   {
@@ -44,15 +44,24 @@ const actionItems = [
 const FilterModal = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [schoolYear, setSchoolYear] = useState("");
-  const [semester, setSemester] = useState("FIRST"); // Set default semester to FIRST
-  const [quarter, setQuarter] = useState("1st"); // Set default quarter to 1st
-  const [schoolYears, setSchoolYears] = useState([]); // State to hold school years
+  const [semester, setSemester] = useState("FIRST");
+  const [quarter, setQuarter] = useState("1st");
+  const [schoolYears, setSchoolYears] = useState([]);
+  
+  // Store default values
+  const [defaultSchoolYear, setDefaultSchoolYear] = useState("");
+  const [defaultSemester, setDefaultSemester] = useState("FIRST");
+  const [defaultQuarter, setDefaultQuarter] = useState("1st");
 
   const handleFilterClick = () => {
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
+    // Reset to defaults when closing the modal
+    setSchoolYear(defaultSchoolYear);
+    setSemester(defaultSemester);
+    setQuarter(defaultQuarter);
     setIsModalOpen(false);
   };
 
@@ -63,9 +72,9 @@ const FilterModal = () => {
   const handleSemesterChange = (e) => {
     setSemester(e.target.value);
     if (e.target.value === "FIRST") {
-      setQuarter("1st"); // Reset quarter to 1st when FIRST semester is selected
+      setQuarter("1st");
     } else {
-      setQuarter(""); // Reset quarter when semester changes
+      setQuarter("");
     }
   };
 
@@ -73,19 +82,18 @@ const FilterModal = () => {
     setQuarter(e.target.value);
   };
 
-  // Fetch school years when the modal opens
   useEffect(() => {
     const fetchSchoolYears = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/school_years'); // Adjust the URL as needed
-        console.log('API Response:', response.data); // Log the full response
-    
-        // Check if rows exist and extract school years
+        const response = await axios.get('http://localhost:3000/school_years');
         if (response.data.rows && Array.isArray(response.data.rows)) {
-          const years = response.data.rows.map(row => row.school_year); // Assuming each row contains a school_year field
+          const years = response.data.rows.map(row => row.school_year);
           setSchoolYears(years);
-        } else {
-          console.error('Unexpected response structure:', response.data);
+          // Set default school year if available
+          if (years.length > 0) {
+            setDefaultSchoolYear(years[0]); // Set the first year as default
+            setSchoolYear(years[0]); // Set initial selected year
+          }
         }
       } catch (error) {
         console.error('Error fetching school years:', error);
@@ -111,10 +119,9 @@ const FilterModal = () => {
         }
       }
     } else {
-      document.body.style.overflow = "unset"; // Reset overflow when modal is closed
+      document.body.style.overflow = "unset";
     }
 
-    // Clean up the effect when the component unmounts or modal closes
     return () => {
       document.body.style.overflow = "unset";
     };
@@ -122,7 +129,11 @@ const FilterModal = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle filter application logic here console.log("Filters applied:", { schoolYear, semester, quarter });
+    // Apply filter logic here
+    setDefaultSchoolYear (schoolYear);
+    setDefaultSemester(semester);
+    setDefaultQuarter(quarter);
+    console.log("Filters applied:", { schoolYear, semester, quarter });
     handleCloseModal(); // Close the modal after applying filters
   };
 
@@ -141,7 +152,8 @@ const FilterModal = () => {
             <div className="modalHeader">
               <span className="modalTitle">Filter</span>
               <button className="modalCloseButton" onClick={handleCloseModal}>
-                Close </button>
+                Close
+              </button>
             </div>
             <div className="modalBody">
               <form onSubmit={handleSubmit}>
@@ -222,7 +234,7 @@ const MainContent_Faculty = () => {
             key={index}
             icon={item.icon}
             text={item.text}
-            content={item.content} // Pass specific content for each card
+            content={item.content}
           />
         ))}
       </div>

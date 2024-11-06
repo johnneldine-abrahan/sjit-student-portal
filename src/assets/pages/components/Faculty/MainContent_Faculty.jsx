@@ -44,6 +44,7 @@ const FilterModal = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [schoolYear, setSchoolYear] = useState("");
   const [semester, setSemester] = useState("");
+  const [quarter, setQuarter] = useState("");
 
   const handleFilterClick = () => {
     setIsModalOpen(true);
@@ -59,6 +60,11 @@ const FilterModal = () => {
 
   const handleSemesterChange = (e) => {
     setSemester(e.target.value);
+    setQuarter(""); // Reset quarter when semester changes
+  };
+
+  const handleQuarterChange = (e) => {
+    setQuarter(e.target.value);
   };
 
   useEffect(() => {
@@ -73,6 +79,13 @@ const FilterModal = () => {
       document.body.style.overflow = "unset";
     };
   }, [isModalOpen]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle filter application logic here
+    console.log("Filters applied:", { schoolYear, semester, quarter });
+    handleCloseModal(); // Close the modal after applying filters
+  };
 
   return (
     <>
@@ -93,7 +106,7 @@ const FilterModal = () => {
               </button>
             </div>
             <div className="modalBody">
-              <form>
+              <form onSubmit={handleSubmit}>
                 <label>School Year:</label>
                 <select value={schoolYear} onChange={handleSchoolYearChange}>
                   <option value="">Select School Year</option>
@@ -107,6 +120,23 @@ const FilterModal = () => {
                   <option value="">Select Semester</option>
                   <option value="First Semester">First Semester</option>
                   <option value="Second Semester">Second Semester</option>
+                </select>
+
+                <label>Quarter:</label>
+                <select value={quarter} onChange={handleQuarterChange} disabled={!semester}>
+                  <option value="">Select Quarter</option>
+                  {semester === "First Semester" && (
+                    <>
+                      <option value="1st Quarter">1st Quarter</option>
+                      <option value="2nd Quarter">2nd Quarter</option>
+                    </>
+                  )}
+                  {semester === "Second Semester" && (
+                    <>
+                      <option value="3rd Quarter">3rd Quarter</option>
+                      <option value="4th Quarter">4th Quarter</option>
+                    </>
+                  )}
                 </select>
 
                 <div className="button-container">

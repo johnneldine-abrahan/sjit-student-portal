@@ -123,7 +123,7 @@ const ConfirmEnrollment_ContentList = () => {
               <div className="popup-content">
                 <p>
                   Do you want to confirm the enrollment of{" "}
-                  {viewPopup.record.first_name} {viewPopup.record.last_name}?
+                  <strong>{viewPopup.record.first_name}</strong> <strong>{viewPopup.record.last_name}</strong>?
                 </p>
                 <div className="buttons">
                   <button

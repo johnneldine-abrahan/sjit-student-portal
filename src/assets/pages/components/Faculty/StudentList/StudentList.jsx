@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { IoMdArrowRoundBack, IoMdPrint } from "react-icons/io"; // Import the icons
 import './StudentList.css';
 
 const StudentList = () => {
@@ -54,6 +55,11 @@ const StudentList = () => {
     }
   };
 
+  // Function to handle printing
+  const handlePrint = () => {
+    window.print(); // This will trigger the browser's print dialog
+  };
+
   // Render loading state or error message if necessary
   if (loading) {
     return <div>Loading...</div>;
@@ -69,7 +75,9 @@ const StudentList = () => {
       {viewingStudents ? (
         <div>
           <div className="header-container-list">
-            <button className="back-button" onClick={() => setViewingStudents(false)}>Back to Subjects</button>
+            <button className="back-button" onClick={() => setViewingStudents(false)}>
+              <IoMdArrowRoundBack /> {/* Use the icon here */}
+            </button>
             <h2 className="header-title-list">{`${currentGradeLevel} - ${currentSectionName} / ${currentSubjectName}`}</h2>
           </div>
           <table className="student-table">
@@ -82,12 +90,20 @@ const StudentList = () => {
             <tbody>
               {students.map((student) => (
                 <tr key={student.student_id}>
-                  <td>{student.student_id}</td>
-                  <td>{student.full_name}</td>
+                  <td>{student.student_id}</td> <td>{student.full_name}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+          {/* Print button with icon wrapped in a span */}
+          <div className="button-container">
+            <button className="btn-box" onClick={handlePrint}>
+              <span className="print-icon">
+                <IoMdPrint />
+              </span>
+              Print
+            </button>
+          </div>
         </div>
       ) : (
         <table className="student-table">

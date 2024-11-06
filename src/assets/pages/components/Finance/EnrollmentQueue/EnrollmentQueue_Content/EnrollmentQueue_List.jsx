@@ -55,7 +55,7 @@ const EnrollmentQueue_List = () => {
       const result = await response.json();
       setSuccessMessage(result.message); // Set success message
       handleClose(); // Close the popup after clicking Done
-      
+
       // Re-fetch students to reflect changes
       fetchStudents();
     } catch (error) {
@@ -113,7 +113,9 @@ const EnrollmentQueue_List = () => {
               <button onClick={ handleClose}>Close</button>
             </div>
             <div className="popup-content">
-              <p>Do you want to confirm the payment of {viewPopup.record.first_name} {viewPopup.record.last_name}?</p>
+              <p>
+                Do you want to confirm the payment of <strong>{viewPopup.record.first_name}</strong> <strong>{viewPopup.record.last_name}</strong>?
+              </p>
               <div className="buttons">
                 <button type="submit" className="btn-box" name="add" id="add" onClick={handleDone}>
                   Confirm

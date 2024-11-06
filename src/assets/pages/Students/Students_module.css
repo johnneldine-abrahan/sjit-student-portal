@@ -305,3 +305,7 @@ ul.thumbs.animated {
 .modalBody {
   padding: 16px;
 }
+
+.select-gray option:first-child {
+  color: gray; /* This specifically targets the first option */
+}

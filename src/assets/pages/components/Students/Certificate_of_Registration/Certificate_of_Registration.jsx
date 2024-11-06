@@ -1,5 +1,5 @@
-import React from 'react'
-import { FaPrint } from 'react-icons/fa';
+import React from 'react';
+import { IoMdPrint } from 'react-icons/io'; // Corrected import for the icon
 import './Certificate_of_Registration.css';
 
 const Certificate_of_Registration = () => {
@@ -8,11 +8,16 @@ const Certificate_of_Registration = () => {
   };
 
   return (
-    <button onClick={handlePrint} className="print-button">
-      <FaPrint className="icon" />
-      Print
-    </button>
-  )
-}
+    // Print button with icon wrapped in a span
+    <div className="button-container">
+      <button className="btn-box" onClick={handlePrint}>
+        <span className="print-icon">
+          <IoMdPrint />
+        </span>
+        Print
+      </button>
+    </div>
+  );
+};
 
-export default Certificate_of_Registration
+export default Certificate_of_Registration;

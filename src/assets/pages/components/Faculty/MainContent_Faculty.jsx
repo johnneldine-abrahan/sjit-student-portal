@@ -95,6 +95,21 @@ const FilterModal = () => {
     if (isModalOpen) {
       fetchSchoolYears();
       document.body.style.overflow = "hidden";
+
+      // Decode the token to get the semester
+      const token = localStorage.getItem("token"); // Assuming token is stored in localStorage
+      if (token) {
+        const parts = token.split('.');
+        if (parts.length === 3) {
+          const payload = parts[1]; // Get the payload part
+          const decodedPayload = JSON.parse(atob(payload)); // Decode and parse the payload
+
+          if (decodedPayload.semester) {
+            setSemester(decodedPayload.semester); // Set the semester from the decoded token
+            setQuarter(decodedPayload.semester === "FIRST" ? "1st" : ""); // Set quarter based on semester
+          }
+        }
+      }
     } else {
       document.body.style.overflow = "unset"; // Reset overflow when modal is closed
     }
@@ -126,8 +141,7 @@ const FilterModal = () => {
             <div className="modalHeader">
               <span className="modalTitle">Filter</span>
               <button className="modalCloseButton" onClick={handleCloseModal}>
-                Close
-              </button>
+                Close </button>
             </div>
             <div className="modalBody">
               <form onSubmit={handleSubmit}>

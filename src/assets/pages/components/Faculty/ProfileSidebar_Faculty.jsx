@@ -4,7 +4,7 @@ import Notifications_Faculty from './Notifications_Faculty';
 import { BiEditAlt } from "react-icons/bi";
 import defaultProfilePic from '../../../img/Profile/default_profile.png'; // Adjust the path as necessary
 
-const ProfileSidebar_Faculty = () => {
+const ProfileSidebar_Faculty = ({ setSemester }) => {
   const [facultyData, setFacultyData] = useState({ 
     fullName: '', 
     role: '', 
@@ -12,7 +12,8 @@ const ProfileSidebar_Faculty = () => {
     semester: '', 
     profile: defaultProfilePic // Set default profile picture
   });
-  const [showPopup, setShowPopup] = useState(false);
+
+  const [showPopup, setShowPopup] = useState(false); // Declare showPopup state
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -32,14 +33,11 @@ const ProfileSidebar_Faculty = () => {
         semester: decodedToken.semester,
         profile: decodedToken.profile && decodedToken.profile.trim() !== '' ? decodedToken.profile : defaultProfilePic // Use default if profile is null or empty
       });
-      setFormData({
-        firstName: decodedToken.firstName || '',
-        lastName: decodedToken.lastName || '',
-        username: decodedToken.username || '',
-        password: '',
-      });
+
+      // Set the semester in the parent component
+      setSemester(decodedToken.semester);
     }
-  }, []);
+  }, [setSemester]); // Add setSemester to the dependency array
 
   useEffect(() => {
     if (showPopup) {
@@ -101,14 +99,14 @@ const ProfileSidebar_Faculty = () => {
 
                 <div className='second-row'>
                   <div className='input-box'>
-                    <label>Username <input type='text' name='username ' value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} /></label>
+                    <label>Username <input type='text' name='username' value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} /></label>
                   </div>
                   <div className='input-box'>
                     <label>Password <input type='text' name='password' value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} /></label>
                   </div>
                 </div>
 
-                <div className='buttons '>
+                <div className='buttons'>
                   <button type="submit" className="btn-box" name="add" id="add">Done</button>
                 </div>
               </form>

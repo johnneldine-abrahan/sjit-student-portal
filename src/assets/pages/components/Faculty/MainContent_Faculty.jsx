@@ -41,15 +41,26 @@ const actionItems = [
   },
 ];
 
-const FilterModal = () => {
+const FilterModal = ({ defaultSemester }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [schoolYear, setSchoolYear] = useState("");
-  const [semester, setSemester] = useState("FIRST"); // Set default semester to FIRST
+  const [semester, setSemester] = useState(defaultSemester || "FIRST"); // Use defaultSemester as initial value
   const [quarter, setQuarter] = useState("1st"); // Set default quarter to 1st
   const [schoolYears, setSchoolYears] = useState([]); // State to hold school years
 
+  // State to hold last selected values
+  const [lastSelected, setLastSelected] = useState({
+    schoolYear: "",
+    semester: defaultSemester || "FIRST", // Initialize last selected with default semester
+    quarter: "1st",
+  });
+
   const handleFilterClick = () => {
     setIsModalOpen(true);
+    // Set the current selections to last selected when opening the modal
+    setSchoolYear(lastSelected.schoolYear || (schoolYears.length > 0 ? schoolYears[0] : ""));
+    setSemester(lastSelected.semester);
+    setQuarter(lastSelected.quarter);
   };
 
   const handleCloseModal = () => {
@@ -79,7 +90,7 @@ const FilterModal = () => {
       try {
         const response = await axios.get('http://localhost:3000/school_years'); // Adjust the URL as needed
         console.log('API Response:', response.data); // Log the full response
-    
+
         // Check if rows exist and extract school years
         if (response.data.rows && Array.isArray(response.data.rows)) {
           const years = response.data.rows.map(row => row.school_year); // Assuming each row contains a school_year field
@@ -99,7 +110,6 @@ const FilterModal = () => {
       document.body.style.overflow = "unset"; // Reset overflow when modal is closed
     }
 
-    // Clean up the effect when the component unmounts or modal closes
     return () => {
       document.body.style.overflow = "unset";
     };
@@ -107,7 +117,16 @@ const FilterModal = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle filter application logic here console.log("Filters applied:", { schoolYear, semester, quarter });
+    
+    // Store the current selections as last selected
+    setLastSelected({
+      schoolYear,
+      semester,
+      quarter,
+    });
+
+    // Handle filter application logic here
+    console.log("Filters applied:", { schoolYear, semester, quarter });
     handleCloseModal(); // Close the modal after applying filters
   };
 
@@ -174,8 +193,9 @@ const FilterModal = () => {
   );
 };
 
-const MainContent_Faculty = () => {
+const MainContent_Faculty = ({ semester }) => {
   const bannerImages = [image1, image2, image3];
+  
   return (
     <section className="mainSection">
       <Carousel
@@ -199,7 +219,7 @@ const MainContent_Faculty = () => {
           Please click "Filter" button to change the current school year /
           semester
         </p>
-        <FilterModal />
+        <FilterModal defaultSemester={semester} /> {/* Pass the semester to FilterModal */}
       </div>
 
       <div className="actionGrid">

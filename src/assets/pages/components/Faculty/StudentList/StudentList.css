@@ -1,3 +1,6 @@
+.view-details-link:hover {
+  cursor: pointer;
+}
 .student-table {
   flex-direction: column;
   gap: 5px;
@@ -7,9 +10,26 @@
   max-width: 1200px; /* Set to your desired max width */
   width: 100%; /* Optional: Allows it to take full width up to max-width */
 }
-
+.studentidfemale {
+  width: 26%;
+}
 .student-table td,
 .student-table th {
+  border-bottom: 1px solid #000000; /* Only keep the bottom border */
+  padding: 10px;
+  text-align: left;
+}
+.student-table-female {
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 20px;
+  border-collapse: collapse;
+  border-spacing: 0;
+  max-width: 1200px; /* Set to your desired max width */
+  width: 90%; /* Optional: Allows it to take full width up to max-width */
+}
+.student-table-female td,
+.student-table-female th {
   border-bottom: 1px solid #000000; /* Only keep the bottom border */
   padding: 10px;
   text-align: left;
@@ -156,4 +176,7 @@
 
 .student-table-margin {
   margin: 18px 0; /* Adjust the values as needed */
+}
+.studentidfemalelist {
+  width: 27%;
 }

@@ -1,113 +1,180 @@
-import React, { useState, useEffect } from 'react';
-import './UploadGrades.css';
-
-const StudentRecords = [
-  {
-    GradeLevel: '6',
-    Section: 'Sanchez',
-    Subject: 'haha'
-  },
-  {
-    GradeLevel: '6',
-    Section: 'Sanchez',
-    Subject: 'haha'
-  },
-  {
-    GradeLevel: '6',
-    Section: 'Sanchez',
-    Subject: 'haha'
-  },
-]
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { IoMdArrowRoundBack } from "react-icons/io"; // Import the icons
+import "./UploadGrades.css";
+import { FaSave } from "react-icons/fa";
 
 const UploadGrades = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState({});
-
-  const handlePopup = (records) => {
-    setIsModalOpen(true);
-    setSelectedRecord(records);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+  const [subjects, setSubjects] = useState([]); // State to hold the subjects data
+  const [maleStudents, setMaleStudents] = useState([]); // State to hold the male students data
+  const [femaleStudents, setFemaleStudents] = useState([]); // State to hold the female students data
+  const [loading, setLoading] = useState(true); // State to manage loading state
+  const [error, setError] = useState(null); // State to manage error messages
+  const [viewingStudents, setViewingStudents] = useState(false); // State to manage viewing students
+  const [currentGradeLevel, setCurrentGradeLevel] = useState(""); // State to hold the current grade level
+  const [currentSectionName, setCurrentSectionName] = useState(""); // State to hold the current section name
+  const [currentSubjectName, setCurrentSubjectName] = useState(""); // State to hold the current subject name
 
   useEffect(() => {
-    const openModals = document.querySelectorAll('.modalOverlay');
-    if (openModals.length > 0) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-  
-    return () => {
-      const openModals = document.querySelectorAll('.modalOverlay');
-      if (openModals.length === 0) {
-        document.body.style.overflow = 'unset';
+    const fetchSubjects = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/teacher/subjects",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming you store the token in localStorage
+            },
+          }
+        );
+        setSubjects(response.data); // Update state with fetched subjects
+      } catch (err) {
+        console.error("Error fetching subjects:", err);
+        setError("Failed to fetch subjects."); // Set error message
+      } finally {
+        setLoading(false); // Set loading to false after fetching
       }
     };
-  }, [isModalOpen]);
-  
 
+    fetchSubjects(); // Call the function to fetch subjects
+  }, []); // Empty dependency array to run once on mount
+
+  // Fetch students when the user clicks "View Student List"
+  const handleViewStudents = async (subject) => {
+    try {
+      setLoading(true); // Set loading to true while fetching students
+      const response = await axios.get(
+        `http://localhost:3000/teacher/students/${subject.section_id}/${subject.subject_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setMaleStudents(response.data.male); // Update state with fetched male students
+      setFemaleStudents(response.data.female); // Update state with fetched female students
+      setCurrentGradeLevel(`Grade ${subject.grade_level}`); // Set current grade level
+      setCurrentSectionName(subject.section_name); // Set current section name
+      setCurrentSubjectName(subject.subject_name); // Set current subject name
+      setViewingStudents(true); // Set viewingStudents to true to show students table
+    } catch (err) {
+      console.error("Error fetching students:", err);
+      setError("Failed to fetch students."); // Set error message
+    } finally {
+      setLoading(false); // Set loading to false after fetching
+    }
+  };
+
+  // Render loading state or error message if necessary
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  // Render subjects or students based on the state
   return (
     <div>
-      <table className="student-table">
-        <thead>
-          <tr>
-            <th>Grade Level</th>
-            <th>Section</th>
-            <th>Subject</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {StudentRecords.map((records, index) => (
-            <tr key={index}>
-              <td>{records.GradeLevel}</td>
-              <td>{records.Section}</td>
-              <td>{records.Subject}</td>
-              <td>
-                <span className='view-details-link' onClick={() => handlePopup(records)}>Select</span>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {viewingStudents ? (
+        <div>
+          <div className="header-container-list">
+            <button
+              className="back-button"
+              onClick={() => setViewingStudents(false)}
+            >
+              <IoMdArrowRoundBack /> {/* Use the icon here */}
+            </button>
+            <h2 className="header-title-list">{`${currentGradeLevel} - ${currentSectionName} / ${currentSubjectName}`}</h2>
+          </div>
+          <h3>Male Students</h3>
+          <table className="student-table student-table-margin">
+            <thead>
+              <tr>
+                <th className="studentidfemale">Student ID</th>
+                <th>Student Name</th>
+                <th className="centered">Grade</th> {/* Apply centered class */}
+              </tr>
+            </thead>
+            <tbody>
+              {maleStudents.map((student) => (
+                <tr key={student.student_id}>
+                  <td>{student.student_id}</td>
+                  <td>{student.full_name}</td>
+                  <td className="centered-input">
+                    <input type="number" max="100" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-      {isModalOpen && (
-        <div className='modalOverlay'>
-          <div className='modal'>
-            <div className='modalHeader'>
-              <span className='modalTitle'>Select</span>
-              <button className='modalCloseButton' onClick={handleCloseModal}>Close</button>
-            </div>
-            <div className='modalBody'>
-              <table className="student-table"> {/* Apply the same table styling */}
-                <thead>
-                  <tr>
-                    <th>Grade Level</th>
-                    <th>Section</th>
-                    <th>Subject</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{selectedRecord.GradeLevel}</td>
-                    <td>{selectedRecord.Section}</td>
-                    <td>{selectedRecord.Subject}</td>
-                    <td>
-                <span className='view-details-link' onClick={() => handlePopup(records)}>Select</span>
-              </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <h3>Female Students</h3>
+          <table className="student-table student-table-margin">
+            <thead>
+              <tr>
+                <th className="studentidfemale">Student ID</th>
+                <th className="studentnamefemale">Student Name</th>
+                <th className="centered">Grade</th> {/* Apply centered class */}
+              </tr>
+            </thead>
+            <tbody>
+              {femaleStudents.map((student) => (
+                <tr key={student.student_id}>
+                  <td>{student.student_id}</td>
+                  <td>{student.full_name}</td>
+                  <td className="centered-input">
+                    <input type="number" min="0" max="100" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {/* save */}
+          <div className="button-container">
+            <button className="btn-box">
+              <span className="save-icon">
+                <FaSave />
+              </span>
+              Save
+            </button>
           </div>
         </div>
+      ) : (
+        <table className="student-table">
+          <thead>
+            <tr>
+              <th>Subject ID</th>
+              <th>Subject Name</th>
+              <th>Grade Level</th>
+              <th>Strand</th>
+              <th>Section</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {subjects.map((subject) => (
+              <tr key={subject.subject_id}>
+                <td>{subject.subject_id}</td>
+                <td>{subject.subject_name}</td>
+                <td>Grade {subject.grade_level}</td>
+                <td>{subject.strand}</td>
+                <td>{subject.section_name}</td>
+                <td>
+                  <span
+                    className="view-details-link"
+                    onClick={() => handleViewStudents(subject)}
+                  >
+                    Upload Grades
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default UploadGrades
+export default UploadGrades;

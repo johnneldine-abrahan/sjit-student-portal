@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { IoMdArrowRoundBack, IoMdPrint } from "react-icons/io"; // Import the icons
-import './StudentList.css';
+import "./StudentList.css";
 
 const StudentList = () => {
   const [subjects, setSubjects] = useState([]); // State to hold the subjects data
@@ -10,22 +10,25 @@ const StudentList = () => {
   const [loading, setLoading] = useState(true); // State to manage loading state
   const [error, setError] = useState(null); // State to manage error messages
   const [viewingStudents, setViewingStudents] = useState(false); // State to manage viewing students
-  const [currentGradeLevel, setCurrentGradeLevel] = useState(''); // State to hold the current grade level
-  const [currentSectionName, setCurrentSectionName] = useState(''); // State to hold the current section name
-  const [currentSubjectName, setCurrentSubjectName] = useState(''); // State to hold the current subject name
+  const [currentGradeLevel, setCurrentGradeLevel] = useState(""); // State to hold the current grade level
+  const [currentSectionName, setCurrentSectionName] = useState(""); // State to hold the current section name
+  const [currentSubjectName, setCurrentSubjectName] = useState(""); // State to hold the current subject name
 
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/teacher/subjects', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}` // Assuming you store the token in localStorage
+        const response = await axios.get(
+          "http://localhost:3000/teacher/subjects",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming you store the token in localStorage
+            },
           }
-        });
+        );
         setSubjects(response.data); // Update state with fetched subjects
       } catch (err) {
-        console.error('Error fetching subjects:', err);
-        setError('Failed to fetch subjects.'); // Set error message
+        console.error("Error fetching subjects:", err);
+        setError("Failed to fetch subjects."); // Set error message
       } finally {
         setLoading(false); // Set loading to false after fetching
       }
@@ -38,11 +41,14 @@ const StudentList = () => {
   const handleViewStudents = async (subject) => {
     try {
       setLoading(true); // Set loading to true while fetching students
-      const response = await axios.get(`http://localhost:3000/teacher/students/${subject.section_id}/${subject.subject_id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+      const response = await axios.get(
+        `http://localhost:3000/teacher/students/${subject.section_id}/${subject.subject_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-      });
+      );
       setMaleStudents(response.data.male); // Update state with fetched male students
       setFemaleStudents(response.data.female); // Update state with fetched female students
       setCurrentGradeLevel(`Grade ${subject.grade_level}`); // Set current grade level
@@ -50,8 +56,8 @@ const StudentList = () => {
       setCurrentSubjectName(subject.subject_name); // Set current subject name
       setViewingStudents(true); // Set viewingStudents to true to show students table
     } catch (err) {
-      console.error('Error fetching students:', err);
-      setError('Failed to fetch students.'); // Set error message
+      console.error("Error fetching students:", err);
+      setError("Failed to fetch students."); // Set error message
     } finally {
       setLoading(false); // Set loading to false after fetching
     }
@@ -77,7 +83,10 @@ const StudentList = () => {
       {viewingStudents ? (
         <div>
           <div className="header-container-list">
-            <button className="back-button" onClick={() => setViewingStudents(false)}>
+            <button
+              className="back-button"
+              onClick={() => setViewingStudents(false)}
+            >
               <IoMdArrowRoundBack /> {/* Use the icon here */}
             </button>
             <h2 className="header-title-list">{`${currentGradeLevel} - ${currentSectionName} / ${currentSubjectName}`}</h2>
@@ -104,7 +113,7 @@ const StudentList = () => {
           <table className="student-table student-table-margin">
             <thead>
               <tr>
-                <th>Student ID</th>
+                <th className="studentidfemalelist">Student ID</th>
                 <th>Student Name</th>
               </tr>
             </thead>
@@ -148,7 +157,12 @@ const StudentList = () => {
                 <td>{subject.strand}</td>
                 <td>{subject.section_name}</td>
                 <td>
-                  <span className='view-details-link' onClick={() => handleViewStudents(subject)}>View Student List</span>
+                  <span
+                    className="view-details-link"
+                    onClick={() => handleViewStudents(subject)}
+                  >
+                    View Student List
+                  </span>
                 </td>
               </tr>
             ))}

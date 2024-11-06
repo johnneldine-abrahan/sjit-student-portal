@@ -1,5 +1,216 @@
+.view-details-link:hover {
+  cursor: pointer;
+}
+.student-table {
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 20px;
+  border-collapse: collapse;
+  border-spacing: 0;
+  max-width: 1200px; /* Set to your desired max width */
+  width: 100%; /* Optional: Allows it to take full width up to max-width */
+}
+.studentidfemale {
+  width: 30%;
+}
+.studentidmale {
+  width: 30%;
+}
+.studentnamefemale {
+  width: 39%;
+}
+.student-table td,
+.student-table th {
+  border-bottom: 1px solid #000000; /* Only keep the bottom border */
+  padding: 10px;
+  text-align: left;
+}
+.student-table-female {
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 20px;
+  border-collapse: collapse;
+  border-spacing: 0;
+  max-width: 1200px; /* Set to your desired max width */
+  width: 90%; /* Optional: Allows it to take full width up to max-width */
+}
+.student-table-female td,
+.student-table-female th {
+  border-bottom: 1px solid #000000; /* Only keep the bottom border */
+  padding: 10px;
+  text-align: left;
+}
 
-  
-  .view-details-link:hover{
-      cursor: pointer;
-  }
+/* Disable hover effect for the header (thead tr) */
+.student-table thead tr:hover {
+  background-color: unset; /* Prevent hover color change */
+  cursor: default; /* Disable pointer cursor */
+}
+
+/* Allow interaction with the checkbox in the header */
+.student-table th input[type="checkbox"] {
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.student-table th input[type="checkbox"]:hover {
+  background-color: unset;
+  cursor: pointer;
+}
+
+/* Row hover effect for tbody */
+.student-table tbody tr:hover {
+  background-color: #7b8bbc; /* Your desired hover color */
+  cursor: pointer;
+}
+
+/* Remove borders on hover to prevent vertical lines */
+.student-table tbody tr:hover td {
+  background-color: #7b8bbc; /* Your desired hover color */
+  border-left: none; /* Ensure no left border on hover */
+  border-right: none; /* Ensure no right border on hover */
+}
+
+/* Checked row effect */
+.student-table tr.checked {
+  background-color: #7b8bbc; /* Your desired checked color */
+}
+
+/* Button styles */
+.btn-box {
+  background-color: #150f57;
+  color: #fff;
+  padding: 10px 25px;
+  font-size: 16px;
+  border-radius: 26px;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+  display: inline;
+  align-items: center;
+  justify-content: center;
+}
+
+/* New styles for button alignment and spacing */
+.button-container {
+  display: flex;
+  justify-content: flex-end; /* Aligns the button to the right */
+  margin-top: 20px; /* Space above the button */
+}
+
+/* Modal styles */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  width: 1000px;
+  max-height: 80vh; /* Set the maximum height */
+  overflow: auto; /* Add scroll when the form is too long */
+}
+
+.header-container-list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.header-title-list {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.back-button {
+  margin-right: auto; /* Push the button to the left */
+}
+
+/* StudentList.css */
+
+.back-button {
+  background: none; /* Remove default background */
+  border: none; /* Remove default border */
+  cursor: pointer; /* Change cursor to pointer */
+  display: flex; /* Use flexbox to align icon and text */
+  align-items: center; /* Center the icon and text vertically */
+  font-size: 16px; /* Set font size */
+  color: #000000; /* Change text color */
+  padding: 10px; /* Add padding */
+  transition: color 0.3s; /* Transition for hover effect */
+}
+
+.back-button:hover {
+  color: #5a5a5a; /* Change color on hover */
+}
+
+.back-button svg {
+  margin-right: 5px; /* Space between icon and text */
+  width: 30px; /* Set icon width */
+  height: 30px; /* Set icon height */
+}
+
+.btn-box {
+  background-color: #150f57; /* Dark blue background */
+  color: #fff; /* White text color */
+  padding: 10px 25px; /* Padding around the button */
+  font-size: 16px; /* Font size for the button text */
+  border-radius: 26px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  border: 0; /* No border */
+  outline: 0; /* No outline */
+  display: inline-block; /* Allows margin and padding */
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center items horizontally */
+  margin-left: auto; /* Pushes the button to the right */
+}
+
+.button-container {
+  display: flex; /* Use flexbox for layout */
+}
+
+.print-icon {
+  font-size: 19px; /* Set the desired size */
+  margin-right: 5px; /* Space between the icon and text */
+  vertical-align: middle; /* Align vertically to the middle */
+  display: inline-block; /* Ensure it is treated as an inline-block element */
+}
+
+.student-table-margin {
+  margin: 18px 0; /* Adjust the values as needed */
+}
+
+input[type="number"] {
+  width: 20%;
+  padding: 10px;
+  margin: 5px 0 10px 0;
+  border-radius: 10px;
+  background: #f1f1f1;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none; /* Chrome, Safari, Edge */
+  margin: 0; /* Remove margin */
+}
+.centered {
+  text-align: center; /* Center the text in the header */
+}
+
+.centered-input {
+  text-align: center; /* Center the input text */
+}
+
+.centered-input input {
+  width: 30%; /* Make input take full width of the cell */
+  text-align: center; /* Center the text inside the input */
+  border: 1px solid #ccc; /* Optional: add border for better visibility */
+  border-radius: 4px; /* Optional: rounded corners */
+  padding: 5px; /* Optional: padding inside the input */
+}

@@ -5,6 +5,7 @@ import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
 import { RiInboxUnarchiveLine } from "react-icons/ri";
 import { BsPersonFillUp } from "react-icons/bs";
 import { FaUserGear } from "react-icons/fa6";
+import { FiFilter } from "react-icons/fi";
 
 const Admin_Students_ContentHeader = ({
   selectedStudentIds,
@@ -12,6 +13,7 @@ const Admin_Students_ContentHeader = ({
   updateStudentRecords,
 }) => {
   const [popup, setPopup] = useState({
+    filter: false,
     add: false,
     edit: false,
     delete: false,
@@ -84,6 +86,7 @@ const Admin_Students_ContentHeader = ({
 
   const handleClose = () => {
     setPopup({
+      filter: false,
       add: false,
       edit: false,
       delete: false,
@@ -360,6 +363,7 @@ const Admin_Students_ContentHeader = ({
           <BiSearch className="search-icon" />
         </div>
         <div className="buttons-header">
+
           <div className="buttons-act">
             <RiAddLargeFill
               className="buttons-icon"
@@ -390,7 +394,90 @@ const Admin_Students_ContentHeader = ({
               onClick={() => handlePopup("archive")}
             />
           </div>
+          <div className="buttons-act">
+            <FiFilter
+              className="buttons-icon"
+              onClick={() => handlePopup("filter")}
+            />
+          </div>
 
+          {/* Filter Pop-up */}
+          {popup.filter && (
+  <>
+    <div className="popup-blurred-background" onClick={handleClose} />
+    <div className="popup">
+      <div className="popup-header">
+        <h3>Filter Student</h3>
+        <button onClick={handleClose}>Close</button>
+      </div>
+      <div className="popup-content">
+        <label htmlFor="sort-by">Sort By:</label>
+        <select id="sort-by">
+          <option value="name">A-Z</option>
+          <option value="age">Z-A</option>
+        </select>
+
+        <label htmlFor="sort-by">Grade:</label>
+        <select id="sort-by">
+          <option value="name">7</option>
+          <option value="age">8</option>
+          <option value="age">9</option>
+          <option value="age">10</option>
+          <option value="age">11</option>
+          <option value="age">12</option>
+        </select>
+
+        {/* Radio buttons for enrollment status */}
+        <div className="enrollment-status">
+          <h4>Enrollment Status:</h4>
+          <label style={{ display: 'block', marginBottom: '8px' }}>
+            <input
+              type="radio"
+              name="enrollment"
+              value="enrolled"
+              // Define this function to handle changes
+            />
+            Enrolled Students
+          </label>
+          <label style={{ display: 'block', marginBottom: '8px' }}>
+            <input
+              type="radio"
+              name="enrollment"
+              value="not-enrolled"
+              // Define this function to handle changes
+            />
+            Not Enrolled Students
+          </label>
+        </div>
+
+        {/* Radio buttons for old and new students */}
+        <div className="student-type">
+          <h4>Student Type:</h4>
+          <label style={{ display: 'block', marginBottom: '8px' }}>
+            <input
+              type="radio"
+              name="student-type"
+              value="old"
+              // Define this function to handle changes
+            />
+            Old Students
+          </label>
+          <label style={{ display: 'block', marginBottom: '8px' }}>
+            <input
+              type="radio"
+              name="student-type"
+              value="new"
+              // Define this function to handle changes
+            />
+            New Students
+          </label>
+          <div className="button-container">
+            <button className="btn-box">Done</button></div>
+        </div>
+      </div>
+    </div>
+  </>
+)}
           {/* Add Pop-up */}
           {popup.add && (
             <>

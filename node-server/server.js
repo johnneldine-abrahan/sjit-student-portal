@@ -1727,7 +1727,8 @@ app.get('/teacher/students/:section_id/:subject_id', authenticateToken, async (r
         const studentsResult = await pool.query(`
             SELECT
                 s.student_id,
-                CONCAT(s.last_name, ', ', s.first_name, ' ', s.middle_name) AS full_name
+                CONCAT(s.last_name, ', ', s.first_name, ' ', s.middle_name) AS full_name,
+                s.sex
             FROM studenttbl s
             JOIN enrollmenttbl e ON s.student_id = e.student_id
             JOIN sectiontbl sec ON e.section_id = sec.section_id
@@ -1737,8 +1738,23 @@ app.get('/teacher/students/:section_id/:subject_id', authenticateToken, async (r
             ORDER BY full_name ASC  -- Sort by full_name in ascending order
         `, [section_id, subject_id]);
 
-        // Step 4: Return the students
-        res.status(200).json(studentsResult.rows);
+        // Step 4: Separate students by gender
+        const maleStudents = [];
+        const femaleStudents = [];
+
+        studentsResult.rows.forEach(student => {
+            if (student.sex === 'Male') {
+                maleStudents.push(student);
+            } else if (student.sex === 'Female') {
+                femaleStudents.push(student);
+            }
+        });
+
+        // Step 5: Return the students separated by gender
+        res.status(200).json({
+            male: maleStudents,
+            female: femaleStudents
+        });
     } catch (error) {
         console.error('Error fetching students for section and subject:', error);
         res.status(500).json({ message: 'Internal server error' });

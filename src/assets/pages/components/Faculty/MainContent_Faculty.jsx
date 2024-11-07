@@ -22,22 +22,22 @@ const actionItems = [
   {
     icon: <AiFillSchedule size={40} />,
     text: "View Schedules",
-    content: <ViewSchedules />,
+    content: ViewSchedules, // This should be a valid component reference
   },
   {
     icon: <FaList size={40} />,
     text: "Section & Student List",
-    content: <StudentList />,
+    content: StudentList, // This should be a valid component reference
   },
   {
     icon: <MdOutlineUploadFile size={40} />,
     text: "Upload Grades",
-    content: UploadGrades, // Change to just reference the component
+    content: UploadGrades, // This should be a valid component reference
   },
   {
     icon: <MdAnalytics size={40} />,
     text: "Reports",
-    content: <Dashboard_Faculty />,
+    content: Dashboard_Faculty, // This should be a valid component reference
   },
 ];
 
@@ -247,7 +247,7 @@ const MainContent_Faculty = () => {
             key={index}
             icon={item.icon}
             text={item.text}
-            content={<item.content quarter={quarter} />} 
+            content={React.createElement(item.content, { quarter })} // Use React.createElement to render component with props
           />
         ))}
       </div>

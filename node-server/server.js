@@ -1833,6 +1833,76 @@ app.get('/faculty-schedules', authenticateToken, async (req, res) => {
     }
 });
 
+app.get('/grades/:section_id/:subject_id', authenticateToken, async (req, res) => {
+    const userId = req.user.userId; // Get the user_id from the JWT token
+    const { section_id, subject_id } = req.params; // Get section_id and subject_id from the request parameters
+
+    try {
+        // Step 1: Get the faculty_id based on the user_id
+        const facultyResult = await pool.query(`
+            SELECT faculty_id FROM facultytbl WHERE user_id = $1
+        `, [userId]);
+
+        if (facultyResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Faculty not found for the given user ID.' });
+        }
+
+        const facultyId = facultyResult.rows[0].faculty_id;
+
+        // Step 2: Check if the faculty teaches the given section and subject
+        const teachingLoadResult = await pool.query(`
+            SELECT section_id FROM teachingload_tbl
+            WHERE faculty_id = $1 AND section_id = $2
+        `, [facultyId, section_id]);
+
+        if (teachingLoadResult.rows.length === 0) {
+            return res.status(404).json({ message: 'No teaching load found for this faculty in the specified section.' });
+        }
+
+        // Step 3: Fetch students enrolled in the specified section, check student_status, and sort by full_name
+        const studentsResult = await pool.query(`
+            SELECT
+                s.student_id,
+                CONCAT(s.last_name, ', ', s.first_name, ' ', s.middle_name) AS full_name,
+                s.sex,
+                g.teachingload_id,
+                g.grade,
+                g.semester
+            FROM studenttbl s
+            JOIN enrollmenttbl e ON s.student_id = e.student_id
+            JOIN sectiontbl sec ON e.section_id = sec.section_id
+            LEFT JOIN gradestbl g ON g.student_id = s.student_id AND g.teachingload_id IN (
+                SELECT teachingload_id FROM teachingload_tbl WHERE section_id = $1
+            )
+            WHERE sec.section_id = $1 
+              AND sec.subject_id = $2
+              AND s.student_status = 'Enrolled'  -- Check if the student is enrolled
+            ORDER BY full_name ASC  -- Sort by full_name in ascending order
+        `, [section_id, subject_id]);
+
+        // Step 4: Separate students by gender
+        const maleStudents = [];
+        const femaleStudents = [];
+
+        studentsResult.rows.forEach(student => {
+            if (student.sex === 'Male') {
+                maleStudents.push(student);
+            } else if (student.sex === 'Female') {
+                femaleStudents.push(student);
+            }
+        });
+
+        // Step 5: Return the students separated by gender
+        res.status(200).json({
+            male: maleStudents,
+            female: femaleStudents
+        });
+    } catch (error) {
+        console.error('Error fetching students for section and subject:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 // Student ------------------------------------------------------------------------------------------
 
 app.get('/schedule', authenticateToken, async (req, res) => {

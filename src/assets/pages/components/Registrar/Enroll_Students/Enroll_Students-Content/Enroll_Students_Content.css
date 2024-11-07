@@ -7,7 +7,12 @@
   align-items: center;
   justify-content: space-between;
 }
-
+.GradeLevel label {
+  margin-right: 10px;
+}
+.GradeLevel {
+  margin-top: 10px;
+}
 .onQueue-section {
   margin-top: 20px;
   display: flex;
@@ -107,7 +112,6 @@
 .subject-list tr.checked {
   background-color: #7b8bbc; /* Your desired checked color */
 }
-
 /* */
 .popup-enroll {
   flex-direction: column;
@@ -196,6 +200,12 @@
 .student-enroll-info h2 {
   color: #150f57;
   font-size: 32px;
+  text-transform: uppercase;
+}
+
+.student-enroll-info .status {
+  text-transform: uppercase;
+  color: red;
 }
 
 .popup-enroll {
@@ -246,11 +256,11 @@
   cursor: pointer;
 }
 
-.popup-content {
+.popup-enrollment {
   padding: 20px;
 }
 
-.popup-content p {
+.popup-enrollment p {
   margin: 0;
   text-align: justify;
 }
@@ -274,4 +284,28 @@
 
 .enrollment-table td {
   vertical-align: middle;
+}
+
+.popup-enroll .btn-box {
+  background-color: #150f57;
+  color: #fff;
+  padding: 10px 25px;
+  font-size: 16px;
+  border-radius: 26px;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+  display: inline;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-enroll .buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.subject-list {
+  margin-top: 20px; /* adjust the value as needed */
 }

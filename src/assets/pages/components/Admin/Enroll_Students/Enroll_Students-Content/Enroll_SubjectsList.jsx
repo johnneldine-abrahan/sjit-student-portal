@@ -160,6 +160,7 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
       console.error("Error during enrollment:", error);
       alert("Enrollment failed. Please try again.");
     }
+    window.location.reload();
   };
 
   return (

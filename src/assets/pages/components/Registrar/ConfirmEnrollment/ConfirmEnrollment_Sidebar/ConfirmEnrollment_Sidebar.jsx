@@ -29,7 +29,7 @@ const Popup = ({ title, onClose }) => {
   );
 };
 
-const Archive_Sidebar = () => {
+const ConfirmEnrollment_Sidebar = () => {
   const [modalContent, setModalContent] = useState("");
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -61,7 +61,7 @@ const Archive_Sidebar = () => {
           <GiArchiveRegister size={18} />
           Enroll Student
         </a>
-        <a href="/registrar/confirm-enrollment" className="item">
+        <a href="/registrar/confirm-enrollment" className="item active">
           <IoCheckmarkDoneSharp size={18} />
           Confirm Enrollment
         </a>
@@ -89,7 +89,7 @@ const Archive_Sidebar = () => {
           <MdOutlineSwitchAccount size={18} />
           Manage Accounts
         </a>
-        <a href="/registrar/archive" className="item active">
+        <a href="/registrar/archive" className="item">
           <BiArchiveIn size={18} />
           Archive
         </a>
@@ -106,4 +106,4 @@ const Archive_Sidebar = () => {
   );
 };
 
-export default Archive_Sidebar;
+export default ConfirmEnrollment_Sidebar;

@@ -12,23 +12,17 @@ const ActionCard_Faculty = ({ icon, text, content }) => {
     setIsModalOpen(false);
   };
 
-  // Disable scrolling when modal is open
   useEffect(() => {
-    const openModals = document.querySelectorAll('.modalOverlay');
-    if (openModals.length > 0) {
+    if (isModalOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
     }
   
     return () => {
-      const openModals = document.querySelectorAll('.modalOverlay');
-      if (openModals.length === 0) {
-        document.body.style.overflow = 'unset';
-      }
+      document.body.style.overflow = 'unset';
     };
   }, [isModalOpen]);
-  
 
   return (
     <>
@@ -45,8 +39,7 @@ const ActionCard_Faculty = ({ icon, text, content }) => {
               <button className='modalCloseButton' onClick={handleCloseModal}>Close</button>
             </div>
             <div className='modalBody'>
-              {/* Use the content prop to display dynamic content */}
-              <p>{content}</p>
+              {content} {/* Render the content directly */}
             </div>
           </div>
         </div>

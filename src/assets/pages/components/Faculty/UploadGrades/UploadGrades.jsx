@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { IoMdArrowRoundBack } from "react-icons/io"; // Import the icons
+import { IoMdArrowRoundBack } from "react-icons/io";
 import "./UploadGrades.css";
 import { FaSave } from "react-icons/fa";
 
-const UploadGrades = () => {
-  const [subjects, setSubjects] = useState([]); // State to hold the subjects data
-  const [maleStudents, setMaleStudents] = useState([]); // State to hold the male students data
-  const [femaleStudents, setFemaleStudents] = useState([]); // State to hold the female students data
-  const [loading, setLoading] = useState(true); // State to manage loading state
-  const [error, setError] = useState(null); // State to manage error messages
-  const [viewingStudents, setViewingStudents] = useState(false); // State to manage viewing students
-  const [currentGradeLevel, setCurrentGradeLevel] = useState(""); // State to hold the current grade level
-  const [currentSectionName, setCurrentSectionName] = useState(""); // State to hold the current section name
-  const [currentSubjectName, setCurrentSubjectName] = useState(""); // State to hold the current subject name
+const UploadGrades = ({ quarter }) => {
+  const [subjects, setSubjects] = useState([]);
+  const [maleStudents, setMaleStudents] = useState([]);
+  const [femaleStudents, setFemaleStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [viewingStudents, setViewingStudents] = useState(false);
+  const [currentGradeLevel, setCurrentGradeLevel] = useState("");
+  const [currentSectionName, setCurrentSectionName] = useState("");
+  const [currentSubjectName, setCurrentSubjectName] = useState("");
 
   useEffect(() => {
     const fetchSubjects = async () => {
@@ -22,26 +22,25 @@ const UploadGrades = () => {
           "http://localhost:3000/teacher/subjects",
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming you store the token in localStorage
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           }
         );
-        setSubjects(response.data); // Update state with fetched subjects
+        setSubjects(response.data);
       } catch (err) {
         console.error("Error fetching subjects:", err);
-        setError("Failed to fetch subjects."); // Set error message
+        setError("Failed to fetch subjects.");
       } finally {
-        setLoading(false); // Set loading to false after fetching
+        setLoading(false);
       }
     };
 
-    fetchSubjects(); // Call the function to fetch subjects
-  }, []); // Empty dependency array to run once on mount
+    fetchSubjects();
+  }, []);
 
-  // Fetch students when the user clicks "View Student List"
   const handleViewStudents = async (subject) => {
     try {
-      setLoading(true); // Set loading to true while fetching students
+      setLoading(true);
       const response = await axios.get(
         `http://localhost:3000/teacher/students/${subject.section_id}/${subject.subject_id}`,
         {
@@ -50,21 +49,20 @@ const UploadGrades = () => {
           },
         }
       );
-      setMaleStudents(response.data.male); // Update state with fetched male students
-      setFemaleStudents(response.data.female); // Update state with fetched female students
-      setCurrentGradeLevel(`Grade ${subject.grade_level}`); // Set current grade level
-      setCurrentSectionName(subject.section_name); // Set current section name
-      setCurrentSubjectName(subject.subject_name); // Set current subject name
-      setViewingStudents(true); // Set viewingStudents to true to show students table
+      setMaleStudents(response.data.male);
+      setFemaleStudents(response.data.female);
+      setCurrentGradeLevel(`Grade ${subject.grade_level}`);
+      setCurrentSectionName(subject.section_name);
+      setCurrentSubjectName(subject.subject_name);
+      setViewingStudents(true);
     } catch (err) {
       console.error("Error fetching students:", err);
-      setError("Failed to fetch students."); // Set error message
+      setError("Failed to fetch students.");
     } finally {
-      setLoading(false); // Set loading to false after fetching
+      setLoading(false);
     }
   };
 
-  // Render loading state or error message if necessary
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -73,7 +71,6 @@ const UploadGrades = () => {
     return <div>{error}</div>;
   }
 
-  // Render subjects or students based on the state
   return (
     <div>
       {viewingStudents ? (
@@ -83,9 +80,9 @@ const UploadGrades = () => {
               className="back-button"
               onClick={() => setViewingStudents(false)}
             >
-              <IoMdArrowRoundBack /> {/* Use the icon here */}
+              <IoMdArrowRoundBack />
             </button>
-            <h2 className="header-title-list">{`${currentGradeLevel} - ${currentSectionName} / ${currentSubjectName}`}</h2>
+            <h2 className="header-title-list">{`${currentGradeLevel} - ${currentSectionName} / ${currentSubjectName} [${quarter} Quarter]`}</h2>
           </div>
           <h3>Male Students</h3>
           <table className="student-table student-table-margin">
@@ -93,7 +90,7 @@ const UploadGrades = () => {
               <tr>
                 <th className="studentidfemale">Student ID</th>
                 <th>Student Name</th>
-                <th className="centered">Grade</th> {/* Apply centered class */}
+                <th className="centered">Grade</th>
               </tr>
             </thead>
             <tbody>
@@ -115,7 +112,7 @@ const UploadGrades = () => {
               <tr>
                 <th className="studentidfemale">Student ID</th>
                 <th className="studentnamefemale">Student Name</th>
-                <th className="centered">Grade</th> {/* Apply centered class */}
+                <th className="centered">Grade</th>
               </tr>
             </thead>
             <tbody>
@@ -124,13 +121,12 @@ const UploadGrades = () => {
                   <td>{student.student_id}</td>
                   <td>{student.full_name}</td>
                   <td className="centered-input">
-                    <input type="number" min="0" max="100" />
+                    <input type="number" min="0" max="100 " />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          {/* save */}
           <div className="button-container">
             <button className="btn-box">
               <span className="save-icon">

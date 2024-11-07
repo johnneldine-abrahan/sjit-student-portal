@@ -52,10 +52,11 @@ const FilterModal = () => {
   const [defaultSemester, setDefaultSemester] = useState("FIRST");
   const [defaultQuarter, setDefaultQuarter] = useState("1st");
 
+  const [hasLoggedFilters, setHasLoggedFilters] = useState(false); // New flag
+
   const handleFilterClick = () => {
     setIsModalOpen(true);
     if (!schoolYear && schoolYears.length > 0) {
-      // Set initial values when opening the modal for the first time
       setSchoolYear(defaultSchoolYear);
       setSemester(defaultSemester);
       setQuarter(defaultQuarter);
@@ -67,7 +68,7 @@ const FilterModal = () => {
     setSemester(defaultSemester);
     setQuarter(defaultQuarter);
     setIsModalOpen(false);
-  }
+  };
 
   const handleApplyFilter = () => {
     setIsModalOpen(false);
@@ -103,29 +104,38 @@ const FilterModal = () => {
       }
     };
 
-    if (isModalOpen) {
-      fetchSchoolYears();
-      document.body.style.overflow = "hidden";
+    fetchSchoolYears();
 
-      const token = localStorage.getItem("token"); // Assuming token is stored in localStorage
-      if (token) {
-        const parts = token.split('.');
-        if (parts.length === 3) {
-          const payload = parts[1]; // Get the payload part
-          const decodedPayload = JSON.parse(atob(payload)); // Decode and parse the payload
+    const token = localStorage.getItem("token");
+    if (token) {
+      const parts = token.split('.');
+      if (parts.length === 3) {
+        const payload = parts[1];
+        const decodedPayload = JSON.parse(atob(payload));
 
-          if (decodedPayload.semester) {
-            setSemester(decodedPayload.semester); // Set the semester from the decoded token
-          }
+        if (decodedPayload.semester) {
+          setSemester(decodedPayload.semester);
+          setQuarter(decodedPayload.semester === "FIRST" ? "1st" : "3rd");
         }
       }
-      
-    } else {
-      document.body.style.overflow = "unset";
+    }
+  }, []);
+
+  useEffect(() => {
+    // Log filters only once after the initial setup and if schoolYear is set
+    if (!hasLoggedFilters && schoolYear) {
+      console.log("Current filters:", { schoolYear, semester, quarter });
+      setHasLoggedFilters (true); // Set the flag to true after logging
+    }
+  }, [schoolYear, semester, quarter, hasLoggedFilters]);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = "auto"; // Reset to "auto" on cleanup
     };
   }, [isModalOpen]);
 
@@ -200,7 +210,6 @@ const FilterModal = () => {
     </>
   );
 };
-
 
 const MainContent_Faculty = () => {
   const bannerImages = [image1, image2, image3];

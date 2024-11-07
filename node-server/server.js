@@ -1836,6 +1836,11 @@ app.get('/faculty-schedules', authenticateToken, async (req, res) => {
 app.get('/grades/:section_id/:subject_id', authenticateToken, async (req, res) => {
     const userId = req.user.userId; // Get the user_id from the JWT token
     const { section_id, subject_id } = req.params; // Get section_id and subject_id from the request parameters
+    const quarter = req.headers['quarter']; // Get the quarter from the header
+
+    if (!quarter) {
+        return res.status(400).json({ message: 'Quarter is required in the header-title-list.' });
+    }
 
     try {
         // Step 1: Get the faculty_id based on the user_id
@@ -1867,18 +1872,19 @@ app.get('/grades/:section_id/:subject_id', authenticateToken, async (req, res) =
                 s.sex,
                 g.teachingload_id,
                 g.grade,
+                g.quarter,
                 g.semester
             FROM studenttbl s
             JOIN enrollmenttbl e ON s.student_id = e.student_id
             JOIN sectiontbl sec ON e.section_id = sec.section_id
-            LEFT JOIN gradestbl g ON g.student_id = s.student_id AND g.teachingload_id IN (
-                SELECT teachingload_id FROM teachingload_tbl WHERE section_id = $1
-            )
+            LEFT JOIN gradestbl g ON g.student_id = s.student_id 
+                AND g.teachingload_id IN (SELECT teachingload_id FROM teachingload_tbl WHERE section_id = $1)
+                AND g.quarter = $3  -- Match the quarter in the header-title-list
             WHERE sec.section_id = $1 
               AND sec.subject_id = $2
               AND s.student_status = 'Enrolled'  -- Check if the student is enrolled
             ORDER BY full_name ASC  -- Sort by full_name in ascending order
-        `, [section_id, subject_id]);
+        `, [section_id, subject_id, quarter]); // Pass the quarter as a parameter
 
         // Step 4: Separate students by gender
         const maleStudents = [];
@@ -1902,6 +1908,7 @@ app.get('/grades/:section_id/:subject_id', authenticateToken, async (req, res) =
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
 
 // Student ------------------------------------------------------------------------------------------
 

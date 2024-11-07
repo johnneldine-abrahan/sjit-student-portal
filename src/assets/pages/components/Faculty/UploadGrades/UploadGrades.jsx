@@ -15,6 +15,12 @@ const UploadGrades = ({ quarter }) => {
   const [currentSectionName, setCurrentSectionName] = useState("");
   const [currentSubjectName, setCurrentSubjectName] = useState("");
 
+  // State to hold grades for students
+  const [grades, setGrades] = useState({
+    male: {},
+    female: {},
+  });
+
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
@@ -42,18 +48,36 @@ const UploadGrades = ({ quarter }) => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:3000/teacher/students/${subject.section_id}/${subject.subject_id}`,
+        `http://localhost:3000/grades/${subject.section_id}/${subject.subject_id}`, // No need for quarter in the URL
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
+            quarter: quarter, // Include quarter in the headers
           },
         }
       );
+
       setMaleStudents(response.data.male);
       setFemaleStudents(response.data.female);
       setCurrentGradeLevel(`Grade ${subject.grade_level}`);
       setCurrentSectionName(subject.section_name);
       setCurrentSubjectName(subject.subject_name);
+
+      // Initialize grades state with fetched data
+      const initialGrades = {
+        male: {},
+        female: {},
+      };
+
+      response.data.male.forEach(student => {
+        initialGrades.male[student.student_id] = student.grade || ""; // Set existing grade or empty
+      });
+
+      response.data.female.forEach(student => {
+        initialGrades.female[student.student_id] = student.grade || ""; // Set existing grade or empty
+      });
+
+      setGrades(initialGrades);
       setViewingStudents(true);
     } catch (err) {
       console.error("Error fetching students:", err);
@@ -61,6 +85,16 @@ const UploadGrades = ({ quarter }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGradeChange = (studentId, gender, value) => {
+    setGrades(prevGrades => ({
+      ...prevGrades,
+      [gender]: {
+        ...prevGrades[gender],
+        [studentId]: value, // Update the specific student's grade
+      },
+    }));
   };
 
   if (loading) {
@@ -95,11 +129,16 @@ const UploadGrades = ({ quarter }) => {
             </thead>
             <tbody>
               {maleStudents.map((student) => (
-                <tr key={student.student_id}>
+                <tr key={student .student_id}>
                   <td>{student.student_id}</td>
                   <td>{student.full_name}</td>
                   <td className="centered-input">
-                    <input type="number" max="100" />
+                    <input
+                      type="number"
+                      max="100"
+                      value={grades.male[student.student_id] || ""}
+                      onChange={(e) => handleGradeChange(student.student_id, 'male', e.target.value)}
+                    />
                   </td>
                 </tr>
               ))}
@@ -121,7 +160,13 @@ const UploadGrades = ({ quarter }) => {
                   <td>{student.student_id}</td>
                   <td>{student.full_name}</td>
                   <td className="centered-input">
-                    <input type="number" min="0" max="100 " />
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={grades.female[student.student_id] || ""}
+                      onChange={(e) => handleGradeChange(student.student_id, 'female', e.target.value)}
+                    />
                   </td>
                 </tr>
               ))}

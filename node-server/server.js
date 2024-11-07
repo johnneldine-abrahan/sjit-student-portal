@@ -1871,9 +1871,9 @@ app.get('/grades/:section_id/:subject_id', authenticateToken, async (req, res) =
                 CONCAT(s.last_name, ', ', s.first_name, ' ', s.middle_name) AS full_name,
                 s.sex,
                 g.teachingload_id,
+                g.grade_id,
                 g.grade,
-                g.quarter,
-                g.semester
+                g.quarter
             FROM studenttbl s
             JOIN enrollmenttbl e ON s.student_id = e.student_id
             JOIN sectiontbl sec ON e.section_id = sec.section_id
@@ -1909,6 +1909,55 @@ app.get('/grades/:section_id/:subject_id', authenticateToken, async (req, res) =
     }
 });
 
+app.post('/add-grade', authenticateToken, async (req, res) => {
+    const userId = req.user.userId; // Get the user_id from the JWT token
+    const { studentId, grade } = req.body; // Get studentId and grade from the front-end request
+    const quarter = req.headers['quarter']; // Get the quarter from the headers
+  
+    const client = await pool.connect(); // Start a transaction
+  
+    try {
+      await client.query('BEGIN'); // Start transaction
+  
+      // Step 1: Check if userId exists in facultytbl
+      const facultyQuery = await client.query('SELECT faculty_id FROM facultytbl WHERE user_id = $1', [userId]);
+      if (facultyQuery.rows.length === 0) {
+        return res.status(404).json({ error: 'Faculty not found' });
+      }
+  
+      const facultyId = facultyQuery.rows[0].faculty_id;
+  
+      // Step 2: Check if facultyId exists in teachingload_tbl
+      const teachingLoadQuery = await client.query('SELECT teachingload_id FROM teachingload_tbl WHERE faculty_id = $1', [facultyId]);
+      if (teachingLoadQuery.rows.length === 0) {
+        return res.status(404).json({ error: 'Teaching load not found' });
+      }
+  
+      const teachingLoadId = teachingLoadQuery.rows[0].teachingload_id;
+  
+      // Step 3: Generate a unique grade_id
+      const gradeId = `${studentId}grade${Math.floor(10000 + Math.random() * 90000)}`;
+  
+      // Step 4: Insert grade data into gradestbl
+      const insertGradeQuery = `
+        INSERT INTO gradestbl (grade_id, teachingload_id, student_id, grade, quarter)
+        VALUES ($1, $2, $3, $4, $5)
+      `;
+      await client.query(insertGradeQuery, [gradeId, teachingLoadId, studentId, grade, quarter]);
+  
+      // Commit transaction
+      await client.query('COMMIT');
+      res.status(200).json({ message: 'Grade inserted successfully' });
+    } catch (err) {
+      // Rollback transaction on error
+      await client.query('ROLLBACK');
+      console.error('Error inserting grade:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    } finally {
+      client.release(); // Release the client back to the pool
+    }
+  });
+  
 
 // Student ------------------------------------------------------------------------------------------
 

@@ -129,7 +129,7 @@ const UploadGrades = ({ quarter }) => {
             </thead>
             <tbody>
               {maleStudents.map((student) => (
-                <tr key={student .student_id}>
+                <tr key={student.student_id}>
                   <td>{student.student_id}</td>
                   <td>{student.full_name}</td>
                   <td className="centered-input">

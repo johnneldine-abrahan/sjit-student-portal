@@ -32,7 +32,7 @@ const actionItems = [
   {
     icon: <MdOutlineUploadFile size={40} />,
     text: "Upload Grades",
-    content: <UploadGrades />,
+    content: UploadGrades, // Change to just reference the component
   },
   {
     icon: <MdAnalytics size={40} />,
@@ -41,36 +41,42 @@ const actionItems = [
   },
 ];
 
-const FilterModal = () => {
+const FilterModal = ({ setQuarter }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [schoolYear, setSchoolYear] = useState("");
   const [semester, setSemester] = useState("FIRST");
-  const [quarter, setQuarter] = useState("1st");
+  const [quarterState, setQuarterState] = useState("1st");
+  
   const [schoolYears, setSchoolYears] = useState([]);
 
   const [defaultSchoolYear, setDefaultSchoolYear] = useState("");
   const [defaultSemester, setDefaultSemester] = useState("FIRST");
   const [defaultQuarter, setDefaultQuarter] = useState("1st");
 
-  const [hasLoggedFilters, setHasLoggedFilters] = useState(false); // New flag
+  const [hasLoggedFilters, setHasLoggedFilters] = useState(false);
+
+  const handleQuarterChange = (e) => {
+    setQuarterState(e.target.value);
+  };
 
   const handleFilterClick = () => {
     setIsModalOpen(true);
     if (!schoolYear && schoolYears.length > 0) {
       setSchoolYear(defaultSchoolYear);
       setSemester(defaultSemester);
-      setQuarter(defaultQuarter);
+      setQuarterState(defaultQuarter);
     }
   };
 
   const handleCloseModal = () => {
     setSchoolYear(defaultSchoolYear);
     setSemester(defaultSemester);
-    setQuarter(defaultQuarter);
+    setQuarterState(defaultQuarter);
     setIsModalOpen(false);
   };
 
   const handleApplyFilter = () => {
+    setQuarter(quarterState); // Pass quarter state to parent
     setIsModalOpen(false);
   };
 
@@ -80,11 +86,7 @@ const FilterModal = () => {
 
   const handleSemesterChange = (e) => {
     setSemester(e.target.value);
-    setQuarter(e.target.value === "FIRST" ? "1st" : "3rd");
-  };
-
-  const handleQuarterChange = (e) => {
-    setQuarter(e.target.value);
+    setQuarterState(e.target.value === "FIRST" ? "1st" : "3rd");
   };
 
   useEffect(() => {
@@ -101,7 +103,7 @@ const FilterModal = () => {
         }
       } catch (error) {
         console.error('Error fetching school years:', error);
-      }
+ }
     };
 
     fetchSchoolYears();
@@ -115,19 +117,18 @@ const FilterModal = () => {
 
         if (decodedPayload.semester) {
           setSemester(decodedPayload.semester);
-          setQuarter(decodedPayload.semester === "FIRST" ? "1st" : "3rd");
+          setQuarterState(decodedPayload.semester === "FIRST" ? "1st" : "3rd");
         }
       }
     }
   }, []);
 
   useEffect(() => {
-    // Log filters only once after the initial setup and if schoolYear is set
     if (!hasLoggedFilters && schoolYear) {
-      console.log("Current filters:", { schoolYear, semester, quarter });
-      setHasLoggedFilters (true); // Set the flag to true after logging
+      console.log("Current filters:", { schoolYear, semester, quarter: quarterState });
+      setHasLoggedFilters(true);
     }
-  }, [schoolYear, semester, quarter, hasLoggedFilters]);
+  }, [schoolYear, semester, quarterState, hasLoggedFilters]);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -135,7 +136,7 @@ const FilterModal = () => {
     }
 
     return () => {
-      document.body.style.overflow = "auto"; // Reset to "auto" on cleanup
+      document.body.style.overflow = "auto";
     };
   }, [isModalOpen]);
 
@@ -143,8 +144,8 @@ const FilterModal = () => {
     e.preventDefault();
     setDefaultSchoolYear(schoolYear);
     setDefaultSemester(semester);
-    setDefaultQuarter(quarter);
-    console.log("Filters applied:", { schoolYear, semester, quarter });
+    setDefaultQuarter(quarterState);
+    console.log("Filters applied:", { schoolYear, semester, quarter: quarterState });
     handleApplyFilter();
   };
 
@@ -182,7 +183,7 @@ const FilterModal = () => {
                 </select>
 
                 <label>Quarter:</label>
-                <select value={quarter} onChange={handleQuarterChange}>
+                <select value={quarterState} onChange={handleQuarterChange}>
                   {semester === "FIRST" && (
                     <>
                       <option value="1st">1st Quarter</option>
@@ -212,6 +213,7 @@ const FilterModal = () => {
 };
 
 const MainContent_Faculty = () => {
+  const [quarter, setQuarter] = useState("1st");
   const bannerImages = [image1, image2, image3];
   return (
     <section className="mainSection">
@@ -225,7 +227,7 @@ const MainContent_Faculty = () => {
       >
         {bannerImages.map((image, index) => (
           <div key={index}>
-            <img src={image} alt={`Pinas.jpg ${index + 1}`} />
+            <img src={image} alt={`Banner ${index + 1}`} />
           </div>
         ))}
       </Carousel>
@@ -236,7 +238,7 @@ const MainContent_Faculty = () => {
           Please click "Filter" button to change the current school year /
           semester
         </p>
-        <FilterModal />
+        <FilterModal setQuarter={setQuarter} />
       </div>
 
       <div className="actionGrid">
@@ -245,12 +247,13 @@ const MainContent_Faculty = () => {
             key={index}
             icon={item.icon}
             text={item.text}
-            content={item.content}
+            content={<item.content quarter={quarter} />} 
           />
         ))}
       </div>
     </section>
   );
+ 
 };
 
 export default MainContent_Faculty;

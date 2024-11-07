@@ -48,20 +48,28 @@ const FilterModal = () => {
   const [quarter, setQuarter] = useState("1st");
   const [schoolYears, setSchoolYears] = useState([]);
 
-  // Store last applied values
-  const [lastAppliedSchoolYear, setLastAppliedSchoolYear] = useState("");
-  const [lastAppliedSemester, setLastAppliedSemester] = useState("FIRST");
-  const [lastAppliedQuarter, setLastAppliedQuarter] = useState("1st");
+  const [defaultSchoolYear, setDefaultSchoolYear] = useState("");
+  const [defaultSemester, setDefaultSemester] = useState("FIRST");
+  const [defaultQuarter, setDefaultQuarter] = useState("1st");
 
   const handleFilterClick = () => {
-    // Open modal and set current state to last applied values
-    setSchoolYear(lastAppliedSchoolYear);
-    setSemester(lastAppliedSemester);
-    setQuarter(lastAppliedQuarter);
     setIsModalOpen(true);
+    if (!schoolYear && schoolYears.length > 0) {
+      // Set initial values when opening the modal for the first time
+      setSchoolYear(defaultSchoolYear);
+      setSemester(defaultSemester);
+      setQuarter(defaultQuarter);
+    }
   };
 
   const handleCloseModal = () => {
+    setSchoolYear(defaultSchoolYear);
+    setSemester(defaultSemester);
+    setQuarter(defaultQuarter);
+    setIsModalOpen(false);
+  }
+
+  const handleApplyFilter = () => {
     setIsModalOpen(false);
   };
 
@@ -71,7 +79,7 @@ const FilterModal = () => {
 
   const handleSemesterChange = (e) => {
     setSemester(e.target.value);
-    setQuarter(e.target.value === "FIRST" ? "1st" : ""); // Reset quarter for semester change
+    setQuarter(e.target.value === "FIRST" ? "1st" : "3rd");
   };
 
   const handleQuarterChange = (e) => {
@@ -85,35 +93,35 @@ const FilterModal = () => {
         if (response.data.rows && Array.isArray(response.data.rows)) {
           const years = response.data.rows.map(row => row.school_year);
           setSchoolYears(years);
-          if (!schoolYear && years.length > 0) {
-            setSchoolYear(lastAppliedSchoolYear || years[0]);
+          if (years.length > 0) {
+            setDefaultSchoolYear(years[0]);
+            setSchoolYear(years[0]);
           }
         }
       } catch (error) {
         console.error('Error fetching school years:', error);
       }
     };
-  
+
     if (isModalOpen) {
       fetchSchoolYears();
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
     }
-  
+
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isModalOpen, lastAppliedSchoolYear, schoolYear]);
-  
+  }, [isModalOpen]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Apply filter logic here
-    setLastAppliedSchoolYear(schoolYear);
-    setLastAppliedSemester(semester);
-    setLastAppliedQuarter(quarter);
+    setDefaultSchoolYear(schoolYear);
+    setDefaultSemester(semester);
+    setDefaultQuarter(quarter);
     console.log("Filters applied:", { schoolYear, semester, quarter });
-    handleCloseModal(); // Close the modal after applying filters
+    handleApplyFilter();
   };
 
   return (
@@ -136,7 +144,7 @@ const FilterModal = () => {
             </div>
             <div className="modalBody">
               <form onSubmit={handleSubmit}>
-                <label>School Year :</label>
+                <label>School Year:</label>
                 <select value={schoolYear} onChange={handleSchoolYearChange}>
                   {schoolYears.map((year, index) => (
                     <option key={index} value={year}>{year}</option>
@@ -150,7 +158,7 @@ const FilterModal = () => {
                 </select>
 
                 <label>Quarter:</label>
-                <select value={quarter} onChange={handleQuarterChange} disabled={!semester}>
+                <select value={quarter} onChange={handleQuarterChange}>
                   {semester === "FIRST" && (
                     <>
                       <option value="1st">1st Quarter</option>

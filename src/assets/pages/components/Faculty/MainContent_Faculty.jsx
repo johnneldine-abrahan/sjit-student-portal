@@ -106,6 +106,20 @@ const FilterModal = () => {
     if (isModalOpen) {
       fetchSchoolYears();
       document.body.style.overflow = "hidden";
+
+      const token = localStorage.getItem("token"); // Assuming token is stored in localStorage
+      if (token) {
+        const parts = token.split('.');
+        if (parts.length === 3) {
+          const payload = parts[1]; // Get the payload part
+          const decodedPayload = JSON.parse(atob(payload)); // Decode and parse the payload
+
+          if (decodedPayload.semester) {
+            setSemester(decodedPayload.semester); // Set the semester from the decoded token
+          }
+        }
+      }
+      
     } else {
       document.body.style.overflow = "unset";
     }

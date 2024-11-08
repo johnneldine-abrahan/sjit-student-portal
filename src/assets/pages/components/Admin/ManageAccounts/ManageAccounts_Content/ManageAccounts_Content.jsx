@@ -282,7 +282,7 @@ const ManageAccounts_Content = () => {
             <div className="popup-content">
               <form onSubmit={handleSubmit}>
                 <div className="first-row">
-                  <div className="form-group">
+                  <div className="input-box">
                     <label>First Name:</label>
                     <input
                       type="text"
@@ -291,7 +291,7 @@ const ManageAccounts_Content = () => {
                       onChange={handleChange}
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="input-box">
                     <label>Middle Name:</label>
                     <input
                       type="text"
@@ -300,9 +300,7 @@ const ManageAccounts_Content = () => {
                       onChange={handleChange}
                     />
                   </div>
-                </div>
-                <div className="second-row">
-                  <div className="form-group">
+                  <div className="input-box">
                     <label>Last Name:</label>
                     <input
                       type="text"
@@ -311,7 +309,9 @@ const ManageAccounts_Content = () => {
                       onChange={handleChange}
                     />
                   </div>
-                  <div className="form-group">
+                </div>
+                <div className="second-row">
+                  <div className="input-box">
                     <label>User Role:</label>
                     <input
                       type="text"
@@ -320,9 +320,7 @@ const ManageAccounts_Content = () => {
                       onChange={handleChange}
                     />
                   </div>
-                </div>
-                <div className="third-row">
-                  <div className="form-group">
+                  <div className="input-box">
                     <label>Password:</label>
                     <input
                       type="password"
@@ -332,7 +330,9 @@ const ManageAccounts_Content = () => {
                     />
                   </div>
                 </div>
-                <button type="submit">Update Account</button>
+                <div className="button-container">
+                  <div><button type="submit" className="btn-box">Done</button></div>
+                </div>
               </form>
             </div>
           </div>

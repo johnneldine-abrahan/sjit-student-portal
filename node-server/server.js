@@ -1798,6 +1798,8 @@ app.get('/faculty-schedules', authenticateToken, async (req, res) => {
                 sec.grade_level,
                 sec.strand,
                 sec.section_name,
+                sec.semester,
+                sec.school_year,
                 sch.day,
                 sch.start_time,
                 sch.end_time,

@@ -193,7 +193,7 @@ const FacultySchedule = () => {
                 <td>
                   {subjectInfo.schedule.map((schedule, idx) => (
                     <div className="schedule_faculty" key={idx}>
-                      {abbreviateDays(schedule.days)} - {formatTime(schedule.start_time)} - {formatTime(schedule.end_time)} / {schedule.room}
+                      <strong>{abbreviateDays(schedule.days)}</strong> - {formatTime(schedule.start_time)} - {formatTime(schedule.end_time)} / {schedule.room}
                     </div>
                   ))}
                 </td>

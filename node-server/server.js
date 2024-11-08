@@ -1935,30 +1935,47 @@ app.post('/add-grade', authenticateToken, async (req, res) => {
   
       const teachingLoadId = teachingLoadQuery.rows[0].teachingload_id;
   
-      // Step 3: Iterate over the grades array and insert each grade
+      // Step 3: Iterate over the grades array and upsert each grade
       for (const { studentId, grade } of grades) {
-        const gradeId = `${studentId}grade${Math.floor(10000 + Math.random() * 90000)}`;
-  
-        const insertGradeQuery = `
-          INSERT INTO gradestbl (grade_id, teachingload_id, student_id, grade, quarter)
-          VALUES ($1, $2, $3, $4, $5)
+        // Check if the grade for this student, quarter, and teaching load already exists
+        const existingGradeQuery = `
+          SELECT grade_id FROM gradestbl 
+          WHERE student_id = $1 AND teachingload_id = $2 AND quarter = $3
         `;
-        await client.query(insertGradeQuery, [gradeId, teachingLoadId, studentId, grade, quarter]);
+        const existingGradeResult = await client.query(existingGradeQuery, [studentId, teachingLoadId, quarter]);
+  
+        if (existingGradeResult.rows.length > 0) {
+          // If grade exists, update it
+          const updateGradeQuery = `
+            UPDATE gradestbl 
+            SET grade = $1 
+            WHERE grade_id = $2
+          `;
+          const gradeId = existingGradeResult.rows[0].grade_id;
+          await client.query(updateGradeQuery, [grade, gradeId]);
+        } else {
+          // If grade does not exist, insert it
+          const gradeId = `${studentId}grade${Math.floor(10000 + Math.random() * 90000)}`;
+          const insertGradeQuery = `
+            INSERT INTO gradestbl (grade_id, teachingload_id, student_id, grade, quarter)
+            VALUES ($1, $2, $3, $4, $5)
+          `;
+          await client.query(insertGradeQuery, [gradeId, teachingLoadId, studentId, grade, quarter]);
+        }
       }
   
       // Commit transaction
       await client.query('COMMIT');
-      res.status(200).json({ message: 'Grades inserted successfully' });
+      res.status(200).json({ message: 'Grades added/updated successfully' });
     } catch (err) {
       // Rollback transaction on error
       await client.query('ROLLBACK');
-      console.error('Error inserting grades:', err);
+      console.error('Error inserting/updating grades:', err);
       res.status(500).json({ error: 'Internal server error' });
     } finally {
       client.release(); // Release the client back to the pool
     }
   });
-  
   
 
 // Student ------------------------------------------------------------------------------------------

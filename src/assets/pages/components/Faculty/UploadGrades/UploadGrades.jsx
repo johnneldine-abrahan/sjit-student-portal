@@ -48,11 +48,11 @@ const UploadGrades = ({ quarter }) => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:3000/grades/${subject.section_id}/${subject.subject_id}`, // No need for quarter in the URL
+        `http://localhost:3000/grades/${subject.section_id}/${subject.subject_id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
-            quarter: quarter, // Include quarter in the headers
+            quarter: quarter,
           },
         }
       );
@@ -63,18 +63,17 @@ const UploadGrades = ({ quarter }) => {
       setCurrentSectionName(subject.section_name);
       setCurrentSubjectName(subject.subject_name);
 
-      // Initialize grades state with fetched data
       const initialGrades = {
         male: {},
         female: {},
       };
 
       response.data.male.forEach(student => {
-        initialGrades.male[student.student_id] = student.grade || ""; // Set existing grade or empty
+        initialGrades.male[student.student_id] = student.grade || ""; // Allow empty grades for NULL
       });
 
       response.data.female.forEach(student => {
-        initialGrades.female[student.student_id] = student.grade || ""; // Set existing grade or empty
+        initialGrades.female[student.student_id] = student.grade || ""; // Allow empty grades for NULL
       });
 
       setGrades(initialGrades);
@@ -92,9 +91,41 @@ const UploadGrades = ({ quarter }) => {
       ...prevGrades,
       [gender]: {
         ...prevGrades[gender],
-        [studentId]: value, // Update the specific student's grade
+        [studentId]: value, // Keep the value as is (including empty strings)
       },
     }));
+  };
+
+  const handleSaveGrades = async () => {
+    const gradesArray = [
+      ...Object.entries(grades.male).map(([studentId, grade]) => ({
+        studentId,
+        grade: grade === "" ? null : grade, // Send null for empty grades
+      })),
+      ...Object.entries(grades.female).map(([studentId, grade]) => ({
+        studentId,
+        grade: grade === "" ? null : grade, // Send null for empty grades
+      })),
+    ];
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/add-grade",
+        { grades: gradesArray },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            quarter: quarter,
+          },
+        }
+      );
+
+      alert(response.data.message); // Show success message
+      // Optionally, reset the grades state or navigate away
+    } catch (err) {
+      console.error("Error saving grades:", err);
+      alert("Failed to save grades.");
+    }
   };
 
   if (loading) {
@@ -108,7 +139,7 @@ const UploadGrades = ({ quarter }) => {
   return (
     <div>
       {viewingStudents ? (
-        <div>
+        < div>
           <div className="header-container-list">
             <button
               className="back-button"
@@ -173,7 +204,7 @@ const UploadGrades = ({ quarter }) => {
             </tbody>
           </table>
           <div className="button-container">
-            <button className="btn-box">
+            <button className="btn-box" onClick={handleSaveGrades}>
               <span className="save-icon">
                 <FaSave />
               </span>

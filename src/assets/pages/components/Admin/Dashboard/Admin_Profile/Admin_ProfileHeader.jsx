@@ -33,6 +33,9 @@ const Admin_ProfileHeader = () => {
       show: false,
       message: '',
     });
+
+    localStorage.clear('token');
+    
     navigate('/login');
   };
 

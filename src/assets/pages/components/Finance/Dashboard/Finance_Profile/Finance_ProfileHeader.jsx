@@ -18,6 +18,8 @@ const Finance_ProfileHeader = () => {
       show: true,
       message: 'Are you sure you want to log out?',
     });
+
+    localStorage.clear('token');
   };
 
   const handleClose = () => {

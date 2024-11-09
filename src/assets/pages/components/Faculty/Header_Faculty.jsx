@@ -16,6 +16,11 @@ const Header_Faculty = () => {
       show: true,
       message: 'Are you sure you want to log out?',
     });
+
+    localStorage.clear('quarter');
+    localStorage.clear('schoolYear');
+    localStorage.clear('semester');
+
   };
 
   const handleClose = () => {

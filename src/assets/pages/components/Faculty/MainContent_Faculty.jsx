@@ -22,37 +22,35 @@ const actionItems = [
   {
     icon: <AiFillSchedule size={40} />,
     text: "View Schedules",
-    content: ViewSchedules, // This should be a valid component reference
+    content: (props) => <ViewSchedules {...props} />, // Pass props to ViewSchedules
   },
   {
     icon: <FaList size={40} />,
     text: "Section & Student List",
-    content: StudentList, // This should be a valid component reference
+    content: StudentList,
   },
   {
     icon: <MdOutlineUploadFile size={40} />,
     text: "Upload Grades",
-    content: UploadGrades, // This should be a valid component reference
+    content: UploadGrades,
   },
   {
     icon: <MdAnalytics size={40} />,
     text: "Reports",
-    content: Dashboard_Faculty, // This should be a valid component reference
+    content: Dashboard_Faculty,
   },
 ];
 
-const FilterModal = ({ setQuarter }) => {
+const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [schoolYear, setSchoolYear] = useState("");
-  const [semester, setSemester] = useState("FIRST");
+  const [modalSchoolYear, setModalSchoolYear] = useState(""); // Renamed
+  const [modalSemester, setModalSemester] = useState("FIRST"); // Renamed
   const [quarterState, setQuarterState] = useState("1st");
   
   const [schoolYears, setSchoolYears] = useState([]);
-
   const [defaultSchoolYear, setDefaultSchoolYear] = useState("");
   const [defaultSemester, setDefaultSemester] = useState("FIRST");
   const [defaultQuarter, setDefaultQuarter] = useState("1st");
-
   const [hasLoggedFilters, setHasLoggedFilters] = useState(false);
 
   const handleQuarterChange = (e) => {
@@ -61,31 +59,34 @@ const FilterModal = ({ setQuarter }) => {
 
   const handleFilterClick = () => {
     setIsModalOpen(true);
-    if (!schoolYear && schoolYears.length > 0) {
-      setSchoolYear(defaultSchoolYear);
-      setSemester(defaultSemester);
+    if (!modalSchoolYear && schoolYears.length > 0) {
+      setModalSchoolYear(defaultSchoolYear);
+      setModalSemester(defaultSemester);
       setQuarterState(defaultQuarter);
     }
   };
 
   const handleCloseModal = () => {
-    setSchoolYear(defaultSchoolYear);
-    setSemester(defaultSemester);
+    setModalSchoolYear(defaultSchoolYear);
+    setModalSemester(defaultSemester);
     setQuarterState(defaultQuarter);
     setIsModalOpen(false);
   };
 
   const handleApplyFilter = () => {
     setQuarter(quarterState); // Pass quarter state to parent
+    setSchoolYear(modalSchoolYear); // Pass schoolYear to parent
+    setSemester(modalSemester); // Pass semester to parent
+    onApplyFilters({ schoolYear: modalSchoolYear, semester: modalSemester, quarter: quarterState }); // Pass filters to parent
     setIsModalOpen(false);
   };
 
   const handleSchoolYearChange = (e) => {
-    setSchoolYear(e.target.value);
+    setModalSchoolYear(e.target.value);
   };
 
   const handleSemesterChange = (e) => {
-    setSemester(e.target.value);
+    setModalSemester(e.target.value);
     setQuarterState(e.target.value === "FIRST" ? "1st" : "3rd");
   };
 
@@ -98,12 +99,12 @@ const FilterModal = ({ setQuarter }) => {
           setSchoolYears(years);
           if (years.length > 0) {
             setDefaultSchoolYear(years[0]);
-            setSchoolYear(years[0]);
+            setModalSchoolYear(years[0]);
           }
         }
       } catch (error) {
         console.error('Error fetching school years:', error);
- }
+      }
     };
 
     fetchSchoolYears();
@@ -116,7 +117,7 @@ const FilterModal = ({ setQuarter }) => {
         const decodedPayload = JSON.parse(atob(payload));
 
         if (decodedPayload.semester) {
-          setSemester(decodedPayload.semester);
+          setModalSemester(decodedPayload.semester);
           setQuarterState(decodedPayload.semester === "FIRST" ? "1st" : "3rd");
         }
       }
@@ -124,11 +125,11 @@ const FilterModal = ({ setQuarter }) => {
   }, []);
 
   useEffect(() => {
-    if (!hasLoggedFilters && schoolYear) {
-      console.log("Current filters:", { schoolYear, semester, quarter: quarterState });
+    if (!hasLoggedFilters && modalSchoolYear) {
+      console.log("Current filters:", { schoolYear: modalSchoolYear, semester: modalSemester, quarter: quarterState });
       setHasLoggedFilters(true);
     }
-  }, [schoolYear, semester, quarterState, hasLoggedFilters]);
+  }, [modalSchoolYear, modalSemester, quarterState, hasLoggedFilters]);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -142,10 +143,10 @@ const FilterModal = ({ setQuarter }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setDefaultSchoolYear(schoolYear);
-    setDefaultSemester(semester);
+    setDefaultSchoolYear(modalSchoolYear);
+    setDefaultSemester(modalSemester);
     setDefaultQuarter(quarterState);
-    console.log("Filters applied:", { schoolYear, semester, quarter: quarterState });
+    console.log("Filters applied:", { schoolYear: modalSchoolYear, semester: modalSemester, quarter: quarterState });
     handleApplyFilter();
   };
 
@@ -170,27 +171,27 @@ const FilterModal = ({ setQuarter }) => {
             <div className="modalBody">
               <form onSubmit={handleSubmit}>
                 <label>School Year:</label>
-                <select value={schoolYear} onChange={handleSchoolYearChange}>
+                <select value={modalSchoolYear} onChange={handleSchoolYearChange}>
                   {schoolYears.map((year, index) => (
                     <option key={index} value={year}>{year}</option>
                   ))}
                 </select>
 
                 <label>Semester:</label>
-                <select value={semester} onChange={handleSemesterChange}>
+                <select value={modalSemester} onChange={handleSemesterChange}>
                   <option value="FIRST">First Semester</option>
                   <option value="SECOND">Second Semester</option>
                 </select>
 
                 <label>Quarter:</label>
                 <select value={quarterState} onChange={handleQuarterChange}>
-                  {semester === "FIRST" && (
+                  {modalSemester === "FIRST" && (
                     <>
                       <option value="1st">1st Quarter</option>
                       <option value="2nd">2nd Quarter</option>
                     </>
                   )}
-                  {semester === "SECOND" && (
+                  {modalSemester === "SECOND" && (
                     <>
                       <option value="3rd">3rd Quarter</option>
                       <option value="4th">4th Quarter</option>
@@ -214,7 +215,19 @@ const FilterModal = ({ setQuarter }) => {
 
 const MainContent_Faculty = () => {
   const [quarter, setQuarter] = useState("1st");
+  const [schoolYear, setSchoolYear] = useState(""); // State for schoolYear
+  const [semester, setSemester] = useState("FIRST"); // State for semester
   const bannerImages = [image1, image2, image3];
+
+
+  const handleApplyFilters = ({ schoolYear, semester, quarter }) => {
+    console.log("Current filters:", { schoolYear, semester, quarter });
+    setSchoolYear(schoolYear);
+    setSemester(semester);
+    setQuarter(quarter);
+    console.log("Filters applied:", { schoolYear, semester, quarter });
+  };
+
   return (
     <section className="mainSection">
       <Carousel
@@ -234,11 +247,11 @@ const MainContent_Faculty = () => {
 
       <div className="filter-section">
         <p>
-          <IoIosInformationCircleOutline size={30} className="info-ico" />
+          < IoIosInformationCircleOutline size={30} className="info-ico" />
           Please click "Filter" button to change the current school year /
           semester
         </p>
-        <FilterModal setQuarter={setQuarter} />
+        <FilterModal setQuarter={setQuarter} setSchoolYear={setSchoolYear} setSemester={setSemester} onApplyFilters={handleApplyFilters} />
       </div>
 
       <div className="actionGrid">
@@ -247,13 +260,12 @@ const MainContent_Faculty = () => {
             key={index}
             icon={item.icon}
             text={item.text}
-            content={React.createElement(item.content, { quarter })} // Use React.createElement to render component with props
+            content={React.createElement(item.content, { quarter, schoolYear, semester })} // Use React.createElement to render component with props
           />
         ))}
       </div>
     </section>
   );
- 
 };
 
 export default MainContent_Faculty;

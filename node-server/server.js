@@ -115,7 +115,16 @@ app.post("/login", async (req, res) => {
                 { expiresIn: "1h" }
             );
 
-            return res.json({ message: "Login successful!", token, userRole: user.user_role });
+            let quarter;
+            if (facultyData.semester === 'FIRST') {
+                quarter = '1st';
+            } else if (facultyData.semester === 'SECOND') {
+                quarter = '3rd';
+            } else {
+                quarter = null; // or some default value
+            }
+
+            return res.json({ message: "Login successful!", token, userRole: user.user_role, schoolYear: facultyData.school_year, semester: facultyData.semester, quarter });
         }
 
         // Create JWT token for other roles (Admin, Finance, etc.)
@@ -1778,6 +1787,7 @@ app.get('/teacher/students/:section_id/:subject_id', authenticateToken, async (r
 
 app.get('/faculty-schedules', authenticateToken, async (req, res) => {
     const userId = req.user.userId;
+    const { modalSchoolYear, modalSemester } = req.query; // Retrieve schoolYear and semester from query parameters
 
     try {
         // Check if the faculty exists
@@ -1790,7 +1800,7 @@ app.get('/faculty-schedules', authenticateToken, async (req, res) => {
 
         const facultyId = facultyCheckResult.rows[0].faculty_id;
 
-        // Fetch schedules
+        // Fetch schedules with filtering by schoolYear and semester
         const query = `
             SELECT
                 st.subject_id,
@@ -1818,22 +1828,25 @@ app.get('/faculty-schedules', authenticateToken, async (req, res) => {
                 scheduletbl sch ON sec.section_id = sch.section_id
             WHERE
                 acc.user_id = $1
+                AND sec.school_year = $2
+                AND sec.semester = $3
             `;
 
-        const result = await pool.query(query, [userId]);
+        const result = await pool.query(query, [userId, modalSchoolYear, modalSemester]);
         console.log('Query result:', result.rows); // Log the result for debugging
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'No schedule found for this faculty member.' });
+            return res.status(404).json({ message: 'No schedule found for this faculty member for the specified school year and semester.' });
         }
 
-        // Return the schedules
+        // Return the filtered schedules
         res.json(result.rows);
     } catch (error) {
         console.error('Error executing query:', error);
         return res.status(500).json({ error: 'Database query failed' });
     }
 });
+
 
 app.get('/grades/:section_id/:subject_id', authenticateToken, async (req, res) => {
     const userId = req.user.userId; // Get the user_id from the JWT token

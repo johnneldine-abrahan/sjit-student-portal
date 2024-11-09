@@ -56,33 +56,39 @@ const FacultyScheduleList = ({ facultyRecords }) => {
   );
 };
 
-const FacultySchedule = () => {
+const FacultySchedule = ({ schoolYear, semester }) => {
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'table'
   const [facultyRecords, setFacultyRecords] = useState([]); // State to hold fetched schedules
   const [loading, setLoading] = useState(true); // State to handle loading
+  const [errorMessage, setErrorMessage] = useState(''); // State to hold error messages
 
   useEffect(() => {
     const fetchSchedules = async () => {
+      setLoading(true); // Start loading before fetching
+      setErrorMessage(''); // Clear any previous error message
+
+      const token = localStorage.getItem('token');
+
       try {
-        const response = await fetch('http://localhost:3000/faculty-schedules', {
-          method : 'GET',
+        const response = await fetch(`http://localhost:3000/faculty-schedules?modalSchoolYear=${schoolYear}&modalSemester=${semester}`, {
+          method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming you're using token-based auth
+            'Authorization': `Bearer ${token}` // Assuming you're using token-based auth
           }
         });
-        
+
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-        
+
         const data = await response.json();
 
         // Group records by subject
         const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
         const groupedRecords = Object.values(data.reduce((acc, record) => {
           const subjectKey = `${record.subject_id}-${record.subject_name}`;
-          
+
           if (!acc[subjectKey]) {
             acc[subjectKey] = {
               subject_id: record.subject_id,
@@ -107,7 +113,7 @@ const FacultySchedule = () => {
                 strand: record.strand 
               });
             }
-            
+
             const existingSchedule = acc[subjectKey].schedule.find(schedule => 
               schedule.start_time === record.start_time && 
               schedule.end_time === record.end_time && 
@@ -127,7 +133,7 @@ const FacultySchedule = () => {
               });
             }
           }
-          
+
           return acc;
         }, {}));
 
@@ -146,13 +152,14 @@ const FacultySchedule = () => {
         setFacultyRecords(groupedRecords);
       } catch (error) {
         console.error('Error fetching schedules:', error);
+        setErrorMessage('Select a school year and semester on filter to show subjects.');
       } finally {
         setLoading(false);
       }
     };
 
     fetchSchedules();
-  }, []); // Empty dependency array to run only once on mount
+  }, [schoolYear, semester]); // Empty dependency array to run only once on mount
 
   if (loading) {
     return <div>Loading...</div>; // Loading state
@@ -165,7 +172,9 @@ const FacultySchedule = () => {
         <button className="right" onClick={() => setViewMode('table')}>Table View</button>
       </div>
 
-      {viewMode === 'list' ? (
+      {errorMessage ? (
+        <div className="error-message">{errorMessage}</div>
+      ) : viewMode === 'list' ? (
         <FacultyScheduleList facultyRecords={facultyRecords} />
       ) : (
         <table className="faculty-schedule-table">
@@ -201,6 +210,12 @@ const FacultySchedule = () => {
             ))}
           </tbody>
         </table>
+      )}
+
+      {facultyRecords.length === 0 && !errorMessage && (
+        <div className="no-records-message">
+          No Subjects available.
+        </div>
       )}
     </div>
   );

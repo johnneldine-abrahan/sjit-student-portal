@@ -32,10 +32,14 @@ const Login = () => {
 
         if (response.ok) {
             const data = await response.json();
-            const { token, userRole } = data;
+            const { token, userRole, schoolYear, semester, quarter} = data;
 
             // Store the token in localStorage
             localStorage.setItem('token', token);
+            localStorage.setItem('role', userRole);
+            localStorage.setItem('school_year', schoolYear);
+            localStorage.setItem('semester', semester);
+            localStorage.setItem('quarter', quarter);
 
             // Redirect based on role
             if (userRole === 'Admin') {

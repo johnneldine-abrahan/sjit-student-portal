@@ -158,11 +158,11 @@ const Subjects_and_Schedule = ({ schoolYear, semester }) => {
   }, [schoolYear, semester]); // Add dependencies to re-fetch when filters change
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Please select school year and semester to view subjects and schedules</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div>{error}</div>;
   }
 
   return (

@@ -4,7 +4,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import "./UploadGrades.css";
 import { FaSave } from "react-icons/fa";
 
-const UploadGrades = ({ quarter }) => {
+const UploadGrades = ({ schoolYear, semester, quarter }) => {
   const [subjects, setSubjects] = useState([]);
   const [maleStudents, setMaleStudents] = useState([]);
   const [femaleStudents, setFemaleStudents] = useState([]);
@@ -15,7 +15,6 @@ const UploadGrades = ({ quarter }) => {
   const [currentSectionName, setCurrentSectionName] = useState("");
   const [currentSubjectName, setCurrentSubjectName] = useState("");
 
-  // State to hold grades for students
   const [grades, setGrades] = useState({
     male: {},
     female: {},
@@ -30,9 +29,20 @@ const UploadGrades = ({ quarter }) => {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
+            params: {
+              schoolYear,
+              semester
+            },
           }
         );
-        setSubjects(response.data);
+
+        const filteredSubjects = response.data.filter(
+          (subject) =>
+            (!schoolYear || subject.school_year === schoolYear) &&
+            (!semester || subject.semester === semester)
+        );
+
+        setSubjects(filteredSubjects);
       } catch (err) {
         console.error("Error fetching subjects:", err);
         setError("Failed to fetch subjects.");
@@ -42,7 +52,7 @@ const UploadGrades = ({ quarter }) => {
     };
 
     fetchSubjects();
-  }, []);
+  }, [schoolYear, semester, quarter]);
 
   const handleViewStudents = async (subject) => {
     try {
@@ -69,11 +79,11 @@ const UploadGrades = ({ quarter }) => {
       };
 
       response.data.male.forEach(student => {
-        initialGrades.male[student.student_id] = student.grade || ""; // Allow empty grades for NULL
+        initialGrades.male[student.student_id] = student.grade || "";
       });
 
       response.data.female.forEach(student => {
-        initialGrades.female[student.student_id] = student.grade || ""; // Allow empty grades for NULL
+        initialGrades.female[student.student_id] = student.grade || "";
       });
 
       setGrades(initialGrades);
@@ -91,7 +101,7 @@ const UploadGrades = ({ quarter }) => {
       ...prevGrades,
       [gender]: {
         ...prevGrades[gender],
-        [studentId]: value, // Keep the value as is (including empty strings)
+        [studentId]: value,
       },
     }));
   };
@@ -100,11 +110,11 @@ const UploadGrades = ({ quarter }) => {
     const gradesArray = [
       ...Object.entries(grades.male).map(([studentId, grade]) => ({
         studentId,
-        grade: grade === "" ? null : grade, // Send null for empty grades
+        grade: grade === "" ? null : grade,
       })),
       ...Object.entries(grades.female).map(([studentId, grade]) => ({
         studentId,
-        grade: grade === "" ? null : grade, // Send null for empty grades
+        grade: grade === "" ? null : grade,
       })),
     ];
 
@@ -120,8 +130,7 @@ const UploadGrades = ({ quarter }) => {
         }
       );
 
-      alert(response.data.message); // Show success message
-      // Optionally, reset the grades state or navigate away
+      alert(response.data.message);
     } catch (err) {
       console.error("Error saving grades:", err);
       alert("Failed to save grades.");
@@ -139,7 +148,7 @@ const UploadGrades = ({ quarter }) => {
   return (
     <div>
       {viewingStudents ? (
-        < div>
+        <div>
           <div className="header-container-list">
             <button
               className="back-button"

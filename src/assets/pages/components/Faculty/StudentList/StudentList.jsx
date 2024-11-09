@@ -3,7 +3,7 @@ import axios from "axios";
 import { IoMdArrowRoundBack, IoMdPrint } from "react-icons/io"; // Import the icons
 import "./StudentList.css";
 
-const StudentList = () => {
+const StudentList = ({ schoolYear, semester}) => {
   const [subjects, setSubjects] = useState([]); // State to hold the subjects data
   const [maleStudents, setMaleStudents] = useState([]); // State to hold the male students data
   const [femaleStudents, setFemaleStudents] = useState([]); // State to hold the female students data
@@ -17,15 +17,27 @@ const StudentList = () => {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
+        setLoading(true);
         const response = await axios.get(
           "http://localhost:3000/teacher/subjects",
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming you store the token in localStorage
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            params: {
+              schoolYear,
+              semester
             },
           }
         );
-        setSubjects(response.data); // Update state with fetched subjects
+
+        const filteredSubjects = response.data.filter(
+          (subject) =>
+            (!schoolYear || subject.school_year === schoolYear) &&
+            (!semester || subject.semester === semester)
+        );
+
+        setSubjects(filteredSubjects); // Update state with filtered subjects
       } catch (err) {
         console.error("Error fetching subjects:", err);
         setError("Failed to fetch subjects."); // Set error message
@@ -34,10 +46,9 @@ const StudentList = () => {
       }
     };
 
-    fetchSubjects(); // Call the function to fetch subjects
-  }, []); // Empty dependency array to run once on mount
+    fetchSubjects();
+  }, [schoolYear, semester]); // Re-fetch when filters change
 
-  // Fetch students when the user clicks "View Student List"
   const handleViewStudents = async (subject) => {
     try {
       setLoading(true); // Set loading to true while fetching students
@@ -63,12 +74,10 @@ const StudentList = () => {
     }
   };
 
-  // Function to handle printing
   const handlePrint = () => {
-    window.print(); // This will trigger the browser's print dialog
+    window.print(); // Trigger the browser's print dialog
   };
 
-  // Render loading state or error message if necessary
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -77,7 +86,6 @@ const StudentList = () => {
     return <div>{error}</div>;
   }
 
-  // Render subjects or students based on the state
   return (
     <div>
       {viewingStudents ? (
@@ -113,7 +121,7 @@ const StudentList = () => {
           <table className="student-table student-table-margin">
             <thead>
               <tr>
-                <th className="studentidfemalelist">Student ID</th>
+                <th>Student ID</th>
                 <th>Student Name</th>
               </tr>
             </thead>
@@ -126,7 +134,6 @@ const StudentList = () => {
               ))}
             </tbody>
           </table>
-          {/* Print button with icon wrapped in a span */}
           <div className="button-container">
             <button className="btn-box" onClick={handlePrint}>
               <span className="print-icon">

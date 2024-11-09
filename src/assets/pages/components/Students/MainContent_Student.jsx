@@ -19,85 +19,107 @@ import { Carousel } from "react-responsive-carousel";
 import image1 from "../../../img/Faculty/Pinas.jpg";
 import image2 from "../../../img/Faculty/RHU.jpg";
 import image3 from "../../../img/Faculty/Aids.jpg";
+import axios from "axios";
 
 const actionItems = [
   {
     icon: <GrCertificate size={40} />,
     text: "Certificate of Registration",
-    content: <Certificate_of_Registration />,
+    content: Certificate_of_Registration,
   },
   {
     icon: <AiFillSchedule size={40} />,
     text: "Subjects and Schedule",
-    content: <Subjects_and_Schedule />,
+    content: Subjects_and_Schedule,
   },
   {
     icon: <PiExamFill size={40} />,
     text: "Grades",
-    content: <Grades_Students />,
+    content: Grades_Students,
   },
   {
     icon: <FaReceipt size={40} />,
     text: "Payments",
-    content: <Payments />,
+    content: Payments,
   },
   {
     icon: <GiInjustice size={40} />,
     text: "Liabilities",
-    content: <Liabilities_Students />,
+    content: Liabilities_Students,
   },
   {
     icon: <IoMdPrint size={40} />,
     text: "Print Copy of Grades",
-    content: <PrintCopyofGrades />,
+    content: PrintCopyofGrades,
   },
 ];
 
-const FilterModal = () => {
+const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [schoolYear, setSchoolYear] = useState("");
-  const [semester, setSemester] = useState("");
-  const [quarter, setQuarter] = useState("");
+  const [modalSchoolYear, setModalSchoolYear] = useState(""); 
+  const [modalSemester, setModalSemester] = useState("FIRST"); 
+  const [quarterState, setQuarterState] = useState("1st");
+  
+  const [schoolYears, setSchoolYears] = useState([]);
+  const [defaultSchoolYear, setDefaultSchoolYear] = useState("");
+  const [defaultSemester, setDefaultSemester] = useState("FIRST");
+  const [defaultQuarter, setDefaultQuarter] = useState("1st");
+
+  const handleQuarterChange = (e) => {
+    setQuarterState(e.target.value);
+  };
 
   const handleFilterClick = () => {
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
+    setModalSchoolYear(defaultSchoolYear);
+    setModalSemester(defaultSemester);
+    setQuarterState(defaultQuarter);
+    setIsModalOpen(false);
+  };
+
+  const handleApplyFilter = () => {
+    setQuarter(quarterState); 
+    setSchoolYear(modalSchoolYear); 
+    setSemester(modalSemester); 
+    onApplyFilters({ schoolYear: modalSchoolYear, semester: modalSemester, quarter: quarterState }); 
     setIsModalOpen(false);
   };
 
   const handleSchoolYearChange = (e) => {
-    setSchoolYear(e.target.value);
+    setModalSchoolYear(e.target.value);
   };
 
   const handleSemesterChange = (e) => {
-    setSemester(e.target.value);
-    setQuarter(""); // Reset quarter when semester changes
-  };
-
-  const handleQuarterChange = (e) => {
-    setQuarter(e.target.value);
+    setModalSemester(e.target.value);
+    setQuarterState(e.target.value === "FIRST" ? "1st" : "3rd");
   };
 
   useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset"; // Reset overflow when modal is closed
-    }
-
-    // Clean up the effect when the component unmounts or modal closes
-    return () => {
-      document.body.style.overflow = "unset";
+    const fetchSchoolYears = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/school_years');
+        if (response.data.rows && Array.isArray(response.data.rows)) {
+          const years = response.data.rows.map(row => row.school_year);
+          setSchoolYears(years);
+          if (years.length > 0) {
+            setDefaultSchoolYear(years[0]);
+            setModalSchoolYear(years[0]);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching school years:', error);
+      }
     };
-  }, [isModalOpen]);
+
+    fetchSchoolYears();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle filter application logic here
-    console.log("Filters applied:", { schoolYear, semester, quarter });
-    handleCloseModal(); // Close the modal after applying filters
+    handleApplyFilter();
   };
 
   return (
@@ -121,34 +143,33 @@ const FilterModal = () => {
             <div className="modalBody">
               <form onSubmit={handleSubmit}>
                 <label>School Year:</label>
-                <select className="select-gray" value={schoolYear} onChange={handleSchoolYearChange}>
-                <option value="">Select School Year</option>
-                <option value="2022-2023">2022-2023</option>
-                <option value="2023-2024">2023-2024</option>
-                <option value="2024-2025">2024-2025</option>
-              </select>
+                <select value={modalSchoolYear} onChange={handleSchoolYearChange}>
+                  {schoolYears.map((year, index) => (
+                    <option key={index} value={year}>{year}</option>
+                  ))}
+                </select>
 
-              <select className="select-gray" value={semester} onChange={handleSemesterChange}>
-                <option value="">Select Semester</option>
-                <option value="First Semester">First Semester</option>
-                <option value="Second Semester">Second Semester</option>
-              </select>
+                <label>Semester:</label>
+                <select value={modalSemester} onChange={handleSemesterChange}>
+                  <option value="FIRST">First Semester</option>
+                  <option value="SECOND">Second Semester</option>
+                </select>
 
-              <select className="select-gray" value={quarter} onChange={handleQuarterChange} disabled={!semester}>
-                <option value="">Select Quarter</option>
-                {semester === "First Semester" && (
-                  <>
-                    <option value="1st Quarter">1st Quarter</option>
-                    <option value="2nd Quarter">2nd Quarter</option>
-                  </>
-                )}
-                {semester === "Second Semester" && (
-                  <>
-                    <option value="3rd Quarter">3rd Quarter</option>
-                    <option value="4th Quarter">4th Quarter</option>
-                  </>
-                )}
-              </select>
+                <label>Quarter:</label>
+                <select value={quarterState} onChange={handleQuarterChange}>
+                  {modalSemester === "FIRST" && (
+                    <>
+                      <option value="1st">1st Quarter</option>
+                      <option value="2nd">2nd Quarter</option>
+                    </>
+                  )}
+                  {modalSemester === "SECOND" && (
+                    <>
+                      <option value="3rd">3rd Quarter</option>
+                      <option value="4th">4th Quarter</option>
+                    </>
+                  )}
+                </select>
 
                 <div className="button-container">
                   <button type="submit" className="btn-box">
@@ -165,7 +186,19 @@ const FilterModal = () => {
 };
 
 const MainContent_Student = () => {
+  const [quarter, setQuarter] = useState("1st");
+  const [schoolYear, setSchoolYear] = useState(""); 
+  const [semester, setSemester] = useState("FIRST"); 
   const bannerImages = [image1, image2, image3];
+
+  const handleApplyFilters = ({ schoolYear, semester, quarter }) => {
+    console.log("Current filters:", { schoolYear, semester, quarter });
+    setSchoolYear(schoolYear);
+    setSemester(semester);
+    setQuarter(quarter);
+    console.log("Filters applied:", { schoolYear, semester, quarter });
+  };
+
   return (
     <section className="mainSection">
       <Carousel
@@ -178,7 +211,7 @@ const MainContent_Student = () => {
       >
         {bannerImages.map((image, index) => (
           <div key={index}>
-            <img src={image} alt={`Pinas.jpg ${index + 1}`} />
+            <img src={image} alt={`Banner ${index + 1}`} />
           </div>
         ))}
       </Carousel>
@@ -189,7 +222,7 @@ const MainContent_Student = () => {
           Please click "Filter" button to change the current school year /
           semester
         </p>
-        <FilterModal />
+        <FilterModal setQuarter={setQuarter} setSchoolYear={setSchoolYear} setSemester={setSemester} onApplyFilters={handleApplyFilters} />
       </div>
 
       <div className="actionGrid">
@@ -198,7 +231,7 @@ const MainContent_Student = () => {
             key={index}
             icon={item.icon}
             text={item.text}
-            content={item.content} // Pass specific content for each card
+            content={React.createElement(item.content, { quarter, schoolYear, semester })} 
           />
         ))}
       </div>

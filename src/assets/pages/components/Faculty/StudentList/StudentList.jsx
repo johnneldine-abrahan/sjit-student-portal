@@ -3,7 +3,7 @@ import axios from "axios";
 import { IoMdArrowRoundBack, IoMdPrint } from "react-icons/io"; // Import the icons
 import "./StudentList.css";
 
-const StudentList = ({ schoolYear, semester}) => {
+const StudentList = ({ schoolYear, semester }) => {
   const [subjects, setSubjects] = useState([]); // State to hold the subjects data
   const [maleStudents, setMaleStudents] = useState([]); // State to hold the male students data
   const [femaleStudents, setFemaleStudents] = useState([]); // State to hold the female students data
@@ -16,6 +16,12 @@ const StudentList = ({ schoolYear, semester}) => {
 
   useEffect(() => {
     const fetchSubjects = async () => {
+      if (!schoolYear || !semester) {
+        setError("Select a school year and semester to view sections and student list.");
+        setLoading(false);
+        return; // Exit if parameters are not provided
+      }
+  
       try {
         setLoading(true);
         const response = await axios.get(
@@ -25,19 +31,13 @@ const StudentList = ({ schoolYear, semester}) => {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
             params: {
-              schoolYear,
-              semester
+              modalSchoolYear: schoolYear, // Correct parameter names
+              modalSemester: semester
             },
           }
         );
-
-        const filteredSubjects = response.data.filter(
-          (subject) =>
-            (!schoolYear || subject.school_year === schoolYear) &&
-            (!semester || subject.semester === semester)
-        );
-
-        setSubjects(filteredSubjects); // Update state with filtered subjects
+  
+        setSubjects(response.data); // Update state with fetched subjects
       } catch (err) {
         console.error("Error fetching subjects:", err);
         setError("Failed to fetch subjects."); // Set error message
@@ -45,7 +45,7 @@ const StudentList = ({ schoolYear, semester}) => {
         setLoading(false); // Set loading to false after fetching
       }
     };
-
+  
     fetchSubjects();
   }, [schoolYear, semester]); // Re-fetch when filters change
 
@@ -99,7 +99,7 @@ const StudentList = ({ schoolYear, semester}) => {
             </button>
             <h2 className="header-title-list">{`${currentGradeLevel} - ${currentSectionName} / ${currentSubjectName}`}</h2>
           </div>
-          <h3>Male Students</h3>
+          <h3>Male Students</ h3>
           <table className="student-table student-table-margin">
             <thead>
               <tr>

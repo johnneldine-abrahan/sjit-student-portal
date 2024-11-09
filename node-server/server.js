@@ -1672,54 +1672,61 @@ app.get('/school_years', (req, res) => {
 });
 
 app.get('/teacher/subjects', authenticateToken, async (req, res) => {
-    const userId = req.user.userId; // Get the user_id from the JWT token
+    const userId = req.user.userId;  // Get the user_id from the JWT token
+    const { modalSchoolYear, modalSemester } = req.query; // Destructure schoolYear and semester from query parameters
 
     try {
-        // Step 1: Get the faculty_id based on the user_id
-        const facultyResult = await pool.query(`
-            SELECT faculty_id FROM facultytbl WHERE user_id = $1
-        `, [userId]);
+        // Step 1: Check if the faculty exists
+        const facultyCheckQuery = 'SELECT faculty_id FROM facultytbl WHERE user_id = $1';
+        const facultyCheckResult = await pool.query(facultyCheckQuery, [userId]);
 
-        if (facultyResult.rows.length === 0) {
-            return res.status(404).json({ message: 'Faculty not found for the given user ID.' });
+        if (facultyCheckResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Faculty not found for this user ID.' });
         }
 
-        const facultyId = facultyResult.rows[0].faculty_id;
+        const facultyId = facultyCheckResult.rows[0].faculty_id;
 
-        // Step 2: Get the teaching loads for the faculty_id
-        const teachingLoadResult = await pool.query(`
-            SELECT section_id FROM teachingload_tbl WHERE faculty_id = $1
-        `, [facultyId]);
-
-        const sectionIds = teachingLoadResult.rows.map(row => row.section_id);
-
-        if (sectionIds.length === 0) {
-            return res.status(404).json({ message: 'No teaching loads found for this faculty.' });
-        }
-
-        // Step 3: Get the subjects based on the section_ids, including school_year and semester
-        const subjectsResult = await pool.query(`
+        // Step 2: Fetch the subjects with filtering by schoolYear and semester
+        const query = `
             SELECT
-                sec.section_id,  -- Section ID
-                sec.subject_id,
-                sub.subject_name,
+                st.subject_id,
+                sec.section_id,
+                st.subject_name,
                 sec.grade_level,
                 sec.strand,
                 sec.section_name,
-                sec.school_year,   -- Added school_year
-                sec.semester       -- Added semester
-            FROM sectiontbl sec
-            JOIN subjecttbl sub ON sec.subject_id = sub.subject_id
-            WHERE sec.section_id = ANY($1::text[])
-        `, [sectionIds]);
+                sec.semester,
+                sec.school_year
+            FROM
+                accountstbl acc
+            JOIN
+                facultytbl fac ON acc.user_id = fac.user_id
+            JOIN
+                teachingload_tbl tl ON fac.faculty_id = tl.faculty_id
+            JOIN
+                sectiontbl sec ON tl.section_id = sec.section_id
+            JOIN
+                subjecttbl st ON sec.subject_id = st.subject_id
+            WHERE
+                acc.user_id = $1
+                AND sec.school_year = $2
+                AND sec.semester = $3
+        `;
 
-        // Step 4: Return the subjects
-        res.status(200).json(subjectsResult.rows);
+        const result = await pool.query(query, [userId, modalSchoolYear, modalSemester]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'No subjects found for this faculty member for the specified school year and semester.' });
+        }
+
+        // Step 3: Return the filtered subjects
+        res.status(200).json(result.rows);
     } catch (error) {
-        console.error('Error fetching subjects for teacher:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        console.error('Error executing query:', error);
+        return res.status(500).json({ error: 'Database query failed' });
     }
 });
+
 
 app.get('/teacher/students/:section_id/:subject_id', authenticateToken, async (req, res) => {
     const userId = req.user.userId; // Get the user_id from the JWT token

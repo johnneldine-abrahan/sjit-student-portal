@@ -22,7 +22,14 @@ const UploadGrades = ({ schoolYear, semester, quarter }) => {
 
   useEffect(() => {
     const fetchSubjects = async () => {
+      if (!schoolYear || !semester) {
+        setError("Select a school year and semester to view subjects.");
+        setLoading(false);
+        return; // Exit if parameters are not provided
+      }
+
       try {
+        setLoading(true);
         const response = await axios.get(
           "http://localhost:3000/teacher/subjects",
           {
@@ -30,24 +37,18 @@ const UploadGrades = ({ schoolYear, semester, quarter }) => {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
             params: {
-              schoolYear,
-              semester
+              modalSchoolYear: schoolYear, // Correct parameter names
+              modalSemester: semester
             },
           }
         );
 
-        const filteredSubjects = response.data.filter(
-          (subject) =>
-            (!schoolYear || subject.school_year === schoolYear) &&
-            (!semester || subject.semester === semester)
-        );
-
-        setSubjects(filteredSubjects);
+        setSubjects(response.data); // Update state with fetched subjects
       } catch (err) {
         console.error("Error fetching subjects:", err);
-        setError("Failed to fetch subjects.");
+        setError("Failed to fetch subjects."); // Set error message
       } finally {
-        setLoading(false);
+        setLoading(false); // Set loading to false after fetching
       }
     };
 

@@ -2004,6 +2004,12 @@ app.post('/add-grade', authenticateToken, async (req, res) => {
 
 app.get('/schedule', authenticateToken, async (req, res) => {
     const userId = req.user.userId; // Ensure this matches your JWT payload
+    const { modalSchoolYear, modalSemester } = req.query; // Extract parameters from the query string
+
+    // Validate the parameters
+    if (!modalSchoolYear || !modalSemester) {
+        return res.status(400).json({ error: 'Both school year and semester are required.' });
+    }
 
     const query = `
         SELECT DISTINCT
@@ -2032,12 +2038,14 @@ app.get('/schedule', authenticateToken, async (req, res) => {
             scheduletbl AS sch ON sec.section_id = sch.section_id
         WHERE
             acc.user_id = $1
+            AND sec.school_year = $2
+            AND sec.semester = $3
         ORDER BY
             sch.day, sch.start_time;
     `;
 
     try {
-        const { rows } = await pool.query(query, [userId]);
+        const { rows } = await pool.query(query, [userId, modalSchoolYear, modalSemester]);
 
         if (rows.length > 0) {
             return res.status(200).json(rows);

@@ -39,10 +39,7 @@ const ScheduleItem = ({ subjectInfo }) => (
       ))}
     </div>
     {subjectInfo.schedule.map((schedule, index) => (
-      <div
-        className="schedule_student"
-        key={`${subjectInfo.subject_id}-${index}`}
-      >
+      <div className="schedule_student" key={`${subjectInfo.subject_id}-${index}`}>
         <p style={{ fontWeight: "bold" }}>
           {schedule.days
             .sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b))
@@ -59,13 +56,13 @@ const ScheduleItem = ({ subjectInfo }) => (
 
 const ScheduleList = ({ schedules }) => (
   <div className="schedule-list">
-    {schedules.map((subjectInfo, index) => (
+    {schedules.map((subjectInfo) => (
       <ScheduleItem key={subjectInfo.subject_id} subjectInfo={subjectInfo} />
     ))}
   </div>
 );
 
-const Subjects_and_Schedule = () => {
+const Subjects_and_Schedule = ({ schoolYear, semester }) => {
   const [viewMode, setViewMode] = useState("list");
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -73,8 +70,14 @@ const Subjects_and_Schedule = () => {
 
   useEffect(() => {
     const fetchSchedules = async () => {
+      if (!schoolYear || !semester) {
+        console.error("Missing required parameters for fetching schedules.");
+        return; // Early exit
+      }
+
       try {
-        const response = await fetch("http://localhost:3000/schedule", {
+        console.log("Fetching schedules with:", { schoolYear, semester });
+        const response = await fetch(`http://localhost:3000/schedule?modalSchoolYear=${schoolYear}&modalSemester=${semester}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -83,7 +86,7 @@ const Subjects_and_Schedule = () => {
         });
 
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error("No data available");
         }
 
         const data = await response.json();
@@ -104,11 +107,7 @@ const Subjects_and_Schedule = () => {
             }
 
             // Add section info
-            if (
-              !acc[key].sections.some(
-                (section) => section.section_name === record.section_name
-              )
-            ) {
+            if (!acc[key].sections.some(section => section.section_name === record.section_name)) {
               acc[key].sections.push({
                 grade_level: record.grade_level,
                 section_name: record.section_name,
@@ -116,11 +115,10 @@ const Subjects_and_Schedule = () => {
             }
 
             // Add schedule info
-            const existingSchedule = acc[key].schedule.find(
-              (schedule) =>
-                schedule.start_time === record.start_time &&
-                schedule.end_time === record.end_time &&
-                schedule.room === record.room
+            const existingSchedule = acc[key].schedule.find(schedule =>
+              schedule.start_time === record.start_time &&
+              schedule.end_time === record.end_time &&
+              schedule.room === record.room
             );
 
             if (existingSchedule) {
@@ -132,7 +130,7 @@ const Subjects_and_Schedule = () => {
                 days: [record.day],
                 start_time: record.start_time,
                 end_time: record.end_time,
-                room: record.room,
+                room: record .room,
               });
             }
 
@@ -157,7 +155,7 @@ const Subjects_and_Schedule = () => {
     };
 
     fetchSchedules();
-  }, []);
+  }, [schoolYear, semester]); // Add dependencies to re-fetch when filters change
 
   if (loading) {
     return <div>Loading...</div>;
@@ -192,7 +190,7 @@ const Subjects_and_Schedule = () => {
             </tr>
           </thead>
           <tbody>
-            {schedules.map((scheduleGroup, index) => (
+            {schedules.map((scheduleGroup) => (
               <tr key={scheduleGroup.subject_id}>
                 <td>{scheduleGroup.subject_id}</td>
                 <td>{scheduleGroup.subject_name}</td>

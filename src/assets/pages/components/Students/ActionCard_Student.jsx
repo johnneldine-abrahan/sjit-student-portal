@@ -12,15 +12,13 @@ const ActionCard_Student = ({ icon, text, content }) => {
     setIsModalOpen(false);
   };
 
-  // Disable scrolling when modal is open
   useEffect(() => {
     if (isModalOpen) {
       document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = 'unset'; // Reset overflow when modal is closed
+      document.body.style.overflow = 'unset';
     }
 
-    // Clean up the effect when the component unmounts or modal closes
     return () => {
       document.body.style.overflow = 'unset';
     };
@@ -30,7 +28,7 @@ const ActionCard_Student = ({ icon, text, content }) => {
     <>
       <div className='actionCard' onClick={handleCardClick}>
         <div className='actionIcon'>{icon}</div>
-        <span className='actionText'>{text}</span>
+        <div className='actionText'>{text}</div>
       </div>
 
       {isModalOpen && (
@@ -41,7 +39,7 @@ const ActionCard_Student = ({ icon, text, content }) => {
               <button className='modalCloseButton' onClick={handleCloseModal}>Close</button>
             </div>
             <div className='modalBody'>
-              <p>{content}</p>
+              {content} {/* Render the content directly */}
             </div>
           </div>
         </div>

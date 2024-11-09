@@ -23,7 +23,7 @@ const UploadGrades = ({ schoolYear, semester, quarter }) => {
   useEffect(() => {
     const fetchSubjects = async () => {
       if (!schoolYear || !semester) {
-        setError("Select a school year and semester to view subjects.");
+        setError("Select a school year and semester to view subjects and students' grades.");
         setLoading(false);
         return; // Exit if parameters are not provided
       }

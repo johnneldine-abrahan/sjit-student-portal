@@ -115,7 +115,8 @@ const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters })
     };
 
     fetchSchoolYears();
-  }, []);
+  },
+  []);
 
   const handleSubmit = (e) => {
     e.preventDefault();

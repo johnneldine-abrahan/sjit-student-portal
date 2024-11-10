@@ -2058,6 +2058,75 @@ app.get('/schedule', authenticateToken, async (req, res) => {
     }
 });
 
+app.get('/grades', authenticateToken, async (req, res) => {
+    const userId = req.user.userId; // Ensure this matches how user ID is stored
+    const { modalSchoolYear, modalSemester, quarterState } = req.query;
+
+    if (!modalSchoolYear || !modalSemester || !quarterState) {
+        return res.status(400).send('School year, semester, and quarter state are required');
+    }
+
+    try {
+        // Log user ID for debugging
+        console.log('User  ID:', userId); // Use userId variable
+
+        // Fetch student_id from studenttbl using user_id
+        const studentResult = await pool.query(
+            'SELECT student_id FROM studenttbl WHERE user_id = $1',
+            [userId] // Use the userId variable here
+        );
+
+        // Log the result of the student query
+        console.log('Student Query Result:', studentResult.rows);
+
+        if (studentResult.rows.length === 0) {
+            return res.status(404).send('Student not found');
+        }
+
+        const student_id = studentResult.rows[0].student_id;
+
+        // Fetch grades based on school year, semester, and quarter
+        const query = `
+            SELECT 
+                s.student_id, 
+                sec.section_name, 
+                sub.subject_id, 
+                sub.subject_name, 
+                sec.school_year, 
+                sec.semester, 
+                g.quarter, 
+                g.grade, 
+                sec.faculty_name
+            FROM 
+                enrollmenttbl AS e  -- Assuming this table links students to sections
+            JOIN 
+                studenttbl AS s ON e.student_id = s.student_id
+            JOIN 
+                sectiontbl AS sec ON e.section_id = sec.section_id  -- Link to sectiontbl
+            JOIN 
+                subjecttbl AS sub ON sec.subject_id = sub.subject_id
+            JOIN 
+                gradestbl AS g ON s.student_id = g.student_id
+            WHERE 
+                sec.school_year = $1 
+                AND sec.semester = $2 
+                AND g.quarter = $3 
+                AND s.student_id = $4
+        `;
+
+        const gradesResult = await pool.query(query, [modalSchoolYear, modalSemester, quarterState, student_id]);
+
+        if (gradesResult.rows.length === 0) {
+            return res.status(404).send('No grades found for the specified criteria');
+        }
+
+        res.json(gradesResult.rows);
+    } catch (error) {
+        console.error('Error fetching grades:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });

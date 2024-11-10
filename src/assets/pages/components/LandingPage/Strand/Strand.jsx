@@ -47,7 +47,7 @@ const Strand = () => {
           <img src={ict} alt="" />
           <div className='caption_strand'>
             <img src={ict_logo} alt="" />
-            <p>Internet & Communication Technology (TVL-ICT)</p>
+            <p>Information & Communication Technology (TVL-ICT)</p>
           </div>
         </div>
         <div className='strand'>

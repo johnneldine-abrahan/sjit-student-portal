@@ -1035,9 +1035,9 @@ app.get('/getSubjects', async (req, res) => {
             } else if (strand === "TVL - Home Economics (TVL-HE)") {
                 query += (params.length ? ' AND' : ' WHERE') + ' (strand_classification = $' + (params.length + 1) + ' OR strand_classification = \'All\' OR strand_classification = \'TVL\')';
                 params.push('TVL - Home Economics (TVL-HE)');
-            } else if (strand === "TVL - Internet Communications Technology (TVL-ICT)") {
+            } else if (strand === "TVL - Information Communications Technology (TVL-ICT)") {
                 query += (params.length ? ' AND' : ' WHERE') + ' (strand_classification = $' + (params.length + 1) + ' OR strand_classification = \'All\' OR strand_classification = \'TVL\')';
-                params.push('TVL - Internet Communications Technology (TVL-ICT)');
+                params.push('TVL - Information Communications Technology (TVL-ICT)');
             }
         }
 
@@ -1409,9 +1409,9 @@ app.get('/subjectsPreview', async (req, res) => {
             } else if (strand === "TVL - Home Economics (TVL-HE)") {
                 query += (params.length ? ' AND' : ' WHERE') + ' (strand_classification = $' + (params.length + 1) + ' OR strand_classification = \'All\' OR strand_classification = \'TVL\')';
                 params.push('TVL - Home Economics (TVL-HE)');
-            } else if (strand === "TVL - Internet Communications Technology (TVL-ICT)") {
+            } else if (strand === "TVL - Information Communications Technology (TVL-ICT)") {
                 query += (params.length ? ' AND' : ' WHERE') + ' (strand_classification = $' + (params.length + 1) + ' OR strand_classification = \'All\' OR strand_classification = \'TVL\')';
-                params.push('TVL - Internet Communications Technology (TVL-ICT)');
+                params.push('TVL - Information Communications Technology (TVL-ICT)');
             }
         }
 

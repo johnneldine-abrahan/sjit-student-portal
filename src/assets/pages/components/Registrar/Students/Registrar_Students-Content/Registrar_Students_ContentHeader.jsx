@@ -380,8 +380,8 @@ const Registrar_Students_ContentHeader = ({
                                 <option value="TVL - Home Economics (TVL-HE)">
                                   TVL - Home Economics (TVL-HE)
                                 </option>
-                                <option value="TVL - Internet Communications Technology (TVL-ICT)">
-                                  TVL - Internet Communications Technology
+                                <option value="TVL - Information Communications Technology (TVL-ICT)">
+                                  TVL - Information Communications Technology
                                   (TVL-ICT)
                                 </option>
                               </>

@@ -251,8 +251,8 @@ const Enroll_Students_ContentHeader = (props) => {
                       <option value="TVL - Home Economics (TVL-HE)">
                         TVL - Home Economics (TVL-HE)
                       </option>
-                      <option value="TVL - Internet Communications Technology (TVL-ICT)">
-                        TVL - Internet Communications Technology (TVL-ICT)
+                      <option value="TVL - Information Communications Technology (TVL-ICT)">
+                        TVL - Information Communications Technology (TVL-ICT)
                       </option>
                     </select>
                   </label>

@@ -1199,6 +1199,52 @@ app.post("/addSection", async (req, res) => {
     }
   });
 
+  app.get("/getSection/:section_id", async (req, res) => {
+    const client = await pool.connect();
+
+    try {
+        const { section_id } = req.params;
+
+        // Query to get section details
+        const sectionQuery = `
+            SELECT * FROM sectiontbl WHERE section_id = $1;
+        `;
+        const sectionResult = await client.query(sectionQuery, [section_id]);
+
+        if (sectionResult.rows.length === 0) {
+            return res.status(404).json({ message: "Section not found" });
+        }
+
+        const sectionData = sectionResult.rows[0];
+
+        // Query to get schedules related to the section
+        const scheduleQuery = `
+            SELECT * FROM scheduletbl WHERE section_id = $1;
+        `;
+        const scheduleResult = await client.query(scheduleQuery, [section_id]);
+
+        // Query to get teaching loads related to the section
+        const teachingLoadQuery = `
+            SELECT * FROM teachingload_tbl WHERE section_id = $1;
+        `;
+        const teachingLoadResult = await client.query(teachingLoadQuery, [section_id]);
+
+        // Combine the results
+        const responseData = {
+            section: sectionData,
+            schedules: scheduleResult.rows,
+            teachingLoads: teachingLoadResult.rows,
+        };
+
+        res.status(200).json(responseData);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error fetching data", error });
+    } finally {
+        client.release();
+    }
+});
+
   app.delete("/deleteSections", async (req, res) => {
     const { selectedSections } = req.body; // selectedSections is expected to be an array of section IDs
 

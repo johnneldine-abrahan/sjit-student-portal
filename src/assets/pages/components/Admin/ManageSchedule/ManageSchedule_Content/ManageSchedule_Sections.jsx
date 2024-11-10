@@ -32,11 +32,47 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
     });
   };
 
-  const handleEditPopup = (record) => {
+  const handleEditPopup = async (record) => {
     setEditPopup({
       show: true,
       record: record,
     });
+  
+    // Fetch the section data from the backend
+    try {
+      const response = await fetch(`http://localhost:3000/getSection/${record.section_id}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch section data");
+      }
+      const data = await response.json();
+  
+      // Populate the form data with the fetched data
+      setFormData({
+        gradeLevel: data.section.grade_level,
+        strand: data.section.strand,
+        subjectName: data.section.subject_name,
+        subjectId: data.section.subject_id,
+        facultyName: data.section.faculty_name,
+        facultyId: data.teachingLoads.length > 0 ? data.teachingLoads[0].faculty_id : "",
+        semester: data.section.semester,
+        slot: data.section.slot, // Set this based on your requirements
+        schoolyear: data.section.school_year,
+        program: data.section.program, // Set this based on your requirements
+        section: data.section.section_name,
+      });
+  
+      // Populate the schedule data
+      const schedules = data.schedules.map(schedule => ({
+        day: schedule.day,
+        startTime: schedule.start_time,
+        endTime: schedule.end_time,
+        room: schedule.room,
+      }));
+      
+      setTableData(schedules);
+    } catch (error) {
+      console.error("Error fetching section data:", error);
+    }
   };
 
   const handleClose = () => {

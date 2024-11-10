@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./ManageAccounts_Content.css";
 import { BiSearch } from "react-icons/bi";
-import { BiEditAlt } from "react-icons/bi";
+
 import {
   RiAddLargeFill,
   RiDeleteBin6Line,
@@ -104,6 +104,7 @@ const ManageAccounts_ContentHeader = ({
           middle_name: formData.middle_name || "",
           last_name: formData.last_name,
           user_role: formData.user_role,
+          status: result.status || "Active"
         };
 
         onNewAccount(newAccount);

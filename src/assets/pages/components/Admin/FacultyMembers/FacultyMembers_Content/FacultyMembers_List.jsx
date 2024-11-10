@@ -118,6 +118,7 @@ const FacultyMembers_List = ({
               <th>Last Name</th>
               <th>First Name</th>
               <th>Middle Name</th>
+              <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -138,6 +139,7 @@ const FacultyMembers_List = ({
                 <td>{record.last_name}</td>
                 <td>{record.first_name}</td>
                 <td>{record.middle_name}</td>
+                <td>{record.faculty_status}</td>
                 <td>
                   <button
                     className="view-details"

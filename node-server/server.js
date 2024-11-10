@@ -832,7 +832,7 @@ app.get('/announcements', authenticateToken, async (req, res) => {
     }
 });
 
-// Registrar & Finance Accounts --------------------------------------------------------------------------------------
+// Manage Accounts --------------------------------------------------------------------------------------
 
 app.post('/registerAccount', async (req, res) => {
     const { first_name, middle_name, last_name, user_role } = req.body;
@@ -865,13 +865,13 @@ app.post('/registerAccount', async (req, res) => {
         // Insert into role-specific table
         if (user_role === 'Finance') {
             const financeQuery = `
-                INSERT INTO financetbl (finance_id, first_name, middle_name, last_name, user_role, user_id, finance_status)
+                INSERT INTO financetbl (finance_id, first_name, middle_name, last_name, user_role, user_id, status)
                 VALUES ($1, $2, $3, $4, $5, $6, 'Active')
             `;
             await pool.query(financeQuery, [finance_id, first_name, middle_name, last_name, user_role, user_id]);
         } else if (user_role === 'Registrar') {
             const registrarQuery = `
-                INSERT INTO registrartbl (registrar_id, first_name, middle_name, last_name, user_role, user_id, registrar_status)
+                INSERT INTO registrartbl (registrar_id, first_name, middle_name, last_name, user_role, user_id, status)
                 VALUES ($1, $2, $3, $4, $5, $6, 'Active')
             `;
             await pool.query(registrarQuery, [registrar_id, first_name, middle_name, last_name, user_role, user_id]);
@@ -983,9 +983,18 @@ app.delete('/deleteAccounts', async (req, res) => {
 
 app.get('/getAccounts', async (req, res) => {
     try {
-        const result = await pool.query(
-            "SELECT * FROM accountstbl WHERE user_role = 'Registrar' OR user_role = 'Finance'"
-        );
+        const result = await pool.query(`
+            SELECT user_id, last_name, first_name, middle_name, user_role, status
+            FROM financetbl
+            WHERE user_role != 'Admin'
+            
+            UNION
+            
+            SELECT user_id, last_name, first_name, middle_name, user_role, status
+            FROM registrartbl
+            WHERE user_role != 'Admin'
+        `);
+        
         const accounts = result.rows;
         res.status(200).json(accounts);
     } catch (error) {
@@ -994,7 +1003,8 @@ app.get('/getAccounts', async (req, res) => {
     }
 });
 
-// Subject and Section -----------------------------------------------------------------------------
+
+// Manage Schedules -----------------------------------------------------------------------------
 
 app.get('/getSubjects', async (req, res) => {
     try {

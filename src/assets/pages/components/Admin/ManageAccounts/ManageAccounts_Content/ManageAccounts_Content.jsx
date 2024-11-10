@@ -231,6 +231,7 @@ const ManageAccounts_Content = () => {
                 <th>First Name</th>
                 <th>Middle Name</th>
                 <th>User Role</th>
+                <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -255,6 +256,7 @@ const ManageAccounts_Content = () => {
                   <td>{record.first_name}</td>
                   <td>{record.middle_name}</td>
                   <td>{record.user_role}</td>
+                  <td>{record.status}</td>
                   <td>
                     <button
                       className="edit-button"

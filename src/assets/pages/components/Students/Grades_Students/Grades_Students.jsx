@@ -1,12 +1,13 @@
-import React, {useState} from 'react'
-import './Grades_Students.css'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import './Grades_Students.css';
 
-const GradeItem = ({ subject, instructor, units, grade }) => {
+const GradeItem = ({ subject, instructor, grade, quarter }) => {
   return (
     <div className="grade-item">
       <div className="grade-details">
-        <h4>{subject}</h4>
-        <p>{instructor} - {units} units</p>
+        <h4>{subject} - {quarter} Quarter</h4> {/* Display quarter here */}
+        <p>{instructor}</p>
       </div>
       <div className="grade-score">
         <span>{grade}</span>
@@ -16,72 +17,87 @@ const GradeItem = ({ subject, instructor, units, grade }) => {
   );
 };
 
-
 const GradeList = ({ grades }) => {
   return (
     <div className="grade-list">
       {grades.map((grade, index) => (
         <GradeItem
           key={index}
-          subject={grade.subject}
-          instructor={grade.instructor}
-          units={grade.units}
+          subject={grade.subject_name} // Updated to match the API response
+          instructor={grade.faculty_name} // Updated to match the API response
           grade={grade.grade}
+          quarter={grade.quarter} // Include quarter information
         />
       ))}
     </div>
   );
 };
 
-
-const Grades_Students = () => {
+const Grades_Students = ({ quarter, schoolYear, semester }) => {
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'table'
+  const [grades, setGrades] = useState([]);
 
-  const grades = [
-    { subject: "BAT 403 - Fundamentals of Enterprise Data Management", instructor: "RAMOS, DEAN CHARLEMAGNE F.", units: 3, grade: "2.00" },
-    { subject: "BAT 404 - Analytic Techniques and Tools", instructor: "MENDOZA, ARJONE M.", units: 3, grade: "2.00" },
-    { subject: "IT 321 - Human-Computer Interaction", instructor: "MARASIGAN, KIMBERLY I.", units: 3, grade: "2.25" },
-    { subject: "IT 322 - Advanced Systems Integration and Architecture", instructor: "BALMES, JOSEPH ADRIAN F.", units: 3, grade: "1.75" },
-    { subject: "IT 323 - Information Assurance and Security", instructor: "DAÑO, GERALD JAMES O.", units: 3, grade: "1.25" },
-    { subject: "IT 324 - Capstone Project I", instructor: "CAÑIZADA, JEFFERSON L.", units: 3, grade: "1.25" },
-    { subject: "IT 325 - IT Project Management", instructor: "REYES, GLYDEL ANN E.", units: 3, grade: "1.25" }
-  ];
+  useEffect(() => {
+    const fetchGrades = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/grades', {
+          params: {
+            modalSchoolYear: schoolYear,
+            modalSemester: semester,
+            quarterState: quarter,
+          },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`, // Assuming you store the token in localStorage
+          },
+        });
+        setGrades(response.data);
+      } catch (error) {
+        console.error('Error fetching grades:', error);
+        // Handle error (e.g., show a notification)
+      }
+    };
+
+    // Fetch grades when the component mounts or filters change
+    if (quarter && schoolYear && semester) {
+      fetchGrades();
+    }
+  }, [quarter, schoolYear, semester]); // Dependency array
 
   return (
     <div className="grade-view-container">
-    <div className="view-toggle">
-      <button className="left" onClick={() => setViewMode('list')}>List View</button>
-      <button className="right" onClick={() => setViewMode('table')}>Table View</button>
-    </div>
+      <div className="view-toggle">
+        <button className="left" onClick={() => setViewMode('list')}>List View</button>
+        <button className="right" onClick={() => setViewMode('table')}>Table View</button>
+      </div>
 
-    {viewMode === 'list' ? (
-      <GradeList grades={grades} />
-    ) : (
-      <table className="grade-table">
-        <thead>
-          <tr>
-            <th>Subject</th>
-            <th>Instructor</th>
-            <th>Units</th>
-            <th>Grade</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {grades.map((grade, index) => (
-            <tr key={index}>
-              <td>{grade.subject}</td>
-              <td>{grade.instructor}</td>
-              <td>{grade.units}</td>
-              <td>{grade.grade}</td>
-              <td>&#10003;</td> {/* Checkmark */}
+      {viewMode === 'list' ? (
+        <GradeList grades={grades} />
+      ) : (
+        <table className="grade-table">
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Instructor</th>
+              <th>Quarter</th> {/* Added Quarter column */}
+              <th>Grade</th>
+              <th>Status</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    )}
-  </div>
-  )
-}
+          </thead>
+          <tbody>
+            {grades.map((grade, index) => (
+              <tr key={index}>
+                <td>{grade.subject_name}</td>
+                <td>{grade.faculty_name}</td>
+                <td>{grade.quarter} Quarter</td> {/* Display quarter here */}
+                <td>{grade.grade}</td>
+                <td>&#10003;</td> {/* Checkmark */}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+};
 
-export default Grades_Students
+export default Grades_Students;

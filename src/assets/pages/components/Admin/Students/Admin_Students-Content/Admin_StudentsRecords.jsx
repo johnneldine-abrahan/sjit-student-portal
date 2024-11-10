@@ -551,8 +551,7 @@ const Admin_StudentsRecords = ({
                         <>
                           <option value=""></option>
                           <option value="Science, Technology, Engineering and Mathematics (STEM)">
-                            Science, Technology, Engineering and Mathematics
-                            (STEM)
+                            Science, Technology, Engineering and Mathematics (STEM)
                           </option>
                           <option value="Accountancy, Business and Management (ABM)">
                             Accountancy, Business and Management (ABM)

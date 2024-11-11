@@ -24,6 +24,15 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
     setSelectedSections(selectedIds);
   }, [selectedIds, setSelectedSections]);
 
+  useEffect(() => {
+    // Disable scroll when popups are open
+    if (popup.show || editPopup.show) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [popup, editPopup]);
+
   const handlePopup = (record) => {
     setPopup({
       show: true,
@@ -429,7 +438,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                   </div>
                 </div>
 
-                <div className="second-row">
+                <div className="second -row">
                   <div className="input-box">
                     <label>Subject</label>
                     <input
@@ -468,8 +477,8 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                     />
                   </div>
                   <div className="input-box">
-                  <label>Faculty ID</label>
-                  <input
+                    <label>Faculty ID</label>
+                    <input
                       type="text"
                       name="facultyId"
                       value={formData.facultyId} // Display selected instructor's ID

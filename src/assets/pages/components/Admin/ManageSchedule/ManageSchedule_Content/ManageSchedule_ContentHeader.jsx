@@ -16,11 +16,6 @@ const ManageSchedule_ContentHeader = ({
     message: null,
   });
 
-  const [popupEdit, setPopupEdit] = useState({
-    show: false,
-    message: null,
-  });
-
   const [popupDelete, setPopupDelete] = useState({
     show: false,
     message: null,
@@ -215,13 +210,6 @@ const ManageSchedule_ContentHeader = ({
 
   const handleClose = () => {
     setPopup({
-      show: false,
-      message: null,
-    });
-  };
-
-  const handleEditClose = () => {
-    setPopupEdit({
       show: false,
       message: null,
     });
@@ -458,6 +446,15 @@ const ManageSchedule_ContentHeader = ({
 
     fetchSubjects();
   }, [formData.gradeLevel, formData.strand]);
+
+  useEffect(() => {
+    // Disable scroll when popups are open
+    if (popup.show || popupDelete.show || popupArchive.show) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [popup, popupDelete, popupArchive]);
 
   return (
     <div className="manage-schedule-header">

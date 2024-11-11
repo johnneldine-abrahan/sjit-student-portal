@@ -16,12 +16,11 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
     record: null,
   });
 
-  const [selectedIds, setSelectedIds] = useState([]); // State to track selected section IDs
-  const [selectAllChecked, setSelectAllChecked] = useState(false); // Add this line
-  const selectAllRef = useRef(); // Create a ref for the select-all checkbox
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const selectAllRef = useRef();
 
   useEffect(() => {
-    // Update the selected sections in the parent component
     setSelectedSections(selectedIds);
   }, [selectedIds, setSelectedSections]);
 
@@ -37,16 +36,14 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
       show: true,
       record: record,
     });
-  
-    // Fetch the section data from the backend
+
     try {
       const response = await fetch(`http://localhost:3000/getSection/${record.section_id}`);
       if (!response.ok) {
         throw new Error("Failed to fetch section data");
       }
       const data = await response.json();
-  
-      // Populate the form data with the fetched data
+
       setFormData({
         gradeLevel: data.section.grade_level,
         strand: data.section.strand,
@@ -55,20 +52,19 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
         facultyName: data.section.faculty_name,
         facultyId: data.teachingLoads.length > 0 ? data.teachingLoads[0].faculty_id : "",
         semester: data.section.semester,
-        slot: data.section.slot, // Set this based on your requirements
+        slot: data.section.slot,
         schoolyear: data.section.school_year,
-        program: data.section.program, // Set this based on your requirements
+        program: data.section.program,
         section: data.section.section_name,
       });
-  
-      // Populate the schedule data
+
       const schedules = data.schedules.map(schedule => ({
         day: schedule.day,
         startTime: schedule.start_time,
         endTime: schedule.end_time,
         room: schedule.room,
       }));
-      
+
       setTableData(schedules);
     } catch (error) {
       console.error("Error fetching section data:", error);
@@ -175,30 +171,6 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
     }));
   };
 
-  const handleSubjectChange = (event) => {
-    const selectedSubjectId = event.target.value;
-    const selectedSubject = sectionsData.find(
-      (subject) => subject.subject_id === selectedSubjectId
-    );
-    setFormData({
-      ...formData,
-      subjectName: selectedSubject ? selectedSubject.subject_name : "",
-      subjectId: selectedSubject ? selectedSubject.subject_id : "",
-    });
-  };
-
-  const handleFacultyChange = (event) => {
-    const selectedFacultyId = event.target.value;
-    const selectedFaculty = sectionsData.find(
-      (faculty) => faculty.faculty_id === selectedFacultyId
-    );
-    setFormData({
-      ...formData,
-      facultyName: selectedFaculty ? selectedFaculty.faculty_name : "",
-      facultyId: selectedFaculty ? selectedFaculty.faculty_id : "",
-    });
-  };
-
   return (
     <div className="section-list">
       <div className="recordslist-container">
@@ -236,8 +208,8 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                   <input
                     type="checkbox"
                     name={`select-${record.section_id}`}
-                    checked={selectedIds.includes(record.section_id)} // Add this line
-                    onChange={() => handleCheckboxChange(record.section_id)} // Update selection
+                    checked={selectedIds.includes(record.section_id)}
+                    onChange={() => handleCheckboxChange(record.section_id)}
                   />
                 </td>
                 <td>{record.section_id}</td>
@@ -329,7 +301,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                   <div className="grade-level">
                     <div className="second-row">
                       <label>Select Semester</label>
-                      <label>
+ <label>
                         <input
                           type="radio"
                           name="semester"
@@ -449,65 +421,50 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                 <div className="second-row">
                   <div className="input-box">
                     <label>Subject</label>
-                    <div style={{ display: "flex" }}>
-                      <select
-                        name="subjectName"
-                        onChange={handleSubjectChange} // Handle subject selection
-                      >
-                        <option value=""></option>
-                        {sectionsData.map((subject) => (
-                          <option
-                            key={subject.subject_id}
-                            value={subject.subject_id}
-                          >
-                            {subject.subject_name} {/* Display subject name */}
-                          </option>
-                        ))}
-                      </select>
-                      {/* Input field to show the subject ID */}
-                      <input
-                        type="text"
-                        name="subjectId"
-                        value={formData.subjectId} // Display selected subject's id
-                        onChange={handleFormDataChange}
-                        placeholder="Subject ID"
-                        style={{ marginLeft: 10 }}
-                        readOnly
-                      />
-                    </div>
+                    <input
+                      type="text"
+                      name="subjectName"
+                      value={formData.subjectName} // Display selected subject's name
+                      onChange={handleFormDataChange}
+                      placeholder="Subject Name"
+                    />
+                  </div>
+
+                  <div className="input-box">
+                    <label>Subject ID</label>
+                    <input
+                      type="text"
+                      name="subjectId"
+                      value={formData.subjectId}
+                      onChange={handleFormDataChange}
+                      placeholder="Subject ID"
+                      readOnly
+                    />
                   </div>
                 </div>
 
                 <div className="second-row">
                   <div className="input-box">
                     <label>Faculty</label>
-                    <div style={{ display: "flex" }}>
-                      <select
-                        name=" facultyName"
-                        value={formData.facultyId}
-                        onChange={handleFacultyChange} // Handle instructor selection
-                      >
-                        <option value=""></option>
-                        {sectionsData.map((faculty) => (
-                          <option
-                            key={faculty.faculty_id}
-                            value={faculty.faculty_id}
-                          >
-                            {faculty.faculty_name}
-                          </option>
-                        ))}
-                      </select>
-                      {/* Input field to show the faculty ID */}
-                      <input
-                        type="text"
-                        name="facultyId"
-                        value={formData.facultyId} // Display selected instructor's ID
-                        onChange={handleFormDataChange}
-                        placeholder="Faculty ID"
-                        style={{ marginLeft: 10 }}
-                        readOnly
-                      />
-                    </div>
+                    <input
+                      type="text"
+                      name="facultyName"
+                      value={formData.facultyName} // Display selected instructor's name
+                      onChange={handleFormDataChange}
+                      placeholder="Faculty Name"
+                      readOnly
+                    />
+                  </div>
+                  <div className="input-box">
+                  <label>Faculty ID</label>
+                  <input
+                      type="text"
+                      name="facultyId"
+                      value={formData.facultyId} // Display selected instructor's ID
+                      onChange={handleFormDataChange}
+                      placeholder="Faculty ID"
+                      readOnly
+                    />
                   </div>
                 </div>
 
@@ -515,29 +472,19 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                   <table style={{ width: "100%", borderCollapse: "collapse" }}>
                     <thead>
                       <tr>
-                        <th
-                          style={{ border: "1px solid black", padding: "8px" }}
-                        >
+                        <th style={{ border: "1px solid black", padding: "8px" }}>
                           Day
                         </th>
-                        <th
-                          style={{ border: "1px solid black", padding: "8px" }}
-                        >
+                        <th style={{ border: "1px solid black", padding: "8px" }}>
                           Start Time
                         </th>
-                        <th
-                          style={{ border: "1px solid black", padding: "8px" }}
-                        >
+                        <th style={{ border: "1px solid black", padding: "8px" }}>
                           End Time
                         </th>
-                        <th
-                          style={{ border: "1px solid black", padding: "8px" }}
-                        >
+                        <th style={{ border: "1px solid black", padding: "8px" }}>
                           Room
                         </th>
-                        <th
-                          style={{ border: "1px solid black", padding: "8px" }}
-                        >
+                        <th style={{ border: "1px solid black", padding: "8px" }}>
                           Action
                         </th>
                       </tr>
@@ -545,12 +492,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                     <tbody>
                       {tableData.map((row, index) => (
                         <tr key={index}>
-                          <td
-                            style={{
-                              border: "1px solid black",
-                              padding: "8px",
-                            }}
-                          >
+                          <td style={{ border: "1px solid black", padding: "8px" }}>
                             <select
                               name="day"
                               value={row.day}
@@ -564,12 +506,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                               <option value="Friday">Friday</option>
                             </select>
                           </td>
-                          <td
-                            style={{
-                              border: "1px solid black",
-                              padding: "8px",
-                            }}
-                          >
+                          <td style={{ border: "1px solid black", padding: "8px" }}>
                             <input
                               type="time"
                               name="startTime"
@@ -577,12 +514,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                               onChange={(e) => handleScheduleChange(e, index)}
                             />
                           </td>
-                          <td
-                            style={{
-                              border: "1px solid black",
-                              padding: "8px",
-                            }}
-                          >
+                          <td style={{ border: "1px solid black", padding: "8px" }}>
                             <input
                               type="time"
                               name="endTime"
@@ -590,12 +522,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                               onChange={(e) => handleScheduleChange(e, index)}
                             />
                           </td>
-                          <td
-                            style={{
-                              border: "1px solid black",
-                              padding: "8px",
-                            }}
-                          >
+                          <td style={{ border: "1px solid black", padding: "8px" }}>
                             <input
                               type="text"
                               name="room"
@@ -603,12 +530,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                               onChange={(e) => handleScheduleChange(e, index)}
                             />
                           </td>
-                          <td
-                            style={{
-                              border: "1px solid black",
-                              padding: "8px",
-                            }}
-                          >
+                          <td style={{ border: "1px solid black", padding: "8px" }}>
                             <div className="actions">
                               <button
                                 type="button"
@@ -633,7 +555,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                   </table>
                 </div>
 
-                <div className="thrid-row">
+                <div className="third-row">
                   <div className="input-box">
                     <label>
                       Slot
@@ -647,8 +569,8 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                   </div>
                 </div>
 
-                <div class="buttons">
-                  <button type="submit" class="btn-box" name="add" id="add">
+                <div className="buttons">
+                  <button type="submit" className="btn-box" name="add" id="add">
                     Done
                   </button>
                 </div>

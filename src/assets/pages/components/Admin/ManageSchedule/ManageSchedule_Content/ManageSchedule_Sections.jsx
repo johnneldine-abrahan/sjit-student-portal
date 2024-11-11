@@ -20,18 +20,12 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const selectAllRef = useRef();
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
   useEffect(() => {
     setSelectedSections(selectedIds);
   }, [selectedIds, setSelectedSections]);
-
-  useEffect(() => {
-    // Disable scroll when popups are open
-    if (popup.show || editPopup.show) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-  }, [popup, editPopup]);
 
   const handlePopup = (record) => {
     setPopup({
@@ -41,14 +35,16 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
   };
 
   const handleEditPopup = async (record) => {
-    console.log("Editing record:", record); // Verify this is being called
+    console.log("Editing record:", record);
     setEditPopup({
       show: true,
       record: record,
     });
 
     try {
-      const response = await fetch(`http://localhost:3000/getSection/${record.section_id}`);
+      const response = await fetch(
+        `http://localhost:3000/getSection/${record.section_id}`
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch section data");
       }
@@ -60,7 +56,8 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
         subjectName: record.subject_name,
         subjectId: data.section.subject_id,
         facultyName: data.section.faculty_name,
-        facultyId: data.teachingLoads.length > 0 ? data.teachingLoads[0].faculty_id : "",
+        facultyId:
+          data.teachingLoads.length > 0 ? data.teachingLoads[0].faculty_id : "",
         semester: data.section.semester,
         slot: data.section.slot,
         schoolyear: data.section.school_year,
@@ -68,9 +65,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
         section: data.section.section_name,
       });
 
-      console.log("Updated formData:", formData);
-
-      const schedules = data.schedules.map(schedule => ({
+      const schedules = data.schedules.map((schedule) => ({
         day: schedule.day,
         startTime: schedule.start_time,
         endTime: schedule.end_time,
@@ -183,6 +178,33 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
     }));
   };
 
+  useEffect(() => {
+    // Disable scroll when popups are open
+    if (popup.show || editPopup.show) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [popup, editPopup]);
+
+  const totalPages = Math.ceil(sectionsData.length / itemsPerPage);
+  const currentSections = sectionsData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
     <div className="section-list">
       <div className="recordslist-container">
@@ -209,7 +231,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
             </tr>
           </thead>
           <tbody>
-            {sectionsData.map((record) => (
+            {currentSections.map((record) => (
               <tr
                 key={record.section_id}
                 className={
@@ -438,13 +460,13 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                   </div>
                 </div>
 
-                <div className="second -row">
+                <div className="second-row">
                   <div className="input-box">
                     <label>Subject</label>
                     <input
                       type="text"
                       name="subjectName"
-                      value={formData.subjectName} // Display selected subject's name
+                      value={formData.subjectName}
                       onChange={handleFormDataChange}
                       placeholder="Subject Name"
                       disabled
@@ -470,7 +492,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                     <input
                       type="text"
                       name="facultyName"
-                      value={formData.facultyName} // Display selected instructor's name
+                      value={formData.facultyName}
                       onChange={handleFormDataChange}
                       placeholder="Faculty Name"
                       disabled
@@ -481,7 +503,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                     <input
                       type="text"
                       name="facultyId"
-                      value={formData.facultyId} // Display selected instructor's ID
+                      value={formData.facultyId}
                       onChange={handleFormDataChange}
                       placeholder="Faculty ID"
                       disabled
@@ -493,19 +515,29 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                   <table style={{ width: "100%", borderCollapse: "collapse" }}>
                     <thead>
                       <tr>
-                        <th style={{ border: "1px solid black", padding: "8px" }}>
+                        <th
+                          style={{ border: "1px solid black", padding: "8px" }}
+                        >
                           Day
                         </th>
-                        <th style={{ border: "1px solid black", padding: "8px" }}>
+                        <th
+                          style={{ border: "1px solid black", padding: "8px" }}
+                        >
                           Start Time
                         </th>
-                        <th style={{ border: "1px solid black", padding: "8px" }}>
+                        <th
+                          style={{ border: "1px solid black", padding: "8px" }}
+                        >
                           End Time
                         </th>
-                        <th style={{ border: "1px solid black", padding: "8px" }}>
+                        <th
+                          style={{ border: "1px solid black", padding: "8px" }}
+                        >
                           Room
                         </th>
-                        <th style={{ border: "1px solid black", padding: "8px" }}>
+                        <th
+                          style={{ border: "1px solid black", padding: "8px" }}
+                        >
                           Action
                         </th>
                       </tr>
@@ -513,7 +545,12 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                     <tbody>
                       {tableData.map((row, index) => (
                         <tr key={index}>
-                          <td style={{ border: "1px solid black", padding: "8px" }}>
+                          <td
+                            style={{
+                              border: "1px solid black",
+                              padding: "8px",
+                            }}
+                          >
                             <select
                               name="day"
                               value={row.day}
@@ -527,7 +564,12 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                               <option value="Friday">Friday</option>
                             </select>
                           </td>
-                          <td style={{ border: "1px solid black", padding: "8px" }}>
+                          <td
+                            style={{
+                              border: "1px solid black",
+                              padding: "8px",
+                            }}
+                          >
                             <input
                               type="time"
                               name="startTime"
@@ -535,7 +577,12 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                               onChange={(e) => handleScheduleChange(e, index)}
                             />
                           </td>
-                          <td style={{ border: "1px solid black", padding: "8px" }}>
+                          <td
+                            style={{
+                              border: "1px solid black",
+                              padding: "8px",
+                            }}
+                          >
                             <input
                               type="time"
                               name="endTime"
@@ -543,7 +590,12 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                               onChange={(e) => handleScheduleChange(e, index)}
                             />
                           </td>
-                          <td style={{ border: "1px solid black", padding: "8px" }}>
+                          <td
+                            style={{
+                              border: "1px solid black",
+                              padding: "8px",
+                            }}
+                          >
                             <input
                               type="text"
                               name="room"
@@ -551,7 +603,12 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                               onChange={(e) => handleScheduleChange(e, index)}
                             />
                           </td>
-                          <td style={{ border: "1px solid black", padding: "8px" }}>
+                          <td
+                            style={{
+                              border: "1px solid black",
+                              padding: "8px",
+                            }}
+                          >
                             <div className="actions">
                               <button
                                 type="button"
@@ -599,6 +656,27 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
             </div>
           </div>
         )}
+        <div className="button-container-pagination-student">
+          <div className="pagination-controls">
+            <button
+              className="btn-box-pagination-student"
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              className="btn-box-pagination-student"
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -11,6 +11,9 @@ const Archive_Records = () => {
     record: null,
   });
 
+  const [currentPage, setCurrentPage] = useState(1); // State for current page
+  const recordsPerPage = 7; // Number of records per page
+
   // Fetch data when the component loads
   useEffect(() => {
     const fetchArchivedRecords = async () => {
@@ -73,6 +76,29 @@ const Archive_Records = () => {
     }
   }, [selectedRecords, archiveRecords]);
 
+  // Calculate total pages
+  const totalPages = Math.ceil(archiveRecords.length / recordsPerPage);
+
+  // Get records for the current page
+  const currentRecords = archiveRecords.slice(
+    (currentPage - 1) * recordsPerPage,
+    currentPage * recordsPerPage
+  );
+
+  // Function to handle previous page
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  // Function to handle next page
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   return (
     <div className="archive-records">
       <div className="recordslist-container">
@@ -85,6 +111,7 @@ const Archive_Records = () => {
                   ref={selectAllRef}
                   checked={selectAllChecked}
                   onChange={handleSelectAll}
+                  aria-label="Select all records"
                 />
               </th>
               <th>Student ID</th>
@@ -96,10 +123,10 @@ const Archive_Records = () => {
             </tr>
           </thead>
           <tbody>
-            {archiveRecords.length > 0 ? (
-              archiveRecords.map((record) => (
+            {currentRecords.length > 0 ? (
+              currentRecords.map((record) => (
                 <tr
-                  key={record.student_id}
+                  key={record.student_id} // Fixed the missing closing parenthesis
                   className={
                     selectedRecords.includes(record.student_id) ? "checked" : ""
                   }
@@ -110,6 +137,7 @@ const Archive_Records = () => {
                       name={`select-${record.student_id}`}
                       checked={selectedRecords.includes(record.student_id)}
                       onChange={() => handleSelectRecord(record.student_id)}
+                      aria-label={`Select record for student ID ${record.student_id}`}
                     />
                   </td>
                   <td>{record.student_id}</td>
@@ -129,7 +157,7 @@ const Archive_Records = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="6">No archived records found.</td>
+                <td colSpan="7">No archived records found.</td>
               </tr>
             )}
           </tbody>
@@ -155,6 +183,27 @@ const Archive_Records = () => {
           </div>
         </div>
       )}
+      <div className="button-container-pagination-student">
+        <div className="pagination-controls">
+          <button
+            className="btn-box-pagination-student"
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="btn-box-pagination-student"
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

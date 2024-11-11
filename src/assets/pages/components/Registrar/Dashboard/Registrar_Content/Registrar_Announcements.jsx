@@ -31,7 +31,6 @@ const validateForm = (formData) => {
 
   if (!isValid) {
     firstErrorInput.focus();
-    //alert(errorMessage);
     return false;
   }
 
@@ -190,7 +189,7 @@ const Popup_Edit = ({ title, onClose, announcement, refreshAnnouncements }) => {
       return;
     }
     const token = localStorage.getItem("token");
-    const id = announcement.id; // Ensure you're using the correct announcement ID
+    const id = announcement.id;
 
     try {
       const response = await fetch(
@@ -201,7 +200,7 @@ const Popup_Edit = ({ title, onClose, announcement, refreshAnnouncements }) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(announcementData), // Send updated announcement data
+          body: JSON.stringify(announcementData),
         }
       );
 
@@ -209,8 +208,8 @@ const Popup_Edit = ({ title, onClose, announcement, refreshAnnouncements }) => {
         console.log("Unauthorized - You are not authenticated");
       } else if (response.ok) {
         console.log("Announcement updated successfully!");
-        refreshAnnouncements(); // Refresh announcements after update
-        onClose(); // Close the popup
+        refreshAnnouncements();
+        onClose();
       } else {
         console.error("Failed to update announcement:", response.statusText);
       }
@@ -292,7 +291,7 @@ const Popup_Edit = ({ title, onClose, announcement, refreshAnnouncements }) => {
           </div>
 
           <div className="buttons">
-            <button type="submit" className="btn-box" name="edit" id="edit">
+            <button type="submit" class="btn-box" name="edit" id="edit">
               Done
             </button>
           </div>
@@ -331,7 +330,7 @@ const Popup_Delete = ({
         refreshAnnouncements();
         onClose();
       } else {
-        const errorText = await response.text(); // Get the response text
+        const errorText = await response.text();
         console.error(
           "Failed to delete announcements:",
           response.statusText,
@@ -387,9 +386,11 @@ const Registrar_Announcements = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
   const [selectAllChecked, setSelectAllChecked] = useState(false);
-  const selectAllRef = useRef(); // Create a ref for the select-all checkbox
+  const selectAllRef = useRef();
+  const [currentPage, setCurrentPage] = useState(1);
+  const announcementsPerPage = 3;
+  const totalPages = Math.ceil(announcements.length / announcementsPerPage);
 
-  // Function to fetch announcements
   const fetchAnnouncements = async () => {
     const token = localStorage.getItem("token");
     const response = await fetch("http://localhost:3000/announcements", {
@@ -407,17 +408,14 @@ const Registrar_Announcements = () => {
     }
   };
 
-  // Fetch announcements on component mount
   useEffect(() => {
     fetchAnnouncements();
   }, []);
 
-  // Refresh announcements after adding or editing
   const refreshAnnouncements = () => {
-    fetchAnnouncements(); // Re-fetch the announcements
+    fetchAnnouncements();
   };
 
-  // Fetch a specific announcement by ID
   const fetchAnnouncementDetails = async (id) => {
     const token = localStorage.getItem("token");
     const response = await fetch(
@@ -432,7 +430,7 @@ const Registrar_Announcements = () => {
 
     if (response.ok) {
       const data = await response.json();
-      return data; // Return the fetched data
+      return data;
     } else {
       console.error(
         "Failed to fetch announcement details:",
@@ -441,11 +439,10 @@ const Registrar_Announcements = () => {
     }
   };
 
-  // Handle selecting announcement for editing
   const handleEdit = async (announcement) => {
-    const details = await fetchAnnouncementDetails(announcement.id); // Fetch details using ID
-    setSelectedAnnouncement(details); // Set the fetched details
-    setIsOpenEdit(true); // Open the edit popup
+    const details = await fetchAnnouncementDetails(announcement.id);
+    setSelectedAnnouncement(details);
+    setIsOpenEdit(true);
   };
 
   const handleSelectAnnouncement = (id) => {
@@ -461,15 +458,14 @@ const Registrar_Announcements = () => {
   const handleSelectAll = () => {
     const newSelectAllChecked = !selectAllChecked;
     if (newSelectAllChecked) {
-      setSelectedIds(announcements.map((announcement) => announcement.id)); // Select all
+      setSelectedIds(announcements.map((announcement) => announcement.id));
     } else {
-      setSelectedIds([]); // Deselect all
+      setSelectedIds([]);
     }
-    setSelectAllChecked(newSelectAllChecked); // Toggle state
+    setSelectAllChecked(newSelectAllChecked);
   };
 
   useEffect(() => {
-    // Apply the indeterminate state explicitly after any update
     if (selectAllRef.current) {
       if (selectedIds.length > 0 && selectedIds.length < announcements.length) {
         selectAllRef.current.indeterminate = true;
@@ -479,10 +475,9 @@ const Registrar_Announcements = () => {
     }
   }, [selectedIds, announcements]);
 
-  // Closing the edit popup
   const handleCloseEdit = () => {
     setIsOpenEdit(false);
-    setSelectedAnnouncement(null); // Clear the selected announcement
+    setSelectedAnnouncement(null);
   };
 
   const handleViewDetails = async (announcement) => {
@@ -499,13 +494,29 @@ const Registrar_Announcements = () => {
     if (selectedIds.length > 0) {
       setIsOpenDelete(true);
     } else {
-      setIsOpenDelete(true);
-      setIsOpenDelete(true);
+      alert("Please select at least one announcement to delete.");
     }
   };
 
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const currentAnnouncements = announcements.slice(
+    (currentPage - 1) * announcementsPerPage,
+    currentPage * announcementsPerPage
+  );
+
   return (
-    <div className="admin-announcements">
+    <div className="registrar-announcements">
       <div className="announcement-list">
         <h2>Announcements</h2>
         <div className="announcement-action">
@@ -520,7 +531,7 @@ const Registrar_Announcements = () => {
                 <Popup_Add
                   title="Add Announcement"
                   onClose={() => setIsOpenAdd(false)}
-                  refreshAnnouncements={refreshAnnouncements} // Pass the function to Popup_Add
+                  refreshAnnouncements={refreshAnnouncements}
                 />
               </div>
             )}
@@ -537,7 +548,7 @@ const Registrar_Announcements = () => {
                   <Popup_Delete
                     title="Delete Announcement"
                     onClose={() => setIsOpenDelete(false)}
-                    selectedIds={selectedIds} // Pass selected IDs
+                    selectedIds={selectedIds}
                     refreshAnnouncements={refreshAnnouncements}
                   />
                 ) : (
@@ -559,7 +570,6 @@ const Registrar_Announcements = () => {
         </div>
       </div>
 
-      {/* Display announcements in a table format */}
       <div className="announcement-table">
         <table>
           <thead>
@@ -567,7 +577,7 @@ const Registrar_Announcements = () => {
               <th>
                 <input
                   type="checkbox"
-                  ref={selectAllRef} // Assign the ref to the select-all checkbox
+                  ref={selectAllRef}
                   checked={selectAllChecked}
                   onChange={handleSelectAll}
                 />
@@ -581,8 +591,8 @@ const Registrar_Announcements = () => {
             </tr>
           </thead>
           <tbody>
-            {announcements.length > 0 ? (
-              announcements.map((announcement) => (
+            {currentAnnouncements.length > 0 ? (
+              currentAnnouncements.map((announcement) => (
                 <tr
                   key={announcement.id}
                   className={
@@ -620,7 +630,7 @@ const Registrar_Announcements = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={6}>No announcements found.</td>
+                <td colSpan={7}>No announcements found.</td>
               </tr>
             )}
           </tbody>
@@ -633,8 +643,8 @@ const Registrar_Announcements = () => {
           <Popup_Edit
             title="Edit Announcement"
             onClose={handleCloseEdit}
-            announcement={selectedAnnouncement} // Pass the selected announcement for editing
-            refreshAnnouncements={refreshAnnouncements} // Pass the function to refresh announcements
+            announcement={selectedAnnouncement}
+            refreshAnnouncements={refreshAnnouncements}
           />
         </div>
       )}
@@ -652,6 +662,28 @@ const Registrar_Announcements = () => {
           />
         </div>
       )}
+
+      <div className="button-container-pagination-student">
+        <div className="pagination-controls">
+          <button
+            className="btn-box-pagination-student"
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="btn-box-pagination-student"
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

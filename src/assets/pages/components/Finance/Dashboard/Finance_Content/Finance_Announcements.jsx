@@ -31,7 +31,6 @@ const validateForm = (formData) => {
 
   if (!isValid) {
     firstErrorInput.focus();
-    //alert(errorMessage);
     return false;
   }
 
@@ -191,7 +190,7 @@ const Popup_Edit = ({ title, onClose, announcement, refreshAnnouncements }) => {
       return;
     }
     const token = localStorage.getItem("token");
-    const id = announcement.id; // Ensure you're using the correct announcement ID
+    const id = announcement.id;
 
     try {
       const response = await fetch(
@@ -202,7 +201,7 @@ const Popup_Edit = ({ title, onClose, announcement, refreshAnnouncements }) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(announcementData), // Send updated announcement data
+          body: JSON.stringify(announcementData),
         }
       );
 
@@ -210,8 +209,8 @@ const Popup_Edit = ({ title, onClose, announcement, refreshAnnouncements }) => {
         console.log("Unauthorized - You are not authenticated");
       } else if (response.ok) {
         console.log("Announcement updated successfully!");
-        refreshAnnouncements(); // Refresh announcements after update
-        onClose(); // Close the popup
+        refreshAnnouncements();
+        onClose();
       } else {
         console.error("Failed to update announcement:", response.statusText);
       }
@@ -332,7 +331,7 @@ const Popup_Delete = ({
         refreshAnnouncements();
         onClose();
       } else {
-        const errorText = await response.text(); // Get the response text
+        const errorText = await response.text();
         console.error(
           "Failed to delete announcements:",
           response.statusText,
@@ -388,9 +387,12 @@ const Finance_Announcements = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
   const [selectAllChecked, setSelectAllChecked] = useState(false);
-  const selectAllRef = useRef(); // Create a ref for the select-all checkbox
+  const selectAllRef = useRef();
 
-  // Function to fetch announcements
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const announcementsPerPage = 3;
+
   const fetchAnnouncements = async () => {
     const token = localStorage.getItem("token");
     const response = await fetch("http://localhost:3000/announcements", {
@@ -408,45 +410,38 @@ const Finance_Announcements = () => {
     }
   };
 
-  // Fetch announcements on component mount
   useEffect(() => {
     fetchAnnouncements();
   }, []);
 
-  // Refresh announcements after adding or editing
   const refreshAnnouncements = () => {
-    fetchAnnouncements(); // Re-fetch the announcements
+    fetchAnnouncements();
   };
 
-  // Fetch a specific announcement by ID
-  const fetchAnnouncementDetails = async (id) => {
-    const token = localStorage.getItem("token");
-    const response = await fetch(
-      `http://localhost:3000/getAnnouncement/${id}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+  const totalPages = Math.ceil(announcements.length / announcementsPerPage);
+  const indexOfLastAnnouncement = currentPage * announcementsPerPage;
+  const indexOfFirstAnnouncement =
+    indexOfLastAnnouncement - announcementsPerPage;
+  const currentAnnouncements = announcements.slice(
+    indexOfFirstAnnouncement,
+    indexOfLastAnnouncement
+  );
 
-    if (response.ok) {
-      const data = await response.json();
-      return data; // Return the fetched data
-    } else {
-      console.error(
-        "Failed to fetch announcement details:",
-        response.statusText
-      );
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prevPage) => prevPage + 1);
     }
   };
 
-  // Handle selecting announcement for editing
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prevPage) => prevPage - 1);
+    }
+  };
+
   const handleEdit = async (announcement) => {
-    const details = await fetchAnnouncementDetails(announcement.id); // Fetch details using ID
-    setSelectedAnnouncement(details); // Set the fetched details
-    setIsOpenEdit(true); // Open the edit popup
+    setSelectedAnnouncement(announcement);
+    setIsOpenEdit(true);
   };
 
   const handleSelectAnnouncement = (id) => {
@@ -462,15 +457,14 @@ const Finance_Announcements = () => {
   const handleSelectAll = () => {
     const newSelectAllChecked = !selectAllChecked;
     if (newSelectAllChecked) {
-      setSelectedIds(announcements.map((announcement) => announcement.id)); // Select all
+      setSelectedIds(announcements.map((announcement) => announcement.id));
     } else {
-      setSelectedIds([]); // Deselect all
+      setSelectedIds([]);
     }
-    setSelectAllChecked(newSelectAllChecked); // Toggle state
+    setSelectAllChecked(newSelectAllChecked);
   };
 
   useEffect(() => {
-    // Apply the indeterminate state explicitly after any update
     if (selectAllRef.current) {
       if (selectedIds.length > 0 && selectedIds.length < announcements.length) {
         selectAllRef.current.indeterminate = true;
@@ -480,13 +474,12 @@ const Finance_Announcements = () => {
     }
   }, [selectedIds, announcements]);
 
-  // Closing the edit popup
   const handleCloseEdit = () => {
     setIsOpenEdit(false);
-    setSelectedAnnouncement(null); // Clear the selected announcement
+    setSelectedAnnouncement(null);
   };
 
-  const handleViewDetails = async (announcement) => {
+  const handleViewDetails = (announcement) => {
     setIsOpenViewDetails(true);
     setSelectedAnnouncement(announcement);
   };
@@ -500,8 +493,7 @@ const Finance_Announcements = () => {
     if (selectedIds.length > 0) {
       setIsOpenDelete(true);
     } else {
-      setIsOpenDelete(true);
-      setIsOpenDelete(true);
+      alert("Please select at least one announcement to delete.");
     }
   };
 
@@ -521,7 +513,7 @@ const Finance_Announcements = () => {
                 <Popup_Add
                   title="Add Announcement"
                   onClose={() => setIsOpenAdd(false)}
-                  refreshAnnouncements={refreshAnnouncements} // Pass the function to Popup_Add
+                  refreshAnnouncements={refreshAnnouncements}
                 />
               </div>
             )}
@@ -538,7 +530,7 @@ const Finance_Announcements = () => {
                   <Popup_Delete
                     title="Delete Announcement"
                     onClose={() => setIsOpenDelete(false)}
-                    selectedIds={selectedIds} // Pass selected IDs
+                    selectedIds={selectedIds}
                     refreshAnnouncements={refreshAnnouncements}
                   />
                 ) : (
@@ -560,7 +552,6 @@ const Finance_Announcements = () => {
         </div>
       </div>
 
-      {/* Display announcements in a table format */}
       <div className="announcement-table">
         <table>
           <thead>
@@ -568,7 +559,7 @@ const Finance_Announcements = () => {
               <th>
                 <input
                   type="checkbox"
-                  ref={selectAllRef} // Assign the ref to the select-all checkbox
+                  ref={selectAllRef}
                   checked={selectAllChecked}
                   onChange={handleSelectAll}
                 />
@@ -582,8 +573,8 @@ const Finance_Announcements = () => {
             </tr>
           </thead>
           <tbody>
-            {announcements.length > 0 ? (
-              announcements.map((announcement) => (
+            {currentAnnouncements.length > 0 ? (
+              currentAnnouncements.map((announcement) => (
                 <tr
                   key={announcement.id}
                   className={
@@ -621,7 +612,7 @@ const Finance_Announcements = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={6}>No announcements found.</td>
+                <td colSpan={7}>No announcements found.</td>
               </tr>
             )}
           </tbody>
@@ -631,11 +622,12 @@ const Finance_Announcements = () => {
       {isOpenEdit && (
         <div>
           <div className="popup-blurred-background" />
+
           <Popup_Edit
             title="Edit Announcement"
             onClose={handleCloseEdit}
-            announcement={selectedAnnouncement} // Pass the selected announcement for editing
-            refreshAnnouncements={refreshAnnouncements} // Pass the function to refresh announcements
+            announcement={selectedAnnouncement}
+            refreshAnnouncements={refreshAnnouncements}
           />
         </div>
       )}
@@ -653,6 +645,28 @@ const Finance_Announcements = () => {
           />
         </div>
       )}
+
+      <div className="button-container-pagination-student">
+        <div className="pagination-controls">
+          <button
+            className="btn-box-pagination-student"
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="btn-box-pagination-student"
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

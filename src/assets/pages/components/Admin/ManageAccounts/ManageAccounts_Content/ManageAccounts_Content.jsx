@@ -6,17 +6,19 @@ import { FaRegEye } from "react-icons/fa";
 
 const ManageAccounts_Content = () => {
   const [accountsRecords, setAccountsRecords] = useState([]);
-  const [selectedAccounts, setSelectedAccounts] = useState([]); // Track selected accounts
-  const [selectAllChecked, setSelectAllChecked] = useState(false); // Track select all checkbox state
-  const selectAllRef = React.createRef(); // Create a ref for the select-all checkbox
+  const [selectedAccounts, setSelectedAccounts] = useState([]);
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const selectAllRef = React.createRef();
   const [popup, setPopup] = useState({
     show: false,
     record: null,
   });
+  const [formData, setFormData] = useState({});
 
-  const [formData, setFormData] = useState({}); // For form data in edit pop-up
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 7;
 
-  // Fetch accounts from the backend when the component mounts
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
@@ -44,12 +46,10 @@ const ManageAccounts_Content = () => {
     };
   }, [popup]);
 
-  // Function to add the new account to the top of the table
   const addNewAccount = (newAccount) => {
     setAccountsRecords((prevAccounts) => [newAccount, ...prevAccounts]);
   };
 
-  // Handle selecting and deselecting accounts
   const handleSelectAccount = (userId) => {
     setSelectedAccounts((prevSelected) =>
       prevSelected.includes(userId)
@@ -58,7 +58,6 @@ const ManageAccounts_Content = () => {
     );
   };
 
-  // Handle select all checkbox
   const handleSelectAll = () => {
     const newSelectAllChecked = !selectAllChecked;
     if (newSelectAllChecked) {
@@ -82,7 +81,6 @@ const ManageAccounts_Content = () => {
     }
   }, [selectedAccounts, accountsRecords]);
 
-  // Function to delete selected accounts
   const deleteSelectedAccounts = async () => {
     if (selectedAccounts.length === 0) {
       alert("No accounts selected for deletion.");
@@ -101,14 +99,13 @@ const ManageAccounts_Content = () => {
       if (response.ok) {
         alert("Accounts deleted successfully!");
 
-        // Remove deleted accounts from the table
         setAccountsRecords((prevAccounts) =>
           prevAccounts.filter(
             (account) => !selectedAccounts.includes(account.user_id)
           )
         );
 
-        setSelectedAccounts([]); // Clear selected accounts
+        setSelectedAccounts([]);
       } else {
         const errorResult = await response.json();
         console.error("Error deleting accounts:", errorResult);
@@ -126,7 +123,6 @@ const ManageAccounts_Content = () => {
       record: record,
     });
 
-    // Pre-fill the form with the selected account's data
     setFormData({
       first_name: record.first_name,
       middle_name: record.middle_name,
@@ -160,7 +156,7 @@ const ManageAccounts_Content = () => {
 
     const payload = {
       first_name,
-      middle_name: middle_name || "", // Middle name is optional
+      middle_name: middle_name || "",
       last_name,
       password,
     };
@@ -181,7 +177,6 @@ const ManageAccounts_Content = () => {
         const result = await response.json();
         console.log("Account updated successfully:", result);
 
-        // Update the account in the table
         setAccountsRecords((prevRecords) =>
           prevRecords.map((account) =>
             account.user_id === popup.record.user_id
@@ -204,12 +199,32 @@ const ManageAccounts_Content = () => {
     }
   };
 
+  // Calculate the accounts to display based on the current page
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = accountsRecords.slice(
+    indexOfFirstRecord,
+    indexOfLastRecord
+  );
+  const totalPages = Math.ceil(accountsRecords.length / recordsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
     <div className="ManageAccounts_content">
-      {/* Pass the addNewAccount and delete function as props */}
       <ManageAccounts_ContentHeader
         onNewAccount={addNewAccount}
-        onDelete={deleteSelectedAccounts} // Pass the delete function to header
+        onDelete={deleteSelectedAccounts}
         selectedAccounts={selectedAccounts}
       />
 
@@ -236,7 +251,7 @@ const ManageAccounts_Content = () => {
               </tr>
             </thead>
             <tbody>
-              {accountsRecords.map((record) => (
+              {currentRecords.map((record) => (
                 <tr
                   key={record.user_id}
                   className={
@@ -288,7 +303,7 @@ const ManageAccounts_Content = () => {
                     <label>First Name:</label>
                     <input
                       type="text"
-                      name="first_name"
+                      name=" first_name"
                       value={formData.first_name}
                       onChange={handleChange}
                     />
@@ -333,13 +348,38 @@ const ManageAccounts_Content = () => {
                   </div>
                 </div>
                 <div className="button-container">
-                  <div><button type="submit" className="btn-box">Done</button></div>
+                  <div>
+                    <button type="submit" className="btn-box">
+                      Done
+                    </button>
+                  </div>
                 </div>
               </form>
             </div>
           </div>
         </>
       )}
+      <div className="button-container-pagination-student">
+        <div className="pagination-controls">
+          <button
+            className="btn-box-pagination-student"
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="btn-box-pagination-student"
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

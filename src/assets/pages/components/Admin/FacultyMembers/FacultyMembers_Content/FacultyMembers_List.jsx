@@ -10,7 +10,7 @@ const FacultyMembers_List = ({
   onSelectAll,
   selectAllRef,
   selectAllChecked,
-  updateFacultyRecords
+  updateFacultyRecords,
 }) => {
   const [popup, setPopup] = useState({ show: false, record: null });
   const [editPopup, setEditPopup] = useState({ show: false, record: null });
@@ -19,7 +19,9 @@ const FacultyMembers_List = ({
     first_name: "",
     middle_name: "",
   });
-  const [currentFacultyId, setCurrentFacultyId] = useState(null); // State to track the current faculty ID
+  const [currentFacultyId, setCurrentFacultyId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 7; // Number of records to display per page
 
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -28,25 +30,27 @@ const FacultyMembers_List = ({
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/faculty/${currentFacultyId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `http://localhost:3000/faculty/${currentFacultyId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
         console.log("Faculty updated:", data.faculty);
-        
+
         alert("Faculty successfully updated!");
         handleClose();
 
         const updatedResponse = await fetch("http://localhost:3000/faculties");
         const updatedRecords = await updatedResponse.json();
-        await updateFacultyRecords(updatedRecords); // Call the passed function to refresh the faculty list
-  
+        await updateFacultyRecords(updatedRecords);
       } else {
         const errorData = await response.json();
         console.error("Error updating faculty:", errorData.message);
@@ -64,9 +68,11 @@ const FacultyMembers_List = ({
   };
 
   const handleEditPopup = async (facultyId) => {
-    setCurrentFacultyId(facultyId); // Set the current faculty ID
+    setCurrentFacultyId(facultyId);
     try {
-      const response = await fetch(`http://localhost:3000/faculty/${facultyId}`); // Fetch faculty data
+      const response = await fetch(
+        `http://localhost:3000/faculty/${facultyId}`
+      );
       if (response.ok) {
         const data = await response.json();
         setFormData({
@@ -76,13 +82,13 @@ const FacultyMembers_List = ({
         });
         setEditPopup({
           show: true,
-          record: data, // Save fetched data for potential use
+          record: data,
         });
       } else {
-        console.error('Faculty not found');
+        console.error("Faculty not found");
       }
     } catch (error) {
-      console.error('Error fetching faculty:', error);
+      console.error("Error fetching faculty:", error);
     }
   };
 
@@ -95,11 +101,10 @@ const FacultyMembers_List = ({
       show: false,
       record: null,
     });
-    setFormData({ last_name: "", first_name: "", middle_name: "" }); // Reset form data on close
-    setCurrentFacultyId(null); // Reset current faculty ID on close
+    setFormData({ last_name: "", first_name: "", middle_name: "" });
+    setCurrentFacultyId(null);
   };
 
-  // Disable scrollbar when any popup is open
   useEffect(() => {
     const body = document.body;
     if (popup.show || editPopup.show) {
@@ -113,6 +118,29 @@ const FacultyMembers_List = ({
       body.style.overflow = 'auto';
     };
   }, [popup, editPopup]);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(facultyRecords.length / recordsPerPage);
+
+  // Get current records to display
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = facultyRecords.slice(
+    indexOfFirstRecord,
+    indexOfLastRecord
+  );
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   return (
     <div className="faculty-list">
@@ -130,17 +158,21 @@ const FacultyMembers_List = ({
               </th>
               <th>Faculty ID</th>
               <th>Last Name</th>
-              <th >First Name</th>
+              <th>First Name</th>
               <th>Middle Name</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {facultyRecords.map((record) => (
+            {currentRecords.map((record) => (
               <tr
                 key={record.faculty_id}
-                className={selectedFacultyIds.includes(record.faculty_id) ? "checked" : ""}
+                className={
+                  selectedFacultyIds.includes(record.faculty_id)
+                    ? "checked"
+                    : ""
+                }
               >
                 <td>
                   <input
@@ -163,7 +195,7 @@ const FacultyMembers_List = ({
                   </button>
                   <button
                     className="edit-button"
-                    onClick={() => handleEditPopup(record.faculty_id)} // Pass faculty_id here
+                    onClick={() => handleEditPopup(record.faculty_id)}
                     style={{ marginLeft: "10px" }}
                   >
                     <BiEditAlt size={20} />
@@ -192,7 +224,7 @@ const FacultyMembers_List = ({
           </div>
         </div>
       )}
-      
+
       {editPopup.show && (
         <div className="popup-blurred-background" onClick={handleClose} />
       )}
@@ -249,6 +281,27 @@ const FacultyMembers_List = ({
           </div>
         </div>
       )}
+      <div className="button-container-pagination-student">
+        <div className="pagination-controls">
+          <button
+            className="btn-box-pagination-student"
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="btn-box-pagination-student"
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./FacultyMembers_Content.css";
 import { BiSearch } from "react-icons/bi";
 import { RiAddLargeFill, RiDeleteBin6Line } from "react-icons/ri";
@@ -51,7 +51,6 @@ const FacultyMembers_ContentHeader = ({
 
     if (!isValid) {
       firstErrorInput.focus();
-      //setErrorMessage(errorMessage);
       return false;
     }
 
@@ -70,7 +69,21 @@ const FacultyMembers_ContentHeader = ({
       archive: false,
     });
   };
-  // Inside the FacultyMembers_ContentHeader component
+
+  // Disable scrollbar when any popup is open
+  useEffect(() => {
+    if (Object.values(popup).some(Boolean)) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    // Cleanup function to reset overflow when component unmounts
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [popup]);
+
   const handleArchiveFaculty = async () => {
     if (selectedFacultyIds.length === 0) {
       alert("No faculty selected for archiving.");
@@ -87,12 +100,11 @@ const FacultyMembers_ContentHeader = ({
       if (response.ok) {
         alert("Selected faculty archived successfully.");
 
-        // Fetch the updated list of faculty
         const updatedResponse = await fetch("http://localhost:3000/faculties");
         const updatedRecords = await updatedResponse.json();
-        await updateFacultyRecords(updatedRecords); // Refresh the faculty list
+        await updateFacultyRecords(updatedRecords);
 
-        handleClose(); // Close the popup after successful archiving
+        handleClose();
       } else {
         const errorText = await response.text();
         alert(`Failed to archive faculty: ${errorText}`);
@@ -127,11 +139,11 @@ const FacultyMembers_ContentHeader = ({
         return;
       }
 
-      alert("Faculty successfully registered!");
+ alert("Faculty successfully registered!");
 
       const updatedResponse = await fetch("http://localhost:3000/faculties");
       const updatedRecords = await updatedResponse.json();
-      await updateFacultyRecords(updatedRecords); // Call the passed function to refresh the faculty list
+      await updateFacultyRecords(updatedRecords);
 
       setFormData({
         last_name: "",
@@ -225,7 +237,7 @@ const FacultyMembers_ContentHeader = ({
                     )}
 
                     <div className="buttons">
-                      <button type="submit" class="btn-box" name="add" id="add">
+                      <button type="submit" className="btn-box" name="add" id="add">
                         Done
                       </button>
                     </div>
@@ -248,7 +260,7 @@ const FacultyMembers_ContentHeader = ({
                   {selectedFacultyIds.length > 0 ? (
                     <p>
                       Are you sure you want to delete the selected teacher? This
-                      action is cannot be undone.
+                      action cannot be undone.
                     </p>
                   ) : (
                     <p>
@@ -260,7 +272,7 @@ const FacultyMembers_ContentHeader = ({
                     {selectedFacultyIds.length > 0 && (
                       <button
                         type="submit"
-                        class="btn-box"
+                        className="btn-box"
                         name="delete"
                         id="delete"
                         onClick={() => {
@@ -278,7 +290,6 @@ const FacultyMembers_ContentHeader = ({
           )}
 
           {/* Archive Pop-up */}
-
           {popup.archive && (
             <>
               <div className="popup-blurred-background" onClick={handleClose} />
@@ -288,7 +299,7 @@ const FacultyMembers_ContentHeader = ({
                   <button onClick={handleClose}>Close</button>
                 </div>
                 <div className="popup-content">
-                  {selectedFacultyIds.length > 0 ? (
+                  {selectedFacultyIds.length >  0 ? (
                     <p>Do you want to archive the selected teacher?</p>
                   ) : (
                     <p>
@@ -304,7 +315,7 @@ const FacultyMembers_ContentHeader = ({
                         className="btn-box"
                         name="archive"
                         id="archive"
-                        onClick={handleArchiveFaculty} // Call the archive function
+                        onClick={handleArchiveFaculty}
                       >
                         Archive
                       </button>

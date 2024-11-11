@@ -20,7 +20,6 @@ const FacultyMembers_List = ({
     middle_name: "",
   });
   const [currentFacultyId, setCurrentFacultyId] = useState(null); // State to track the current faculty ID
-  
 
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -100,6 +99,21 @@ const FacultyMembers_List = ({
     setCurrentFacultyId(null); // Reset current faculty ID on close
   };
 
+  // Disable scrollbar when any popup is open
+  useEffect(() => {
+    const body = document.body;
+    if (popup.show || editPopup.show) {
+      body.style.overflow = 'hidden';
+    } else {
+      body.style.overflow = 'auto';
+    }
+
+    // Cleanup function to reset overflow when component unmounts
+    return () => {
+      body.style.overflow = 'auto';
+    };
+  }, [popup, editPopup]);
+
   return (
     <div className="faculty-list">
       <div className="recordslist-container">
@@ -116,7 +130,7 @@ const FacultyMembers_List = ({
               </th>
               <th>Faculty ID</th>
               <th>Last Name</th>
-              <th>First Name</th>
+              <th >First Name</th>
               <th>Middle Name</th>
               <th>Status</th>
               <th>Actions</th>
@@ -227,7 +241,7 @@ const FacultyMembers_List = ({
               </div>
 
               <div className="buttons">
-                <button type="submit" className="btn-box" >
+                <button type="submit" className="btn-box">
                   Done
                 </button>
               </div>

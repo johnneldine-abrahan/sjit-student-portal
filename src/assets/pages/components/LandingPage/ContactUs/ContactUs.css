@@ -11,6 +11,11 @@
     color: #000;
 }
 
+.contact-col span{
+    display: block;
+    margin: 20px 0;
+}
+
 .contact-col h3{
     color: #150f57;
     font-weight: 500;

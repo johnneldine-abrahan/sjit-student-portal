@@ -5,6 +5,33 @@ import phone from '../../../../img/LandingPage/ContactUs/phone.png'
 import address from '../../../../img/LandingPage/ContactUs/address.png'
 
 const ContactUs = () => {
+
+    const [result, setResult] = React.useState("");
+
+    const onSubmit = async (event) => {
+      event.preventDefault();
+      setResult("Sending....");
+      const formData = new FormData(event.target);
+  
+      formData.append("access_key", "e18a8c76-b16c-4736-a25b-22c51189cce6");
+  
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData
+      });
+  
+      const data = await response.json();
+  
+      if (data.success) {
+        setResult("Form Submitted Successfully");
+        event.target.reset();
+        eventt.target.reset();
+      } else {
+        console.log("Error", data);
+        setResult(data.message);
+      }
+    };
+
   return (
     <div className='contact'>
         <div className='contact-col'>
@@ -19,7 +46,7 @@ const ContactUs = () => {
             </ul>
         </div>
         <div className='contact-col'>
-            <form>
+            <form onSubmit={onSubmit}>
                 <label>Name</label>
                 <input type='text' name='name' placeholder='Enter your name' required />
                 <label>Phone Number</label>
@@ -28,7 +55,7 @@ const ContactUs = () => {
                 <textarea name='message' id='' rows='6' placeholder='Enter your message' required></textarea>
                 <button type='submit' className='btn dark-btn'>Submit Now</button>
             </form>
-            
+            <span>{result}</span>
         </div>
       
     </div>

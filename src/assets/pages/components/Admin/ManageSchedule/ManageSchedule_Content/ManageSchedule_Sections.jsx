@@ -32,6 +32,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
   };
 
   const handleEditPopup = async (record) => {
+    console.log("Editing record:", record); // Verify this is being called
     setEditPopup({
       show: true,
       record: record,
@@ -47,7 +48,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
       setFormData({
         gradeLevel: data.section.grade_level,
         strand: data.section.strand,
-        subjectName: data.section.subject_name,
+        subjectName: record.subject_name,
         subjectId: data.section.subject_id,
         facultyName: data.section.faculty_name,
         facultyId: data.teachingLoads.length > 0 ? data.teachingLoads[0].faculty_id : "",
@@ -57,6 +58,8 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
         program: data.section.program,
         section: data.section.section_name,
       });
+
+      console.log("Updated formData:", formData);
 
       const schedules = data.schedules.map(schedule => ({
         day: schedule.day,
@@ -301,7 +304,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                   <div className="grade-level">
                     <div className="second-row">
                       <label>Select Semester</label>
- <label>
+                      <label>
                         <input
                           type="radio"
                           name="semester"

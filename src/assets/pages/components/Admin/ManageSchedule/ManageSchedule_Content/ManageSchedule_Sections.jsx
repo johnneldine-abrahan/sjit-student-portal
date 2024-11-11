@@ -284,6 +284,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                         value="Junior Highschool"
                         checked={formData.program === "Junior Highschool"}
                         onChange={handleCheckboxChangeProgram}
+                        disabled
                       />
                       Junior Highschool
                     </label>
@@ -294,6 +295,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                         value="Senior Highschool"
                         checked={formData.program === "Senior Highschool"}
                         onChange={handleCheckboxChangeProgram}
+                        disabled
                       />
                       Senior Highschool
                     </label>
@@ -311,6 +313,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                           value="FIRST"
                           checked={formData.semester === "FIRST"}
                           onChange={handleSemesterChange}
+                          disabled
                         />
                         FIRST
                       </label>
@@ -321,6 +324,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                           value="SECOND"
                           checked={formData.semester === "SECOND"}
                           onChange={handleSemesterChange}
+                          disabled
                         />
                         SECOND
                       </label>
@@ -336,6 +340,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                         name="gradeLevel"
                         value={formData.gradeLevel}
                         onChange={handleFormDataChange}
+                        disabled
                       >
                         <option value=""></option>
                         <option value="7">Grade 7</option>
@@ -348,6 +353,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                         name="gradeLevel"
                         value={formData.gradeLevel}
                         onChange={handleFormDataChange}
+                        disabled
                       >
                         <option value=""></option>
                         <option value="11">Grade 11</option>
@@ -370,7 +376,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                       name="strand"
                       value={formData.strand}
                       onChange={handleFormDataChange}
-                      disabled={formData.program === "Junior Highschool"}
+                      disabled
                     >
                       <option value=""></option>
                       <option value="Science, Technology, Engineering and Mathematics (STEM)">
@@ -404,6 +410,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                         value={formData.section}
                         name="section"
                         onChange={handleFormDataChange}
+                        disabled
                       />
                     </label>
                   </div>
@@ -416,6 +423,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                         value={formData.schoolyear}
                         name="schoolyear"
                         onChange={handleFormDataChange}
+                        disabled
                       />
                     </label>
                   </div>
@@ -430,6 +438,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                       value={formData.subjectName} // Display selected subject's name
                       onChange={handleFormDataChange}
                       placeholder="Subject Name"
+                      disabled
                     />
                   </div>
 
@@ -441,7 +450,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                       value={formData.subjectId}
                       onChange={handleFormDataChange}
                       placeholder="Subject ID"
-                      readOnly
+                      disabled
                     />
                   </div>
                 </div>
@@ -455,7 +464,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                       value={formData.facultyName} // Display selected instructor's name
                       onChange={handleFormDataChange}
                       placeholder="Faculty Name"
-                      readOnly
+                      disabled
                     />
                   </div>
                   <div className="input-box">
@@ -466,7 +475,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                       value={formData.facultyId} // Display selected instructor's ID
                       onChange={handleFormDataChange}
                       placeholder="Faculty ID"
-                      readOnly
+                      disabled
                     />
                   </div>
                 </div>

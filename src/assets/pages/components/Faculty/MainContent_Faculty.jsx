@@ -7,7 +7,8 @@ import { MdOutlineUploadFile } from "react-icons/md";
 import { MdAnalytics } from "react-icons/md";
 import { FiFilter } from "react-icons/fi";
 import { IoIosInformationCircleOutline } from "react-icons/io";
-import Dashboard_Faculty from "./Dashboard_Faculty/Dashboard_Faculty";
+
+import Faculty_Reports from "./Faculty_Reports/Faculty_Reports";
 import StudentList from "./StudentList/StudentList";
 import UploadGrades from "./UploadGrades/UploadGrades";
 import ViewSchedules from "./ViewSchedules/ViewSchedules";
@@ -37,16 +38,21 @@ const actionItems = [
   {
     icon: <MdAnalytics size={40} />,
     text: "Reports",
-    content: Dashboard_Faculty,
+    content: Faculty_Reports,
   },
 ];
 
-const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters }) => {
+const FilterModal = ({
+  setQuarter,
+  setSchoolYear,
+  setSemester,
+  onApplyFilters,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalSchoolYear, setModalSchoolYear] = useState(""); // Renamed
   const [modalSemester, setModalSemester] = useState("FIRST"); // Renamed
   const [quarterState, setQuarterState] = useState("1st");
-  
+
   const [schoolYears, setSchoolYears] = useState([]);
   const [defaultSchoolYear, setDefaultSchoolYear] = useState("");
   const [defaultSemester, setDefaultSemester] = useState("FIRST");
@@ -77,7 +83,11 @@ const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters })
     setQuarter(quarterState); // Pass quarter state to parent
     setSchoolYear(modalSchoolYear); // Pass schoolYear to parent
     setSemester(modalSemester); // Pass semester to parent
-    onApplyFilters({ schoolYear: modalSchoolYear, semester: modalSemester, quarter: quarterState }); // Pass filters to parent
+    onApplyFilters({
+      schoolYear: modalSchoolYear,
+      semester: modalSemester,
+      quarter: quarterState,
+    }); // Pass filters to parent
     setIsModalOpen(false);
   };
 
@@ -93,9 +103,9 @@ const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters })
   useEffect(() => {
     const fetchSchoolYears = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/school_years');
+        const response = await axios.get("http://localhost:3000/school_years");
         if (response.data.rows && Array.isArray(response.data.rows)) {
-          const years = response.data.rows.map(row => row.school_year);
+          const years = response.data.rows.map((row) => row.school_year);
           setSchoolYears(years);
           if (years.length > 0) {
             setDefaultSchoolYear(years[0]);
@@ -103,7 +113,7 @@ const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters })
           }
         }
       } catch (error) {
-        console.error('Error fetching school years:', error);
+        console.error("Error fetching school years:", error);
       }
     };
 
@@ -111,7 +121,7 @@ const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters })
 
     const token = localStorage.getItem("token");
     if (token) {
-      const parts = token.split('.');
+      const parts = token.split(".");
       if (parts.length === 3) {
         const payload = parts[1];
         const decodedPayload = JSON.parse(atob(payload));
@@ -126,7 +136,11 @@ const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters })
 
   useEffect(() => {
     if (!hasLoggedFilters && modalSchoolYear) {
-      console.log("Current filters:", { schoolYear: modalSchoolYear, semester: modalSemester, quarter: quarterState });
+      console.log("Current filters:", {
+        schoolYear: modalSchoolYear,
+        semester: modalSemester,
+        quarter: quarterState,
+      });
       setHasLoggedFilters(true);
     }
   }, [modalSchoolYear, modalSemester, quarterState, hasLoggedFilters]);
@@ -146,7 +160,11 @@ const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters })
     setDefaultSchoolYear(modalSchoolYear);
     setDefaultSemester(modalSemester);
     setDefaultQuarter(quarterState);
-    console.log("Filters applied:", { schoolYear: modalSchoolYear, semester: modalSemester, quarter: quarterState });
+    console.log("Filters applied:", {
+      schoolYear: modalSchoolYear,
+      semester: modalSemester,
+      quarter: quarterState,
+    });
     handleApplyFilter();
   };
 
@@ -171,9 +189,14 @@ const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters })
             <div className="modalBody">
               <form onSubmit={handleSubmit}>
                 <label>School Year:</label>
-                <select value={modalSchoolYear} onChange={handleSchoolYearChange}>
+                <select
+                  value={modalSchoolYear}
+                  onChange={handleSchoolYearChange}
+                >
                   {schoolYears.map((year, index) => (
-                    <option key={index} value={year}>{year}</option>
+                    <option key={index} value={year}>
+                      {year}
+                    </option>
                   ))}
                 </select>
 
@@ -219,7 +242,6 @@ const MainContent_Faculty = () => {
   const [semester, setSemester] = useState("FIRST"); // State for semester
   const bannerImages = [image1, image2, image3];
 
-
   const handleApplyFilters = ({ schoolYear, semester, quarter }) => {
     console.log("Current filters:", { schoolYear, semester, quarter });
     setSchoolYear(schoolYear);
@@ -247,11 +269,16 @@ const MainContent_Faculty = () => {
 
       <div className="filter-section">
         <p>
-          < IoIosInformationCircleOutline size={30} className="info-ico" />
+          <IoIosInformationCircleOutline size={30} className="info-ico" />
           Please click "Filter" button to change the current school year /
           semester
         </p>
-        <FilterModal setQuarter={setQuarter} setSchoolYear={setSchoolYear} setSemester={setSemester} onApplyFilters={handleApplyFilters} />
+        <FilterModal
+          setQuarter={setQuarter}
+          setSchoolYear={setSchoolYear}
+          setSemester={setSemester}
+          onApplyFilters={handleApplyFilters}
+        />
       </div>
 
       <div className="actionGrid">
@@ -260,7 +287,11 @@ const MainContent_Faculty = () => {
             key={index}
             icon={item.icon}
             text={item.text}
-            content={React.createElement(item.content, { quarter, schoolYear, semester })} // Use React.createElement to render component with props
+            content={React.createElement(item.content, {
+              quarter,
+              schoolYear,
+              semester,
+            })} // Use React.createElement to render component with props
           />
         ))}
       </div>

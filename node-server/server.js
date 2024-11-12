@@ -462,34 +462,39 @@ app.put('/updateStudentData/:studentId', async (req, res) => {
 app.put('/students/update-type', async (req, res) => {
     const { student_ids } = req.body;
 
-    // Check if student_ids is an array and not empty
+    // Log received student_ids
+    console.log('Received student_ids:', student_ids);
+
+    // Validate student_ids array
     if (!student_ids || !Array.isArray(student_ids) || student_ids.length === 0) {
-        return res.status(400).json({ message: 'Invalid request data. student_ids must be a non-empty array.' });
+        console.error('Invalid request data. student_ids must be a non-empty array.');
+        return res.status(400).json({ success: false, message: 'Invalid request data. student_ids must be a non-empty array.' });
     }
 
-    // Check if any selected students are already 'Old'
+    // Check if any students are already marked as 'Old'
     const placeholders = student_ids.map((_, index) => `($${index + 1})`).join(',');
     const checkSql = `SELECT student_id, student_type FROM studenttbl WHERE student_id IN (${placeholders})`;
 
     try {
         const checkResults = await pool.query(checkSql, student_ids);
+        console.log('Check results:', checkResults.rows);
 
-        // Find if any students are already 'Old'
         const oldStudents = checkResults.rows.filter(student => student.student_type === 'Old');
         if (oldStudents.length > 0) {
-            return res.status(400).json({ message: 'Operation invalid: Some selected students are already marked as "Old".' });
+            console.error('Operation invalid: Some selected students are already marked as "Old".');
+            return res.status(400).json({ success: false, message: 'Operation invalid: Some selected students are already marked as "Old".' });
         }
 
-        // Proceed to update student_type from 'New' to 'Old'
         const updateSql = `UPDATE studenttbl SET student_type = 'Old' WHERE student_id IN (${placeholders})`;
         await pool.query(updateSql, student_ids);
 
-        res.status(200).json({ message: 'Student type updated successfully.' });
+        return res.status(200).json({ success: true, message: 'Student type updated successfully.' });
     } catch (error) {
-        console.error('Error checking/updating student types: ', error);
-        return res.status(500).json({ message: 'Database error.' });
+        console.error('Error checking/updating student types:', error);
+        return res.status(500).json({ success: false, message: 'Database error.' });
     }
 });
+
 
 app.delete('/deleteStudent', async (req, res) => {
     const { studentIds } = req.body; // Array of student_ids to delete

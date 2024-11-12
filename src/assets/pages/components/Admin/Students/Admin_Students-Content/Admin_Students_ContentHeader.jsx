@@ -301,37 +301,40 @@ const Admin_Students_ContentHeader = ({
   };
 
   const handleMatriculation = async () => {
-    try {
-      const response = await fetch(
-        "http://localhost:3000/matriculateStudents",
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            studentIds: selectedStudentIds,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        alert(`Failed to matriculate student: ${errorText || "Unknown error"}`);
+    if (selectedStudentIds.length === 0) {
+        alert("Please select at least one student to matriculate.");
         return;
-      }
-
-      alert("Student successfully matriculated!");
-
-      // Fetch updated student records
-      const updatedResponse = await fetch("http://localhost:3000/students");
-      const updatedRecords = await updatedResponse.json();
-      updateStudentRecords(updatedRecords); // Update parent state
-
-      // Close the popup
-      handleClose();
-    } catch (error) {
-      alert("Network error: Failed to reach the server.");
     }
-  };
+
+    try {
+        const response = await fetch("http://localhost:3000/students/update-type", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ student_ids: selectedStudentIds }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Error response:", errorData);
+            alert(`Error: ${errorData.message || "Unknown error"}`);
+            return;
+        }
+
+        const responseData = await response.json();
+        alert("Student(s) successfully matriculated!");
+
+        // Refresh the student list to show the updated types
+        const updatedResponse = await fetch("http://localhost:3000/students");
+        const updatedRecords = await updatedResponse.json();
+        setStudents(updatedRecords);
+
+        // Clear selection and close modal if applicable
+        setSelectedStudentIds([]);
+    } catch (error) {
+        console.error("Network error:", error.message || error);
+        alert("Network error: Failed to reach the server. Please check your connection and try again.");
+    }
+};
 
   // Disable scrolling when modal is open
   useEffect(() => {

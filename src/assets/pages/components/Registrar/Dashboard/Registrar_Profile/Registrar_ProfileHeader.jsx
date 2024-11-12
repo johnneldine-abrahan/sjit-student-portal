@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Registrar_Profile.css';
 import { BiEditAlt } from "react-icons/bi";
 import { LuLogOut } from "react-icons/lu";
 import { useNavigate } from 'react-router-dom';
-import Profile from '../../../../../img/Profile/ProfileSample.jpg'
+import Profile from '../../../../../img/Profile/ProfileSample.jpg';
 
 const Registrar_ProfileHeader = () => {
   const navigate = useNavigate();
@@ -12,14 +12,14 @@ const Registrar_ProfileHeader = () => {
     show: false,
     message: '',
   });
+  const [profileImage, setProfileImage] = useState(Profile); // Default profile image
+  const fileInputRef = useRef(null); // Reference for file input
 
   const handleLogout = () => {
     setIsModalOpen({
       show: true,
       message: 'Are you sure you want to log out?',
     });
-
-    localStorage.clear('token');
   };
 
   const handleClose = () => {
@@ -35,6 +35,7 @@ const Registrar_ProfileHeader = () => {
       show: false,
       message: '',
     });
+    localStorage.clear('token');
     navigate('/login');
   };
 
@@ -51,12 +52,27 @@ const Registrar_ProfileHeader = () => {
     };
   }, [isModalOpen.show]);
 
+  const handleProfilePictureClick = () => {
+    fileInputRef.current.click(); // Trigger file input click
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result); // Set the new profile image
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="Registrar-p_header">
       <h2 className='profile-title'>Profile</h2>
       <div className='buttons-header'>
         <div className='profile-act'>
-          <BiEditAlt class='profile-icon' onClick={() => setShowPopup(true)} />
+          <BiEditAlt className='profile-icon' onClick={() => setShowPopup(true)} />
         </div>
         <div className='profile-act'>
           <LuLogOut className='profile-icon' onClick={handleLogout} />
@@ -74,31 +90,38 @@ const Registrar_ProfileHeader = () => {
               <form onSubmit={(e) => {
                 e.preventDefault();
                 console.log('Form submitted:');
-                setShowPopup(false);  // Close the popup after submitting
+                setShowPopup(false); // Close the popup after submitting
               }}>
-                <div className='change-profile'>
-                  <img src={Profile} alt="" />
+                <div className='change-profile' onClick={handleProfilePictureClick}>
+                  <img src={profileImage} alt="Profile" className="profile-image" />
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: 'none' }} // Hide the file input
+                    onChange={handleFileChange}
+                    accept="image/*" // Accept only image files
+                  />
                 </div>
                 <div className="first-row">
                   <div className="input-box">
-                    <label>First Name <input type='text' name='first_name' /></label>
+                    <label>First Name <input disabled type='text' name='first_name' /></label>
                   </div>
                   <div className='input-box'>
-                    <label>Last Name <input type='text' name='last_name' /></label>
+                    <label>Last Name <input disabled type='text' name='last_name' /></label>
                   </div>
                 </div>
 
                 <div className='second-row'>
                   <div className='input-box'>
-                    <label>Username <input type='text' name='username' /></label>
+                    <label>Username <input disabled type='text' name='username' /></label>
                   </div>
                   <div className='input-box'>
                     <label>Password <input type='text' name='password' /></label>
                   </div>
                 </div>
 
-                <div class='buttons'>
-                  <button type="submit" class="btn-box" name="add" id="add">Done</button>
+                <div className='buttons'>
+                  <button type="submit" className="btn-box" name="add" id="add">Done</button>
                 </div>
               </form>
             </div>
@@ -116,14 +139,14 @@ const Registrar_ProfileHeader = () => {
           </div>
           <div className='modalBody'>
             <p>{isModalOpen.message}</p>
-            <div class='buttons'>
-              <button type="submit" class="btn-box" name="add" id="add" onClick={handleConfirmLogout}>Log out</button>
+            <div className='buttons'>
+              <button type="button" className="btn-box" name="add" id="add" onClick={handleConfirmLogout}>Log out</button>
             </div>
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default Registrar_ProfileHeader
+export default Registrar_ProfileHeader;

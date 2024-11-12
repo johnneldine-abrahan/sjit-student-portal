@@ -1,42 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Admin_Profile.css';
 import { BiEditAlt } from "react-icons/bi";
 import { LuLogOut } from "react-icons/lu";
 import { useNavigate } from 'react-router-dom';
-import Profile from '../../../../../img/Profile/ProfileSample.jpg'
+import Profile from '../../../../../img/Profile/ProfileSample.jpg';
 
 const Admin_ProfileHeader = () => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState({
-    show: false,
-    message: '',
-  });
+  const [isModalOpen, setIsModalOpen] = useState({ show: false, message: '' });
+  const [profileImage, setProfileImage] = useState(Profile); // State for profile image
+  const fileInputRef = useRef(null); // Ref for the file input
 
   const handleLogout = () => {
-    setIsModalOpen({
-      show: true,
-      message: 'Are you sure you want to log out?',
-    });
+    setIsModalOpen({ show: true, message: 'Are you sure you want to log out?' });
   };
 
   const handleClose = () => {
-    setIsModalOpen({
-      show: false,
-      message: '',
-    });
+    setIsModalOpen({ show: false, message: '' });
   };
 
   const handleConfirmLogout = () => {
     console.log('Logging out...');
-    setIsModalOpen({
-      show: false,
-      message: '',
-    });
-
+    setIsModalOpen({ show: false, message: '' });
     localStorage.clear('token');
-    
     navigate('/login');
+  };
+
+  const handleProfilePictureClick = () => {
+    fileInputRef.current.click(); // Trigger the file input click
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result); // Update the profile image state
+      };
+      reader.readAsDataURL(file); // Read the file as a data URL
+    }
   };
 
   useEffect(() => {
@@ -46,7 +49,6 @@ const Admin_ProfileHeader = () => {
       document.body.style.overflow = 'unset'; // Reset overflow when modal is closed
     }
 
-    // Clean up the effect when the component unmounts or modal closes
     return () => {
       document.body.style.overflow = 'unset';
     };
@@ -57,7 +59,7 @@ const Admin_ProfileHeader = () => {
       <h2 className='profile-title'>Profile</h2>
       <div className='buttons-header'>
         <div className='profile-act'>
-          <BiEditAlt class='profile-icon' onClick={() => setShowPopup(true)} />
+          <BiEditAlt className='profile-icon' onClick={() => setShowPopup(true)} />
         </div>
         <div className='profile-act'>
           <LuLogOut className='profile-icon' onClick={handleLogout} />
@@ -75,31 +77,36 @@ const Admin_ProfileHeader = () => {
               <form onSubmit={(e) => {
                 e.preventDefault();
                 console.log('Form submitted:');
-                setShowPopup(false);  // Close the popup after submitting
+                setShowPopup(false); // Close the popup after submitting
               }}>
-                <div className='change-profile'>
-                  <img src={Profile} alt="" />
+                <div className='change-profile' onClick={handleProfilePictureClick}>
+                  <img src={profileImage} alt="Profile" className="profile-image" />
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: 'none' }} // Hide the file input
+                    onChange={handleFileChange}
+                    accept="image/*" // Accept only image files
+                  />
                 </div>
                 <div className="first-row">
                   <div className="input-box">
-                    <label>First Name <input type='text' name='first_name' /></label>
+                    <label>First Name <input disabled type='text' name='first_name' /></label>
                   </div>
                   <div className='input-box'>
-                    <label>Last Name <input type='text' name='last_name' /></label>
+                    <label>Last Name <input disabled type='text' name='last_name' /></label>
                   </div>
                 </div>
-
                 <div className='second-row'>
                   <div className='input-box'>
-                    <label>Username <input type='text' name='username' /></label>
+                    <label>Username <input disabled type='text' name='username' /></label>
                   </div>
                   <div className='input-box'>
                     <label>Password <input type='text' name='password' /></label>
                   </div>
                 </div>
-
-                <div class='buttons'>
-                  <button type="submit" class="btn-box" name="add" id="add">Done</button>
+                <div className='buttons'>
+                  <button type="submit" className="btn-box " name="add" id="add">Done</button>
                 </div>
               </form>
             </div>
@@ -117,14 +124,14 @@ const Admin_ProfileHeader = () => {
           </div>
           <div className='modalBody'>
             <p>{isModalOpen.message}</p>
-            <div class='buttons'>
-              <button type="submit" class="btn-box" name="add" id="add" onClick={handleConfirmLogout}>Log out</button>
+            <div className='buttons'>
+              <button type="submit" className="btn-box" name="add" id="add" onClick={handleConfirmLogout}>Log out</button>
             </div>
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default Admin_ProfileHeader
+export default Admin_ProfileHeader;

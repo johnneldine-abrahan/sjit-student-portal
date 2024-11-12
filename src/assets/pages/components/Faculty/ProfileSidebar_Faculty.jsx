@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import '../../Faculty/Faculty_module.css'; // Import the CSS file
 import Notifications_Faculty from './Notifications_Faculty';
 import { BiEditAlt } from "react-icons/bi";
 import defaultProfilePic from '../../../img/Profile/default_profile.png'; // Adjust the path as necessary
 
 const ProfileSidebar_Faculty = () => {
-  const [facultyData, setFacultyData] = useState({ 
-    fullName: '', 
-    role: '', 
-    schoolYear: '', 
-    semester: '', 
+  const [facultyData, setFacultyData] = useState({
+    fullName: '',
+    role: '',
+    schoolYear: '',
+    semester: '',
     profile: defaultProfilePic // Set default profile picture
   });
   const [showPopup, setShowPopup] = useState(false);
@@ -19,6 +19,9 @@ const ProfileSidebar_Faculty = () => {
     username: '',
     password: ''
   });
+
+  // Create a ref for the file input
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -55,6 +58,24 @@ const ProfileSidebar_Faculty = () => {
     setShowPopup(false);
   };
 
+  const handleProfilePictureClick = () => {
+    fileInputRef.current.click(); // Trigger file input click
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFacultyData(prevData => ({
+          ...prevData,
+          profile: reader.result // Update the profile picture state
+        }));
+      };
+      reader.readAsDataURL(file); // Read the file as a data URL
+    }
+  };
+
   return (
     <aside className='profileSidebar'>
       <div className='profileCard'>
@@ -62,7 +83,7 @@ const ProfileSidebar_Faculty = () => {
           <h2 className='profileTitle'>Profile</h2>
           <BiEditAlt className='profile-icon' onClick={() => setShowPopup(true)} />
         </div>
-        <div className='profileImage'>
+        <div className='profileImage' onClick={handleProfilePictureClick}>
           <img src={facultyData.profile} alt="Profile" className="profile-picture" /> {/* Display profile picture */}
         </div>
         <div className='faculty-details'>
@@ -86,22 +107,29 @@ const ProfileSidebar_Faculty = () => {
             <div className="popup-content">
               <form onSubmit={handleEditProfile}>
                 <div className='change-profile'>
-                  <div className='profileImage'>
-                    <img src={facultyData.profile} alt="Profile" className="profile-picture" /> {/* Display profile picture in popup */}
+                  <div className='profileImage' onClick={handleProfilePictureClick}>
+                    <img src={ facultyData.profile} alt="Profile" className="profile-picture" /> {/* Display profile picture in popup */}
                   </div>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: 'none' }}
+                    accept="image/*"
+                    onChange={handleFileChange}
+                  />
                 </div>
                 <div className="first-row">
                   <div className="input-box">
-                    <label>First Name <input type='text' name='first_name' value={formData.firstName} onChange={(e) => setFormData({ ...formData, firstName: e.target.value })} /></label>
+                    <label>First Name <input disabled type='text' name='first_name' value={formData.firstName} onChange={(e) => setFormData({ ...formData, firstName: e.target.value })} /></label>
                   </div>
                   <div className='input-box'>
-                    <label>Last Name <input type='text' name='last_name' value={formData.lastName} onChange={(e) => setFormData({ ...formData, lastName: e.target.value })} /></label>
+                    <label>Last Name <input disabled type='text' name='last_name' value={formData.lastName} onChange={(e) => setFormData({ ...formData, lastName: e.target.value })} /></label>
                   </div>
                 </div>
 
                 <div className='second-row'>
                   <div className='input-box'>
-                    <label>Username <input type='text' name='username ' value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} /></label>
+                    <label>Username <input disabled type='text' name='username ' value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} /></label>
                   </div>
                   <div className='input-box'>
                     <label>Password <input type='text' name='password' value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} /></label>

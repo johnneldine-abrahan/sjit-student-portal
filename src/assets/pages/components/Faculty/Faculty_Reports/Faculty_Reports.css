@@ -1,0 +1,38 @@
+.faculty-report-main-content {
+    background: #fff;
+    flex: 1;
+    margin: 10px;
+    border-radius: 20px;
+    max-height: 100%;
+    padding: 1rem;
+    display: flex;
+    gap: 1.5rem;
+
+}
+.logo-faculty-report {
+    aspect-ratio: 7.23;
+    object-fit: contain;
+    object-position: center;
+    width: 350px;
+}
+.headerFaculty-report {
+    background-color: #7b8bbc;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 27px;
+
+    width: 100%;
+}
+
+
+.back-button-faculty-report {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 30px;
+    color: #000000;
+    padding: 10px;
+    transition: color 0.3s;
+}

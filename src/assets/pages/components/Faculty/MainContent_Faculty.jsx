@@ -7,7 +7,6 @@ import { MdOutlineUploadFile } from "react-icons/md";
 import { MdAnalytics } from "react-icons/md";
 import { FiFilter } from "react-icons/fi";
 import { IoIosInformationCircleOutline } from "react-icons/io";
-
 import Faculty_Reports from "./Faculty_Reports/Faculty_Reports";
 import StudentList from "./StudentList/StudentList";
 import UploadGrades from "./UploadGrades/UploadGrades";

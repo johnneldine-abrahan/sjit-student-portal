@@ -183,12 +183,12 @@ ul.thumbs.animated {
 }
 
 .notificationSection {
-  background-color: #dde6ed;
-  border-radius: 20px;
-  /*box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);*/
-  margin-top: 16px;
-  padding: 18px 0;
+  background-color: #dde6ed; /* Your specified background color */
+  border-radius: 20px; /* Rounded corners */
+  margin-top: 16px; /* Space above the notification section */
+  padding: 18px 0; /* Vertical padding */
 }
+
 .btn-box {
   background-color: #150f57;
   color: #fff;
@@ -210,10 +210,11 @@ ul.thumbs.animated {
   align-items: center;
   display: flex;
   font-size: 16px;
-  gap: 14px;
+  gap: 6px;
   justify-content: center;
   margin-bottom: 11px;
   color: #150f57;
+  align-items: center;
 }
 
 .filterheader-section {
@@ -415,4 +416,73 @@ ul.thumbs.animated {
 .profile-icon {
   cursor: pointer; /* Change cursor to pointer for better UX */
   font-size: 1.5em; /* Adjust size as needed */
+}
+
+.notificationHeader {
+  display: flex;
+  align-items: center; /* Aligns items vertically centered */
+}
+
+.notificationIcon {
+  font-size: 24px; /* Adjust size as needed */
+}
+
+.notificationTitle {
+  font-size: 20px; /* Size of the title */
+  margin: 0; /* Remove default margin */
+}
+
+.notificationList {
+  list-style-type: none; /* Remove bullet points */
+  padding: 0; /* Remove default padding */
+  margin-top: 10px; /* Space above the list */
+}
+
+.notificationItem {
+  padding: 10px 20px; /* Padding for each notification item */
+  border-bottom: 1px solid #ccc; /* Divider between items */
+  transition: background-color 0.3s; /* Smooth background transition */
+}
+
+.notificationItem:hover {
+  background-color: #c1d4e0; /* Change this color on hover */
+  cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure it appears above other content */
+}
+
+.popupContent {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 300px; /* Adjust as needed */
+}
+
+.popupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.notificationItem {
+  cursor: pointer; /* Indicate that the item is clickable */
 }

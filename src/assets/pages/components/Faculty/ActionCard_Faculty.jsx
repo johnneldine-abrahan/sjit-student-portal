@@ -8,7 +8,7 @@ const ActionCard_Faculty = ({ icon, text, content }) => {
 
   const handleCardClick = () => {
     if (text === "Reports") {
-      navigate("/reports"); // Navigate to the reports page
+      navigate("/faculty/reports"); // Navigate to the reports page
     } else {
       // For other cards, open the modal
       setIsModalOpen(true);

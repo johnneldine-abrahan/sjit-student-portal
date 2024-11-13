@@ -52,7 +52,7 @@ const App = () => {
         <Route path="/student/dashboard" element={<Students_Dashboard />} />
         <Route path="/faculty/dashboard" element={<Faculty_Dashboard />} />
         <Route path="/" element={<MainContent_Faculty />} />
-        <Route path="/reports" element={<Faculty_Reports />} />
+        <Route path="/faculty/reports" element={<Faculty_Reports />} />
       </Routes>
     </Router>
   );

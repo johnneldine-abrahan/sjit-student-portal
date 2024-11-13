@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import {useNavigate} from "react-router-dom";
 import '../../Students/Students_module.css';
 
 const ActionCard_Student = ({ icon, text, content }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleCardClick = () => {
-    setIsModalOpen(true);
+    if (text === "Reports"){
+      navigate("/student/reports", "_blank");
+    }else{
+      setIsModalOpen(true);
+    }
   };
 
   const handleCloseModal = () => {

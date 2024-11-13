@@ -6,6 +6,7 @@ import { AiFillSchedule } from "react-icons/ai";
 import { PiExamFill } from "react-icons/pi";
 import { FaReceipt } from "react-icons/fa";
 import { GiInjustice } from "react-icons/gi";
+import { MdAnalytics } from "react-icons/md";
 import { IoMdPrint } from "react-icons/io";
 import { FiFilter } from "react-icons/fi";
 import { IoIosInformationCircleOutline } from "react-icons/io";
@@ -14,6 +15,7 @@ import Subjects_and_Schedule from "./Subjects_and_Schedule/Subjects_and_Schedule
 import Grades_Students from "./Grades_Students/Grades_Students";
 import Payments from "./Payments/Payments";
 import Liabilities_Students from "./Liabilities_Students/Liabilities_Students";
+import Student_Reports from "./Student_Reports/Student_Reports";
 import PrintCopyofGrades from "./PrintCopyofGrades/PrintCopyofGrades";
 import { Carousel } from "react-responsive-carousel";
 import image1 from "../../../img/Faculty/Pinas.jpg";
@@ -46,6 +48,10 @@ const actionItems = [
     icon: <GiInjustice size={40} />,
     text: "Liabilities",
     content: Liabilities_Students,
+  },{
+    icon: <MdAnalytics size={40} />,
+    text: "Reports",
+    content: Student_Reports,
   },
   {
     icon: <IoMdPrint size={40} />,

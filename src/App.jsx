@@ -22,9 +22,9 @@ import Finance_TagLiabilities from "./assets/pages/Finance/Finance_TagLiabilitie
 import Finance_StudentRecords from "./assets/pages/Finance/Finance_StudentRecords";
 import Students_Dashboard from "./assets/pages/Students/Students_Dashboard";
 import Faculty_Dashboard from "./assets/pages/Faculty/Faculty_Dashboard";
-
 import MainContent_Faculty from "./assets/pages/components/Faculty/MainContent_Faculty";
 import Faculty_Reports from "./assets/pages/components/Faculty/Faculty_Reports/Faculty_Reports";
+import Student_Reports from "./assets/pages/components/Students/Student_Reports/Student_Reports";
 
 const App = () => {
   return (
@@ -53,6 +53,7 @@ const App = () => {
         <Route path="/faculty/dashboard" element={<Faculty_Dashboard />} />
         <Route path="/" element={<MainContent_Faculty />} />
         <Route path="/faculty/reports" element={<Faculty_Reports />} />
+        <Route path="/student/reports" element={<Student_Reports />} />
       </Routes>
     </Router>
   );

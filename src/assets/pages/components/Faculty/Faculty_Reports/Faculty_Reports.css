@@ -6,33 +6,105 @@
     max-height: 100%;
     padding: 1rem;
     display: flex;
-    gap: 1.5rem;
-
-}
-.logo-faculty-report {
+    flex-direction: column; /* Change to column to stack children vertically */
+    gap: 1.5rem; /* Space between header and content */
+  }
+  
+  .logo-faculty-report {
     aspect-ratio: 7.23;
     object-fit: contain;
     object-position: center;
     width: 350px;
-}
-.headerFaculty-report {
+  }
+  .header-with-dropdowns {
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Center items vertically */
+    justify-content: space-between;
+  }
+  
+  .dropdowns-container {
+    display: flex; /* Use flexbox for horizontal alignment */
+    margin-left: 20px;
+    /* Add some space between the heading and dropdowns */
+  }
+  
+  .report-dropdown {
+    margin-right: 10px;
+    width: auto; /* Space between dropdowns */
+  }
+  .headerFaculty-report {
     background-color: #7b8bbc;
     display: flex;
-    justify-content: space-between;
+  
     padding: 10px 27px;
-
     width: 100%;
-}
-
-
-.back-button-faculty-report {
+  }
+  
+  .back-button-faculty-report {
+    margin-right: 10px;
     background: none;
     border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
     font-size: 30px;
-    color: #000000;
+    color: #fffefe;
     padding: 10px;
     transition: color 0.3s;
-}
+  }
+  
+  /* Updated styles for the reports container */
+  .reports-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    gap: 20px; /* Space between columns */
+    margin-top: 20px; /* Space between the heading and the reports */
+    width: 100%; /* Ensure it takes full width */
+  }
+  
+  .left-side {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between tables */
+  }
+  
+  .report-table-top {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .report-table-bottom {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .report-table-top th,
+  .report-table-top td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  .report-table-bottom th,
+  .report-table-bottom td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .right-side {
+    display: grid;
+  
+    gap: 20px; /* Space between grid items */
+  }
+  
+  .grid-item {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+    display: flex; /* Use flexbox */
+    flex-direction: column; /* Stack items vertically */
+    justify-content: center; /* Center items vertically */
+    align-items: center; /* Center items horizontally */
+    width: 100%; /* Ensure it takes full width */
+  }

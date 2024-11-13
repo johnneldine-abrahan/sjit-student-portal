@@ -394,3 +394,27 @@ select {
   background-color: #f0f0f0; /* set the track color */
   border-radius: 30px; /* set the track border radius */
 }
+
+.center-labels {
+  display: flex;
+  flex-direction: row; /* Stack the labels vertically */
+  align-items: center; /* Center align the labels */
+  text-align: center; /* Center text within the labels */
+}
+
+.labelss {
+  margin: 5px 0; /* Optional: Add some space between labels */
+  display: flex;
+  flex-direction: row; /* Stack the labels vertically */
+  align-items: center; /* Center align the labels */
+  text-align: center; /* Center text within the labels */
+  
+}
+.button-container-done {
+  position: absolute; /* Use absolute positioning */
+  bottom: 20px; /* Adjust the distance from the bottom */
+  right: 20px; /* Adjust the distance from the right */
+}
+input[type="checkbox"] {
+  margin-right: 5px;
+}

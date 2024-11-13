@@ -64,6 +64,20 @@ const Admin_Students_ContentHeader = ({
 
   const [juniorHighschoolChecked, setJuniorHighschoolChecked] = useState(false);
   const [seniorHighschoolChecked, setSeniorHighschoolChecked] = useState(false);
+  const [selectedGrade, setSelectedGrade] = useState('');
+  const [enrollmentStatus, setEnrollmentStatus] = useState('');
+  const [studentType, setStudentType] = useState('');
+
+  const handleGradeChange = (event) => {
+    setSelectedGrade(event.target.value);
+  };
+  const handleEnrollmentChange = (event) => {
+    setEnrollmentStatus(event.target.value);
+  };
+
+  const handleStudentTypeChange = (event) => {
+    setStudentType(event.target.value);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -344,7 +358,8 @@ const Admin_Students_ContentHeader = ({
       popup.delete ||
       popup.archive ||
       popup.promotion ||
-      popup.matriculation
+      popup.matriculation ||
+      popup.filter
     ) {
       document.body.style.overflow = "hidden";
     } else {
@@ -406,81 +421,106 @@ const Admin_Students_ContentHeader = ({
 
           {/* Filter Pop-up */}
           {popup.filter && (
-  <>
-    <div className="popup-blurred-background" onClick={handleClose} />
-    <div className="popup">
-      <div className="popup-header">
-        <h3>Filter Student</h3>
-        <button onClick={handleClose}>Close</button>
-      </div>
-      <div className="popup-content">
-        <label htmlFor="sort-by">Sort By:</label>
-        <select id="sort-by">
-          <option value="name">A-Z</option>
-          <option value="age">Z-A</option>
-        </select>
+            <>
+              <div className="popup-blurred-background" onClick={handleClose} />
+              <div className="popup">
+                <div className="popup-header">
+                  <h3>Filter Student</h3>
+                  <button onClick={handleClose}>Close</button>
+                </div>
+                <div className="popup-content-sort">
+                  <label htmlFor="sort-by">Sort By:</label>
+                  <select id="sort-by">
+                    <option value="name">A-Z</option>
+                    <option value="age">Z-A</option>
+                  </select>
 
-        <label htmlFor="sort-by">Grade:</label>
-        <select id="sort-by">
-          <option value="name">7</option>
-          <option value="age">8</option>
-          <option value="age">9</option>
-          <option value="age">10</option>
-          <option value="age">11</option>
-          <option value="age">12</option>
-        </select>
+                  <label htmlFor="grade">Grade:</label>
+                  <select id="grade" onChange={handleGradeChange}>
+                    <option value="">Select Grade</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                  </select>
 
-        {/* Radio buttons for enrollment status */}
-        <div className="enrollment-status">
-          <h4>Enrollment Status:</h4>
-          <label style={{ display: 'block', marginBottom: '8px' }}>
-            <input
-              type="radio"
-              name="enrollment"
-              value="enrolled"
-              // Define this function to handle changes
-            />
-            Enrolled Students
-          </label>
-          <label style={{ display: 'block', marginBottom: '8px' }}>
-            <input
-              type="radio"
-              name="enrollment"
-              value="not-enrolled"
-              // Define this function to handle changes
-            />
-            Not Enrolled Students
-          </label>
-        </div>
+                  <label htmlFor="strand">Strand:</label>
+                  <select id="strand" disabled={['7', '8', '9', '10'].includes(selectedGrade)}>
+                    <option value="">Select Strand</option>
+                    <option value="stem">
+                      Science, Technology, Engineering and Mathematics (STEM)
+                    </option>
+                    <option value="abm">
+                      Accountancy, Business and Management (ABM)
+                    </option>
+                    <option value="humss">
+                      Humanities and Social Sciences (HUMSS)
+                    </option>
+                    <option value="tvl-ia">TVL - Industrial Arts (TVL-IA)</option>
+                    <option value="tvl-he">TVL - Home Economics (TVL-HE)</option>
+                    <option value="tvl-ict">
+                      TVL - Internet Communications Technology (TVL-ICT)
+                    </option>
+                  </select>
 
-        {/* Radio buttons for old and new students */}
-        <div className="student-type">
-          <h4>Student Type:</h4>
-          <label style={{ display: 'block', marginBottom: '8px' }}>
-            <input
-              type="radio"
-              name="student-type"
-              value="old"
-              // Define this function to handle changes
-            />
-            Old Students
-          </label>
-          <label style={{ display: 'block', marginBottom: '8px' }}>
-            <input
-              type="radio"
-              name="student-type"
-              value="new"
-              // Define this function to handle changes
-            />
-            New Students
-          </label>
-          <div className="button-container">
-            <button className="btn-box">Done</button></div>
-        </div>
-      </div>
-    </div>
-  </>
-)}
+                  {/* Radio buttons for enrollment status */}
+                  <div className="enrollment-status center-labels">
+                    <h4>Enrollment Status:</h4>
+                    <label className="labelss">
+                      <input
+                        type="checkbox"
+                        name="enrollment"
+                        value="enrolled"
+                        checked={enrollmentStatus === 'enrolled'}
+                        onChange={handleEnrollmentChange}
+                      />
+                      Enrolled Students
+                    </label>
+                    <label className="labelss">
+                      <input
+                        type="checkbox"
+                        name="enrollment"
+                        value="not-enrolled"
+                        checked={enrollmentStatus === 'not-enrolled'}
+                        onChange={handleEnrollmentChange}
+                      />
+                      Not Enrolled Students
+                    </label>
+                  </div>
+
+                  {/* Radio buttons for old and new students */}
+                  <div className="student-type center-labels">
+                    <h4>Student Type:</h4>
+                    <label className="labelss">
+                      <input
+                        type="checkbox"
+                        name="student-type"
+                        value="old"
+                        checked={studentType === 'old'}
+                        onChange={handleStudentTypeChange}
+                      />
+                      Old Students
+                    </label>
+                    <label className="labelss">
+                      <input
+                        type="checkbox"
+                        name="student-type"
+                        value="new"
+                        checked={studentType === 'new'}
+                        onChange={handleStudentTypeChange}
+                      />
+                      New Students
+                    </label>
+                  </div>
+                  <div className="button-container">
+                    <button className="btn-box">Done</button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
           {/* Add Pop-up */}
           {popup.add && (
             <>

@@ -71,16 +71,15 @@ const Notifications_Student = () => {
 
       {isPopupVisible && selectedNotification && (
         <div className='popupOverlay'>
-          <div className='popupContent'>
+          <div className='popupContent-notification'>
             <div className='popupHeader'>
-              <h4>Notification Details</h4>
+              <h4>{selectedNotification.announcement_type}: {selectedNotification.announcement_title}</h4>
               <button className='closeButton' onClick={closePopup}>Close</button>
             </div>
-            <p><strong>Type:</strong> {selectedNotification.announcement_type}</p>
-            <p><strong>Title:</strong> {selectedNotification.announcement_title}</p>
-            <p><strong>Text:</strong> {selectedNotification.announcement_text}</p>
-            <p><strong>By:</strong> {selectedNotification.announcement_by}</p>
-            <p><strong>Timestamp:</strong> {new Date(selectedNotification.announcement_timestamp).toLocaleString()}</p>
+            <div className='popup-content-notification'>
+              <p>{selectedNotification.announcement_text}</p><br />
+              <p><strong>Posted By:</strong> {selectedNotification.announcement_by} - {new Date(selectedNotification.announcement_timestamp).toLocaleString()}</p>
+            </div>
           </div>
         </div>
       )}

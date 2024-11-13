@@ -736,8 +736,8 @@ app.post('/addAnnouncement', authenticateToken, async (req, res) => {
     // Generate unique announcement ID
     const announcement_id = `ANN-${Math.floor(10000 + Math.random() * 90000)}`;
 
-    // Get the current date and timestamp in local time
-    const announcement_timestamp = new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }); // Change to your timezone
+    // Get the current date and timestamp in the correct format for PostgreSQL
+    const announcement_timestamp = new Date().toISOString(); // This will be in the format YYYY-MM-DDTHH:mm:ss.sssZ
 
     // Get the user_id from the database
     const announcement_by = req.user.userId; // Change to match your JWT structure
@@ -2092,6 +2092,26 @@ app.post('/add-grade', authenticateToken, async (req, res) => {
     }
   });
   
+
+  app.get('/announcements/faculty', (req, res) => {
+    const query = `
+        SELECT announcement_id, announce_to, announcement_type, 
+               announcement_title, announcement_text, 
+               announcement_by, announcement_timestamp 
+        FROM announcementtbl 
+        WHERE announce_to IN ('Faculty', 'All')
+        ORDER BY announcement_timestamp DESC
+    `;
+
+    // Use the pool to query the database
+    pool.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching announcements:', err);
+            return res.status(500).json({ error: 'Database query failed' });
+        }
+        res.json(results.rows); // Ensure to return results.rows for proper formatting
+    });
+});
 
 // Student ------------------------------------------------------------------------------------------
 

@@ -99,8 +99,6 @@ const Popup_Add = ({ title, onClose, refreshAnnouncements }) => {
                 <select name="announce_to" onChange={handleChange}>
                   <option value=""></option>
                   <option value="Student">Students</option>
-                  <option value="Faculty">Teachers</option>
-                  <option value="Finance">Finance</option>
                   <option value="All">All</option>
                 </select>
               </label>

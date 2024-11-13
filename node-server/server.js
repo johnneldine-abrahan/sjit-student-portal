@@ -2220,6 +2220,25 @@ app.get('/grades', authenticateToken, async (req, res) => {
     }
 });
 
+app.get('/announcements/students', (req, res) => {
+    const query = `
+        SELECT announcement_id, announce_to, announcement_type, 
+               announcement_title, announcement_text, 
+               announcement_by, announcement_timestamp 
+        FROM announcementtbl 
+        WHERE announce_to IN ('Student', 'All')
+    `;
+
+    // Use the pool to query the database
+    pool.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching announcements:', err);
+            return res.status(500).json({ error: 'Database query failed' });
+        }
+        res.json(results);
+    });
+});
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });

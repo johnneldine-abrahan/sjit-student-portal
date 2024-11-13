@@ -47,7 +47,7 @@ const App = () => {
         <Route path="/registrar/archive" element={<Registrar_Archive />} />
         <Route path="/finance/dashboard" element={<Finance_Dashboard />} />
         <Route path="finance/enrollment-queue" element={<Finance_EnrollmentQueue />} />
-        <Route path="/finance/tag-liabilities"belement={<Finance_TagLiabilities />} />
+        <Route path="/finance/tag-liabilities" element={<Finance_TagLiabilities />} />
         <Route path="/finance/student-records" element={<Finance_StudentRecords />} />
         <Route path="/student/dashboard" element={<Students_Dashboard />} />
         <Route path="/faculty/dashboard" element={<Faculty_Dashboard />} />

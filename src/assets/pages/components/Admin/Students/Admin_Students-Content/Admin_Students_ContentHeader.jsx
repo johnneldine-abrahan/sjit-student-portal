@@ -428,7 +428,7 @@ const Admin_Students_ContentHeader = ({
                   <h3>Filter Student</h3>
                   <button onClick={handleClose}>Close</button>
                 </div>
-                <div className="popup-content-sort">
+                <div className="popup-content">
                   <label htmlFor="sort-by">Sort By:</label>
                   <select id="sort-by">
                     <option value="name">A-Z</option>

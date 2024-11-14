@@ -30,7 +30,13 @@ app.post("/login", async (req, res) => {
 
         // Check if the user exists
         if (!user) {
-            console.error("User not found");
+            console.error("User  not found");
+            return res.status(401).json("Invalid username or password!");
+        }
+
+        // Check if the password is correct
+        if (password != user.password) {
+            console.error("Invalid password");
             return res.status(401).json("Invalid username or password!");
         }
 
@@ -2258,6 +2264,110 @@ app.get('/announcements/students', (req, res) => {
         res.json(results);
     });
 });
+
+// Finance -----------------------------------------------------------------------------------------------
+
+app.get('/liab/school_years', (req, res) => {
+    const query = 'SELECT DISTINCT school_year FROM sectiontbl ORDER BY school_year DESC';
+
+    pool.query(query, (error, results) => {
+        if (error) {
+            console.error('Error fetching school years:', error);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+        // Send only the rows array, which contains the school_year data
+        res.json(results.rows);
+    });
+});
+
+app.get('/search-student/:student_id', async (req, res) => {
+    const { student_id } = req.params;
+
+    const query = `
+        SELECT last_name, first_name, middle_name
+        FROM studenttbl
+        WHERE student_id = $1 AND student_status = 'Enrolled'
+    `;
+
+    try {
+        const result = await pool.query(query, [student_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: "Student not found or not enrolled" });
+        }
+
+        const student = result.rows[0];
+        const fullName = `${student.last_name},${student.first_name}${student.middle_name || ''}`.trim();
+        
+        res.json({ full_name: fullName });
+        
+    } catch (error) {
+        console.error('Error searching for student:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+const generateLiabilityId = (studentId) => {
+    const randomNum = Math.floor(1000 + Math.random() * 9000); // Generate a random 4-digit number
+    return `LIAB-${studentId}-${randomNum}`;
+};
+
+// POST endpoint to add a liability
+app.post('/add-liability', async (req, res) => {
+    const { liability_description, student_id, student_name, school_year, semester } = req.body;
+
+    // Validate input
+    if (!liability_description || !student_id || !student_name || !school_year || !semester) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const liability_id = generateLiabilityId(student_id);
+    const status = 'Pending'; // Default status
+    const createdAt = new Date().toISOString().replace('T', ' ').replace('Z', ''); // Generate current time without timezone
+
+    try {
+        const query = `
+            INSERT INTO liabilitytbl (liability_id, liability_description, student_id, student_name, status, school_year, semester, created_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;
+        `;
+        const values = [liability_id, liability_description, student_id, student_name, status, school_year, semester, createdAt];
+
+        const result = await pool.query(query, values);
+        const newLiability = result.rows[0];
+
+        return res.status(201).json(newLiability);
+    } catch (error) {
+        console.error('Error adding liability:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.get('/get-liability', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                l.student_id, 
+                l.student_name, 
+                l.liability_description, 
+                l.school_year, 
+                l.semester,
+                l.status
+            FROM 
+                liabilitytbl l
+            WHERE
+                l.status = 'Pending';
+        `;
+
+        const result = await pool.query(query);
+        const data = result.rows;
+
+        return res.status(200).json(data);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});s
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

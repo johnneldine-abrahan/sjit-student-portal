@@ -1,29 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./TagLiabilities_Content.css";
 import { BiSearch } from "react-icons/bi";
 import { RiAddLargeFill } from "react-icons/ri";
+import axios from "axios";
 
-const TagLiabilities_ContentHeader = () => {
+const TagLiabilities_ContentHeader = ({ refreshData }) => {
   const [popup, setPopup] = useState({
     add: false,
     edit: false,
     delete: false,
   });
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [schoolYears, setSchoolYears] = useState([]);
   const [formData, setFormData] = useState({
     schoolYear: "",
     semester: "",
     studentIDInput: "",
-    additionalInput: "", // New input field
+    additionalInput: "",
     comments: "",
-    studentName: "", // Initialize studentName
-    description: "", // Initialize description
+    studentName: "",
+    description: "",
   });
 
-  // Sample student IDs for searching
-  const studentIDs = ["12345", "67890", "54321", "09876", "11223"];
-  const [filteredStudentIDs, setFilteredStudentIDs] = useState([]);
+  useEffect(() => {
+    const fetchSchoolYears = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/liab/school_years');
+        setSchoolYears(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error('Error fetching school years:', error);
+        setErrorMessage("Failed to load school years.");
+      }
+    };
+
+    fetchSchoolYears();
+  }, []);
 
   const handlePopup = (type) => {
     setPopup({ add: false, edit: false, delete: false, [type]: !popup[type] });
@@ -38,10 +49,9 @@ const TagLiabilities_ContentHeader = () => {
       studentIDInput: "",
       additionalInput: "",
       comments: "",
-      studentName: "", // Reset studentName
-      description: "", // Reset description
+      studentName: "",
+      description: "",
     });
-    setFilteredStudentIDs([]); // Clear filtered results on close
   };
 
   const handleInputChange = (e) => {
@@ -49,20 +59,37 @@ const TagLiabilities_ContentHeader = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSearch = () => {
-    const searchTerm = formData.studentIDInput.trim();
-    if (searchTerm) {
-      const results = studentIDs.filter((id) => id.includes(searchTerm));
-      setFilteredStudentIDs(results);
-    } else {
-      setFilteredStudentIDs([]);
+  const handleSearch = async () => {
+    const studentID = formData.studentIDInput.trim();
+    if (studentID) {
+      try {
+        const response = await axios.get(`http://localhost:3000/search-student/${studentID}`);
+        setFormData({ ...formData, studentName: response.data.full_name });
+      } catch (error) {
+        console.error('Error fetching student:', error);
+        setErrorMessage("Student not found or not enrolled.");
+      }
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    handleClose();
+    try {
+      const response = await axios.post('http://localhost:3000/add-liability', {
+        liability_description: formData.description,
+        student_id: formData.studentIDInput,
+        student_name: formData.studentName,
+        school_year: formData.schoolYear,
+        semester: formData.semester,
+      });
+
+      console.log('Liability added:', response.data);
+      handleClose(); // Close the popup after successful submission
+      refreshData(); // Refresh the liability list after adding a new liability
+    } catch (error) {
+      console.error('Error adding liability:', error);
+      setErrorMessage("Failed to add liability. Please try again.");
+    }
   };
 
   return (
@@ -99,20 +126,25 @@ const TagLiabilities_ContentHeader = () => {
                   <div className="input-box">
                     <label htmlFor="schoolYear">School Year:</label>
                     <select
+                      id="schoolYear"
                       name="schoolYear"
                       value={formData.schoolYear}
                       onChange={handleInputChange}
                       required
                     >
                       <option value=""></option>
-                      <option value="2023-2024">2023-2024</option>
-                      <option value="2024-2025">2024-2025</option>
+                      {schoolYears.map((year) => (
+                        <option key={year.school_year} value={year.school_year}>
+                          {year.school_year}
+                        </option>
+                      ))}
                     </select>
                   </div>
 
                   <div className="input-box">
                     <label htmlFor="semester">Semester:</label>
                     <select
+                      id="semester"
                       name="semester"
                       value={formData.semester}
                       onChange={handleInputChange}
@@ -127,10 +159,17 @@ const TagLiabilities_ContentHeader = () => {
 
                 <div className="third-row">
                   <div className="input-box">
-                    <label htmlFor="searchBox">Search:</label>
+                    <label htmlFor="studentIDInput">Search:</label>
                     <div className="search-container">
-                      <input type="text" placeholder="Search here..." />
-                      <BiSearch className="search-icon-filter" size={"22px"}/>
+                      <input
+                        type="text"
+                        id="studentIDInput"
+                        name="studentIDInput"
+                        value={formData.studentIDInput}
+                        onChange={handleInputChange}
+                        placeholder="Search here..."
+                      />
+                      <BiSearch className="search-icon-filter" size={"22px"} onClick={handleSearch} />
                     </div>
                   </div>
 
@@ -138,6 +177,7 @@ const TagLiabilities_ContentHeader = () => {
                     <label htmlFor="studentName">Student Name:</label>
                     <input
                       type="text"
+                      id="studentName"
                       name="studentName"
                       value={formData.studentName}
                       onChange={handleInputChange}
@@ -150,6 +190,7 @@ const TagLiabilities_ContentHeader = () => {
                   <div className="input-box">
                     <label htmlFor="description">Description:</label>
                     <textarea
+                      id="description"
                       name="description"
                       value={formData.description}
                       onChange={handleInputChange}
@@ -164,6 +205,7 @@ const TagLiabilities_ContentHeader = () => {
                   </button>
                 </div>
               </form>
+              {errorMessage && <p className="error-message">{errorMessage}</p>}
             </div>
           </div>
         </>

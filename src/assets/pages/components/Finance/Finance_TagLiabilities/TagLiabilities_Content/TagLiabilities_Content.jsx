@@ -1,46 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BiEditAlt } from "react-icons/bi";
 import { FaCheck } from "react-icons/fa6";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import "./TagLiabilities_Content.css";
 import TagLiabilities_ContentHeader from "./TagLiabilities_ContentHeader";
 
-const StudentLiabRecords = [
-  {
-    studentID: "21-05298",
-    LastName: "Sanchez",
-    FirstName: "Kim William",
-    MiddleName: "Bacsa",
-    yearGraduated: "2025",
-    status: "Active",
-  },
-  {
-    studentID: "21-05299",
-    LastName: "Doe",
-    FirstName: "John",
-    MiddleName: "A.",
-    yearGraduated: "2024",
-    status: "Active",
-  },
-  {
-    studentID: "21-05300",
-    LastName: "Smith",
-    FirstName: "Jane",
-    MiddleName: "B.",
-    yearGraduated: "2023",
-    status: "Inactive",
-  },
-  {
-    studentID: "21-05301",
-    LastName: "Johnson",
-    FirstName: "Emily",
-    MiddleName: "C.",
-    yearGraduated: "2022",
-    status: "Active",
-  },
-];
-
 const TagLiabilities_Content = () => {
+  const [studentLiabRecords, setStudentLiabRecords] = useState([]);
   const [popup, setPopup] = useState({
     show: false,
     record: null,
@@ -60,32 +26,50 @@ const TagLiabilities_Content = () => {
     });
   };
 
+  // Fetch data from the API
+  const fetchLiabilities = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/get-liability");
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      setStudentLiabRecords(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchLiabilities();
+  }, []);
+
   return (
     <div className="tagliabilities-content">
-      <TagLiabilities_ContentHeader />
+      <TagLiabilities_ContentHeader refreshData={fetchLiabilities} />
       <div className="student-records">
         <div className="recordslist-container">
           <table>
             <thead>
               <tr>
                 <th>Student ID</th>
-                <th>Last Name</th>
-                <th>First Name</th>
-                <th>Middle Name</th>
-                <th>Year Graduated</th>
+                <th>Full Name</th>
+                <th>Liability</th>
+                <th>School Year</th>
+                <th>Semester</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {StudentLiabRecords.map((records, index) => (
+              {studentLiabRecords.map((record, index) => (
                 <tr key={index}>
-                  <td>{records.studentID}</td>
-                  <td>{records.LastName}</td>
-                  <td>{records.FirstName}</td>
-                  <td>{records.MiddleName}</td>
-                  <td>{records.yearGraduated}</td>
-                  <td>{records.status}</td>
+                  <td>{record.student_id}</td>
+                  <td>{record.student_name}</td>
+                  <td>{record.liability_description}</td>
+                  <td>{record.school_year}</td>
+                  <td>{record.semester}</td>
+                  <td>{record.status}</td>
                   <td>
                     <button className="edit-button-filter">
                       <BiEditAlt size={20} />

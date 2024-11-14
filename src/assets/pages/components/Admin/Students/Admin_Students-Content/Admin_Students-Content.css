@@ -408,7 +408,7 @@ select {
   flex-direction: row; /* Stack the labels vertically */
   align-items: center; /* Center align the labels */
   text-align: center; /* Center text within the labels */
-  
+
 }
 .button-container-done {
   position: absolute; /* Use absolute positioning */

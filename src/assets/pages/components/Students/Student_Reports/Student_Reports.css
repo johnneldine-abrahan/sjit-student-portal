@@ -1,0 +1,42 @@
+.report-table-mygrades {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .report-table-mygrades th,
+  .report-table-mygrades td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  .header-with-dropdowns {
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Center items vertically */
+    justify-content: space-between;
+  }
+  
+  .dropdowns-container {
+    display: flex; /* Use flexbox for horizontal alignment */
+    margin-left: 20px;
+    /* Add some space between the heading and dropdowns */
+  }
+  
+  .report-dropdownstudent {
+    margin-right: 10px;
+    width: auto; /* Space between dropdowns */
+  }
+  .grid-item-container-student {
+    display: flex; /* Use flexbox to arrange items in a row */
+    justify-content: space-between; /* Space between items */
+    width: 100%; /* Ensure it takes full width */
+  }
+  
+  .grid-item-insights-student,
+  .grid-item-reco-student {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+    flex: 1; /* Allow both items to take equal space */
+    margin: 0 10px; /* Add some space between the two items */
+  }

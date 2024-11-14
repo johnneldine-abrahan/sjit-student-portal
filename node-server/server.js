@@ -2367,7 +2367,7 @@ app.get('/get-liability', async (req, res) => {
         console.error('Error fetching data:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
-});s
+});
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

@@ -2346,7 +2346,8 @@ app.post('/add-liability', async (req, res) => {
 app.get('/get-liability', async (req, res) => {
     try {
         const query = `
-            SELECT 
+            SELECT
+                l.liability_id,
                 l.student_id, 
                 l.student_name, 
                 l.liability_description, 
@@ -2368,6 +2369,46 @@ app.get('/get-liability', async (req, res) => {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+app.put('/update-liability-status/:liability_id', async (req, res) => {
+    const { liability_id } = req.params;
+  
+    try {
+      const result = await pool.query(
+        'UPDATE liabilitytbl SET status = $1 WHERE liability_id = $2 AND status = $3 RETURNING *',
+        ['Paid', liability_id, 'Pending']
+      );
+  
+      if (result.rowCount === 0) {
+        return res.status(404).json({ message: 'No pending liability found with the provided ID.' });
+      }
+  
+      res.status(200).json({ message: 'Status updated to Paid', updatedLiability: result.rows[0] });
+    } catch (error) {
+      console.error('Error updating liability status:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
+  app.delete('/delete-liability/:liability_id', async (req, res) => {
+    const { liability_id } = req.params;
+  
+    try {
+      const result = await pool.query(
+        'DELETE FROM liabilitytbl WHERE liability_id = $1 RETURNING *',
+        [liability_id]
+      );
+  
+      if (result.rowCount === 0) {
+        return res.status(404).json({ message: 'Liability not found.' });
+      }
+  
+      res.status(200).json({ message: 'Liability deleted successfully', deletedLiability: result.rows[0] });
+    } catch (error) {
+      console.error('Error deleting liability:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

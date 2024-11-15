@@ -2101,12 +2101,13 @@ app.post('/add-grade', authenticateToken, async (req, res) => {
 
   app.get('/announcements/faculty', (req, res) => {
     const query = `
-        SELECT announcement_id, announce_to, announcement_type, 
-               announcement_title, announcement_text, 
-               announcement_by, announcement_timestamp 
-        FROM announcementtbl 
+        SELECT announcement_id, announce_to, announcement_type,
+               announcement_title, announcement_text,
+               announcement_by, announcement_timestamp
+        FROM announcementtbl
         WHERE announce_to IN ('Faculty', 'All')
         ORDER BY announcement_timestamp DESC
+        LIMIT 7
     `;
 
     // Use the pool to query the database
@@ -2248,11 +2249,13 @@ app.get('/grades', authenticateToken, async (req, res) => {
 
 app.get('/announcements/students', (req, res) => {
     const query = `
-        SELECT announcement_id, announce_to, announcement_type, 
-               announcement_title, announcement_text, 
-               announcement_by, announcement_timestamp 
-        FROM announcementtbl 
+        SELECT announcement_id, announce_to, announcement_type,
+               announcement_title, announcement_text,
+               announcement_by, announcement_timestamp
+        FROM announcementtbl
         WHERE announce_to IN ('Student', 'All')
+        ORDER BY announcement_timestamp DESC
+        LIMIT 7
     `;
 
     // Use the pool to query the database

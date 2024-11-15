@@ -2404,7 +2404,7 @@ app.get('/search-student/:student_id', async (req, res) => {
         }
 
         const student = result.rows[0];
-        const fullName = `${student.last_name},${student.first_name}${student.middle_name || ''}`.trim();
+        const fullName = `${student.last_name}, ${student.first_name} ${student.middle_name || ''}`.trim();
         
         res.json({ full_name: fullName });
         
@@ -2473,6 +2473,35 @@ app.get('/get-liability', async (req, res) => {
     } catch (error) {
         console.error('Error fetching data:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.put('/update-liability-description/:liability_id', async (req, res) => {
+    const { liability_id } = req.params;
+    const { liability_description } = req.body; // Get the new description from the request body
+
+    // Check if the liability_description is provided
+    if (!liability_description) {
+        return res.status(400).json({ message: 'New liability description is required.' });
+    }
+
+    try {
+        // Query to update the liability description
+        const result = await pool.query(
+            'UPDATE liabilitytbl SET liability_description = $1 WHERE liability_id = $2 RETURNING *',
+            [liability_description, liability_id]
+        );
+
+        // Check if any rows were affected
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'No liability found with the provided ID.' });
+        }
+
+        // Send the updated liability as a response
+        res.status(200).json({ message: 'Liability description updated successfully', updatedLiability: result.rows[0] });
+    } catch (error) {
+        console.error('Error updating liability description:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 

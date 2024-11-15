@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { BiEditAlt } from "react-icons/bi";
 import { FaCheck } from "react-icons/fa6";
@@ -112,12 +113,76 @@ const TagLiabilities_Content = () => {
     }
   };
 
+  const handleEditLiabDescription = async (record) => {
+    try {
+        const response = await fetch(
+            `http://localhost:3000/update-liability-description/${record.liability_id}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    liability_description: formData.description, // Send the updated description
+                }),
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Failed to update liability description");
+        }
+
+        const result = await response.json();
+        alert(result.message); // Show success message
+        fetchLiabilities(); // Refresh the list after updating
+        handleClose(); // Close the popup
+    } catch (error) {
+        console.error("Error updating liability description:", error);
+        setErrorMessage("Failed to update liability description. Please try again.");
+    }
+};
+
   const handleConfirmStatusUpdate = async (record) => {
-    // Implement the logic for confirming the status update
+    try {
+      const response = await fetch(`http://localhost:3000/update-liability-status/${record.liability_id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update liability status");
+      }
+
+      const result = await response.json();
+      alert(result.message); // Show success message
+      fetchLiabilities(); // Refresh the list after updating status
+    } catch (error) {
+      console.error("Error updating liability status:", error);
+    } finally {
+      handleClose(); // Close the popup after updating status
+    }
   };
 
   const handleDelete = async (record) => {
-    // Implement the logic for deleting a liability
+    try {
+      const response = await fetch(`http://localhost:3000/delete-liability/${record.liability_id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete liability");
+      }
+
+      const result = await response.json();
+      alert(result.message); // Show success message
+      fetchLiabilities(); // Refresh the list after deletion
+    } catch (error) {
+      console.error("Error deleting liability:", error);
+    } finally {
+      handleClose(); // Close the popup after deleting
+    }
   };
 
   const handleSearch = () => {
@@ -313,7 +378,7 @@ const TagLiabilities_Content = () => {
                   </div>
                 </div>
                 <div className="button-container">
-                  <button className="btn-box" type="submit">
+                  <button className="btn-box" onClick={() => {handleEditLiabDescription(popup.record)}}>
                     Submit
                   </button>
                 </div>

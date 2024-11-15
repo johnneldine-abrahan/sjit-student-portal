@@ -229,6 +229,37 @@ const Registrar_Students_ContentHeader = ({
     }
   };
 
+  const handleArchive = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/archiveStudents", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          studentIds: selectedStudentIds,
+          newStatus: formData.student_status, // Send student_status from formData
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        alert(`Failed to archive student: ${errorText || "Unknown error"}`);
+        return;
+      }
+
+      alert("Student successfully archived!");
+
+      // Fetch updated student records
+      const updatedResponse = await fetch("http://localhost:3000/students");
+      const updatedRecords = await updatedResponse.json();
+      updateStudentRecords(updatedRecords); // Update parent state
+
+      // Close the popup
+      handleClose();
+    } catch (error) {
+      alert("Network error: Failed to reach the server.");
+    }
+  };
+
   // Disable scrolling when modal is open
   useEffect(() => {
     if (popup.add || popup.edit || popup.delete || popup.archive) {
@@ -868,17 +899,40 @@ const Registrar_Students_ContentHeader = ({
                   <button onClick={handleClose}>Close</button>
                 </div>
                 <div className="popup-content">
-                  <p>Do you want to archive the selected student?</p>
-                  <div className="buttons">
-                    <button
-                      type="submit"
-                      class="btn-box"
-                      name="archive"
-                      id="archive"
-                    >
-                      Archive
-                    </button>
-                  </div>
+                  {selectedStudentIds.length > 0 ? (
+                    <>
+                      <p>
+                        Please select the archive type of the selected
+                        student(s)
+                      </p>
+                      <div className="buttons">
+                        <select
+                          className="form-select"
+                          aria-label="Select Archive Type"
+                          name="student_status"
+                          value={formData.student_status}
+                          onChange={handleChange}
+                        >
+                          <option value=""></option>
+                          <option value="Dropped">Dropped</option>
+                          <option value="Transferred">Transferred</option>
+                          <option value="Graduated">Graduated</option>
+                          <option value="Completer">Completer</option>
+                        </select>
+                        <button
+                          type="button"
+                          className="btn-box-archive"
+                          name="archive"
+                          id="archive"
+                          onClick={handleArchive}
+                        >
+                          Archive
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <p>No student selected to archive.</p>
+                  )}
                 </div>
               </div>
             </>

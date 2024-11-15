@@ -20,7 +20,11 @@ const TagLiabilities_Content = () => {
     description: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
-  const [schoolYears, setSchoolYears] = useState([]); // Initialize schoolYears state
+  const [schoolYears, setSchoolYears] = useState([]);
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 5;
 
   const handlePopup = (type, record) => {
     if (type === "edit" && record) {
@@ -61,7 +65,7 @@ const TagLiabilities_Content = () => {
 
   const fetchSchoolYears = async () => {
     try {
-      const response = await fetch("http://localhost:3000/get-school-years"); // Adjust the API endpoint as needed
+      const response = await fetch("http://localhost:3000/get-school-years");
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -122,7 +126,7 @@ const TagLiabilities_Content = () => {
 
   useEffect(() => {
     fetchLiabilities();
-    fetchSchoolYears(); // Fetch school years on component mount
+    fetchSchoolYears();
   }, []);
 
   useEffect(() => {
@@ -137,6 +141,29 @@ const TagLiabilities_Content = () => {
     };
   }, [popup]);
 
+  // Calculate total pages
+  const totalPages = Math.ceil(studentLiabRecords.length / recordsPerPage);
+
+  // Get current records
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = studentLiabRecords.slice(
+    indexOfFirstRecord,
+    indexOfLastRecord
+  );
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
     <div className="tagliabilities-content">
       <TagLiabilities_ContentHeader refreshData={fetchLiabilities} />
@@ -146,7 +173,7 @@ const TagLiabilities_Content = () => {
             <thead>
               <tr>
                 <th>Liability ID</th>
-                <th> Student ID</th>
+                <th>Student ID</th>
                 <th>Full Name</th>
                 <th>Liability</th>
                 <th>School Year</th>
@@ -156,7 +183,7 @@ const TagLiabilities_Content = () => {
               </tr>
             </thead>
             <tbody>
-              {studentLiabRecords.map((record, index) => (
+              {currentRecords.map((record, index) => (
                 <tr key={index}>
                   <td>{record.liability_id}</td>
                   <td>{record.student_id}</td>
@@ -208,7 +235,8 @@ const TagLiabilities_Content = () => {
                 <div className="first-row">
                   <div className="input-box">
                     <label htmlFor="schoolYear">School Year:</label>
-                    <input disabled
+                    <input
+                      disabled
                       type="text"
                       id="schoolYear"
                       name="schoolYear"
@@ -221,7 +249,8 @@ const TagLiabilities_Content = () => {
 
                   <div className="input-box">
                     <label htmlFor="semester">Semester:</label>
-                    <select disabled
+                    <select
+                      disabled
                       id="semester"
                       name="semester"
                       value={formData.semester}
@@ -239,7 +268,8 @@ const TagLiabilities_Content = () => {
                   <div className="input-box">
                     <label htmlFor="studentIDInput">Search:</label>
                     <div className="search-container">
-                      <input disabled
+                      <input
+                        disabled
                         type="text"
                         id="studentIDInput"
                         name="studentIDInput"
@@ -257,7 +287,8 @@ const TagLiabilities_Content = () => {
 
                   <div className="input-box">
                     <label htmlFor="studentName">Student Name:</label>
-                    <input disabled
+                    <input
+                      disabled
                       type="text"
                       id="studentName"
                       name="studentName"
@@ -346,6 +377,27 @@ const TagLiabilities_Content = () => {
           </div>
         </>
       )}
+      <div className="button-container-pagination-student">
+        <div className="pagination-controls">
+          <button
+            className="btn-box-pagination-student"
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="btn-box-pagination-student"
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

@@ -11,7 +11,7 @@ const StudentRecords = () => {
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
-  const recordsPerPage = 9; // Number of records to display per page
+  const recordsPerPage = 5; // Number of records to display per page
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -54,7 +54,19 @@ const StudentRecords = () => {
   const handlePrevPage = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
   };
+  useEffect(() => {
+    if (
 
+      viewPopup.show
+    ){
+      document.body.style.overflow = "hidden";
+    } else{
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [ viewPopup])
   const handleNextPage = () => {
     setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
   };
@@ -117,14 +129,26 @@ const StudentRecords = () => {
           <div className="popup-blurred-background" onClick={handleClose} />
         )}
         {viewPopup.show && (
-          <div className="popup-view-student">
+          <div className="popup-viewliab-student">
             <div className="popup-header">
               <h3>View Student</h3>
               <button onClick={handleClose}>Close</button>
             </div>
             <div className="popup-content">
-              {/* Display student details here */}
-             
+              <table className="viewstudentliab-table">
+                <thead>
+                  <tr>
+                    <th>Liability ID</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <td>1234</td>
+                  <td>1234</td>
+                  <td>1234</td>
+                </tbody>
+              </table>
             </div>
           </div>
         )}

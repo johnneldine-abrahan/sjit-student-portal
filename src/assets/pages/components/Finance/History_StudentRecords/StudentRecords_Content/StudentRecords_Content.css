@@ -1,7 +1,18 @@
 .student-records-content {
   width: 100%;
 }
-
+.popup-viewliab-student {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 750px;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 .header-title {
   color: #150f57;
 }
@@ -102,4 +113,47 @@
 .student-record-list tbody tr:hover {
   background-color: #7b8bbc; /* Your desired hover color */
   cursor: pointer;
+}
+
+.liabilities-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.liabilities-table th,
+.liabilities-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.liabilities-table th {
+  background-color: #f4f4f4;
+}
+
+.liabilities-table td {
+  vertical-align: middle;
+}
+
+.viewstudentliab-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: medium; /* Adjusted font size for the table */
+}
+
+.viewstudentliab-table th,
+.viewstudentliab-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.viewstudentliab-table th {
+  background-color: #f4f4f4;
+}
+
+.viewstudentliab-table td {
+  vertical-align: middle;
 }

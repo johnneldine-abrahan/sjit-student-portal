@@ -17,6 +17,10 @@ const Liabilities_Students = ({ schoolYear, semester }) => {
           },
         });
 
+        if (response.status === 404) {
+          throw new Error('There are no liabilities found for the specified school year and semester.');
+        }
+
         if (!response.ok) {
           throw new Error('Please select school year and semester to view liabilities');
         }
@@ -55,7 +59,7 @@ const Liabilities_Students = ({ schoolYear, semester }) => {
           </div>
         ))
       ) : (
-        <p>No liabilities found for the specified criteria.</p>
+        <p>There are no liabilities found...</p> // Updated message here
       )}
     </div>
   );

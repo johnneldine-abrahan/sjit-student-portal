@@ -62,10 +62,10 @@ const actionItems = [
 
 const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalSchoolYear, setModalSchoolYear] = useState(""); 
-  const [modalSemester, setModalSemester] = useState("FIRST"); 
+  const [modalSchoolYear, setModalSchoolYear] = useState("");
+  const [modalSemester, setModalSemester] = useState("FIRST");
   const [quarterState, setQuarterState] = useState("1st");
-  
+
   const [schoolYears, setSchoolYears] = useState([]);
   const [defaultSchoolYear, setDefaultSchoolYear] = useState("");
   const [defaultSemester, setDefaultSemester] = useState("FIRST");
@@ -84,14 +84,16 @@ const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters })
     setModalSemester(defaultSemester);
     setQuarterState(defaultQuarter);
     setIsModalOpen(false);
+    document.body.style.overflow = "auto"; // Enable scrolling
   };
 
   const handleApplyFilter = () => {
-    setQuarter(quarterState); 
-    setSchoolYear(modalSchoolYear); 
-    setSemester(modalSemester); 
-    onApplyFilters({ schoolYear: modalSchoolYear, semester: modalSemester, quarter: quarterState }); 
+    setQuarter(quarterState);
+    setSchoolYear(modalSchoolYear);
+    setSemester(modalSemester);
+    onApplyFilters({ schoolYear: modalSchoolYear, semester: modalSemester, quarter: quarterState });
     setIsModalOpen(false);
+    document.body.style.overflow = "auto"; // Enable scrolling
   };
 
   const handleSchoolYearChange = (e) => {
@@ -121,8 +123,16 @@ const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters })
     };
 
     fetchSchoolYears();
-  },
-  []);
+  }, []);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden"; // Disable scrolling
+    }
+    return () => {
+      document.body.style.overflow = "auto"; // Ensure scrolling is enabled when modal is closed
+    };
+  }, [isModalOpen]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -194,8 +204,8 @@ const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters })
 
 const MainContent_Student = () => {
   const [quarter, setQuarter] = useState("1st");
-  const [schoolYear, setSchoolYear] = useState(""); 
-  const [semester, setSemester] = useState("FIRST"); 
+  const [schoolYear, setSchoolYear] = useState("");
+  const [semester, setSemester] = useState("FIRST");
   const bannerImages = [image1, image2, image3];
 
   const handleApplyFilters = ({ schoolYear, semester, quarter }) => {
@@ -238,7 +248,7 @@ const MainContent_Student = () => {
             key={index}
             icon={item.icon}
             text={item.text}
-            content={React.createElement(item.content, { quarter, schoolYear, semester })} 
+            content={React.createElement(item.content, { quarter, schoolYear, semester })}
           />
         ))}
       </div>

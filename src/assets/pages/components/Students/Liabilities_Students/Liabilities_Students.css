@@ -13,3 +13,7 @@
   .box + .box {
     margin-top: 20px;
   }
+
+  .text-lg{
+    padding-bottom: 15px;
+  }

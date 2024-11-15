@@ -2300,6 +2300,59 @@ app.get('/student-liabilities', authenticateToken, async (req, res) => {
                 student_id = $1
                 AND school_year = $2
                 AND semester = $3
+                AND status = 'Pending'
+        `;
+
+        const liabilitiesResult = await pool.query(query, [student_id, modalSchoolYear, modalSemester]);
+
+        if (liabilitiesResult.rows.length === 0) {
+            return res.status(404).send('No liabilities found for the specified criteria');
+        }
+
+        res.json(liabilitiesResult.rows);
+    } catch (error) {
+        console.error('Error fetching liabilities:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.get('/student-liabilities-paid', authenticateToken, async (req, res) => {
+    const userId = req.user.userId; // Retrieve user ID from authenticated request
+    const { modalSchoolYear, modalSemester } = req.query;
+
+    // Check if modalSchoolYear and modalSemester are provided
+    if (!modalSchoolYear || !modalSemester) {
+        return res.status(400).send('School year and semester are required');
+    }
+
+    try {
+        // Fetch student_id based on user_id
+        const studentResult = await pool.query(
+            'SELECT student_id FROM studenttbl WHERE user_id = $1',
+            [userId]
+        );
+
+        if (studentResult.rows.length === 0) {
+            return res.status(404).send('Student not found');
+        }
+
+        const student_id = studentResult.rows[0].student_id;
+
+        // Query to get liabilities based on student_id, modalSchoolYear, and modalSemester with status 'Paid'
+        const query = `
+            SELECT 
+                liability_description, 
+                created_at, 
+                school_year, 
+                semester,
+                status 
+            FROM 
+                liabilitytbl
+            WHERE 
+                student_id = $1
+                AND school_year = $2
+                AND semester = $3
+                AND status = 'Paid'
         `;
 
         const liabilitiesResult = await pool.query(query, [student_id, modalSchoolYear, modalSemester]);

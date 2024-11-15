@@ -2522,6 +2522,7 @@ app.put('/update-liability-status/:liability_id', async (req, res) => {
             SELECT student_id, last_name, first_name, middle_name, program, grade_level, strand
             FROM studenttbl
             WHERE student_status IN ('Enrolled', 'Not Enrolled')
+            ORDER BY last_name ASC
         `;
         
         const result = await pool.query(query);
@@ -2547,7 +2548,7 @@ app.get('/liabilities/:student_id', async (req, res) => {
 
         // Check if any data is retrieved
         if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'No liabilities found for the given student ID.' });
+            return res.status(200).json({ message: 'No data found' }); // Change to 200 status
         }
 
         // Send the data as response

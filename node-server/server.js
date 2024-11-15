@@ -2516,6 +2516,22 @@ app.put('/update-liability-status/:liability_id', async (req, res) => {
     }
   });
 
+  app.get('/students-finance-list', async (req, res) => {
+    try {
+        const query = `
+            SELECT student_id, last_name, first_name, middle_name, program, grade_level, strand
+            FROM studenttbl
+            WHERE student_status IN ('Enrolled', 'Not Enrolled')
+        `;
+        
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });

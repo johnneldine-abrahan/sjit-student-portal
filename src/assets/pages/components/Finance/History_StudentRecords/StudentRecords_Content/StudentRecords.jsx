@@ -1,33 +1,53 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./StudentRecords_Content.css";
 import { FaRegEye } from "react-icons/fa"; // Make sure to import this if you're using the icon
-
-const Studentlist = [
-  {
-    studentID: "21-05298",
-    LastName: "Sanchez",
-    FirstName: "Kim William",
-    MiddleName: "Bacsa",
-    yearGraduated: "2025",
-    viewRecords: "!",
-    program: "Computer Science", // Added for demonstration
-    gradeLevel: "Senior", // Added for demonstration
-  },
-  // You can add more student records here
-];
+import axios from "axios"; // Make sure to install axios
 
 const StudentRecords = () => {
+  const [students, setStudents] = useState([]); // Ensure this is an array
   const [viewPopup, setViewPopup] = useState({ show: false, record: null });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+          const response = await axios.get("http://localhost:3000/students-finance-list");
+          console.log("API Response:", response); // Log the entire response object
+  
+          // Adjust this based on the actual structure of the response
+          if (Array.isArray(response.data)) {
+              setStudents(response.data);
+          } else if (Array.isArray(response.data.data)) { // Example for nested data
+              setStudents(response.data.data);
+          } else {
+              throw new Error("Unexpected response format");
+          }
+      } catch (err) {
+          setError(err.message);
+      } finally {
+          setLoading(false);
+      }
+  };
+
+    fetchStudents();
+  }, []);
 
   const handleViewPopup = (record) => {
-    // Function to handle view button click
     setViewPopup({ show: true, record: record });
   };
 
   const handleClose = () => {
-    // Function to close the popup
     setViewPopup({ show: false, record: null });
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="student-record-list">
@@ -39,18 +59,16 @@ const StudentRecords = () => {
               <th>Last Name</th>
               <th>First Name</th>
               <th>Middle Name</th>
-              <th>Year Graduated</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {Studentlist.map((record, index) => (
+            {students.map((record, index) => (
               <tr key={index}>
-                <td>{record.studentID}</td>
-                <td>{record.LastName}</td>
-                <td>{record.FirstName}</td>
-                <td>{record.MiddleName}</td>
-                <td>{record.yearGraduated}</td>
+                <td>{record.student_id}</td>
+                <td>{record.last_name}</td>
+                <td>{record.first_name}</td>
+                <td>{record.middle_name}</td>
                 <td>
                   <button
                     className="view-details"
@@ -74,13 +92,7 @@ const StudentRecords = () => {
               <button onClick={handleClose}>Close</button>
             </div>
             <div className="popup-content">
-              <p>Student ID: {viewPopup.record.studentID}</p>
-              <p>Last Name: {viewPopup.record.LastName}</p>
-              <p>First Name: {viewPopup.record.FirstName}</p>
-              <p>Middle Name: {viewPopup.record.MiddleName}</p>
-              <p>Year Graduated: {viewPopup.record.yearGraduated}</p>
-              <p>Program: {viewPopup.record.program}</p>
-              <p>Grade Level: {viewPopup.record.gradeLevel}</p>
+             
             </div>
           </div>
         )}

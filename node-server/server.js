@@ -2120,6 +2120,61 @@ app.post('/add-grade', authenticateToken, async (req, res) => {
     });
 });
 
+app.get('/reports/dropdowns', authenticateToken, (req, res) => {
+    const userId = req.user.userId; // Assuming the token contains user_id
+
+    // SQL query to fetch faculty_id based on user_id
+    const facultySql = `
+        SELECT faculty_id FROM facultytbl WHERE user_id = $1
+    `;
+
+    pool.query(facultySql, [userId], (error, facultyResults) => {
+        if (error) {
+            return res.status(500).json({ error: error.message });
+        }
+
+        // Check if facultyResults is empty
+        if (facultyResults.rowCount === 0) { // Use rowCount for PostgreSQL
+            return res.status(404).json({ message: 'Faculty not found' });
+        }
+
+        const facultyId = facultyResults.rows[0].faculty_id; // Access faculty_id safely
+
+        // SQL query to fetch dropdown data based on faculty_id
+        const dropdownSql = `
+            SELECT DISTINCT
+                sec.school_year,
+                sec.strand,
+                sec.section_name,
+                sec.grade_level,  -- Include grade_level in the SELECT statement
+                sub.subject_name
+            FROM
+                teachingload_tbl tl
+                JOIN sectiontbl sec ON tl.section_id = sec.section_id
+                JOIN subjecttbl sub ON sec.subject_id = sub.subject_id
+            WHERE
+                tl.faculty_id = $1
+        `;
+
+        pool.query(dropdownSql, [facultyId], (error, results) => {
+            if (error) {
+                return res.status(500).json({ error: error.message });
+            }
+
+            // Transform results into the desired dropdown structure
+            const dropdownData = {
+                school_year: [...new Set(results.rows.map(r => r.school_year))],
+                strands: [...new Set(results.rows.map(r => r.strand))],
+                sections: [...new Set(results.rows.map(r => r.section_name))],
+                grade_levels: [...new Set(results.rows.map(r => r.grade_level))], // Add grade_levels
+                subjects: [...new Set(results.rows.map(r => r.subject_name))]
+            };
+
+            res.json(dropdownData);
+        });
+    });
+});
+
 // Student ------------------------------------------------------------------------------------------
 
 app.get('/schedule', authenticateToken, async (req, res) => {

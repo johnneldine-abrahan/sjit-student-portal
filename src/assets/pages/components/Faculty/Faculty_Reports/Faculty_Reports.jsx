@@ -1,21 +1,70 @@
-import React, {useEffect} from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
 import "./Faculty_Reports.css";
 import { IoMdArrowRoundBack } from "react-icons/io"; // Import the icons
 import logo from "/src/assets/img/LandingPage/NavBar/logo.png";
-import GradeDistributionChart from "/src/assets/pages/components/Faculty/Faculty_Reports/GradeDistributionChart.jsx"; // Adjust the path as necessary
+import GradeDistributionChart from "./GradeDistributionChart"; // Adjust the path as necessary
+import axios from "axios"; // Import axios for making API calls
 
 const Faculty_Reports = () => {
   const navigate = useNavigate(); // Initialize useNavigate
+  const [dropdownData, setDropdownData] = useState({}); // State to hold dropdown data
+  const [semester, setSemester] = useState(""); // State to hold selected semester
+  const [quarterOptions, setQuarterOptions] = useState([]); // State to hold quarter options
+  const [gradeLevel, setGradeLevel] = useState(""); // State to hold selected grade level
+  const [isStrandDisabled, setIsStrandDisabled] = useState(true); // State to control strand dropdown
 
   const handleBackButtonClick = () => {
     navigate("/faculty/dashboard"); // Navigate to the specified route
   };
 
   useEffect(() => {
-    window.scrollTo(0,0);
+    document.title = "Faculty - Reports";
+    window.scrollTo(0, 0);
+
+    // Fetch dropdown data from the API
+    const fetchDropdownData = async () => {
+      try {
+        // Get the token from local storage
+        const token = localStorage.getItem('token'); // Adjust the key as necessary
+
+        // Set the authorization header
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}` // Include the token in the headers
+          }
+        };
+
+        const response = await axios.get('http://localhost:3000/reports/dropdowns', config); // Make the API call
+        setDropdownData(response.data); // Set the dropdown data in state
+      } catch (error) {
+        console.error('Error fetching dropdown data:', error);
+      }
+    };
+
+    fetchDropdownData(); // Call the function to fetch dropdown data
   }, []);
-  
+
+  // Update quarter options based on selected semester
+  useEffect(() => {
+    if (semester === "FIRST") {
+      setQuarterOptions(["1st Quarter", "2nd Quarter"]);
+    } else if (semester === "SECOND") {
+      setQuarterOptions(["3rd Quarter", "4th Quarter"]);
+    } else {
+      setQuarterOptions([]); // Reset options if no valid semester is selected
+    }
+  }, [semester]);
+
+  // Update strand options and disable state based on selected grade level
+  useEffect(() => {
+    if (gradeLevel === "11" || gradeLevel === "12") {
+      setIsStrandDisabled(false);
+    } else {
+      setIsStrandDisabled(true); // Disable strand dropdown for other grades
+    }
+  }, [gradeLevel]);
+
   return (
     <div>
       <header className="headerFaculty-report">
@@ -34,57 +83,86 @@ const Faculty_Reports = () => {
           <div className="dropdowns-container">
             <select className="report-dropdown" key={0}>
               <option value="">School Year</option>
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
+              {dropdownData.school_year && dropdownData.school_year.map((year, index) => (
+                <option key={index} value={year}>
+                  {year}
+                </option>
+              ))}
             </select>
 
-            <select className="report-dropdown" key={1}>
+            <select className="report-dropdown" key={1} onChange={(e) => setSemester(e.target.value)}>
               <option value="">Semester</option>
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
-            </select>
-
-            <select className="report-dropdown" key={1}>
-              <option value="">Quarter</option>
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
+              <option value="FIRST">FIRST</option>
+              <option value="SECOND">SECOND</option>
             </select>
 
             <select className="report-dropdown" key={2}>
+              <option value=""></option>
+              {quarterOptions.map((quarter, index) => (
+                <option key={index} value={quarter}>
+                  {quarter}
+                </option>
+              ))}
+            </select>
+
+            <select className="report-dropdown" key={3} onChange={(e) => setGradeLevel(e.target.value)}>
               <option value="">Grade Level</option>
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
+              <option value="7">Grade 7</option>
+              <option value="8">Grade 8</option>
+              <option value="9">Grade 9</option>
+              <option value="10">Grade 10</option>
+              <option value="11">Grade 11</option>
+              <option value="12">Grade 12</option>
             </select>
 
-            <select className="report-dropdown" key={3}>
+            <select className="report-dropdown" key={4} disabled={isStrandDisabled}>
               <option value="">Strand</option>
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
+              {(!isStrandDisabled) && (
+                <>
+                  <option value="Accountancy, Business and Management (ABM)">
+                    Accountancy, Business and Management (ABM)
+                  </option>
+                  <option value="Humanities and Social Sciences (HUMSS)">
+                    Humanities and Social Sciences (HUMSS)
+                  </option>
+                  <option value="TVL - Industrial Arts (TVL-IA)">
+                    TVL - Industrial Arts (TVL-IA)
+                  </option>
+                  <option value="Science, Technology, Engineering and Mathematics (STEM)">
+                    Science, Technology, Engineering and Mathematics (STEM)
+                  </option>
+                  <option value="TVL - Home Economics (TVL-HE)">
+                    TVL - Home Economics (TVL-HE)
+                  </option>
+                  <option value="TVL - Information Communications Technology (TVL-ICT)">
+                    TVL - Information Communications Technology (TVL-ICT)
+                  </option>
+                </>
+              )}
             </select>
 
-            <select className="report-dropdown" key={4}>
-              <option value="">Section</option>
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
-            </select>
             <select className="report-dropdown" key={5}>
+              <option value="">Section</option>
+              {dropdownData.sections && dropdownData.sections.map((section, index) => (
+                <option key={index} value={section}>
+                  {section}
+                </option>
+              ))}
+            </select>
+
+            <select className="report-dropdown" key={6}>
               <option value="">Subject</option>
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
+              {dropdownData.subjects && dropdownData.subjects.map((subject, index) => (
+                <option key={index} value={subject}>
+                  {subject}
+                </option>
+              ))}
             </select>
           </div>
         </div>
 
         <div className="reports-container">
           <div className="left-side">
-            {/* Title for the first table */}
             <h2>Top Performing Students</h2>
             <table className="report-table-top">
               <thead>
@@ -148,7 +226,6 @@ const Faculty_Reports = () => {
               </tbody>
             </table>
 
-            {/* Title for the second table */}
             <h2>Low Performing Students</h2>
             <table className="report-table-bottom">
               <thead>
@@ -165,7 +242,7 @@ const Faculty_Reports = () => {
                   <td>69</td>
                 </tr>
                 <tr>
-                  <td>2</td>
+                  <td>2</ td>
                   <td>Kim William</td>
                   <td>69</td>
                 </tr>
@@ -191,8 +268,7 @@ const Faculty_Reports = () => {
           <div className="right-side">
             <div className="grid-item">
               <h2>Grade Distribution</h2>
-              <GradeDistributionChart />{" "}
-              {/* Insert the GradeDistributionChart here */}
+              <GradeDistributionChart /> {/* Insert the GradeDistributionChart here */}
             </div>
             <div className="grid-item">Grid Item 2</div>
             <div className="grid-item">Grid Item 3</div>

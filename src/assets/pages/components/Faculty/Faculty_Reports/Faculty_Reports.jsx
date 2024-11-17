@@ -107,11 +107,15 @@ const Faculty_Reports = () => {
 
       setLowPerformingStudents(lowPerformers); // Set the low-performing students in state
     } catch (error) {
-      console.error('Error fetching low-performing students:', error);
+      console.error(' Error fetching low-performing students:', error);
     }
   };
 
   useEffect(() => {
+    // Reset the student data when any dropdown selection changes
+    setTopPerformingStudents([]);
+    setLowPerformingStudents([]);
+
     if (selectedSchoolYear && semester && gradeLevel && section && subject && quarter) {
       fetchTopPerformingStudents();
       fetchLowPerformingStudents(); // Fetch low-performing students as well
@@ -233,7 +237,7 @@ const Faculty_Reports = () => {
                 </tr>
               </thead>
               <tbody>
- {lowPerformingStudents.length > 0 ? (
+                {lowPerformingStudents.length > 0 ? (
                   lowPerformingStudents.map((student, index) => (
                     <tr key={index} style={{ fontWeight: student.grade <= 80 ? 'bold' : 'normal', color: student.grade <= 80 ? 'red' : 'black' }}>
                       <td>{student.rank}</td> {/* Display calculated rank */}

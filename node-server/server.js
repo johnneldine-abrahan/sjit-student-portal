@@ -2175,6 +2175,81 @@ app.get('/reports/dropdowns', authenticateToken, (req, res) => {
     });
 });
 
+app.get('/reports/grades', authenticateToken, (req, res) => {
+    const { school_year, semester, quarter, grade_level, section, subject } = req.query;
+    const userId = req.user.userId; // Extract user ID from the token
+
+    // Fetch faculty ID based on user ID
+    const facultyQuery = `SELECT faculty_id FROM facultytbl WHERE user_id = $1`;
+
+    pool.query(facultyQuery, [userId], (facultyError, facultyResult) => {
+        if (facultyError) {
+            console.error('Error fetching faculty ID:', facultyError);
+            return res.status(500).json({ error: facultyError.message });
+        }
+
+        if (facultyResult.rowCount === 0) {
+            return res.status(404).json({ message: 'Faculty not found' });
+        }
+
+        const facultyId = facultyResult.rows[0].faculty_id;
+
+        // Main query to fetch student grades and names
+        const gradesQuery = `
+            SELECT
+                CONCAT(st.first_name, ' ', st.middle_name, ' ', st.last_name) AS full_name,
+                gr.grade,
+                sec.school_year,
+                sec.semester,
+                gr.quarter,
+                sec.grade_level,
+                sec.section_name,
+                sub.subject_name
+            FROM
+                gradestbl gr
+            JOIN teachingload_tbl tl ON gr.teachingload_id = tl.teachingload_id
+            JOIN sectiontbl sec ON tl.section_id = sec.section_id
+            JOIN subjecttbl sub ON sec.subject_id = sub.subject_id
+            JOIN enrollmenttbl en ON sec.section_id = en.section_id AND gr.student_id = en.student_id
+            JOIN studenttbl st ON en.student_id = st.student_id
+            WHERE
+                tl.faculty_id = $1
+                AND sec.school_year = $2
+                AND sec.semester = $3
+                AND gr.quarter = $4
+                AND sec.grade_level = $5
+                AND sec.section_name = $6
+                AND sub.subject_name = $7
+                AND sub.subject_name != 'HOMEROOM'
+            ORDER BY gr.grade DESC LIMIT 10;
+        `;
+
+        const queryParams = [
+            facultyId,
+            school_year,
+            semester,
+            quarter,
+            grade_level,
+            section,
+            subject
+        ];
+
+        pool.query(gradesQuery, queryParams, (gradesError, gradesResult) => {
+            if (gradesError) {
+                console.error('Error fetching grades:', gradesError);
+                return res.status(500).json({ error: gradesError.message });
+            }
+
+            if (gradesResult.rowCount === 0) {
+                return res.status(404).json({ message: 'No grades found for the given filters' });
+            }
+
+            res.json(gradesResult.rows);
+        });
+    });
+});
+
+
 // Student ------------------------------------------------------------------------------------------
 
 app.get('/schedule', authenticateToken, async (req, res) => {

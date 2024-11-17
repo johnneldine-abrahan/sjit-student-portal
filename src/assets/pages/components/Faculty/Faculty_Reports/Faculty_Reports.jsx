@@ -12,7 +12,6 @@ const Faculty_Reports = () => {
   const [semester, setSemester] = useState(""); // State to hold selected semester
   const [quarterOptions, setQuarterOptions] = useState([]); // State to hold quarter options
   const [gradeLevel, setGradeLevel] = useState(""); // State to hold selected grade level
-  const [isStrandDisabled, setIsStrandDisabled] = useState(true); // State to control strand dropdown
 
   const handleBackButtonClick = () => {
     navigate("/faculty/dashboard"); // Navigate to the specified route
@@ -24,22 +23,22 @@ const Faculty_Reports = () => {
 
     // Fetch dropdown data from the API
     const fetchDropdownData = async () => {
-      try {
-        // Get the token from local storage
-        const token = localStorage.getItem('token'); // Adjust the key as necessary
+        try {
+            // Get the token from local storage
+            const token = localStorage.getItem('token'); // Adjust the key as necessary
 
-        // Set the authorization header
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}` // Include the token in the headers
-          }
-        };
+            // Set the authorization header
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}` // Include the token in the headers
+                }
+            };
 
-        const response = await axios.get('http://localhost:3000/reports/dropdowns', config); // Make the API call
-        setDropdownData(response.data); // Set the dropdown data in state
-      } catch (error) {
-        console.error('Error fetching dropdown data:', error);
-      }
+            const response = await axios.get('http://localhost:3000/reports/dropdowns', config); // Make the API call
+            setDropdownData(response.data); // Set the dropdown data in state
+        } catch (error) {
+            console.error('Error fetching dropdown data:', error);
+        }
     };
 
     fetchDropdownData(); // Call the function to fetch dropdown data
@@ -55,15 +54,6 @@ const Faculty_Reports = () => {
       setQuarterOptions([]); // Reset options if no valid semester is selected
     }
   }, [semester]);
-
-  // Update strand options and disable state based on selected grade level
-  useEffect(() => {
-    if (gradeLevel === "11" || gradeLevel === "12") {
-      setIsStrandDisabled(false);
-    } else {
-      setIsStrandDisabled(true); // Disable strand dropdown for other grades
-    }
-  }, [gradeLevel]);
 
   return (
     <div>
@@ -98,7 +88,7 @@ const Faculty_Reports = () => {
 
             <select className="report-dropdown" key={2}>
               <option value=""></option>
-              {quarterOptions.map((quarter, index) => (
+              { quarterOptions. map((quarter, index) => (
                 <option key={index} value={quarter}>
                   {quarter}
                 </option>
@@ -115,33 +105,7 @@ const Faculty_Reports = () => {
               <option value="12">Grade 12</option>
             </select>
 
-            <select className="report-dropdown" key={4} disabled={isStrandDisabled}>
-              <option value="">Strand</option>
-              {(!isStrandDisabled) && (
-                <>
-                  <option value="Accountancy, Business and Management (ABM)">
-                    Accountancy, Business and Management (ABM)
-                  </option>
-                  <option value="Humanities and Social Sciences (HUMSS)">
-                    Humanities and Social Sciences (HUMSS)
-                  </option>
-                  <option value="TVL - Industrial Arts (TVL-IA)">
-                    TVL - Industrial Arts (TVL-IA)
-                  </option>
-                  <option value="Science, Technology, Engineering and Mathematics (STEM)">
-                    Science, Technology, Engineering and Mathematics (STEM)
-                  </option>
-                  <option value="TVL - Home Economics (TVL-HE)">
-                    TVL - Home Economics (TVL-HE)
-                  </option>
-                  <option value="TVL - Information Communications Technology (TVL-ICT)">
-                    TVL - Information Communications Technology (TVL-ICT)
-                  </option>
-                </>
-              )}
-            </select>
-
-            <select className="report-dropdown" key={5}>
+            <select className="report-dropdown" key={4}>
               <option value="">Section</option>
               {dropdownData.sections && dropdownData.sections.map((section, index) => (
                 <option key={index} value={section}>
@@ -150,7 +114,7 @@ const Faculty_Reports = () => {
               ))}
             </select>
 
-            <select className="report-dropdown" key={6}>
+            <select className="report-dropdown" key={5}>
               <option value="">Subject</option>
               {dropdownData.subjects && dropdownData.subjects.map((subject, index) => (
                 <option key={index} value={subject}>
@@ -242,7 +206,7 @@ const Faculty_Reports = () => {
                   <td>69</td>
                 </tr>
                 <tr>
-                  <td>2</ td>
+                  <td>2</td>
                   <td>Kim William</td>
                   <td>69</td>
                 </tr>

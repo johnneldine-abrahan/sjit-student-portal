@@ -40,6 +40,13 @@ const Faculty_Reports = () => {
             </select>
 
             <select className="report-dropdown" key={1}>
+              <option value="">Semester</option>
+              <option value="option1">Option 1</option>
+              <option value="option2">Option 2</option>
+              <option value="option3">Option 3</option>
+            </select>
+
+            <select className="report-dropdown" key={1}>
               <option value="">Quarter</option>
               <option value="option1">Option 1</option>
               <option value="option2">Option 2</option>
@@ -84,7 +91,7 @@ const Faculty_Reports = () => {
                 <tr>
                   <th>Rank</th>
                   <th>Student Name</th>
-                  <th>Grades</th>
+                  <th>Grade</th>
                 </tr>
               </thead>
               <tbody>

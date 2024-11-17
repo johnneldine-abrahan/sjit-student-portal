@@ -2221,7 +2221,7 @@ app.get('/reports/grades', authenticateToken, (req, res) => {
                 AND sec.section_name = $6
                 AND sub.subject_name = $7
                 AND sub.subject_name != 'HOMEROOM'
-            ORDER BY gr.grade DESC LIMIT 10;
+            ORDER BY gr.grade DESC;
         `;
 
         const queryParams = [
@@ -2248,7 +2248,6 @@ app.get('/reports/grades', authenticateToken, (req, res) => {
         });
     });
 });
-
 
 // Student ------------------------------------------------------------------------------------------
 

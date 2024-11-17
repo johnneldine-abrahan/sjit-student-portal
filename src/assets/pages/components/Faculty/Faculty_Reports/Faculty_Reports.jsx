@@ -16,6 +16,7 @@ const Faculty_Reports = () => {
   const [section, setSection] = useState(""); // State to hold selected section
   const [subject, setSubject] = useState(""); // State to hold selected subject
   const [topPerformingStudents, setTopPerformingStudents] = useState([]); // State to hold top-performing students
+  const [lowPerformingStudents, setLowPerformingStudents] = useState([]); // State to hold low-performing students
 
   const handleBackButtonClick = () => {
     navigate("/faculty/dashboard"); // Navigate to the specified route
@@ -28,10 +29,7 @@ const Faculty_Reports = () => {
     // Fetch dropdown data from the API
     const fetchDropdownData = async () => {
       try {
-        // Get the token from local storage
         const token = localStorage.getItem('token'); // Adjust the key as necessary
-
-        // Set the authorization header
         const config = {
           headers: {
             Authorization: `Bearer ${token}` // Include the token in the headers
@@ -57,29 +55,66 @@ const Faculty_Reports = () => {
           Authorization: `Bearer ${token}`
         }
       };
-  
+
       const response = await axios.get('http://localhost:3000/reports/grades', {
         ...config,
         params: {
-          school_year: selectedSchoolYear, // Use the selected school year from state
+          school_year: selectedSchoolYear,
           semester,
-          quarter, // Use the selected quarter from state
-          grade_level: gradeLevel, // Use the state variable here
+          quarter,
+          grade_level: gradeLevel,
           section,
           subject
         }
       });
-  
+
       setTopPerformingStudents(response.data); // Set the top-performing students in state
     } catch (error) {
       console.error('Error fetching top-performing students:', error);
     }
   };
-  
-  // Call fetchTopPerformingStudents when dropdown values change
+
+  // Fetch low-performing students based on selected filters
+  const fetchLowPerformingStudents = async () => {
+    try {
+      const token = localStorage.getItem('token'); // Get token from local storage
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+
+      const response = await axios.get('http://localhost:3000/reports/grades', {
+        ...config,
+        params: {
+          school_year: selectedSchoolYear,
+          semester,
+          quarter,
+          grade_level: gradeLevel,
+          section,
+          subject
+        }
+      });
+
+      // Reverse the list to get lowest grades first
+      const reversedData = [...response.data].reverse();
+
+      // Slice the last 5 entries
+      const lowPerformers = reversedData.slice(0, 5).map((student, index) => ({
+        ...student,
+        rank: reversedData.length - index // Calculate rank from the bottom
+      }));
+
+      setLowPerformingStudents(lowPerformers); // Set the low-performing students in state
+    } catch (error) {
+      console.error('Error fetching low-performing students:', error);
+    }
+  };
+
   useEffect(() => {
     if (selectedSchoolYear && semester && gradeLevel && section && subject && quarter) {
       fetchTopPerformingStudents();
+      fetchLowPerformingStudents(); // Fetch low-performing students as well
     }
   }, [selectedSchoolYear, semester, gradeLevel, section, subject, quarter]);
 
@@ -99,7 +134,7 @@ const Faculty_Reports = () => {
         <div className="header-with-dropdowns">
           <h1>Faculty Reports</h1>
           <div className="dropdowns-container">
-            <select className="report-dropdown" key={0} onChange={( e) => setSelectedSchoolYear(e.target.value)}>
+            <select className="report-dropdown" key={0} onChange={(e) => setSelectedSchoolYear(e.target.value)}>
               <option value="">School Year</option>
               {dropdownData.school_year && dropdownData.school_year.map((year, index) => (
                 <option key={index} value={year}>
@@ -173,7 +208,7 @@ const Faculty_Reports = () => {
               </thead>
               <tbody>
                 {topPerformingStudents.length > 0 ? (
-                  topPerformingStudents.map((student, index) => (
+                  topPerformingStudents.slice(0, 10).map((student, index) => (
                     <tr key={index}>
                       <td>{index + 1}</td>
                       <td>{student.full_name}</td>
@@ -198,7 +233,19 @@ const Faculty_Reports = () => {
                 </tr>
               </thead>
               <tbody>
-                {/* Similar implementation for low performing students can be added here */}
+ {lowPerformingStudents.length > 0 ? (
+                  lowPerformingStudents.map((student, index) => (
+                    <tr key={index} style={{ fontWeight: student.grade <= 80 ? 'bold' : 'normal', color: student.grade <= 80 ? 'red' : 'black' }}>
+                      <td>{student.rank}</td> {/* Display calculated rank */}
+                      <td>{student.full_name}</td>
+                      <td>{student.grade}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3">No data available</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

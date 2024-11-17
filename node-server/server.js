@@ -2197,7 +2197,7 @@ app.get('/reports/grades', authenticateToken, (req, res) => {
         // Main query to fetch student grades and names
         const gradesQuery = `
             SELECT
-                CONCAT(st.first_name, ' ', st.middle_name, ' ', st.last_name) AS full_name,
+                CONCAT(st.last_name, ', ', st.first_name, ' ', st.middle_name) AS full_name,
                 gr.grade,
                 sec.school_year,
                 sec.semester,

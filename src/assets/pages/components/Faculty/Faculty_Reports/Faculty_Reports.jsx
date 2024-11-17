@@ -9,9 +9,13 @@ import axios from "axios"; // Import axios for making API calls
 const Faculty_Reports = () => {
   const navigate = useNavigate(); // Initialize useNavigate
   const [dropdownData, setDropdownData] = useState({}); // State to hold dropdown data
+  const [selectedSchoolYear, setSelectedSchoolYear] = useState(""); // State to hold selected school year
   const [semester, setSemester] = useState(""); // State to hold selected semester
-  const [quarterOptions, setQuarterOptions] = useState([]); // State to hold quarter options
+  const [quarter, setQuarter] = useState(""); // State to hold selected quarter
   const [gradeLevel, setGradeLevel] = useState(""); // State to hold selected grade level
+  const [section, setSection] = useState(""); // State to hold selected section
+  const [subject, setSubject] = useState(""); // State to hold selected subject
+  const [topPerformingStudents, setTopPerformingStudents] = useState([]); // State to hold top-performing students
 
   const handleBackButtonClick = () => {
     navigate("/faculty/dashboard"); // Navigate to the specified route
@@ -23,37 +27,61 @@ const Faculty_Reports = () => {
 
     // Fetch dropdown data from the API
     const fetchDropdownData = async () => {
-        try {
-            // Get the token from local storage
-            const token = localStorage.getItem('token'); // Adjust the key as necessary
+      try {
+        // Get the token from local storage
+        const token = localStorage.getItem('token'); // Adjust the key as necessary
 
-            // Set the authorization header
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}` // Include the token in the headers
-                }
-            };
+        // Set the authorization header
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}` // Include the token in the headers
+          }
+        };
 
-            const response = await axios.get('http://localhost:3000/reports/dropdowns', config); // Make the API call
-            setDropdownData(response.data); // Set the dropdown data in state
-        } catch (error) {
-            console.error('Error fetching dropdown data:', error);
-        }
+        const response = await axios.get('http://localhost:3000/reports/dropdowns', config); // Make the API call
+        setDropdownData(response.data); // Set the dropdown data in state
+      } catch (error) {
+        console.error('Error fetching dropdown data:', error);
+      }
     };
 
     fetchDropdownData(); // Call the function to fetch dropdown data
   }, []);
 
-  // Update quarter options based on selected semester
-  useEffect(() => {
-    if (semester === "FIRST") {
-      setQuarterOptions(["1st Quarter", "2nd Quarter"]);
-    } else if (semester === "SECOND") {
-      setQuarterOptions(["3rd Quarter", "4th Quarter"]);
-    } else {
-      setQuarterOptions([]); // Reset options if no valid semester is selected
+  // Fetch top-performing students based on selected filters
+  const fetchTopPerformingStudents = async () => {
+    try {
+      const token = localStorage.getItem('token'); // Get token from local storage
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+  
+      const response = await axios.get('http://localhost:3000/reports/grades', {
+        ...config,
+        params: {
+          school_year: selectedSchoolYear, // Use the selected school year from state
+          semester,
+          quarter, // Use the selected quarter from state
+          grade_level: gradeLevel, // Use the state variable here
+          section,
+          subject
+        }
+      });
+  
+      setTopPerformingStudents(response.data); // Set the top-performing students in state
+    } catch (error) {
+      console.error('Error fetching top-performing students:', error);
     }
-  }, [semester]);
+  };
+  
+  // Call fetchTopPerformingStudents when dropdown values change
+  useEffect(() => {
+    if (selectedSchoolYear && semester && gradeLevel && section && subject && quarter) {
+      fetchTopPerformingStudents();
+    }
+  }, [selectedSchoolYear, semester, gradeLevel, section, subject, quarter]);
 
   return (
     <div>
@@ -71,7 +99,7 @@ const Faculty_Reports = () => {
         <div className="header-with-dropdowns">
           <h1>Faculty Reports</h1>
           <div className="dropdowns-container">
-            <select className="report-dropdown" key={0}>
+            <select className="report-dropdown" key={0} onChange={( e) => setSelectedSchoolYear(e.target.value)}>
               <option value="">School Year</option>
               {dropdownData.school_year && dropdownData.school_year.map((year, index) => (
                 <option key={index} value={year}>
@@ -86,13 +114,20 @@ const Faculty_Reports = () => {
               <option value="SECOND">SECOND</option>
             </select>
 
-            <select className="report-dropdown" key={2}>
-              <option value=""></option>
-              { quarterOptions. map((quarter, index) => (
-                <option key={index} value={quarter}>
-                  {quarter}
-                </option>
-              ))}
+            <select className="report-dropdown" key={2} value={quarter} onChange={(e) => setQuarter(e.target.value)}>
+              <option value="">Quarter</option>
+              {semester === "FIRST" && (
+                <>
+                  <option value="1st">1st Quarter</option>
+                  <option value="2nd">2nd Quarter</option>
+                </>
+              )}
+              {semester === "SECOND" && (
+                <>
+                  <option value="3rd">3rd Quarter</option>
+                  <option value="4th">4th Quarter</option>
+                </>
+              )}
             </select>
 
             <select className="report-dropdown" key={3} onChange={(e) => setGradeLevel(e.target.value)}>
@@ -105,7 +140,7 @@ const Faculty_Reports = () => {
               <option value="12">Grade 12</option>
             </select>
 
-            <select className="report-dropdown" key={4}>
+            <select className="report-dropdown" key={4} onChange={(e) => setSection(e.target.value)}>
               <option value="">Section</option>
               {dropdownData.sections && dropdownData.sections.map((section, index) => (
                 <option key={index} value={section}>
@@ -114,7 +149,7 @@ const Faculty_Reports = () => {
               ))}
             </select>
 
-            <select className="report-dropdown" key={5}>
+            <select className="report-dropdown" key={5} onChange={(e) => setSubject(e.target.value)}>
               <option value="">Subject</option>
               {dropdownData.subjects && dropdownData.subjects.map((subject, index) => (
                 <option key={index} value={subject}>
@@ -137,56 +172,19 @@ const Faculty_Reports = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>4</td>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>5</td>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>6</td>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>7</td>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>8</td>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>9</td>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>10</td>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
+                {topPerformingStudents.length > 0 ? (
+                  topPerformingStudents.map((student, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{student.full_name}</td>
+                      <td>{student.grade}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3">No data available</td>
+                  </tr>
+                )}
               </tbody>
             </table>
 
@@ -200,31 +198,7 @@ const Faculty_Reports = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>4</td>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>5</td>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
+                {/* Similar implementation for low performing students can be added here */}
               </tbody>
             </table>
           </div>

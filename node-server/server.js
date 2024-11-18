@@ -2032,71 +2032,75 @@ app.get('/grades/:section_id/:subject_id', authenticateToken, async (req, res) =
 
 app.post('/add-grade', authenticateToken, async (req, res) => {
     const userId = req.user.userId; // Get the user_id from the JWT token
-    const { grades } = req.body; // Get the array of grades from the front-end request
+    const { grades, sectionId } = req.body; // Get the array of grades and sectionId from the front-end request
     const quarter = req.headers['quarter']; // Get the quarter from the headers
   
     const client = await pool.connect(); // Start a transaction
   
     try {
-      await client.query('BEGIN'); // Start transaction
+        await client.query('BEGIN'); // Start transaction
   
-      // Step 1: Check if userId exists in facultytbl
-      const facultyQuery = await client.query('SELECT faculty_id FROM facultytbl WHERE user_id = $1', [userId]);
-      if (facultyQuery.rows.length === 0) {
-        return res.status(404).json({ error: 'Faculty not found' });
-      }
-  
-      const facultyId = facultyQuery.rows[0].faculty_id;
-  
-      // Step 2: Check if facultyId exists in teachingload_tbl
-      const teachingLoadQuery = await client.query('SELECT teachingload_id FROM teachingload_tbl WHERE faculty_id = $1', [facultyId]);
-      if (teachingLoadQuery.rows.length === 0) {
-        return res.status(404).json({ error: 'Teaching load not found' });
-      }
-  
-      const teachingLoadId = teachingLoadQuery.rows[0].teachingload_id;
-  
-      // Step 3: Iterate over the grades array and upsert each grade
-      for (const { studentId, grade } of grades) {
-        // Check if the grade for this student, quarter, and teaching load already exists
-        const existingGradeQuery = `
-          SELECT grade_id FROM gradestbl 
-          WHERE student_id = $1 AND teachingload_id = $2 AND quarter = $3
-        `;
-        const existingGradeResult = await client.query(existingGradeQuery, [studentId, teachingLoadId, quarter]);
-  
-        if (existingGradeResult.rows.length > 0) {
-          // If grade exists, update it
-          const updateGradeQuery = `
-            UPDATE gradestbl 
-            SET grade = $1 
-            WHERE grade_id = $2
-          `;
-          const gradeId = existingGradeResult.rows[0].grade_id;
-          await client.query(updateGradeQuery, [grade, gradeId]);
-        } else {
-          // If grade does not exist, insert it
-          const gradeId = `${studentId}grade${Math.floor(10000 + Math.random() * 90000)}`;
-          const insertGradeQuery = `
-            INSERT INTO gradestbl (grade_id, teachingload_id, student_id, grade, quarter)
-            VALUES ($1, $2, $3, $4, $5)
-          `;
-          await client.query(insertGradeQuery, [gradeId, teachingLoadId, studentId, grade, quarter]);
+        // Step 1: Check if userId exists in facultytbl
+        const facultyQuery = await client.query('SELECT faculty_id FROM facultytbl WHERE user_id = $1', [userId]);
+        if (facultyQuery.rows.length === 0) {
+            return res.status(404).json({ error: 'Faculty not found' });
         }
-      }
   
-      // Commit transaction
-      await client.query('COMMIT');
-      res.status(200).json({ message: 'Grades added/updated successfully' });
+        const facultyId = facultyQuery.rows[0].faculty_id;
+  
+        // Step 2: Check if facultyId exists in teachingload_tbl for the given sectionId
+        const teachingLoadQuery = await client.query(`
+            SELECT teachingload_id FROM teachingload_tbl 
+            WHERE faculty_id = $1 AND section_id = $2
+        `, [facultyId, sectionId]);
+        
+        if (teachingLoadQuery.rows.length === 0) {
+            return res.status(404).json({ error: 'Teaching load not found for the specified section' });
+        }
+  
+        const teachingLoadId = teachingLoadQuery.rows[0].teachingload_id;
+  
+        // Step 3: Iterate over the grades array and upsert each grade
+        for (const { studentId, grade } of grades) {
+            // Check if the grade for this student, quarter, and teaching load already exists
+            const existingGradeQuery = `
+                SELECT grade_id FROM gradestbl 
+                WHERE student_id = $1 AND teachingload_id = $2 AND quarter = $3
+            `;
+            const existingGradeResult = await client.query(existingGradeQuery, [studentId, teachingLoadId, quarter]);
+  
+            if (existingGradeResult.rows.length > 0) {
+                // If grade exists, update it
+                const updateGradeQuery = `
+                    UPDATE gradestbl 
+                    SET grade = $1 
+                    WHERE grade_id = $2
+                `;
+                const gradeId = existingGradeResult.rows[0].grade_id;
+                await client.query(updateGradeQuery, [grade, gradeId]);
+            } else {
+                // If grade does not exist, insert it
+                const gradeId = `${studentId}grade${Math.floor(10000 + Math.random() * 90000)}`;
+                const insertGradeQuery = `
+                    INSERT INTO gradestbl (grade_id, teachingload_id, student_id, grade, quarter)
+                    VALUES ($1, $2, $3, $4, $5)
+                `;
+                await client.query(insertGradeQuery, [gradeId, teachingLoadId, studentId, grade, quarter]);
+            }
+        }
+  
+        // Commit transaction
+        await client.query('COMMIT');
+        res.status(200).json({ message: 'Grades added/updated successfully' });
     } catch (err) {
-      // Rollback transaction on error
-      await client.query('ROLLBACK');
-      console.error('Error inserting/updating grades:', err);
-      res.status(500).json({ error: 'Internal server error' });
+        // Rollback transaction on error
+        await client.query('ROLLBACK');
+        console.error('Error inserting/updating grades:', err);
+        res.status(500).json({ error: 'Internal server error' });
     } finally {
-      client.release(); // Release the client back to the pool
+        client.release(); // Release the client back to the pool
     }
-  });
+});
   
 
   app.get('/announcements/faculty', (req, res) => {

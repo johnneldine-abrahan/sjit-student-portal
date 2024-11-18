@@ -12,7 +12,7 @@ const UploadGrades = ({ schoolYear, semester, quarter }) => {
   const [error, setError] = useState(null);
   const [viewingStudents, setViewingStudents] = useState(false);
   const [currentGradeLevel, setCurrentGradeLevel] = useState("");
-  const [currentSectionName, setCurrentSectionName] = useState("");
+  const [currentSectionId, setCurrentSectionId] = useState(""); // Store section_id here
   const [currentSubjectName, setCurrentSubjectName] = useState("");
 
   const [grades, setGrades] = useState({
@@ -37,7 +37,7 @@ const UploadGrades = ({ schoolYear, semester, quarter }) => {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
             params: {
-              modalSchoolYear: schoolYear, // Correct parameter names
+              modalSchoolYear: schoolYear,
               modalSemester: semester
             },
           }
@@ -46,9 +46,9 @@ const UploadGrades = ({ schoolYear, semester, quarter }) => {
         setSubjects(response.data); // Update state with fetched subjects
       } catch (err) {
         console.error("Error fetching subjects:", err);
-        setError("Failed to fetch subjects."); // Set error message
+        setError("Failed to fetch subjects.");
       } finally {
-        setLoading(false); // Set loading to false after fetching
+        setLoading(false);
       }
     };
 
@@ -71,7 +71,7 @@ const UploadGrades = ({ schoolYear, semester, quarter }) => {
       setMaleStudents(response.data.male);
       setFemaleStudents(response.data.female);
       setCurrentGradeLevel(`Grade ${subject.grade_level}`);
-      setCurrentSectionName(subject.section_name);
+      setCurrentSectionId(subject.section_id); // Store section_id here
       setCurrentSubjectName(subject.subject_name);
 
       const initialGrades = {
@@ -122,7 +122,7 @@ const UploadGrades = ({ schoolYear, semester, quarter }) => {
     try {
       const response = await axios.post(
         "http://localhost:3000/add-grade",
-        { grades: gradesArray },
+        { grades: gradesArray, sectionId: currentSectionId }, // Use the hidden sectionId here
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -157,7 +157,7 @@ const UploadGrades = ({ schoolYear, semester, quarter }) => {
             >
               <IoMdArrowRoundBack />
             </button>
-            <h2 className="header-title-list">{`${currentGradeLevel} - ${currentSectionName} / ${currentSubjectName} [${quarter} Quarter]`}</h2>
+            <h2 className="header-title-list">{`${currentGradeLevel} - ${currentSubjectName} [${quarter} Quarter]`}</h2>
           </div>
           <h3>Male Students</h3>
           <table className="student-table student-table-margin">

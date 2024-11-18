@@ -1,55 +1,55 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
+import { useNavigate } from "react-router-dom";
 import "./Faculty_Reports.css";
-import { IoMdArrowRoundBack } from "react-icons/io"; // Import the icons
+import { IoMdArrowRoundBack } from "react-icons/io";
 import logo from "/src/assets/img/LandingPage/NavBar/logo.png";
-import GradeDistributionChart from "./GradeDistributionChart"; // Adjust the path as necessary
-import axios from "axios"; // Import axios for making API calls
+import GradeDistributionChart from "./GradeDistributionChart";
+import axios from "axios";
 
 const Faculty_Reports = () => {
-  const navigate = useNavigate(); // Initialize useNavigate
-  const [dropdownData, setDropdownData] = useState({}); // State to hold dropdown data
-  const [selectedSchoolYear, setSelectedSchoolYear] = useState(""); // State to hold selected school year
-  const [semester, setSemester] = useState(""); // State to hold selected semester
-  const [quarter, setQuarter] = useState(""); // State to hold selected quarter
-  const [gradeLevel, setGradeLevel] = useState(""); // State to hold selected grade level
-  const [section, setSection] = useState(""); // State to hold selected section
-  const [subject, setSubject] = useState(""); // State to hold selected subject
-  const [topPerformingStudents, setTopPerformingStudents] = useState([]); // State to hold top-performing students
-  const [lowPerformingStudents, setLowPerformingStudents] = useState([]); // State to hold low-performing students
+  const navigate = useNavigate();
+  const [dropdownData, setDropdownData] = useState({});
+  const [selectedSchoolYear, setSelectedSchoolYear] = useState("");
+  const [semester, setSemester] = useState("");
+  const [quarter, setQuarter] = useState("");
+  const [gradeLevel, setGradeLevel] = useState("");
+  const [section, setSection] = useState("");
+  const [subject, setSubject] = useState("");
+  const [topPerformingStudents, setTopPerformingStudents] = useState([]);
+  const [lowPerformingStudents, setLowPerformingStudents] = useState([]);
+  const [gradeDistributionData, setGradeDistributionData] = useState([]); // New state for grade distribution
 
   const handleBackButtonClick = () => {
-    navigate("/faculty/dashboard"); // Navigate to the specified route
+    navigate("/faculty/dashboard");
   };
 
   useEffect(() => {
     document.title = "Faculty - Reports";
     window.scrollTo(0, 0);
 
-    // Fetch dropdown data from the API
     const fetchDropdownData = async () => {
       try {
-        const token = localStorage.getItem('token'); // Adjust the key as necessary
+        const token = localStorage.getItem('token');
         const config = {
           headers: {
-            Authorization: `Bearer ${token}` // Include the token in the headers
+            Authorization: `Bearer ${token}`
           }
         };
 
-        const response = await axios.get('http://localhost:3000/reports/dropdowns', config); // Make the API call
-        setDropdownData(response.data); // Set the dropdown data in state
+        const response = await axios.get('http://localhost:3000/reports/dropdowns', config);
+        setDropdownData(response.data);
       } catch (error) {
         console.error('Error fetching dropdown data:', error);
       }
     };
 
-    fetchDropdownData(); // Call the function to fetch dropdown data
+    fetchDropdownData();
   }, []);
 
   // Fetch top-performing students based on selected filters
   const fetchTopPerformingStudents = async () => {
     try {
-      const token = localStorage.getItem('token'); // Get token from local storage
+      const token = localStorage.getItem('token');
       const config = {
         headers: {
           Authorization: `Bearer ${token}`
@@ -68,7 +68,7 @@ const Faculty_Reports = () => {
         }
       });
 
-      setTopPerformingStudents(response.data); // Set the top-performing students in state
+      setTopPerformingStudents(response.data);
     } catch (error) {
       console.error('Error fetching top-performing students:', error);
     }
@@ -77,7 +77,7 @@ const Faculty_Reports = () => {
   // Fetch low-performing students based on selected filters
   const fetchLowPerformingStudents = async () => {
     try {
-      const token = localStorage.getItem('token'); // Get token from local storage
+      const token = localStorage.getItem('token');
       const config = {
         headers: {
           Authorization: `Bearer ${token}`
@@ -96,29 +96,55 @@ const Faculty_Reports = () => {
         }
       });
 
-      // Reverse the list to get lowest grades first
       const reversedData = [...response.data].reverse();
-
-      // Slice the last 5 entries
       const lowPerformers = reversedData.slice(0, 5).map((student, index) => ({
         ...student,
-        rank: reversedData.length - index // Calculate rank from the bottom
+        rank: reversedData.length - index
       }));
 
-      setLowPerformingStudents(lowPerformers); // Set the low-performing students in state
+      setLowPerformingStudents(lowPerformers);
+    } catch (error){
+      console.error('Error fetching low-performing students:', error);
+    }
+  };
+
+  // Fetch grade distribution based on selected filters
+  const fetchGradeDistribution = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+
+      const response = await axios.get('http://localhost:3000/reports/grades/distribution', {
+        ...config,
+        params: {
+          school_year: selectedSchoolYear,
+          semester,
+          quarter,
+          grade_level: gradeLevel,
+          section,
+          subject
+        }
+      });
+
+      setGradeDistributionData(response.data); // Set the grade distribution data in state
     } catch (error) {
-      console.error(' Error fetching low-performing students:', error);
+      console.error('Error fetching grade distribution:', error);
     }
   };
 
   useEffect(() => {
-    // Reset the student data when any dropdown selection changes
     setTopPerformingStudents([]);
     setLowPerformingStudents([]);
+    setGradeDistributionData([]); // Reset distribution data
 
     if (selectedSchoolYear && semester && gradeLevel && section && subject && quarter) {
       fetchTopPerformingStudents();
-      fetchLowPerformingStudents(); // Fetch low-performing students as well
+      fetchLowPerformingStudents();
+      fetchGradeDistribution(); // Fetch grade distribution data
     }
   }, [selectedSchoolYear, semester, gradeLevel, section, subject, quarter]);
 
@@ -127,9 +153,9 @@ const Faculty_Reports = () => {
       <header className="headerFaculty-report">
         <button
           className="back-button-faculty-report"
-          onClick={handleBackButtonClick} // Use the function to handle back button click
+          onClick={handleBackButtonClick}
         >
-          <IoMdArrowRoundBack /> {/* Use the icon here */}
+          <IoMdArrowRoundBack />
         </button>
         <img src={logo} className="logo-faculty-report" alt="Logo" />
       </header>
@@ -240,7 +266,7 @@ const Faculty_Reports = () => {
                 {lowPerformingStudents.length > 0 ? (
                   lowPerformingStudents.map((student, index) => (
                     <tr key={index} style={{ fontWeight: student.grade <= 80 ? 'bold' : 'normal', color: student.grade <= 80 ? 'red' : 'black' }}>
-                      <td>{student.rank}</td> {/* Display calculated rank */}
+                      <td>{student.rank}</td>
                       <td>{student.full_name}</td>
                       <td>{student.grade}</td>
                     </tr>
@@ -257,7 +283,7 @@ const Faculty_Reports = () => {
           <div className="right-side">
             <div className="grid-item">
               <h2>Grade Distribution</h2>
-              <GradeDistributionChart /> {/* Insert the GradeDistributionChart here */}
+              <GradeDistributionChart data={gradeDistributionData} /> {/* Pass the distribution data to the chart */}
             </div>
             <div className="grid-item">Grid Item 2</div>
             <div className="grid-item">Grid Item 3</div>

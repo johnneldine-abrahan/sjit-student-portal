@@ -9,18 +9,15 @@ import {
   Legend,
 } from "recharts";
 
-// Sample data for the bar chart
-const data = [
-  { subject: "Math", grade: 85 },
-  { subject: "Science", grade: 90 },
-  { subject: "English", grade: 78 },
-  { subject: "History", grade: 88 },
-  { subject: "Art", grade: 112 },
-];
+const StudentGradesChart = ({ gradesData }) => {
+  // Format the grades data for the chart
+  const chartData = gradesData.map(grade => ({
+    subject: grade.subject_name,
+    grade: grade.grade
+  }));
 
-const StudentGradesChart = () => {
   return (
-    <BarChart width={500} height={500} data={data}>
+    <BarChart width={500} height={500} data={chartData}>
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="subject" />
       <YAxis />

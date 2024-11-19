@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react"; // Import useEffect and useState from React
-import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
-import axios from "axios"; // Import Axios for making HTTP requests
-import "./Student_Reports.css"; // Import CSS styles
-import { IoMdArrowRoundBack } from "react-icons/io"; // Import the icons
-import logo from "/src/assets/img/LandingPage/NavBar/logo.png"; // Import logo
-import StudentGradesChart from "/src/assets/pages/components/Students/Student_Reports/StudentGradesChart.jsx"; // Import the new chart component
+import React, { useEffect, useState } from "react"; 
+import { useNavigate } from "react-router-dom"; 
+import axios from "axios"; 
+import "./Student_Reports.css"; 
+import { IoMdArrowRoundBack } from "react-icons/io"; 
+import logo from "/src/assets/img/LandingPage/NavBar/logo.png"; 
+import StudentGradesChart from "/src/assets/pages/components/Students/Student_Reports/StudentGradesChart.jsx"; 
 
 const Student_Reports = () => {
-  const navigate = useNavigate(); // Initialize useNavigate
-  const [semester, setSemester] = useState(""); // State for semester
-  const [quarter, setQuarter] = useState(""); // State for quarter
-  const [selectedGrade, setSelectedGrade] = useState(""); // State for selected grade
-  const [schoolYears, setSchoolYears] = useState([]); // State for school years
-  const [gradesData, setGradesData] = useState([]); // State for grades data
+  const navigate = useNavigate(); 
+  const [semester, setSemester] = useState(""); 
+  const [quarter, setQuarter] = useState(""); 
+  const [selectedGrade, setSelectedGrade] = useState(""); 
+  const [schoolYears, setSchoolYears] = useState([]); 
+  const [gradesData, setGradesData] = useState([]); 
 
   const handleBackButtonClick = () => {
-    navigate("/student/dashboard"); // Navigate to the specified route
+    navigate("/student/dashboard"); 
   };
 
   // Fetch school years from the backend
@@ -23,67 +23,70 @@ const Student_Reports = () => {
     const fetchSchoolYears = async () => {
       try {
         const response = await axios.get('http://localhost:3000/school_years/dropdown');
-        setSchoolYears(response.data); // Set the fetched school years to state
+        setSchoolYears(response.data); 
       } catch (error) {
         console.error('Error fetching school years:', error);
       }
     };
 
-    fetchSchoolYears(); // Call the function to fetch school years
-    window.scrollTo(0, 0); // Scroll to top on component mount
-  }, []); // Empty dependency array means this runs once on mount
+    fetchSchoolYears(); 
+    window.scrollTo(0, 0); 
+  }, []); 
 
   // Fetch grades data from the back-end
   useEffect(() => {
     const fetchGrades = async () => {
       if (selectedGrade && semester && quarter && schoolYears.length > 0) {
-        const schoolYear = schoolYears[0]; // Assuming the first school year is selected
+        const schoolYear = schoolYears[0]; 
         try {
-          const token = localStorage.getItem("token"); // Retrieve token from local storage
+          const token = localStorage.getItem("token"); 
           const response = await axios.get(
-            `http://localhost:3000/grades-reports-students?school_year=${schoolYear}&semester=${semester}&quarter=${quarter}&grade_level=${selectedGrade}`,
+            `http://localhost:3000/student/reports/distribution?school_year=${schoolYear}&semester=${semester}&quarter=${quarter}&grade_level=${selectedGrade}`,
             {
               headers: {
-                Authorization: `Bearer ${token}`, // Include the token in the headers
+                Authorization: `Bearer ${token}`, 
               },
             }
           );
 
           // Check if the response data is empty
-          if (response.data && response.data.length > 0) {
-            setGradesData(response.data); // Set the grades data to state
+          if (response.data) {
+            setGradesData(response.data.datasets[0].data.map((grade, index) => ({
+              subject_name: response.data.labels[index],
+              grade: grade
+            })));
           } else {
-            setGradesData([]); // Set to empty array if no data is returned
+            setGradesData([]); 
           }
         } catch (error) {
           console.error("Error fetching grades:", error);
-          setGradesData([]); // Optionally, set to empty if an error occurs
+          setGradesData([]); 
         }
       } else {
-        setGradesData([]); // Reset grades data if dropdowns are not fully selected
+        setGradesData([]); 
       }
     };
 
-    fetchGrades(); // Call the function to fetch grades
-  }, [selectedGrade, semester, quarter, schoolYears]); // Dependencies for fetching grades
+    fetchGrades(); 
+  }, [selectedGrade, semester, quarter, schoolYears]); 
 
   // Calculate average grade
   const calculateAverageGrade = () => {
     if (gradesData.length === 0) return 0;
     const total = gradesData.reduce((sum, grade) => sum + Number(grade.grade), 0);
-    return (total / gradesData.length).toFixed(2); // Return average with two decimal points
+    return (total / gradesData.length).toFixed(2); 
   };
 
-  const averageGrade = calculateAverageGrade(); // Get the average grade
+  const averageGrade = calculateAverageGrade(); 
 
   return (
-    <div>
+    < div>
       <header className="headerFaculty-report">
         <button
           className="back-button-faculty-report"
-          onClick={handleBackButtonClick} // Use the function to handle back button click
+          onClick={handleBackButtonClick}
         >
-          <IoMdArrowRoundBack /> {/* Use the icon here */}
+          <IoMdArrowRoundBack />
         </button>
         <img src={logo} className="logo-faculty-report" alt="Logo" />
       </header>
@@ -166,7 +169,7 @@ const Student_Reports = () => {
 
           <div className="right-side">
             <div className="grid-item">
-              <StudentGradesChart />
+              <StudentGradesChart gradesData={gradesData} />
             </div>
             <div className="grid-item-container-student">
               <div className="grid-item-insights-student">

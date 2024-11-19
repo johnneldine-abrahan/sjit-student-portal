@@ -170,7 +170,7 @@ const Student_Reports = () => {
             </div>
             <div className="grid-item-container-student">
               <div className="grid-item-insights-student">
-                <h3>Insights</h3>
+                <h3 className="analytics">Insights</h3>
                 <p>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
                   do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -183,7 +183,7 @@ const Student_Reports = () => {
                 </p>
               </div>
               <div className="grid-item-reco-student">
-                <h3>Recommendations</h3>
+                <h3 className="analytics">Recommendations</h3>
                 <p>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
                   do eiusmod tempor incididunt ut labore et dolore magna aliqua.

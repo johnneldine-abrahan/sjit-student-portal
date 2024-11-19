@@ -310,7 +310,7 @@ const Faculty_Reports = () => {
             </div>
             <div className="grid-item-container-faculty">
               <div className="grid-item-insights-faculty">
-                <h3>Insights</h3>
+                <h3 class="analytics">Insights</h3>
                 <p>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
                   do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -323,7 +323,7 @@ const Faculty_Reports = () => {
                 </p>
               </div>
               <div className="grid-item-reco-faculty">
-                <h3>Recommendations</h3>
+                <h3 class="analytics">Recommendations</h3>
                 <p>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
                   do eiusmod tempor incididunt ut labore et dolore magna aliqua.

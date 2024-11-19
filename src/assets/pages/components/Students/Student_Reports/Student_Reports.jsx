@@ -67,6 +67,15 @@ const Student_Reports = () => {
     fetchGrades(); // Call the function to fetch grades
   }, [selectedGrade, semester, quarter, schoolYears]); // Dependencies for fetching grades
 
+  // Calculate average grade
+  const calculateAverageGrade = () => {
+    if (gradesData.length === 0) return 0;
+    const total = gradesData.reduce((sum, grade) => sum + Number(grade.grade), 0);
+    return (total / gradesData.length).toFixed(2); // Return average with two decimal points
+  };
+
+  const averageGrade = calculateAverageGrade(); // Get the average grade
+
   return (
     <div>
       <header className="headerFaculty-report">
@@ -83,7 +92,7 @@ const Student_Reports = () => {
         <div className="header-with-dropdowns">
           <h1>Student Reports </h1>
           <div className="dropdowns-container">
-            <select className="report-dropdownstudent" key={0}>
+            <select className ="report-dropdownstudent" key={0}>
               <option value="">School Year</option>
               {schoolYears.map((year, index) => (
                 <option key={index} value={year}>{year}</option>
@@ -147,6 +156,10 @@ const Student_Reports = () => {
                     <td colSpan="2" style={{ textAlign: 'center' }}>No data available</td>
                   </tr>
                 )}
+                <tr>
+                  <td style={{ textAlign: 'right' }}><strong>General Average</strong></td>
+                  <td><strong>{averageGrade}</strong></td>
+                </tr>
               </tbody>
             </table>
           </div>

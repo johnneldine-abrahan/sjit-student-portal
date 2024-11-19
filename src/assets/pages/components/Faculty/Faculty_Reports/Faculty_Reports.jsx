@@ -18,6 +18,7 @@ const Faculty_Reports = () => {
   const [topPerformingStudents, setTopPerformingStudents] = useState([]);
   const [lowPerformingStudents, setLowPerformingStudents] = useState([]);
   const [gradeDistributionData, setGradeDistributionData] = useState([]); // New state for grade distribution
+  const [averageGrade, setAverageGrade] = useState(null); // New state for average grade
 
   const handleBackButtonClick = () => {
     navigate("/faculty/dashboard");
@@ -140,13 +141,26 @@ const Faculty_Reports = () => {
     setTopPerformingStudents([]);
     setLowPerformingStudents([]);
     setGradeDistributionData([]); // Reset distribution data
-
+    setAverageGrade(null); // Reset average grade
     if (selectedSchoolYear && semester && gradeLevel && section && subject && quarter) {
       fetchTopPerformingStudents();
       fetchLowPerformingStudents();
       fetchGradeDistribution(); // Fetch grade distribution data
     }
   }, [selectedSchoolYear, semester, gradeLevel, section, subject, quarter]);
+
+  useEffect(() => {
+    const calculateAverageGrade = () => {
+      const allStudents = [...topPerformingStudents, ...lowPerformingStudents];
+      if (allStudents.length > 0) {
+        const totalGrades = allStudents.reduce((acc, student) => acc + student.grade, 0);
+        const average = totalGrades / allStudents.length;
+        setAverageGrade(average.toFixed(2)); // Set average grade with two decimal places
+      }
+    };
+
+    calculateAverageGrade();
+  }, [topPerformingStudents, lowPerformingStudents]);
 
   return (
     <div>
@@ -278,6 +292,15 @@ const Faculty_Reports = () => {
                 )}
               </tbody>
             </table>
+
+            <h2>Average Grade</h2>
+            <div className="average-grade">
+              {averageGrade !== null ? (
+                <p>The average grade of the class is: <strong>{averageGrade}</strong></p>
+              ) : (
+                <p>No data available to calculate average.</p>
+              )}
+            </div>
           </div>
 
           <div className="right-side">
@@ -285,9 +308,34 @@ const Faculty_Reports = () => {
               <h2>Grade Distribution</h2>
               <GradeDistributionChart data={gradeDistributionData} /> {/* Pass the distribution data to the chart */}
             </div>
-            <div className="grid-item">Grid Item 2</div>
-            <div className="grid-item">Grid Item 3</div>
-            <div className="grid-item">Grid Item 4</div>
+            <div className="grid-item-container-faculty">
+              <div className="grid-item-insights-faculty">
+                <h3>Insights</h3>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+                  irure dolor in reprehenderit in voluptate velit esse cillum
+                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+                  cupidatat non proident, sunt in culpa qui officia deserunt
+                  mollit anim id est laborum.
+                </p>
+              </div>
+              <div className="grid-item-reco-faculty">
+                <h3>Recommendations</h3>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+                  irure dolor in reprehenderit in voluptate velit esse cillum
+                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+                  cupidatat non proident, sunt in culpa qui officia deserunt
+                  mollit anim id est laborum.
+                </p>
+              </div>
+            </div>  
           </div>
         </div>
       </div>

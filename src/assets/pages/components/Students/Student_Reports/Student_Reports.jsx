@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"; // Import useEffect and useState from React
 import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
 import axios from "axios"; // Import Axios for making HTTP requests
-import "./Student_Reports.css";
+import "./Student_Reports.css"; // Import CSS styles
 import { IoMdArrowRoundBack } from "react-icons/io"; // Import the icons
-import logo from "/src/assets/img/LandingPage/NavBar/logo.png";
+import logo from "/src/assets/img/LandingPage/NavBar/logo.png"; // Import logo
 import StudentGradesChart from "/src/assets/pages/components/Students/Student_Reports/StudentGradesChart.jsx"; // Import the new chart component
 
 const Student_Reports = () => {
@@ -12,6 +12,7 @@ const Student_Reports = () => {
   const [quarter, setQuarter] = useState(""); // State for quarter
   const [selectedGrade, setSelectedGrade] = useState(""); // State for selected grade
   const [schoolYears, setSchoolYears] = useState([]); // State for school years
+  const [gradesData, setGradesData] = useState([]); // State for grades data
 
   const handleBackButtonClick = () => {
     navigate("/student/dashboard"); // Navigate to the specified route
@@ -32,6 +33,40 @@ const Student_Reports = () => {
     window.scrollTo(0, 0); // Scroll to top on component mount
   }, []); // Empty dependency array means this runs once on mount
 
+  // Fetch grades data from the back-end
+  useEffect(() => {
+    const fetchGrades = async () => {
+      if (selectedGrade && semester && quarter && schoolYears.length > 0) {
+        const schoolYear = schoolYears[0]; // Assuming the first school year is selected
+        try {
+          const token = localStorage.getItem("token"); // Retrieve token from local storage
+          const response = await axios.get(
+            `http://localhost:3000/grades-reports-students?school_year=${schoolYear}&semester=${semester}&quarter=${quarter}&grade_level=${selectedGrade}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`, // Include the token in the headers
+              },
+            }
+          );
+
+          // Check if the response data is empty
+          if (response.data && response.data.length > 0) {
+            setGradesData(response.data); // Set the grades data to state
+          } else {
+            setGradesData([]); // Set to empty array if no data is returned
+          }
+        } catch (error) {
+          console.error("Error fetching grades:", error);
+          setGradesData([]); // Optionally, set to empty if an error occurs
+        }
+      } else {
+        setGradesData([]); // Reset grades data if dropdowns are not fully selected
+      }
+    };
+
+    fetchGrades(); // Call the function to fetch grades
+  }, [selectedGrade, semester, quarter, schoolYears]); // Dependencies for fetching grades
+
   return (
     <div>
       <header className="headerFaculty-report">
@@ -46,7 +81,7 @@ const Student_Reports = () => {
 
       <div className="faculty-report-main-content">
         <div className="header-with-dropdowns">
-          <h1>Student Reports</h1>
+          <h1>Student Reports </h1>
           <div className="dropdowns-container">
             <select className="report-dropdownstudent" key={0}>
               <option value="">School Year</option>
@@ -82,18 +117,8 @@ const Student_Reports = () => {
               <option value="8">Grade 8</option>
               <option value="9">Grade 9</option>
               <option value="10">Grade 10</option>
-              <option value="11">Grade  11</option>
+              <option value="11">Grade 11</option>
               <option value="12">Grade 12</option>
-            </select>
-
-            <select className="report-dropdownstudent" key={4} disabled={selectedGrade && (selectedGrade < 11)}>
-              <option value="">Strand</option>
-              <option value="7">STEM</option>
-              <option value="8">ABM</option>
-              <option value="9">HUMSS</option>
-              <option value="10">TVL-IA</option>
-              <option value="11">TVL-HE</option>
-              <option value="12">TVL-ICT</option>
             </select>
 
           </div>
@@ -101,7 +126,6 @@ const Student_Reports = () => {
 
         <div className="reports-container">
           <div className="left-side">
-            {/* Title for the first table */}
             <h2>My Grades</h2>
             <table className="report-table-mygrades">
               <thead>
@@ -111,11 +135,18 @@ const Student_Reports = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                {/* Repeat rows as needed */}
+                {gradesData.length > 0 ? (
+                  gradesData.map((grade) => (
+                    <tr key={grade.subject_name}>
+                      <td>{grade.subject_name}</td>
+                      <td>{grade.grade}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="2" style={{ textAlign: 'center' }}>No data available</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

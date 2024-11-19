@@ -2489,6 +2489,72 @@ app.get('/school_years/dropdown', (req, res) => {
     });
 });
 
+app.get('/grades-reports-students', authenticateToken, async (req, res) => {
+    const { school_year, semester, quarter, grade_level } = req.query;
+    const user_id = req.user.userId; // Change this line to access userId correctly
+
+    // Validate required parameters
+    if (!school_year || !semester || !quarter) {
+        console.log('Missing required parameters:', { school_year, semester, quarter });
+        return res.status(400).json({ message: 'school_year, semester, and quarter are required.' });
+    }
+
+    try {
+        // First, get the student_id from the studenttbl using the user_id
+        const studentQuery = `
+            SELECT student_id 
+            FROM studenttbl 
+            WHERE user_id = $1
+        `;
+        console.log('Executing query:', studentQuery, 'with user_id:', user_id); // Log the query
+
+        const studentResult = await pool.query(studentQuery, [user_id]);
+
+        if (studentResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+
+        const student_id = studentResult.rows[0].student_id;
+
+        // Now, execute the main query to get the grades
+        const gradesQuery = `
+            SELECT 
+                g.grade,
+                sub.subject_name
+            FROM 
+                studenttbl s
+            JOIN 
+                enrollmenttbl e ON s.student_id = e.student_id
+            JOIN 
+                sectiontbl sec ON e.section_id = sec.section_id
+            JOIN 
+                teachingload_tbl tl ON sec.section_id = tl.section_id
+            JOIN 
+                gradestbl g ON tl.teachingload_id = g.teachingload_id 
+                           AND g.student_id = s.student_id
+            JOIN 
+                subjecttbl sub ON sec.subject_id = sub.subject_id
+            WHERE 
+                s.student_id = $1 
+                AND sec.school_year = $2 
+                AND sec.semester = $3 
+                AND g.quarter = $4
+                AND sec.grade_level = $5
+        `;
+
+        const gradesResult = await pool.query(gradesQuery, [student_id, school_year, semester, quarter, grade_level]);
+
+        if (gradesResult.rows.length === 0) {
+            return res.status(404).json({ message: 'No grades found for the specified criteria' });
+        }
+
+        res.json(gradesResult.rows);
+    } catch (err) {
+        console.error('Error fetching grades:', err);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 app.get('/announcements/students', (req, res) => {
     const query = `
         SELECT announcement_id, announce_to, announcement_type,

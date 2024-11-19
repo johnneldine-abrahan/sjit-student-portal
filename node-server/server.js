@@ -2432,33 +2432,32 @@ app.get('/grades', authenticateToken, async (req, res) => {
         // Fetch grades based on school year, semester, and quarter
         const query = `
             SELECT 
-                s.student_id, 
-                sec.section_name, 
-                sub.subject_id, 
-                sub.subject_name, 
-                sec.school_year, 
-                sec.semester, 
-                g.quarter, 
                 g.grade, 
-                sec.faculty_name
+                g.quarter,
+                sub.subject_name,
+                sec.faculty_name,
+                sec.semester
             FROM 
-                enrollmenttbl AS e  -- Assuming this table links students to sections
+                studenttbl s
             JOIN 
-                studenttbl AS s ON e.student_id = s.student_id
+                enrollmenttbl e ON s.student_id = e.student_id
             JOIN 
-                sectiontbl AS sec ON e.section_id = sec.section_id  -- Link to sectiontbl
+                sectiontbl sec ON e.section_id = sec.section_id
             JOIN 
-                subjecttbl AS sub ON sec.subject_id = sub.subject_id
+                teachingload_tbl tl ON sec.section_id = tl.section_id
             JOIN 
-                gradestbl AS g ON s.student_id = g.student_id
+                gradestbl g ON tl.teachingload_id = g.teachingload_id 
+                           AND g.student_id = s.student_id
+            JOIN 
+                subjecttbl sub ON sec.subject_id = sub.subject_id
             WHERE 
-                sec.school_year = $1 
-                AND sec.semester = $2 
-                AND g.quarter = $3 
-                AND s.student_id = $4
+                s.student_id = $1 
+                AND sec.school_year = $2 
+                AND sec.semester = $3 
+                AND g.quarter = $4
         `;
 
-        const gradesResult = await pool.query(query, [modalSchoolYear, modalSemester, quarterState, student_id]);
+        const gradesResult = await pool.query(query, [student_id, modalSchoolYear, modalSemester, quarterState]);
 
         if (gradesResult.rows.length === 0) {
             return res.status(404).send('No grades found for the specified criteria');

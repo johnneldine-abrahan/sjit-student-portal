@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"; // Import useEffect and useState from React
 import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
+import axios from "axios"; // Import Axios for making HTTP requests
 import "./Student_Reports.css";
 import { IoMdArrowRoundBack } from "react-icons/io"; // Import the icons
 import logo from "/src/assets/img/LandingPage/NavBar/logo.png";
@@ -7,51 +8,29 @@ import StudentGradesChart from "/src/assets/pages/components/Students/Student_Re
 
 const Student_Reports = () => {
   const navigate = useNavigate(); // Initialize useNavigate
-  const [selectedSemester, setSelectedSemester] = useState(""); // State for selected semester
-  const [quarterOptions, setQuarterOptions] = useState([]); // State for quarter options
+  const [semester, setSemester] = useState(""); // State for semester
+  const [quarter, setQuarter] = useState(""); // State for quarter
+  const [selectedGrade, setSelectedGrade] = useState(""); // State for selected grade
   const [schoolYears, setSchoolYears] = useState([]); // State for school years
 
   const handleBackButtonClick = () => {
     navigate("/student/dashboard"); // Navigate to the specified route
   };
 
-  // Scroll to top on component mount
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []); // Empty dependency array means this runs once on mount
-
   // Fetch school years from the backend
   useEffect(() => {
     const fetchSchoolYears = async () => {
       try {
-        const response = await fetch('http://localhost:3000/school_years');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        setSchoolYears(data.map(item => item.school_year)); // Extract school_year from results
+        const response = await axios.get('http://localhost:3000/school_years/dropdown');
+        setSchoolYears(response.data); // Set the fetched school years to state
       } catch (error) {
         console.error('Error fetching school years:', error);
       }
     };
 
-    fetchSchoolYears();
+    fetchSchoolYears(); // Call the function to fetch school years
+    window.scrollTo(0, 0); // Scroll to top on component mount
   }, []); // Empty dependency array means this runs once on mount
-
-  // Function to handle semester change
-  const handleSemesterChange = (event) => {
-    const semester = event.target.value;
-    setSelectedSemester(semester);
-
-    // Update quarter options based on selected semester
-    if (semester === "option1") { // 1st Semester
-      setQuarterOptions(["1st", "2nd"]);
-    } else if (semester === "option2") { // 2nd Semester
-      setQuarterOptions(["3rd", "4th"]);
-    } else {
-      setQuarterOptions([]); // Reset if no semester is selected
-    }
-  };
 
   return (
     <div>
@@ -75,35 +54,48 @@ const Student_Reports = () => {
                 <option key={index} value={year}>{year}</option>
               ))}
             </select>
-            <select className="report-dropdownstudent" key={1} onChange={handleSemesterChange}>
+            <select className="report-dropdownstudent" key={1} onChange={(e) => setSemester(e.target.value)}>
               <option value="">Semester</option>
-              <option value="option1">1st Semester</option>
-              <option value="option2">2nd Semester</option>
+              <option value="FIRST">FIRST</option>
+              <option value="SECOND">SECOND</option>
             </select>
 
-            <select className="report-dropdownstudent" key={2}>
+            <select className="report-dropdownstudent" key={2} value={quarter} onChange={(e) => setQuarter(e.target.value)}>
               <option value="">Quarter</option>
-              {quarterOptions.map((quarter, index) => (
-                <option key={index} value={quarter}>{quarter}</option>
-              ))}
+              {semester === "FIRST" && (
+                <>
+                  <option value="1st">1st Quarter</option>
+                  <option value="2nd">2nd Quarter</option>
+                </>
+              )}
+              {semester === "SECOND" && (
+                <>
+                  <option value="3rd">3rd Quarter</option>
+                  <option value="4th">4th Quarter</option>
+                </>
+              )}
             </select>
 
-            <select className="report-dropdownstudent" key={3}>
+            <select className="report-dropdownstudent" key={3} onChange={(e) => setSelectedGrade(e.target.value)}>
               <option value="">Grade Level</option>
-              <option value="option 1">7</option>
-              <option value="option2">8</option>
-              <option value="option3">9</option>
-              <option value="option4">10</option>
-              <option value="option5">11</option>
-              <option value="option6">12</option>
+              <option value="7">Grade 7</option>
+              <option value="8">Grade 8</option>
+              <option value="9">Grade 9</option>
+              <option value="10">Grade 10</option>
+              <option value="11">Grade  11</option>
+              <option value="12">Grade 12</option>
             </select>
 
-            <select className="report-dropdownstudent" key={4}>
-              <option value="">Subject</option>
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
+            <select className="report-dropdownstudent" key={4} disabled={selectedGrade && (selectedGrade < 11)}>
+              <option value="">Strand</option>
+              <option value="7">STEM</option>
+              <option value="8">ABM</option>
+              <option value="9">HUMSS</option>
+              <option value="10">TVL-IA</option>
+              <option value="11">TVL-HE</option>
+              <option value="12">TVL-ICT</option>
             </select>
+
           </div>
         </div>
 
@@ -123,42 +115,7 @@ const Student_Reports = () => {
                   <td>Kim William</td>
                   <td>69</td>
                 </tr>
-                <tr>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
-                <tr>
-                  <td>Kim William</td>
-                  <td>69</td>
-                </tr>
+                {/* Repeat rows as needed */}
               </tbody>
             </table>
           </div>

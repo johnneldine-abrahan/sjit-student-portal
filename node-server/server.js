@@ -2470,6 +2470,25 @@ app.get('/grades', authenticateToken, async (req, res) => {
     }
 });
 
+app.get('/school_years/dropdown', (req, res) => {
+    // Update the query to sort by school_year in descending order
+    const query = 'SELECT DISTINCT school_year FROM sectiontbl ORDER BY school_year DESC';
+
+    // Use the pool to get a connection
+    pool.query(query, (error, results) => {
+        if (error) {
+            console.error('Error fetching school years:', error);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+        // Map the results to return an array of school years directly
+        const schoolYears = results.rows.map(item => item.school_year);
+
+        // Send the structured response as an array
+        res.json(schoolYears);
+    });
+});
+
 app.get('/announcements/students', (req, res) => {
     const query = `
         SELECT announcement_id, announce_to, announcement_type,

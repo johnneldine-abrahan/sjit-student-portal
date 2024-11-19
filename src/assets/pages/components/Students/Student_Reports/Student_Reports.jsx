@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"; // Import useEffect from React
+import React, { useEffect, useState } from "react"; // Import useEffect and useState from React
 import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
 import "./Student_Reports.css";
 import { IoMdArrowRoundBack } from "react-icons/io"; // Import the icons
@@ -7,6 +7,9 @@ import StudentGradesChart from "/src/assets/pages/components/Students/Student_Re
 
 const Student_Reports = () => {
   const navigate = useNavigate(); // Initialize useNavigate
+  const [selectedSemester, setSelectedSemester] = useState(""); // State for selected semester
+  const [quarterOptions, setQuarterOptions] = useState([]); // State for quarter options
+  const [schoolYears, setSchoolYears] = useState([]); // State for school years
 
   const handleBackButtonClick = () => {
     navigate("/student/dashboard"); // Navigate to the specified route
@@ -16,6 +19,39 @@ const Student_Reports = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []); // Empty dependency array means this runs once on mount
+
+  // Fetch school years from the backend
+  useEffect(() => {
+    const fetchSchoolYears = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/school_years');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setSchoolYears(data.map(item => item.school_year)); // Extract school_year from results
+      } catch (error) {
+        console.error('Error fetching school years:', error);
+      }
+    };
+
+    fetchSchoolYears();
+  }, []); // Empty dependency array means this runs once on mount
+
+  // Function to handle semester change
+  const handleSemesterChange = (event) => {
+    const semester = event.target.value;
+    setSelectedSemester(semester);
+
+    // Update quarter options based on selected semester
+    if (semester === "option1") { // 1st Semester
+      setQuarterOptions(["1st", "2nd"]);
+    } else if (semester === "option2") { // 2nd Semester
+      setQuarterOptions(["3rd", "4th"]);
+    } else {
+      setQuarterOptions([]); // Reset if no semester is selected
+    }
+  };
 
   return (
     <div>
@@ -35,11 +71,11 @@ const Student_Reports = () => {
           <div className="dropdowns-container">
             <select className="report-dropdownstudent" key={0}>
               <option value="">School Year</option>
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
+              {schoolYears.map((year, index) => (
+                <option key={index} value={year}>{year}</option>
+              ))}
             </select>
-            <select className="report-dropdownstudent" key={1}>
+            <select className="report-dropdownstudent" key={1} onChange={handleSemesterChange}>
               <option value="">Semester</option>
               <option value="option1">1st Semester</option>
               <option value="option2">2nd Semester</option>
@@ -47,20 +83,19 @@ const Student_Reports = () => {
 
             <select className="report-dropdownstudent" key={2}>
               <option value="">Quarter</option>
-              <option value="option1">1st</option>
-              <option value="option2">2nd</option>
-              <option value="option3">3rd</option>
-              <option value="option3">4th</option>
+              {quarterOptions.map((quarter, index) => (
+                <option key={index} value={quarter}>{quarter}</option>
+              ))}
             </select>
 
             <select className="report-dropdownstudent" key={3}>
               <option value="">Grade Level</option>
-              <option value="option1">7</option>
-              <option value="option1">8</option>
-              <option value="option1">9</option>
-              <option value="option1">10</option>
-              <option value="option1">11</option>
-              <option value="option1">12</option>
+              <option value="option 1">7</option>
+              <option value="option2">8</option>
+              <option value="option3">9</option>
+              <option value="option4">10</option>
+              <option value="option5">11</option>
+              <option value="option6">12</option>
             </select>
 
             <select className="report-dropdownstudent" key={4}>

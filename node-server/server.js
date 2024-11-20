@@ -2344,6 +2344,143 @@ app.get('/reports/grades/distribution', authenticateToken, (req, res) => {
     });
 });
 
+app.get('/class-insights', authenticateToken, async (req, res) => {
+    const { school_year, semester, quarter, grade_level, section_name, subject_name } = req.query;
+    const user_id = req.user.userId;
+
+    if (!school_year || !semester || !quarter || !grade_level || !section_name || !subject_name) {
+        return res.status(400).json({ message: 'school_year, semester, quarter, grade_level, section_name, and subject_name are required.' });
+    }
+
+    try {
+        // Fetching the faculty ID based on user ID (assuming the user is a faculty member)
+        const facultyQuery = `
+            SELECT faculty_id 
+            FROM facultytbl 
+            WHERE user_id = $1
+        `;
+        const facultyResult = await pool.query(facultyQuery, [user_id]);
+
+        if (facultyResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Faculty not found' });
+        }
+
+        const faculty_id = facultyResult.rows[0].faculty_id;
+
+        // Fetching grades of all students in the specified class and subject
+        const gradesQuery = `
+           SELECT
+                CONCAT(st.last_name, ', ', st.first_name, ' ', st.middle_name) AS full_name,
+                gr.grade,
+                sec.school_year,
+                sec.semester,
+                gr.quarter,
+                sec.grade_level,
+                sec.section_name,
+                sub.subject_name
+            FROM
+                gradestbl gr
+            JOIN teachingload_tbl tl ON gr.teachingload_id = tl.teachingload_id
+            JOIN sectiontbl sec ON tl.section_id = sec.section_id
+            JOIN subjecttbl sub ON sec.subject_id = sub.subject_id
+            JOIN enrollmenttbl en ON sec.section_id = en.section_id AND gr.student_id = en.student_id
+            JOIN studenttbl st ON en.student_id = st.student_id
+            WHERE
+                tl.faculty_id = $1
+                AND sec.school_year = $2
+                AND sec.semester = $3
+                AND gr.quarter = $4
+                AND sec.grade_level = $5
+                AND sec.section_name = $6
+                AND sub.subject_name = $7
+                AND sub.subject_name != 'HOMEROOM'
+            ORDER BY gr.grade DESC`;
+
+        const gradesResult = await pool.query(gradesQuery, [faculty_id, school_year, semester, quarter, grade_level, section_name, subject_name]);
+
+        if (gradesResult.rows.length === 0) {
+            return res.status(404).json({ message: 'No grades found for the specified criteria' });
+        }
+
+        const gradesData = gradesResult.rows;
+
+        const insights = {
+            averageGrade: 0,
+            highestGrade: { value: -Infinity, student: '' }, // Initialize to very low
+            lowestGrade: { value: Infinity, student: '' },   // Initialize to very high
+            weakStudents: [],
+            strongStudents: [],
+            recommendations: []
+        };
+
+        let totalGrades = 0;
+
+        gradesData.forEach(({ grade, full_name }) => {
+            totalGrades += grade;
+
+            if (grade < insights.lowestGrade.value) {
+                insights.lowestGrade.value = grade;
+                insights.lowestGrade.student = full_name;
+            }
+            if (grade > insights.highestGrade.value) {
+                insights.highestGrade.value = grade;
+                insights.highestGrade.student = full_name;
+            }
+
+            if (grade < 85) {
+                insights.weakStudents.push({ student: full_name, grade });
+            } else if (grade >= 90) {
+                insights.strongStudents.push({ student: full_name, grade });
+            }
+        });
+
+        insights.averageGrade = (totalGrades / gradesData.length).toFixed(2); // Calculate average
+
+        // Recommendations based on the performance of the class
+        if (insights.weakStudents.length > 0) {
+            insights.recommendations.push(
+                'Consider providing additional support to students struggling in the subject, such as tutoring or extra review sessions.'
+            );
+        }
+
+        if (insights.strongStudents.length > 0) {
+            insights.recommendations.push(
+                'Encourage high-performing students to help their peers, as peer tutoring can be beneficial for both parties.'
+ );
+        }
+
+        if (insights.averageGrade < 85) {
+            insights.recommendations.push(
+                'Consider reviewing the curriculum or teaching methods to address the overall performance of the class.'
+            );
+        }
+
+        // Additional recommendations pool
+        const additionalRecommendations = [
+            'Encourage students to form study groups to foster collaboration.',
+            'Incorporate more interactive learning methods to engage students.',
+            'Provide regular feedback to students to help them improve.',
+            'Utilize online resources and tools to enhance learning experiences.',
+            'Organize workshops or seminars on effective study techniques.',
+            'Implement regular assessments to monitor student progress.',
+            'Create a positive learning environment that encourages questions and discussions.',
+            'Offer incentives for improvement to motivate students.'
+        ];
+
+        // Randomly add up to 3 additional recommendations
+        const randomCount = Math.min(3, additionalRecommendations.length);
+        for (let i = 0; i < randomCount; i++) {
+            const randomIndex = Math.floor(Math.random() * additionalRecommendations.length);
+            insights.recommendations.push(additionalRecommendations.splice(randomIndex, 1)[0]);
+        }
+
+        res.json({ gradesData, insights });
+    } catch (err) {
+        console.error('Error fetching class insights:', err);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 // Student ------------------------------------------------------------------------------------------
 
 app.get('/schedule', authenticateToken, async (req, res) => {

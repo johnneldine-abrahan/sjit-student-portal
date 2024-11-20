@@ -17,8 +17,9 @@ const Faculty_Reports = () => {
   const [subject, setSubject] = useState("");
   const [topPerformingStudents, setTopPerformingStudents] = useState([]);
   const [lowPerformingStudents, setLowPerformingStudents] = useState([]);
-  const [gradeDistributionData, setGradeDistributionData] = useState([]); // New state for grade distribution
-  const [averageGrade, setAverageGrade] = useState(null); // New state for average grade
+  const [gradeDistributionData, setGradeDistributionData] = useState([]);
+  const [averageGrade, setAverageGrade] = useState(null);
+  const [insights, setInsights] = useState(null);
 
   const handleBackButtonClick = () => {
     navigate("/faculty/dashboard");
@@ -109,6 +110,34 @@ const Faculty_Reports = () => {
     }
   };
 
+  // Fetch insights based on selected filters
+  const fetchInsights = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+
+      const response = await axios.get('http://localhost:3000/class-insights', {
+        ...config,
+        params: {
+          school_year: selectedSchoolYear,
+          semester,
+          quarter,
+          grade_level: gradeLevel,
+          section_name: section,
+          subject_name: subject
+        }
+      });
+
+      setInsights(response.data.insights);
+    } catch (error) {
+      console.error('Error fetching insights:', error);
+    }
+  };
+
   // Fetch grade distribution based on selected filters
   const fetchGradeDistribution = async () => {
     try {
@@ -131,7 +160,7 @@ const Faculty_Reports = () => {
         }
       });
 
-      setGradeDistributionData(response.data); // Set the grade distribution data in state
+      setGradeDistributionData(response.data);
     } catch (error) {
       console.error('Error fetching grade distribution:', error);
     }
@@ -140,28 +169,35 @@ const Faculty_Reports = () => {
   useEffect(() => {
     setTopPerformingStudents([]);
     setLowPerformingStudents([]);
-    setGradeDistributionData([]); // Reset distribution data
-    setAverageGrade(null); // Reset average grade
+    setGradeDistributionData([]);
+    setAverageGrade(null);
+    setInsights(null);
+
     if (selectedSchoolYear && semester && gradeLevel && section && subject && quarter) {
       fetchTopPerformingStudents();
       fetchLowPerformingStudents();
-      fetchGradeDistribution(); // Fetch grade distribution data
+      fetchGradeDistribution();
+      fetchInsights();
     }
   }, [selectedSchoolYear, semester, gradeLevel, section, subject, quarter]);
 
   useEffect(() => {
-    const calculateAverageGrade = () => {
-      const allStudents = [...topPerformingStudents, ...lowPerformingStudents];
+    const calculateAverageGrade = async () => {
+      const allStudents = await fetchAllStudents(); // Fetch all students
       if (allStudents.length > 0) {
         const totalGrades = allStudents.reduce((acc, student) => acc + student.grade, 0);
         const average = totalGrades / allStudents.length;
-        setAverageGrade(average.toFixed(2)); // Set average grade with two decimal places
+        setAverageGrade(average.toFixed(2));
+      } else {
+        setAverageGrade(null); // Reset if no students are found
       }
     };
-
-    calculateAverageGrade();
-  }, [topPerformingStudents, lowPerformingStudents]);
-
+  
+    if (selectedSchoolYear && semester && gradeLevel && section && subject && quarter) {
+      calculateAverageGrade(); // Call the function to calculate average
+    }
+  }, [selectedSchoolYear, semester, gradeLevel, section, subject, quarter]);
+  
   return (
     <div>
       <header className="headerFaculty-report">
@@ -235,7 +271,7 @@ const Faculty_Reports = () => {
                   {subject}
                 </option>
               ))}
-            </select>
+ </select>
           </div>
         </div>
 
@@ -293,49 +329,36 @@ const Faculty_Reports = () => {
               </tbody>
             </table>
 
-            <h2>Average Grade</h2>
-            <div className="average-grade">
-              {averageGrade !== null ? (
-                <p>The average grade of the class is: <strong>{averageGrade}</strong></p>
-              ) : (
-                <p>No data available to calculate average.</p>
-              )}
-            </div>
+            <div className="grid-item-container-faculty">
+              <div className="grid-item-insights-faculty">
+                <h3 className="analytics">Insights and Recommendations</h3>
+                {insights ? (
+                  <div>
+                    <p className="left-align">The average grade of the class is <strong>{insights.averageGrade}</strong></p>
+                    <p className="left-align">The highest performing student in this class is <strong>{insights.highestGrade.student}</strong></p>
+                    <p className="left-align">The lowest performing student in this class is <strong>{insights.lowestGrade.student}</strong></p>
+                    
+                    <div className="recommendations">
+                    <h4>Recommendations:</h4>
+                    <ul>
+                      {insights.recommendations.map((recommendation, index) => (
+                        <li key={index}>{recommendation}</li>
+                      ))}
+                    </ul>
+                    </div>
+                  </div>
+                ) : (
+                  <p>No insights and recommendations available.</p>
+                )}
+              </div>
+            </div>  
           </div>
 
           <div className="right-side">
             <div className="grid-item">
               <h2>Grade Distribution</h2>
-              <GradeDistributionChart data={gradeDistributionData} /> {/* Pass the distribution data to the chart */}
+              <GradeDistributionChart data={gradeDistributionData} />
             </div>
-            <div className="grid-item-container-faculty">
-              <div className="grid-item-insights-faculty">
-                <h3 class="analytics">Insights</h3>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
-                </p>
-              </div>
-              <div className="grid-item-reco-faculty">
-                <h3 class="analytics">Recommendations</h3>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
-                </p>
-              </div>
-            </div>  
           </div>
         </div>
       </div>

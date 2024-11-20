@@ -13,6 +13,7 @@ const Student_Reports = () => {
   const [selectedGrade, setSelectedGrade] = useState(""); 
   const [schoolYears, setSchoolYears] = useState([]); 
   const [gradesData, setGradesData] = useState([]); 
+  const [insights, setInsights] = useState(null); // State to hold insights
 
   const handleBackButtonClick = () => {
     navigate("/student/dashboard"); 
@@ -33,7 +34,7 @@ const Student_Reports = () => {
     window.scrollTo(0, 0); 
   }, []); 
 
-  // Fetch grades data from the back-end
+  // Fetch grades data and insights from the back-end
   useEffect(() => {
     const fetchGrades = async () => {
       if (selectedGrade && semester && quarter && schoolYears.length > 0) {
@@ -41,7 +42,7 @@ const Student_Reports = () => {
         try {
           const token = localStorage.getItem("token"); 
           const response = await axios.get(
-            `http://localhost:3000/student/reports/distribution?school_year=${schoolYear}&semester=${semester}&quarter=${quarter}&grade_level=${selectedGrade}`,
+            `http://localhost:3000/grades-insights?school_year=${schoolYear}&semester=${semester}&quarter=${quarter}&grade_level=${selectedGrade}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`, 
@@ -51,19 +52,20 @@ const Student_Reports = () => {
 
           // Check if the response data is empty
           if (response.data) {
-            setGradesData(response.data.datasets[0].data.map((grade, index) => ({
-              subject_name: response.data.labels[index],
-              grade: grade
-            })));
+            setGradesData(response.data.gradesData);
+            setInsights(response.data.insights); // Set insights data
           } else {
             setGradesData([]); 
+            setInsights(null); // Reset insights if no data
           }
         } catch (error) {
           console.error("Error fetching grades:", error);
           setGradesData([]); 
+          setInsights(null); // Reset insights on error
         }
       } else {
         setGradesData([]); 
+        setInsights(null); // Reset insights if dependencies are not met
       }
     };
 
@@ -80,7 +82,7 @@ const Student_Reports = () => {
   const averageGrade = calculateAverageGrade(); 
 
   return (
-    < div>
+    <div>
       <header className="headerFaculty-report">
         <button
           className="back-button-faculty-report"
@@ -93,9 +95,9 @@ const Student_Reports = () => {
 
       <div className="faculty-report-main-content">
         <div className="header-with-dropdowns">
-          <h1>Student Reports </h1>
+          <h1>Student Reports</h1>
           <div className="dropdowns-container">
-            <select className ="report-dropdownstudent" key={0}>
+            <select className="report-dropdownstudent" key={0}>
               <option value="">School Year</option>
               {schoolYears.map((year, index) => (
                 <option key={index} value={year}>{year}</option>
@@ -107,7 +109,7 @@ const Student_Reports = () => {
               <option value="SECOND">SECOND</option>
             </select>
 
-            <select className="report-dropdownstudent" key={2} value={quarter} onChange={(e) => setQuarter(e.target.value)}>
+            <select className="report-dropdownstudent" key={2} value={quarter} onChange={(e) => setQuarter(e .target.value)}>
               <option value="">Quarter</option>
               {semester === "FIRST" && (
                 <>
@@ -132,7 +134,6 @@ const Student_Reports = () => {
               <option value="11">Grade 11</option>
               <option value="12">Grade 12</option>
             </select>
-
           </div>
         </div>
 
@@ -165,39 +166,45 @@ const Student_Reports = () => {
                 </tr>
               </tbody>
             </table>
+            <div className="grid-item-container-student">
+            <div className="grid-item-insights-student">
+  <h3 className="analytics">Insights and Recommendations</h3>
+  {insights ? (
+    <div>
+      <p className="left-align"><strong>Your general average is</strong> {insights.averageGrade}</p>
+      <p className="left-align"><strong>Your highest grade is</strong> {insights.highestGrade.value}, {insights.highestGrade.subject}</p>
+      <p className="left-align"><strong>Your lowest grade is</strong> {insights.lowestGrade.value}, {insights.lowestGrade.subject}</p>
+      
+      <div className="insights-2">
+      {insights.weakSubjects.length > 0 && (
+        <p className="left-align"><strong>Weak Subjects:</strong> {insights.weakSubjects.map(ws => `${ws.subject} (${ws.grade})`).join(', ')}</p>
+      )}
+      {insights.strongSubjects.length > 0 && (
+        <p className="left-align"><strong>Strong Subjects:</strong> {insights.strongSubjects.map(ss => `${ss.subject} (${ss.grade})`).join(', ')}</p>
+      )}
+      </div>
+
+      {insights.recommendations.length > 0 && (
+        <div className="recommendations">
+        <h4 className="center-align">Recommendations:</h4>
+        <ul>
+          {insights.recommendations.map((rec, index) => (
+            <li key={index}>{rec}</li>
+          ))}
+        </ul>
+      </div>
+      )}
+    </div>
+  ) : (
+    <p>No insights available</p>
+  )}
+</div>
+            </div>
           </div>
 
           <div className="right-side">
             <div className="grid-item">
               <StudentGradesChart gradesData={gradesData} />
-            </div>
-            <div className="grid-item-container-student">
-              <div className="grid-item-insights-student">
-                <h3 className="analytics">Insights</h3>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
-                </p>
-              </div>
-              <div className="grid-item-reco-student">
-                <h3 className="analytics">Recommendations</h3>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
-                </p>
-              </div>
             </div>
           </div>
         </div>

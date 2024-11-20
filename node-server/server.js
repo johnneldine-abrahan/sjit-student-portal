@@ -3092,6 +3092,93 @@ app.get('/COR', authenticateToken, async (req, res) => {
     }
 });
 
+app.get('/copy-of-grades', authenticateToken, async (req, res) => {
+    const userId = req.user.userId; // Ensure this matches how user ID is stored
+    const { modalSchoolYear, modalSemester, quarterState } = req.query;
+
+    if (!modalSchoolYear || !modalSemester || !quarterState) {
+        return res.status(400).send('School year, semester, and quarter state are required');
+    }
+
+    try {
+        // Log user ID for debugging
+        console.log('User  ID:', userId); // Use userId variable
+
+        // Fetch student_id and program from studenttbl using user_id
+        const studentResult = await pool.query(
+            'SELECT student_id, last_name, first_name, middle_name, program FROM studenttbl WHERE user_id = $1',
+            [userId] // Use the userId variable here
+        );
+
+        // Log the result of the student query
+        console.log('Student Query Result:', studentResult.rows);
+
+        if (studentResult.rows.length === 0) {
+            return res.status(404).send('Student not found');
+        }
+
+        const { student_id, last_name, first_name, middle_name, program } = studentResult.rows[0];
+
+        // Fetch grades based on school year, semester, and quarter
+        const query = `
+            SELECT 
+                sec.school_year,
+                CONCAT(s.last_name, ', ', s.first_name, ' ', s.middle_name) AS full_name,
+                sec.grade_level,
+                sec.semester,
+                g.grade,
+                g.quarter,
+                sec.faculty_name,
+                sub.subject_id,
+                sub.subject_name
+            FROM 
+                studenttbl s
+            JOIN 
+                enrollmenttbl e ON s.student_id = e.student_id
+            JOIN 
+                sectiontbl sec ON e.section_id = sec.section_id
+            JOIN 
+                teachingload_tbl tl ON sec.section_id = tl.section_id
+            JOIN 
+                gradestbl g ON tl.teachingload_id = g.teachingload_id 
+                           AND g.student_id = s.student_id
+            JOIN 
+                subjecttbl sub ON sec.subject_id = sub.subject_id
+            WHERE 
+                s.student_id = $1 
+                AND sec.school_year = $2 
+                AND sec.semester = $3 
+                AND g.quarter = $4
+        `;
+
+        const gradesResult = await pool.query(query, [student_id, modalSchoolYear, modalSemester, quarterState]);
+
+        if (gradesResult.rows.length === 0) {
+            return res.status(404).send('No grades found for the specified criteria');
+        }
+
+        // Map the results to include the required fields
+        const response = gradesResult.rows.map(row => ({
+            school_year: row.school_year,
+            full_name: row.full_name,
+            grade_level: row.grade_level,
+            semester: row.semester,
+            grade: row.grade,
+            quarter: row.quarter,
+            student_id: student_id,
+            program: program,
+            faculty_name: row.faculty_name,
+            subject_id: row.subject_id,
+            subject_name: row.subject_name
+        }));
+
+        res.json(response);
+    } catch (error) {
+        console.error('Error fetching grades:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Finance -----------------------------------------------------------------------------------------------
 
 app.get('/liab/school_years', (req, res) => {

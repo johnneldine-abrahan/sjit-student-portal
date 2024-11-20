@@ -1,51 +1,53 @@
-import React, { useEffect, useState } from "react"; 
-import { useNavigate } from "react-router-dom"; 
-import axios from "axios"; 
-import "./Student_Reports.css"; 
-import { IoMdArrowRoundBack } from "react-icons/io"; 
-import logo from "/src/assets/img/LandingPage/NavBar/logo.png"; 
-import StudentGradesChart from "/src/assets/pages/components/Students/Student_Reports/StudentGradesChart.jsx"; 
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import "./Student_Reports.css";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import logo from "/src/assets/img/LandingPage/NavBar/logo.png";
+import StudentGradesChart from "/src/assets/pages/components/Students/Student_Reports/StudentGradesChart.jsx";
 
 const Student_Reports = () => {
-  const navigate = useNavigate(); 
-  const [semester, setSemester] = useState(""); 
-  const [quarter, setQuarter] = useState(""); 
-  const [selectedGrade, setSelectedGrade] = useState(""); 
-  const [schoolYears, setSchoolYears] = useState([]); 
-  const [gradesData, setGradesData] = useState([]); 
+  const navigate = useNavigate();
+  const [semester, setSemester] = useState("");
+  const [quarter, setQuarter] = useState("");
+  const [selectedGrade, setSelectedGrade] = useState("");
+  const [schoolYears, setSchoolYears] = useState([]);
+  const [gradesData, setGradesData] = useState([]);
   const [insights, setInsights] = useState(null); // State to hold insights
 
   const handleBackButtonClick = () => {
-    navigate("/student/dashboard"); 
+    navigate("/student/dashboard");
   };
 
   // Fetch school years from the backend
   useEffect(() => {
     const fetchSchoolYears = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/school_years/dropdown');
-        setSchoolYears(response.data); 
+        const response = await axios.get(
+          "http://localhost:3000/school_years/dropdown"
+        );
+        setSchoolYears(response.data);
       } catch (error) {
-        console.error('Error fetching school years:', error);
+        console.error("Error fetching school years:", error);
       }
     };
 
-    fetchSchoolYears(); 
-    window.scrollTo(0, 0); 
-  }, []); 
+    fetchSchoolYears();
+    window.scrollTo(0, 0);
+  }, []);
 
   // Fetch grades data and insights from the back-end
   useEffect(() => {
     const fetchGrades = async () => {
       if (selectedGrade && semester && quarter && schoolYears.length > 0) {
-        const schoolYear = schoolYears[0]; 
+        const schoolYear = schoolYears[0];
         try {
-          const token = localStorage.getItem("token"); 
+          const token = localStorage.getItem("token");
           const response = await axios.get(
             `http://localhost:3000/grades-insights?school_year=${schoolYear}&semester=${semester}&quarter=${quarter}&grade_level=${selectedGrade}`,
             {
               headers: {
-                Authorization: `Bearer ${token}`, 
+                Authorization: `Bearer ${token}`,
               },
             }
           );
@@ -55,31 +57,34 @@ const Student_Reports = () => {
             setGradesData(response.data.gradesData);
             setInsights(response.data.insights); // Set insights data
           } else {
-            setGradesData([]); 
+            setGradesData([]);
             setInsights(null); // Reset insights if no data
           }
         } catch (error) {
           console.error("Error fetching grades:", error);
-          setGradesData([]); 
+          setGradesData([]);
           setInsights(null); // Reset insights on error
         }
       } else {
-        setGradesData([]); 
+        setGradesData([]);
         setInsights(null); // Reset insights if dependencies are not met
       }
     };
 
-    fetchGrades(); 
-  }, [selectedGrade, semester, quarter, schoolYears]); 
+    fetchGrades();
+  }, [selectedGrade, semester, quarter, schoolYears]);
 
   // Calculate average grade
   const calculateAverageGrade = () => {
     if (gradesData.length === 0) return 0;
-    const total = gradesData.reduce((sum, grade) => sum + Number(grade.grade), 0);
-    return (total / gradesData.length).toFixed(2); 
+    const total = gradesData.reduce(
+      (sum, grade) => sum + Number(grade.grade),
+      0
+    );
+    return (total / gradesData.length).toFixed(2);
   };
 
-  const averageGrade = calculateAverageGrade(); 
+  const averageGrade = calculateAverageGrade();
 
   return (
     <div>
@@ -100,16 +105,27 @@ const Student_Reports = () => {
             <select className="report-dropdownstudent" key={0}>
               <option value="">School Year</option>
               {schoolYears.map((year, index) => (
-                <option key={index} value={year}>{year}</option>
+                <option key={index} value={year}>
+                  {year}
+                </option>
               ))}
             </select>
-            <select className="report-dropdownstudent" key={1} onChange={(e) => setSemester(e.target.value)}>
+            <select
+              className="report-dropdownstudent"
+              key={1}
+              onChange={(e) => setSemester(e.target.value)}
+            >
               <option value="">Semester</option>
               <option value="FIRST">FIRST</option>
               <option value="SECOND">SECOND</option>
             </select>
 
-            <select className="report-dropdownstudent" key={2} value={quarter} onChange={(e) => setQuarter(e .target.value)}>
+            <select
+              className="report-dropdownstudent"
+              key={2}
+              value={quarter}
+              onChange={(e) => setQuarter(e.target.value)}
+            >
               <option value="">Quarter</option>
               {semester === "FIRST" && (
                 <>
@@ -125,7 +141,11 @@ const Student_Reports = () => {
               )}
             </select>
 
-            <select className="report-dropdownstudent" key={3} onChange={(e) => setSelectedGrade(e.target.value)}>
+            <select
+              className="report-dropdownstudent"
+              key={3}
+              onChange={(e) => setSelectedGrade(e.target.value)}
+            >
               <option value="">Grade Level</option>
               <option value="7">Grade 7</option>
               <option value="8">Grade 8</option>
@@ -157,48 +177,79 @@ const Student_Reports = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="2" style={{ textAlign: 'center' }}>No data available</td>
+                    <td colSpan="2" style={{ textAlign: "center" }}>
+                      No data available
+                    </td>
                   </tr>
                 )}
                 <tr>
-                  <td style={{ textAlign: 'right' }}><strong>General Average</strong></td>
-                  <td><strong>{averageGrade}</strong></td>
+                  <td style={{ textAlign: "right" }}>
+                    <strong>General Average</strong>
+                  </td>
+                  <td>
+                    <strong>{averageGrade}</strong>
+                  </td>
                 </tr>
               </tbody>
             </table>
             <div className="grid-item-container-student">
-            <div className="grid-item-insights-student">
-  <h3 className="analytics">Insights and Recommendations</h3>
-  {insights ? (
-    <div>
-      <p className="left-align"><strong>Your general average is</strong> {insights.averageGrade}</p>
-      <p className="left-align"><strong>Your highest grade is</strong> {insights.highestGrade.value}, {insights.highestGrade.subject}</p>
-      <p className="left-align"><strong>Your lowest grade is</strong> {insights.lowestGrade.value}, {insights.lowestGrade.subject}</p>
-      
-      <div className="insights-2">
-      {insights.weakSubjects.length > 0 && (
-        <p className="left-align"><strong>Weak Subjects:</strong> {insights.weakSubjects.map(ws => `${ws.subject} (${ws.grade})`).join(', ')}</p>
-      )}
-      {insights.strongSubjects.length > 0 && (
-        <p className="left-align"><strong>Strong Subjects:</strong> {insights.strongSubjects.map(ss => `${ss.subject} (${ss.grade})`).join(', ')}</p>
-      )}
-      </div>
+              <div className="grid-item-insights-student">
+                <h3 className="analytics">Insights and Recommendations</h3>
+                {insights ? (
+                  <div>
+                    <p className="left-align">
+                      Your general average is{" "}
+                      <strong>{insights.averageGrade}</strong>
+                    </p>
+                    <p className="left-align">
+                      Your highest grade is{" "}
+                      <strong>
+                        {insights.highestGrade.value} -{" "}
+                        {insights.highestGrade.subject}
+                      </strong>
+                    </p>
+                    <p className="left-align">
+                      Your lowest grade is{" "}
+                      <strong>
+                        {insights.lowestGrade.value} -{" "}
+                        {insights.lowestGrade.subject}
+                      </strong>
+                    </p>
 
-      {insights.recommendations.length > 0 && (
-        <div className="recommendations">
-        <h4 className="center-align">Recommendations:</h4>
-        <ul>
-          {insights.recommendations.map((rec, index) => (
-            <li key={index}>{rec}</li>
-          ))}
-        </ul>
-      </div>
-      )}
-    </div>
-  ) : (
-    <p>No insights available</p>
-  )}
-</div>
+                    <div className="insights-2">
+                      {insights.weakSubjects.length > 0 && (
+                        <p className="left-align">
+                          <strong>Weak Subjects:</strong>{" "}
+                          {insights.weakSubjects
+                            .map((ws) => `${ws.subject} (${ws.grade})`)
+                            .join(", ")}
+                        </p>
+                      )}
+                      {insights.strongSubjects.length > 0 && (
+                        <p className="left-align">
+                          <strong>Strong Subjects:</strong>{" "}
+                          {insights.strongSubjects
+                            .map((ss) => `${ss.subject} (${ss.grade})`)
+                            .join(", ")}
+                        </p>
+                      )}
+                    </div>
+
+                    {insights.recommendations.length > 0 && (
+                      <div className="recommendations">
+                        <h4 className="center-align">Recommendations:</h4>
+                        <ul>
+                          {insights.recommendations.map((rec, index) => (
+                            <li key={index}>{rec}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <p>No insights available</p>
+                )}
+              </div>
             </div>
           </div>
 

@@ -1,13 +1,55 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IoMdPrint } from "react-icons/io";
 import "./Certificate_of_Registration.css";
 
-export default function CertificateOfRegistration() {
+export default function CertificateOfRegistration({ schoolYear, semester }) {
+  const [enrollmentData, setEnrollmentData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchEnrollmentData = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/COR?modalSchoolYear=${schoolYear}&modalSemester=${semester}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`, // Assuming you're using local storage for the token
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch enrollment data');
+        }
+
+        const data = await response.json();
+        setEnrollmentData(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEnrollmentData();
+  }, [schoolYear, semester]);
+
   const handlePrint = () => {
     window.print();
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!enrollmentData || enrollmentData.length === 0) {
+    return <div>No enrollment data available.</div>;
+  }
 
   return (
     <div className="certificate-container">
@@ -21,26 +63,25 @@ export default function CertificateOfRegistration() {
           </div>
         </div>
         <div className="college-info">
-          <p className="college-name">Strand</p>
-          <p>FIRST, 2024-2025</p>
+          <p className="college-name">{enrollmentData[0].strand}</p>
+          <p>{semester}, {schoolYear}</p>
           <p className="form-title">REGISTRATION FORM</p>
         </div>
         <div className="student-info">
           <div>
             <p>
-              <span className="label">SR Code:</span> 21-05298
+              <span className="label">Student ID:</span> {enrollmentData[0].student_id}
             </p>
             <p>
-              <span className="label">Name:</span> SANCHEZ, KIM WILLIAM R.
+              <span className="label">Name:</span> {enrollmentData[0].full_name}
             </p>
           </div>
           <div>
             <p>
-              <span className="label">Sex:</span> MALE
+              <span className="label">Sex:</span> {enrollmentData[0].sex}
             </p>
             <p>
-              <span className="label">Program:</span> BS Information
-              Technology-BA FOURTH
+              <span className="label">Grade Level:</span> Grade {enrollmentData[0].grade_level}
             </p>
           </div>
         </div>
@@ -54,80 +95,31 @@ export default function CertificateOfRegistration() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>CS 423</td>
-              <td>Social Issues and Professional Practice</td>
-              <td>3</td>
-              <td>IT-BA-4104</td>
-            </tr>
-            <tr>
-              <td>IT 411</td>
-              <td>Capstone Project 2</td>
-              <td>3</td>
-              <td>IT-BA-4104</td>
-            </tr>
-            <tr>
-              <td>BAT 405</td>
-              <td>Analytics Application</td>
-              <td>3</td>
-              <td>IT-BA-4104</td>
-            </tr>
-            <tr>
-              <td>ELEC 415</td>
-              <td>Technopreneurship</td>
-              <td>3</td>
-              <td>IT-BA-4104</td>
-            </tr>
-            <tr>
-              <td>IT 413</td>
-              <td>Advanced Information Assurance and Security</td>
-              <td>3</td>
-              <td>IT-BA-4104</td>
-            </tr>
-            <tr>
-              <td>IT 414</td>
-              <td>Systems Quality Assurance</td>
-              <td>3</td>
-              <td>IT-BA-4104</td>
-            </tr>
-            <tr>
-              <td>IT 412</td>
-              <td>Platform Technologies</td>
-              <td>3</td>
-              <td>IT-BA-4104</td>
-            </tr>
+            {enrollmentData.map((course, index) => (
+              <tr key={index}>
+                <td>{course.subject_id}</td>
+                <td>{course.subject_name}</td>
+                <td>1</td> {/* Assuming you have a units field */}
+                <td>{course.section_name}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
         <div className="additional-info">
           <div className="scholarship">
             <h3>Scholarship:</h3>
-            <p>Higher Education Support Program : Free Tuition 2024</p>
+            <p>Higher Education Support Program : ?</p>
           </div>
           <div className="assessment">
             <h3>Assessment:</h3>
-            <p>Tuition Fee (21.0 units): 5,250.00 </p>
-            <p>Library Fee: 622.00</p>
-            <p>Registration Fee: 260.00</p>
-            <p>Athletic Fee: 380.00</p>
-            <p>Publication Fee: 260.00</p>
-            <p>Medical / Dental Fee: 380.00</p>
-            <p>Guidance Fee: 260.00</p>
-            <p>Laboratory Fee: 71.00</p>
-            <p>Internet Fee: 300.00</p>
-            <p>Insurance: 50.00</p>
-            <p>Security: 173.00</p>
-            <p>NSTP / CWTS: 1,806.00</p>
-            <p>SCUAA: 130.00</p>
-            <p>TOTAL: 10,050.00</p>
-            <p>DISCOUNT: (10,050.00)</p>
-            <p>TOTAL (PHP): 0.00</p>
+            {/* Add your assessment details here */}
           </div>
         </div>
       </main>
       <footer className="certificate-footer">
         <div className="enrollment-info">
           <p className="enrolled">ENROLLED</p>
-          <p>Date: 08-05-2024</p>
+          <p>Date: {new Date().toLocaleDateString()}</ p>
         </div>
         <button onClick={handlePrint} className="print-button">
           <IoMdPrint className="print-icon" />

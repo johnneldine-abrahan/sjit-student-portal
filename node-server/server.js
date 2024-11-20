@@ -3033,6 +3033,65 @@ app.get('/student-liabilities-paid', authenticateToken, async (req, res) => {
     }
 });
 
+app.get('/COR', authenticateToken, async (req, res) => {
+    const { modalSchoolYear, modalSemester } = req.query;
+    const userId = req.user.userId; // Ensure this matches your JWT payload
+
+    console.log("User  ID:", userId); // Log the user ID for debugging
+
+    try {
+        // Fetch student_id based on user_id
+        const studentResult = await pool.query(
+            'SELECT student_id FROM studenttbl WHERE user_id = $1',
+            [userId]
+        );
+
+        console.log("Student Query Result:", studentResult.rows); // Log the result of the query
+
+        // Check if the student exists
+        if (studentResult.rows.length === 0) {
+            return res.status(404).send('Student not found');
+        }
+
+        const student_id = studentResult.rows[0].student_id;
+
+        // Now proceed to fetch enrollment details
+        const enrollmentQuery = `
+            SELECT
+                CONCAT(s.last_name, ', ', s.first_name, ' ', s.middle_name) AS full_name,
+                s.student_id,
+                s.sex,
+                s.grade_level,
+                sec.strand,
+                sec.subject_id,
+                sub.subject_name,
+                sec.section_name,
+                sec.school_year,
+                sec.semester,
+                e.enrollment_date
+            FROM
+                studenttbl s
+            JOIN
+                enrollmenttbl e ON s.student_id = e.student_id
+            JOIN
+                sectiontbl sec ON e.section_id = sec.section_id
+            JOIN
+                subjecttbl sub ON sec.subject_id = sub.subject_id
+            WHERE
+                s.student_id = $1 AND sec.school_year = $2 AND sec.semester = $3
+        `;
+
+        // Execute the query to fetch enrollment details
+        const enrollmentResult = await pool.query(enrollmentQuery, [student_id, modalSchoolYear, modalSemester]);
+
+        // Return the enrollment details
+        res.json(enrollmentResult.rows); // Access the rows property directly
+    } catch (error) {
+        console.error('Error fetching enrollment details:', error); // Log any errors
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
 // Finance -----------------------------------------------------------------------------------------------
 
 app.get('/liab/school_years', (req, res) => {

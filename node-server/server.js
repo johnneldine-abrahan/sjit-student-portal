@@ -2636,6 +2636,142 @@ app.get('/student/reports/distribution', authenticateToken, async (req, res) => 
     }
 });
 
+app.get('/grades-insights', authenticateToken, async (req, res) => {
+    const { school_year, semester, quarter, grade_level } = req.query;
+    const user_id = req.user.userId;
+
+    if (!school_year || !semester || !quarter || !grade_level) {
+        return res.status(400).json({ message: 'school_year, semester, quarter, and grade_level are required.' });
+    }
+
+    try {
+        const studentQuery = `
+            SELECT student_id 
+            FROM studenttbl 
+            WHERE user_id = $1
+        `;
+        const studentResult = await pool.query(studentQuery, [user_id]);
+
+        if (studentResult.rows.length === 0) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+
+        const student_id = studentResult.rows[0].student_id;
+
+        const gradesQuery = `
+            SELECT 
+                g.grade,
+                sub.subject_name
+            FROM 
+                studenttbl s
+            JOIN 
+                enrollmenttbl e ON s.student_id = e.student_id
+            JOIN 
+                sectiontbl sec ON e.section_id = sec.section_id
+            JOIN 
+                teachingload_tbl tl ON sec.section_id = tl.section_id
+            JOIN 
+                gradestbl g ON tl.teachingload_id = g.teachingload_id 
+                           AND g.student_id = s.student_id
+            JOIN 
+                subjecttbl sub ON sec.subject_id = sub.subject_id
+            WHERE 
+                s.student_id = $1 
+                AND sec.school_year = $2 
+                AND sec.semester = $3 
+                AND g.quarter = $4
+                AND sec.grade_level = $5
+        `;
+
+        const gradesResult = await pool.query(gradesQuery, [student_id, school_year, semester, quarter, grade_level]);
+
+        if (gradesResult.rows.length === 0) {
+            return res.status(404).json({ message: 'No grades found for the specified criteria' });
+        }
+
+        const gradesData = gradesResult.rows;
+
+        const insights = {
+            averageGrade: 0,
+            highestGrade: { value: 0, subject: '' },
+            lowestGrade: { value: 100, subject: '' },
+            weakSubjects: [],
+            strongSubjects: [],
+            recommendations: []
+        };
+
+        let totalGrades = 0;
+
+        gradesData.forEach(({ grade, subject_name }) => {
+            totalGrades += grade;
+
+            if (grade < insights.lowestGrade.value) {
+                insights.lowestGrade.value = grade;
+                insights.lowestGrade.subject = subject_name;
+            }
+            if (grade > insights.highestGrade.value) {
+                insights.highestGrade.value = grade;
+                insights.highestGrade.subject = subject_name;
+            }
+
+            if (grade < 85) {
+                insights.weakSubjects.push({ subject: subject_name, grade });
+            } else if (grade >= 90) {
+                insights.strongSubjects.push({ subject: subject_name, grade });
+            }
+        });
+
+        insights.averageGrade = (totalGrades / gradesData.length).toFixed(2);
+
+        // Core recommendations based on weak and strong subjects
+        if (insights.weakSubjects.length > 0) {
+            insights.recommendations.push(
+                'Focus on improving weak subjects like ' +
+                    insights.weakSubjects.map(ws => ws.subject).join(', ') +
+                    '. Consider seeking extra help or spending more time on these topics.'
+            );
+        }
+
+        if (insights.strongSubjects.length > 0) {
+            insights.recommendations.push(
+                'Maintain your performance in strong subjects like ' +
+                    insights.strongSubjects.map(ss => ss.subject).join(', ') +
+                    ' by continuing your good study habits.'
+            );
+        }
+
+        if (insights.averageGrade < 85) {
+            insights.recommendations.push(
+                'Consider adopting a consistent study schedule and reviewing materials regularly to improve your overall performance.'
+            );
+        }
+
+        // Additional recommendations pool
+        const additionalRecommendations = [
+            'Participate in study groups to improve your understanding of challenging topics.',
+            'Set specific, achievable goals for each subject to track your progress.',
+            'Take regular breaks while studying to improve focus and retention.',
+            'Seek feedback from teachers to identify areas for improvement.',
+            'Use online resources like video tutorials and practice quizzes to reinforce your learning.',
+            'Ensure you’re getting enough sleep to enhance your cognitive performance.',
+            'Organize your study materials and notes to make reviewing easier.',
+            'Practice time management by creating a weekly study schedule.',
+        ];
+
+        // Randomly add up to 3 additional recommendations
+        const randomCount = Math.min(3, additionalRecommendations.length);
+        for (let i = 0; i < randomCount; i++) {
+            const randomIndex = Math.floor(Math.random() * additionalRecommendations.length);
+            insights.recommendations.push(additionalRecommendations.splice(randomIndex, 1)[0]);
+        }
+
+        res.json({ gradesData, insights });
+    } catch (err) {
+        console.error('Error fetching insights:', err);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 app.get('/announcements/students', (req, res) => {
     const query = `
         SELECT announcement_id, announce_to, announcement_type,

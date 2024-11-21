@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const { Pool } = require('pg');
@@ -10,11 +11,11 @@ const port = 3000;
 const SECRET_KEY = 'your-secret-key'; // Change this to a secure key
 
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'SJIT_db',
-    password: 'password',
-    port: 5432,
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
 });
 
 app.use(cors());

@@ -176,6 +176,35 @@ app.get('/profile', authenticateToken, (req, res) => {
     });
 });
 
+// For card ----------------------------------------------------------------------------------
+
+app.get('/count-enrolled-students', async (req, res) => {
+    try {
+        const query = `SELECT COUNT(*) AS enrolled_count FROM studenttbl WHERE student_status = 'Enrolled'`;
+        const result = await pool.query(query);
+        const count = result.rows[0].enrolled_count;
+
+        res.json({ enrolledCount: count });
+    } catch (error) {
+        console.error('Error fetching enrolled students count:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.get('/count-active-faculty', async (req, res) => {
+    try {
+        const query = `SELECT COUNT(*) AS active_count FROM facultytbl WHERE faculty_status = 'Active'`;
+        const result = await pool.query(query);
+        const count = result.rows[0].active_count;
+
+        res.json({ activeFacultyCount: count });
+    } catch (error) {
+        console.error('Error fetching active faculty count:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 // REGISTER STUDENT FUNCTIONS --------------------------------------------------------------
 
 app.get('/students', async (req, res) => {

@@ -23,7 +23,7 @@ const Admin_Card = () => {
   useEffect(() => {
     const fetchEnrolledCount = async () => {
       try {
-        const response = await fetch('http://localhost:3000/count-enrolled-students');
+        const response = await fetch('https://san-juan-institute-of-technology-backend.onrender.com/count-enrolled-students');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -36,7 +36,7 @@ const Admin_Card = () => {
 
     const fetchActiveFacultyCount = async () => {
       try {
-        const response = await fetch('http://localhost:3000/count-active-faculty');
+        const response = await fetch('https://san-juan-institute-of-technology-backend.onrender.com/count-active-faculty');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

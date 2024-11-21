@@ -21,7 +21,7 @@ const Students_Sidebar = () => {
             <h2>SJIT</h2>
         </div>
         <div className='menu-list'>
-            <a href='https://san-juan-institute-of-technology.onrender.com/admin/dashboard' className='item'><BiHome size={18}/>Dashboard</a>
+            <a href='/admin/dashboard' className='item'><BiHome size={18}/>Dashboard</a>
             <a href='/admin/student-list' className='item active'><PiStudentBold size={18}/>Students</a>
             <a href='/admin/enroll-students' className='item'><GiArchiveRegister size={18}/>Enroll Student</a>
             <a href='/admin/confirm-enrollment' className='item'><IoCheckmarkDoneSharp size={18}/>Confirm Enrollment</a>

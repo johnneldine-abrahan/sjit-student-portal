@@ -18,8 +18,8 @@ const Admin_Sidebar = () => {
             <h2>SJIT</h2>
         </div>
         <div className='menu-list'>
-            <a href='https://san-juan-institute-of-technology.onrender.com/admin/dashboard' className='item active'><BiHome size={18}/>Dashboard</a>
-            <a href='https://san-juan-institute-of-technology.onrender.com/admin/student-list' className='item'><PiStudentBold size={18}/>Students</a>
+            <a href='/admin/dashboard' className='item active'><BiHome size={18}/>Dashboard</a>
+            <a href='/admin/student-list' className='item'><PiStudentBold size={18}/>Students</a>
             <a href='/admin/enroll-students' className='item'><GiArchiveRegister size={18}/>Enroll Student</a>
             <a href='/admin/confirm-enrollment' className='item'><IoCheckmarkDoneSharp size={18}/>Confirm Enrollment</a>
             <a href='/admin/faculty-members' className='item'><FaChalkboardTeacher size={18}/>Faculty Members</a>

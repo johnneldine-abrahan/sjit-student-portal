@@ -33,6 +33,7 @@ const Student_Reports = () => {
     };
 
     fetchSchoolYears();
+    document.title = "Student - Reports";
     window.scrollTo(0, 0);
   }, []);
 

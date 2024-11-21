@@ -530,6 +530,65 @@ app.put('/students/update-type', async (req, res) => {
     }
 });
 
+app.put("/promote-students", async (req, res) => {
+    const { studentIds } = req.body; // Array of student IDs
+
+    if (!studentIds || !Array.isArray(studentIds)) {
+      return res.status(400).json({ error: "Invalid student IDs" });
+    }
+
+    const client = await pool.connect();
+
+    try {
+      await client.query("BEGIN");
+
+      for (const studentId of studentIds) {
+        // Fetch current student details
+        const result = await client.query(
+          "SELECT grade_level FROM studenttbl WHERE student_id = $1",
+          [studentId]
+        );
+
+        if (result.rows.length === 0) {
+          return res
+            .status(404)
+            .json({ error: `Student with ID ${studentId} not found` });
+        }
+
+        const { grade_level } = result.rows[0];
+
+        let newGradeLevel = grade_level;
+        let newStatus = "Not Enrolled";
+        let newType = null; // Default is not updating student_type
+
+        if (grade_level === 12) {
+          newStatus = "Graduated";
+          newType = "Archived"; // Update student_type for grade 12
+        } else {
+          newGradeLevel = grade_level + 1;
+        }
+
+        // Update the student record
+        await client.query(
+          `UPDATE studenttbl
+           SET grade_level = $1,
+               student_status = $2,
+               student_type = COALESCE($3, student_type)
+           WHERE student_id = $4`,
+          [newGradeLevel, newStatus, newType, studentId]
+        );
+      }
+
+      await client.query("COMMIT");
+      res.json({ message: "Student records updated successfully" });
+    } catch (err) {
+      await client.query("ROLLBACK");
+      console.error(err);
+      res.status(500).json({ error: "An error occurred while updating students" });
+    } finally {
+      client.release();
+    }
+  });
 
 app.delete('/deleteStudent', async (req, res) => {
     const { studentIds } = req.body; // Array of student_ids to delete

@@ -285,32 +285,37 @@ const Admin_Students_ContentHeader = ({
   };
 
   const handlePromotion = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/promoteStudents", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          studentIds: selectedStudentIds,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        alert(`Failed to promote student: ${errorText || "Unknown error"}`);
+    if (selectedStudentIds.length === 0) {
+        alert("Please select at least one student to promote.");
         return;
-      }
+    }
 
-      alert("Student successfully promoted!");
+    try {
+        const response = await fetch("http://localhost:3000/promote-students", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                studentIds: selectedStudentIds,
+            }),
+        });
 
-      // Fetch updated student records
-      const updatedResponse = await fetch("http://localhost:3000/students");
-      const updatedRecords = await updatedResponse.json();
-      updateStudentRecords(updatedRecords); // Update parent state
+        if (!response.ok) {
+            const errorText = await response.text();
+            alert(`Failed to promote student: ${errorText || "Unknown error"}`);
+            return;
+        }
 
-      // Close the popup
-      handleClose();
+        alert("Student(s) successfully promoted!");
+
+        // Fetch updated student records
+        const updatedResponse = await fetch("http://localhost:3000/students");
+        const updatedRecords = await updatedResponse.json();
+        updateStudentRecords(updatedRecords); // Update parent state
+
+        // Close the pop-up
+        handleClose();
     } catch (error) {
-      alert("Network error: Failed to reach the server.");
+        alert("Network error: Failed to reach the server.");
     }
   };
 
@@ -381,7 +386,6 @@ const Admin_Students_ContentHeader = ({
           <BiSearch className="search-icon" />
         </div>
         <div className="buttons-header">
-
           <div className="buttons-act">
             <RiAddLargeFill
               className="buttons-icon"
@@ -447,7 +451,10 @@ const Admin_Students_ContentHeader = ({
                   </select>
 
                   <label htmlFor="strand">Strand:</label>
-                  <select id="strand" disabled={['7', '8', '9', '10'].includes(selectedGrade)}>
+                  <select
+                    id="strand"
+                    disabled={["7", "8", "9", "10"].includes(selectedGrade)}
+                  >
                     <option value="">Select Strand</option>
                     <option value="stem">
                       Science, Technology, Engineering and Mathematics (STEM)
@@ -458,8 +465,12 @@ const Admin_Students_ContentHeader = ({
                     <option value="humss">
                       Humanities and Social Sciences (HUMSS)
                     </option>
-                    <option value="tvl-ia">TVL - Industrial Arts (TVL-IA)</option>
-                    <option value="tvl-he">TVL - Home Economics (TVL-HE)</option>
+                    <option value="tvl-ia">
+                      TVL - Industrial Arts (TVL-IA)
+                    </option>
+                    <option value="tvl-he">
+                      TVL - Home Economics (TVL-HE)
+                    </option>
                     <option value="tvl-ict">
                       TVL - Internet Communications Technology (TVL-ICT)
                     </option>
@@ -473,7 +484,7 @@ const Admin_Students_ContentHeader = ({
                         type="checkbox"
                         name="enrollment"
                         value="enrolled"
-                        checked={enrollmentStatus === 'enrolled'}
+                        checked={enrollmentStatus === "enrolled"}
                         onChange={handleEnrollmentChange}
                       />
                       Enrolled Students
@@ -483,7 +494,7 @@ const Admin_Students_ContentHeader = ({
                         type="checkbox"
                         name="enrollment"
                         value="not-enrolled"
-                        checked={enrollmentStatus === 'not-enrolled'}
+                        checked={enrollmentStatus === "not-enrolled"}
                         onChange={handleEnrollmentChange}
                       />
                       Not Enrolled Students
@@ -498,7 +509,7 @@ const Admin_Students_ContentHeader = ({
                         type="checkbox"
                         name="student-type"
                         value="old"
-                        checked={studentType === 'old'}
+                        checked={studentType === "old"}
                         onChange={handleStudentTypeChange}
                       />
                       Old Students
@@ -508,7 +519,7 @@ const Admin_Students_ContentHeader = ({
                         type="checkbox"
                         name="student-type"
                         value="new"
-                        checked={studentType === 'new'}
+                        checked={studentType === "new"}
                         onChange={handleStudentTypeChange}
                       />
                       New Students
@@ -615,7 +626,8 @@ const Admin_Students_ContentHeader = ({
                               <>
                                 <option value=""></option>
                                 <option value="Science, Technology, Engineering and Mathematics (STEM)">
-                                  Science, Technology, Engineering and Mathematics (STEM)
+                                  Science, Technology, Engineering and
+                                  Mathematics (STEM)
                                 </option>
                                 <option value="Accountancy , Business and Management (ABM)">
                                   Accountancy, Business and Management (ABM)
@@ -1174,18 +1186,14 @@ const Admin_Students_ContentHeader = ({
                   {selectedStudentIds.length > 0 ? (
                     <>
                       <p>
-                        Are you sure you want to promote the selected student?
-                        This action cannot be undone.
+                        Are you sure you want to promote the selected
+                        student(s)? This action cannot be undone.
                       </p>
                       <div className="buttons">
                         <button
                           type="button"
                           className="btn-box"
-                          onClick={() => {
-                            handlePromotion();
-                            handleClose();
-                            window.location.reload();
-                          }}
+                          onClick={handlePromotion} // Call the promotion function
                         >
                           Promote
                         </button>

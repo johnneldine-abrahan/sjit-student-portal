@@ -11,11 +11,10 @@ const port = 3000;
 const SECRET_KEY = 'your-secret-key'; // Change this to a secure key
 
 const pool = new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT,
+    connectionString: process.env.DATABASE_URL || `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+    ssl: {
+        rejectUnauthorized: false, // Required for Render-hosted databases
+    },
 });
 
 app.use(cors());

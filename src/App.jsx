@@ -31,7 +31,7 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" index element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="https://san-juan-institute-of-technology.onrender.com/login" element={<Login />} />
         <Route path="/admin/dashboard" element={<Admin_Dashboard />} />
         <Route path="/admin/student-list" element={<Admin_Students />} />
         <Route path="/admin/enroll-students" element={<Admin_Enroll_Students />} />

@@ -189,7 +189,7 @@ const Admin_Students_ContentHeader = ({
     });
 
     try {
-      const response = await fetch("https://san-juan-institute-of-technology.onrender.com/registerStudent", {
+      const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/registerStudent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(adjustedData),

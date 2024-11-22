@@ -25,7 +25,7 @@ const TagLiabilities_ContentHeader = ({ refreshData }) => {
   useEffect(() => {
     const fetchSchoolYears = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/liab/school_years');
+        const response = await axios.get('https://san-juan-institute-of-technology-backend.onrender.com/liab/school_years');
         setSchoolYears(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error('Error fetching school years:', error);
@@ -63,7 +63,7 @@ const TagLiabilities_ContentHeader = ({ refreshData }) => {
     const studentID = formData.studentIDInput.trim();
     if (studentID) {
       try {
-        const response = await axios.get(`http://localhost:3000/search-student/${studentID}`);
+        const response = await axios.get(`https://san-juan-institute-of-technology-backend.onrender.com/search-student/${studentID}`);
         setFormData({ ...formData, studentName: response.data.full_name });
       } catch (error) {
         console.error('Error fetching student:', error);
@@ -75,7 +75,7 @@ const TagLiabilities_ContentHeader = ({ refreshData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/add-liability', {
+      const response = await axios.post('https://san-juan-institute-of-technology-backend.onrender.com/add-liability', {
         liability_description: formData.description,
         student_id: formData.studentIDInput,
         student_name: formData.studentName,

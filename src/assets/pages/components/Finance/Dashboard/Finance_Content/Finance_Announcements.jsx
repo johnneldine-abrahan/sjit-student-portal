@@ -56,7 +56,7 @@ const Popup_Add = ({ title, onClose, refreshAnnouncements }) => {
   const addAnnouncement = async (announcementData) => {
     const token = localStorage.getItem("token");
 
-    const response = await fetch("http://localhost:3000/addAnnouncement", {
+    const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/addAnnouncement", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -192,7 +192,7 @@ const Popup_Edit = ({ title, onClose, announcement, refreshAnnouncements }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/updateAnnouncement/${id}`,
+        `https://san-juan-institute-of-technology-backend.onrender.com/updateAnnouncement/${id}`,
         {
           method: "PUT",
           headers: {
@@ -311,7 +311,7 @@ const Popup_Delete = ({
 
     try {
       const response = await fetch(
-        "http://localhost:3000/deleteAnnouncements",
+        "https://san-juan-institute-of-technology-backend.onrender.com/deleteAnnouncements",
         {
           method: "DELETE",
           headers: {
@@ -393,7 +393,7 @@ const Finance_Announcements = () => {
 
   const fetchAnnouncements = async () => {
     const token = localStorage.getItem("token");
-    const response = await fetch("http://localhost:3000/announcements", {
+    const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/announcements", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,

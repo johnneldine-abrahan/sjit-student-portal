@@ -53,7 +53,7 @@ const TagLiabilities_Content = () => {
 
   const fetchLiabilities = async () => {
     try {
-      const response = await fetch("http://localhost:3000/get-liability");
+      const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/get-liability");
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -66,7 +66,7 @@ const TagLiabilities_Content = () => {
 
   const fetchSchoolYears = async () => {
     try {
-      const response = await fetch("http://localhost:3000/get-school-years");
+      const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/get-school-years");
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -89,7 +89,7 @@ const TagLiabilities_Content = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        `http://localhost:3000/update-liability/${popup.record.liability_id}`,
+        `https://san-juan-institute-of-technology-backend.onrender.com/update-liability/${popup.record.liability_id}`,
         {
           method: "PUT",
           headers: {
@@ -116,7 +116,7 @@ const TagLiabilities_Content = () => {
   const handleEditLiabDescription = async (record) => {
     try {
         const response = await fetch(
-            `http://localhost:3000/update-liability-description/${record.liability_id}`,
+            `https://san-juan-institute-of-technology-backend.onrender.com/update-liability-description/${record.liability_id}`,
             {
                 method: "PUT",
                 headers: {
@@ -144,7 +144,7 @@ const TagLiabilities_Content = () => {
 
   const handleConfirmStatusUpdate = async (record) => {
     try {
-      const response = await fetch(`http://localhost:3000/update-liability-status/${record.liability_id}`, {
+      const response = await fetch(`https://san-juan-institute-of-technology-backend.onrender.com/update-liability-status/${record.liability_id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -167,7 +167,7 @@ const TagLiabilities_Content = () => {
 
   const handleDelete = async (record) => {
     try {
-      const response = await fetch(`http://localhost:3000/delete-liability/${record.liability_id}`, {
+      const response = await fetch(`https://san-juan-institute-of-technology-backend.onrender.com/delete-liability/${record.liability_id}`, {
         method: "DELETE",
       });
 

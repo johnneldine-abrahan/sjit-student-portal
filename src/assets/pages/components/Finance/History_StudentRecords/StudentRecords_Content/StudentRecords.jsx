@@ -17,7 +17,7 @@ const StudentRecords = () => {
     useEffect(() => {
         const fetchStudents = async () => {
             try {
-                const response = await axios.get("http://localhost:3000/students-finance-list");
+                const response = await axios.get("https://san-juan-institute-of-technology-backend.onrender.com/students-finance-list");
                 console.log("API Response:", response); // Log the entire response object
 
                 // Adjust this based on the actual structure of the response
@@ -42,7 +42,7 @@ const StudentRecords = () => {
     const handleViewPopup = async (record) => {
         setViewPopup({ show: true, record: record });
         try {
-            const response = await axios.get(`http://localhost:3000/liabilities/${record.student_id}`);
+            const response = await axios.get(`https://san-juan-institute-of-technology-backend.onrender.com/liabilities/${record.student_id}`);
             setLiabilities(response.data); // Assuming the response is an array of liabilities
         } catch (err) {
             setError(err.message);

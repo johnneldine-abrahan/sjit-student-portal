@@ -18,7 +18,7 @@ const ConfirmEnrollment_ContentList = () => {
   const handleDone = async () => {
     try {
       const studentId = viewPopup.record.student_id; // Get the student ID
-      const response = await fetch(`http://localhost:3000/students/${studentId}/enroll`, {
+      const response = await fetch(`https://san-juan-institute-of-technology-backend.onrender.com/students/${studentId}/enroll`, {
         method: 'PUT', // HTTP method for updating
         headers: {
           'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ const ConfirmEnrollment_ContentList = () => {
   // Fetch student data from the back-end API
   const fetchStudents = async () => {
     try {
-      const response = await fetch('http://localhost:3000/students/paid'); // Ensure the API URL is correct
+      const response = await fetch('https://san-juan-institute-of-technology-backend.onrender.com/students/paid'); // Ensure the API URL is correct
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }

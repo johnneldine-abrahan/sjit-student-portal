@@ -22,7 +22,7 @@ const ManageAccounts_Content = () => {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const response = await fetch("http://localhost:3000/getAccounts");
+        const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/getAccounts");
         const data = await response.json();
         setAccountsRecords(data);
       } catch (error) {
@@ -88,7 +88,7 @@ const ManageAccounts_Content = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/deleteAccounts", {
+      const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/deleteAccounts", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -163,7 +163,7 @@ const ManageAccounts_Content = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/update-account/${popup.record.user_id}`,
+        `https://san-juan-institute-of-technology-backend.onrender.com/update-account/${popup.record.user_id}`,
         {
           method: "PUT",
           headers: {

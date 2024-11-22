@@ -70,7 +70,7 @@ const Students_Content = () => {
     });
     if (response.ok) {
       alert("Selected students deleted successfully.");
-      const updatedResponse = await fetch('https://san-juan-institute-of-technology.onrender.com/students');
+      const updatedResponse = await fetch('https://san-juan-institute-of-technology-backend.onrender.com/students');
       const updatedRecords = await updatedResponse.json();
       setStudentRecords(updatedRecords);
       setSelectedStudentIds([]); // Clear selection after deletion

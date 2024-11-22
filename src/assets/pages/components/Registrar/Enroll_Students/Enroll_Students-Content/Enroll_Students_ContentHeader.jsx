@@ -80,7 +80,7 @@ const Enroll_Students_ContentHeader = (props) => {
 
     try {
       const response = await axios.get(
-        `http://localhost:3000/students/details`,
+        `https://san-juan-institute-of-technology-backend.onrender.com/students/details`,
         {
           params: {
             fullName: selectedStudent,
@@ -115,7 +115,7 @@ const Enroll_Students_ContentHeader = (props) => {
   const fetchStudents = async (gradeLevel, strand) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/students/not-enrolled`,
+        `https://san-juan-institute-of-technology-backend.onrender.com/students/not-enrolled`,
         {
           params: {
             grade_level: gradeLevel,

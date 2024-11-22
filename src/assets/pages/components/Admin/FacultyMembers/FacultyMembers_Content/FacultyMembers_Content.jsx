@@ -17,7 +17,7 @@ const FacultyMembers_Content = () => {
   // Fetch faculty data from server when the component loads
   useEffect(() => {
     const fetchFacultyRecords = async () => {
-      const response = await fetch("http://localhost:3000/faculties"); // API call to get faculty records
+      const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/faculties"); // API call to get faculty records
       const data = await response.json();
       setFacultyRecords(data); // Set faculty records
     };
@@ -42,7 +42,7 @@ const FacultyMembers_Content = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/deleteFaculty", {
+      const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/deleteFaculty", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ facultyIds: selectedFacultyIds }), // Ensure this matches the backend
@@ -52,7 +52,7 @@ const FacultyMembers_Content = () => {
         alert("Selected faculty deleted successfully.");
 
         // Fetch the updated list of faculty
-        const updatedResponse = await fetch("http://localhost:3000/faculties"); // Update with the correct endpoint for fetching faculty
+        const updatedResponse = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/faculties"); // Update with the correct endpoint for fetching faculty
         const updatedRecords = await updatedResponse.json();
         updateFacultyRecords(updatedRecords);
       } else {

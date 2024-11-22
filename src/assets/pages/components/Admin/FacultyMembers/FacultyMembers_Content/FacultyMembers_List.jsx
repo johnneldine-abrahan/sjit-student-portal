@@ -31,7 +31,7 @@ const FacultyMembers_List = ({
     event.preventDefault();
     try {
       const response = await fetch(
-        `http://localhost:3000/faculty/${currentFacultyId}`,
+        `https://san-juan-institute-of-technology-backend.onrender.com/faculty/${currentFacultyId}`,
         {
           method: "PUT",
           headers: {
@@ -48,7 +48,7 @@ const FacultyMembers_List = ({
         alert("Faculty successfully updated!");
         handleClose();
 
-        const updatedResponse = await fetch("http://localhost:3000/faculties");
+        const updatedResponse = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/faculties");
         const updatedRecords = await updatedResponse.json();
         await updateFacultyRecords(updatedRecords);
       } else {
@@ -71,7 +71,7 @@ const FacultyMembers_List = ({
     setCurrentFacultyId(facultyId);
     try {
       const response = await fetch(
-        `http://localhost:3000/faculty/${facultyId}`
+        `https://san-juan-institute-of-technology-backend.onrender.com/faculty/${facultyId}`
       );
       if (response.ok) {
         const data = await response.json();

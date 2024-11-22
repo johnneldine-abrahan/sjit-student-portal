@@ -166,7 +166,7 @@ const ManageSchedule_ContentHeader = ({
   const handleArchiveSections = async (sections) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/archiveSections",
+        "https://san-juan-institute-of-technology-backend.onrender.com/archiveSections",
         {
           selectedSections: sections,
         }
@@ -251,7 +251,7 @@ const ManageSchedule_ContentHeader = ({
     const selectedSubjectId = event.target.value; // Ensure this is the correct subject ID from the dropdown
 
     try {
-      const response = await axios.get("http://localhost:3000/getSubjects", {
+      const response = await axios.get("https://san-juan-institute-of-technology-backend.onrender.com/getSubjects", {
         params: {
           subjectId: selectedSubjectId,
         },
@@ -326,7 +326,7 @@ const ManageSchedule_ContentHeader = ({
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/addSection",
+        "https://san-juan-institute-of-technology-backend.onrender.com/addSection",
         payload
       );
       alert(response.data.message);
@@ -411,7 +411,7 @@ const ManageSchedule_ContentHeader = ({
     const fetchSubjects = async () => {
       if (formData.gradeLevel) {
         const response = await fetch(
-          `http://localhost:3000/getSubjects?gradeLevel=${formData.gradeLevel}`
+          `https://san-juan-institute-of-technology-backend.onrender.com/getSubjects?gradeLevel=${formData.gradeLevel}`
         );
         const data = await response.json();
         setSubjects(data);
@@ -421,7 +421,7 @@ const ManageSchedule_ContentHeader = ({
     };
 
     const fetchFacultyName = async () => {
-      const response = await fetch("http://localhost:3000/getFaculty");
+      const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/getFaculty");
       const data = await response.json();
 
       console.log("Faculty data fetched from API:", data); // Log the data structure
@@ -434,7 +434,7 @@ const ManageSchedule_ContentHeader = ({
 
   useEffect(() => {
     const fetchSubjects = async () => {
-      const response = await axios.get(`http://localhost:3000/getSubjects`, {
+      const response = await axios.get(`https://san-juan-institute-of-technology-backend.onrender.com/getSubjects`, {
         params: {
           gradeLevel: formData.gradeLevel,
           strand: formData.strand,

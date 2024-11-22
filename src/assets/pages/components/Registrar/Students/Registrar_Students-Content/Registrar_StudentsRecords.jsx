@@ -180,12 +180,12 @@ const Registrar_StudentsRecords = ({
 
     try {
       const response = await axios.put(
-        `http://localhost:3000/updateStudentData/${editPopup.record.student_id}`,
+        `https://san-juan-institute-of-technology-backend.onrender.com/updateStudentData/${editPopup.record.student_id}`,
         adjustedData
       );
       alert("Student data updated successfully");
 
-      const updatedResponse = await axios.get("http://localhost:3000/students");
+      const updatedResponse = await axios.get("https://san-juan-institute-of-technology-backend.onrender.com/students");
       const updatedRecords = updatedResponse.data;
 
       updateStudentRecords(updatedRecords);
@@ -212,7 +212,7 @@ const Registrar_StudentsRecords = ({
   const handleEditPopup = async (record) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/getStudentData/${record.student_id}`
+        `https://san-juan-institute-of-technology-backend.onrender.com/getStudentData/${record.student_id}`
       );
       const data = response.data;
 

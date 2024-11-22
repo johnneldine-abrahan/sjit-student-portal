@@ -91,7 +91,7 @@ const FacultyMembers_ContentHeader = ({
     }
 
     try {
-      const response = await fetch("http://localhost:3000/archiveFaculty", {
+      const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/archiveFaculty", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ facultyIds: selectedFacultyIds }),
@@ -100,7 +100,7 @@ const FacultyMembers_ContentHeader = ({
       if (response.ok) {
         alert("Selected faculty archived successfully.");
 
-        const updatedResponse = await fetch("http://localhost:3000/faculties");
+        const updatedResponse = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/faculties");
         const updatedRecords = await updatedResponse.json();
         await updateFacultyRecords(updatedRecords);
 
@@ -125,7 +125,7 @@ const FacultyMembers_ContentHeader = ({
     const adjustedData = { ...formData };
 
     try {
-      const response = await fetch("http://localhost:3000/registerFaculty", {
+      const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/registerFaculty", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -141,7 +141,7 @@ const FacultyMembers_ContentHeader = ({
 
  alert("Faculty successfully registered!");
 
-      const updatedResponse = await fetch("http://localhost:3000/faculties");
+      const updatedResponse = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/faculties");
       const updatedRecords = await updatedResponse.json();
       await updateFacultyRecords(updatedRecords);
 

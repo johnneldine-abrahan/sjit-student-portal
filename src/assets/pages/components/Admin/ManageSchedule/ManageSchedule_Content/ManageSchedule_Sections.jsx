@@ -43,7 +43,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/getSection/${record.section_id}`
+        `https://san-juan-institute-of-technology-backend.onrender.com/getSection/${record.section_id}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch section data");

@@ -88,7 +88,7 @@ const ManageAccounts_ContentHeader = ({
     };
 
     try {
-      const response = await fetch("http://localhost:3000/registerAccount", {
+      const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/registerAccount", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

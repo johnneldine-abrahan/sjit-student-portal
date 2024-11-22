@@ -11,7 +11,7 @@ const ManageSchedule_Content = () => {
   // Function to fetch and refresh the sections data
   const refreshSections = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/getSections");
+      const response = await axios.get("https://san-juan-institute-of-technology-backend.onrender.com/getSections");
       setSectionsData(response.data); // Update the sections data state
     } catch (error) {
       console.error("Error fetching sections:", error);
@@ -27,7 +27,7 @@ const ManageSchedule_Content = () => {
 
     try {
       const response = await axios.delete(
-        "http://localhost:3000/deleteSections",
+        "https://san-juan-institute-of-technology-backend.onrender.com/deleteSections",
         {
           data: { selectedSections },
         }

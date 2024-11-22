@@ -165,7 +165,7 @@ const Registrar_Students_ContentHeader = ({
     });
 
     try {
-      const response = await fetch("http://localhost:3000/registerStudent", {
+      const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/registerStudent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(adjustedData),
@@ -180,7 +180,7 @@ const Registrar_Students_ContentHeader = ({
       alert("Student successfully registered!");
 
       // Fetch updated student records
-      const updatedResponse = await fetch("http://localhost:3000/students");
+      const updatedResponse = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/students");
       const updatedRecords = await updatedResponse.json();
       updateStudentRecords(updatedRecords); // Update parent state
 
@@ -231,7 +231,7 @@ const Registrar_Students_ContentHeader = ({
 
   const handleArchive = async () => {
     try {
-      const response = await fetch("http://localhost:3000/archiveStudents", {
+      const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/archiveStudents", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -249,7 +249,7 @@ const Registrar_Students_ContentHeader = ({
       alert("Student successfully archived!");
 
       // Fetch updated student records
-      const updatedResponse = await fetch("http://localhost:3000/students");
+      const updatedResponse = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/students");
       const updatedRecords = await updatedResponse.json();
       updateStudentRecords(updatedRecords); // Update parent state
 

@@ -18,7 +18,7 @@ const Archive_Records = () => {
   useEffect(() => {
     const fetchArchivedRecords = async () => {
       try {
-        const response = await fetch("http://localhost:3000/students/archived"); // API call to the backend
+        const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/students/archived"); // API call to the backend
         const data = await response.json();
         setArchiveRecords(data); // Update state with fetched data
       } catch (error) {

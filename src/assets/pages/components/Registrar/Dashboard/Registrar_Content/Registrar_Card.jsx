@@ -9,14 +9,14 @@ const Registrar_Card = () => {
   useEffect(() => {
     const fetchCounts = async () => {
       try {
-        const enrolledResponse = await fetch('http://localhost:3000/count-enrolled-students');
+        const enrolledResponse = await fetch('https://san-juan-institute-of-technology-backend.onrender.com/count-enrolled-students');
         if (!enrolledResponse.ok) {
           throw new Error('Failed to fetch enrolled students count');
         }
         const enrolledData = await enrolledResponse.json();
         setEnrolledCount(enrolledData.enrolledCount); // Update state with enrolled count
 
-        const facultyResponse = await fetch('http://localhost:3000/count-active-faculty');
+        const facultyResponse = await fetch('https://san-juan-institute-of-technology-backend.onrender.com/count-active-faculty');
         if (!facultyResponse.ok) {
           throw new Error('Failed to fetch active faculty count');
         }

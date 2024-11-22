@@ -11,7 +11,7 @@ const Students_Content = () => {
 
   useEffect(() => {
     const fetchStudentRecords = async () => {
-      const response = await fetch("http://localhost:3000/students");
+      const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/students");
       const data = await response.json();
       setStudentRecords(data);
     };
@@ -66,14 +66,14 @@ const Students_Content = () => {
       alert("No students selected for deletion.");
       return;
     }
-    const response = await fetch("http://localhost:3000/deleteStudent", {
+    const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/deleteStudent", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ studentIds: selectedStudentIds }),
     });
     if (response.ok) {
       alert("Selected students deleted successfully.");
-      const updatedResponse = await fetch("http://localhost:3000/students");
+      const updatedResponse = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/students");
       const updatedRecords = await updatedResponse.json();
       setStudentRecords(updatedRecords);
       setSelectedStudentIds([]); // Clear selection after deletion

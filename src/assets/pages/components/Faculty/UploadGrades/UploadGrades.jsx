@@ -31,7 +31,7 @@ const UploadGrades = ({ schoolYear, semester, quarter }) => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "http://localhost:3000/teacher/subjects",
+          "https://san-juan-institute-of-technology-backend.onrender.com/teacher/subjects",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -59,7 +59,7 @@ const UploadGrades = ({ schoolYear, semester, quarter }) => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:3000/grades/${subject.section_id}/${subject.subject_id}`,
+        `https://san-juan-institute-of-technology-backend.onrender.com/grades/${subject.section_id}/${subject.subject_id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -121,7 +121,7 @@ const UploadGrades = ({ schoolYear, semester, quarter }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/add-grade",
+        "https://san-juan-institute-of-technology-backend.onrender.com/add-grade",
         { grades: gradesArray, sectionId: currentSectionId }, // Use the hidden sectionId here
         {
           headers: {

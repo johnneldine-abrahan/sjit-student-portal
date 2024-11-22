@@ -40,7 +40,7 @@ const Grades_Students = ({ quarter, schoolYear, semester }) => {
   useEffect(() => {
     const fetchGrades = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/grades', {
+        const response = await axios.get('https://san-juan-institute-of-technology-backend.onrender.com/grades', {
           params: {
             modalSchoolYear: schoolYear,
             modalSemester: semester,

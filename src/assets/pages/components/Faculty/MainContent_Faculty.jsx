@@ -102,7 +102,7 @@ const FilterModal = ({
   useEffect(() => {
     const fetchSchoolYears = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/school_years");
+        const response = await axios.get("https://san-juan-institute-of-technology-backend.onrender.com/school_years");
         if (response.data.rows && Array.isArray(response.data.rows)) {
           const years = response.data.rows.map((row) => row.school_year);
           setSchoolYears(years);

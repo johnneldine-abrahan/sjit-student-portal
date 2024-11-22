@@ -38,7 +38,7 @@ const Faculty_Reports = () => {
           }
         };
 
-        const response = await axios.get('http://localhost:3000/reports/dropdowns', config);
+        const response = await axios.get('https://san-juan-institute-of-technology-backend.onrender.com/reports/dropdowns', config);
         setDropdownData(response.data);
       } catch (error) {
         console.error('Error fetching dropdown data:', error);
@@ -58,7 +58,7 @@ const Faculty_Reports = () => {
         }
       };
 
-      const response = await axios.get('http://localhost:3000/reports/grades', {
+      const response = await axios.get('https://san-juan-institute-of-technology-backend.onrender.com/reports/grades', {
         ...config,
         params: {
           school_year: selectedSchoolYear,
@@ -86,7 +86,7 @@ const Faculty_Reports = () => {
         }
       };
 
-      const response = await axios.get('http://localhost:3000/reports/grades', {
+      const response = await axios.get('https://san-juan-institute-of-technology-backend.onrender.com/reports/grades', {
         ...config,
         params: {
           school_year: selectedSchoolYear,
@@ -120,7 +120,7 @@ const Faculty_Reports = () => {
         }
       };
 
-      const response = await axios.get('http://localhost:3000/class-insights', {
+      const response = await axios.get('https://san-juan-institute-of-technology-backend.onrender.com/class-insights', {
         ...config,
         params: {
           school_year: selectedSchoolYear,
@@ -148,7 +148,7 @@ const Faculty_Reports = () => {
         }
       };
 
-      const response = await axios.get('http://localhost:3000/reports/grades/distribution', {
+      const response = await axios.get('https://san-juan-institute-of-technology-backend.onrender.com/reports/grades/distribution', {
         ...config,
         params: {
           school_year: selectedSchoolYear,

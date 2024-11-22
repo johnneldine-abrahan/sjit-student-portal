@@ -70,7 +70,7 @@ const FacultySchedule = ({ schoolYear, semester }) => {
       const token = localStorage.getItem('token');
 
       try {
-        const response = await fetch(`http://localhost:3000/faculty-schedules?modalSchoolYear=${schoolYear}&modalSemester=${semester}`, {
+        const response = await fetch(`https://san-juan-institute-of-technology-backend.onrender.com/faculty-schedules?modalSchoolYear=${schoolYear}&modalSemester=${semester}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

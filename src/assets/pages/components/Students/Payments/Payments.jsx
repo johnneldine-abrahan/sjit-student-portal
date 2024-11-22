@@ -15,7 +15,7 @@ const Payments = ({ schoolYear, semester }) => {
       }
 
       // Make sure the API call uses the correct props (schoolYear and semester)
-      const response = await fetch(`http://localhost:3000/student-liabilities-paid?modalSchoolYear=${schoolYear}&modalSemester=${semester}`, {
+      const response = await fetch(`https://san-juan-institute-of-technology-backend.onrender.com/student-liabilities-paid?modalSchoolYear=${schoolYear}&modalSemester=${semester}`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${localStorage.getItem("token")}` // Assuming token is stored in localStorage

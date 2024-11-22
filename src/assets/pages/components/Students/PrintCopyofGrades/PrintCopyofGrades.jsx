@@ -27,7 +27,7 @@ export default function GradeReport({ schoolYear, semester, quarter }) {
       }
 
       try {
-        const response = await fetch(`http://localhost:3000/copy-of-grades?modalSchoolYear=${schoolYear}&modalSemester=${semester}&quarterState=${quarter}`, {
+        const response = await fetch(`https://san-juan-institute-of-technology-backend.onrender.com/copy-of-grades?modalSchoolYear=${schoolYear}&modalSemester=${semester}&quarterState=${quarter}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,

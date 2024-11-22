@@ -24,7 +24,7 @@ const Student_Reports = () => {
     const fetchSchoolYears = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/school_years/dropdown"
+          "https://san-juan-institute-of-technology-backend.onrender.com/school_years/dropdown"
         );
         setSchoolYears(response.data);
       } catch (error) {
@@ -45,7 +45,7 @@ const Student_Reports = () => {
         try {
           const token = localStorage.getItem("token");
           const response = await axios.get(
-            `http://localhost:3000/grades-insights?school_year=${schoolYear}&semester=${semester}&quarter=${quarter}&grade_level=${selectedGrade}`,
+            `https://san-juan-institute-of-technology-backend.onrender.com/grades-insights?school_year=${schoolYear}&semester=${semester}&quarter=${quarter}&grade_level=${selectedGrade}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

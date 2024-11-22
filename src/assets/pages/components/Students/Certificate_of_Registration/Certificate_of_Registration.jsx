@@ -12,7 +12,7 @@ export default function CertificateOfRegistration({ schoolYear, semester }) {
   useEffect(() => {
     const fetchEnrollmentData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/COR?modalSchoolYear=${schoolYear}&modalSemester=${semester}`, {
+        const response = await fetch(`https://san-juan-institute-of-technology-backend.onrender.com/COR?modalSchoolYear=${schoolYear}&modalSemester=${semester}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`, // Assuming you're using local storage for the token

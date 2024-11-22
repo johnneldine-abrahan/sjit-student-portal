@@ -11,7 +11,7 @@ const Notifications_Faculty = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await fetch('http://localhost:3000/announcements/faculty'); // Adjust the URL if necessary
+        const response = await fetch('https://san-juan-institute-of-technology-backend.onrender.com/announcements/faculty'); // Adjust the URL if necessary
         const data = await response.json();
         console.log(data); // Log the data to check its structure
         setNotifications(data); // Set notifications to the fetched data

@@ -77,7 +77,7 @@ const Subjects_and_Schedule = ({ schoolYear, semester }) => {
 
       try {
         console.log("Fetching schedules with:", { schoolYear, semester });
-        const response = await fetch(`http://localhost:3000/schedule?modalSchoolYear=${schoolYear}&modalSemester=${semester}`, {
+        const response = await fetch(`https://san-juan-institute-of-technology-backend.onrender.com/schedule?modalSchoolYear=${schoolYear}&modalSemester=${semester}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

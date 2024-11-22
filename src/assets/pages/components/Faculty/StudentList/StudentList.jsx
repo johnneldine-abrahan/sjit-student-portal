@@ -25,7 +25,7 @@ const StudentList = ({ schoolYear, semester }) => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "http://localhost:3000/teacher/subjects",
+          "https://san-juan-institute-of-technology-backend.onrender.com/teacher/subjects",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -53,7 +53,7 @@ const StudentList = ({ schoolYear, semester }) => {
     try {
       setLoading(true); // Set loading to true while fetching students
       const response = await axios.get(
-        `http://localhost:3000/teacher/students/${subject.section_id}/${subject.subject_id}`,
+        `https://san-juan-institute-of-technology-backend.onrender.com/teacher/students/${subject.section_id}/${subject.subject_id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

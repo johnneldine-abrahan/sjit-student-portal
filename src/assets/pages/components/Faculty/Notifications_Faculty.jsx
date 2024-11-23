@@ -6,21 +6,35 @@ const Notifications_Faculty = () => {
   const [notifications, setNotifications] = useState([]); // Ensure this is an array
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState(null);
+  const [pollingInterval, setPollingInterval] = useState(null);
 
-  // Fetch announcements from the back-end
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const response = await fetch('https://san-juan-institute-of-technology-backend.onrender.com/announcements/faculty'); // Adjust the URL if necessary
-        const data = await response.json();
-        console.log(data); // Log the data to check its structure
-        setNotifications(data); // Set notifications to the fetched data
-      } catch (error) {
-        console.error('Error fetching notifications:', error);
+  // Function to fetch announcements from the back-end
+  const fetchNotifications = async () => {
+    try {
+      const response = await fetch('https://san-juan-institute-of-technology-backend.onrender.com/announcements/faculty'); // Adjust the URL if necessary
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
-    };
+      const data = await response.json();
+      console.log(data); // Log the data to check its structure
+      setNotifications(data); // Set notifications to the fetched data
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  };
 
+  useEffect(() => {
+    // Initial fetch
     fetchNotifications();
+
+    // Set up polling
+    const interval = setInterval(fetchNotifications, 5000); // Fetch new notifications every 5 seconds
+    setPollingInterval(interval);
+
+    // Cleanup function to clear the interval when component unmounts
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   const handleNotificationClick = (notification) => {

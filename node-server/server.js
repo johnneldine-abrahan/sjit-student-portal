@@ -1,12 +1,16 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const http = require('http');
+const WebSocket = require('ws');
 const { Pool } = require('pg');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs'); // Use bcrypt for password hashing
 
 const app = express();
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
 const port = 3000;
 const SECRET_KEY = 'your-secret-key'; // Change this to a secure key
 
@@ -17,8 +21,37 @@ const pool = new Pool({
     },
 });
 
+let clients = [];
+
 app.use(cors());
 app.use(express.json());
+
+function authenticateWebSocket(ws, req) {
+    const token = req.url.split('?token=')[1]; // Extract token from query parameter
+    if (!token) return false;
+
+    try {
+        const user = jwt.verify(token, SECRET_KEY); // Replace SECRET_KEY with your actual secret
+        ws.user = user; // Store user information in the WebSocket instance
+        return true;
+    } catch (err) {
+        return false;
+    }
+}
+
+// WebSocket connection
+wss.on('connection', (ws, req) => {
+    if (!authenticateWebSocket(ws, req)) {
+        ws.close(); // Close connection if authentication fails
+        return;
+    }
+
+    clients.push(ws);
+
+    ws.on('close', () => {
+        clients = clients.filter(client => client !== ws);
+    });
+});
 
 app.post("/login", async (req, res) => {
     const { username, password } = req.body;
@@ -827,17 +860,11 @@ app.put('/archiveFaculty', async (req, res) => {
 app.post('/addAnnouncement', authenticateToken, async (req, res) => {
     const { announce_to, announcement_type, announcement_title, announcement_text } = req.body;
 
-    // Generate unique announcement ID
     const announcement_id = `ANN-${Math.floor(10000 + Math.random() * 90000)}`;
-
-    // Get the current date and timestamp in the correct format for PostgreSQL
-    const announcement_timestamp = new Date().toISOString(); // This will be in the format YYYY-MM-DDTHH:mm:ss.sssZ
-
-    // Get the user_id from the database
-    const announcement_by = req.user.userId; // Change to match your JWT structure
+    const announcement_timestamp = new Date().toISOString();
+    const announcement_by = req.user.userId;
 
     try {
-        // Insert the new announcement into the database
         const query = `
             INSERT INTO announcementtbl (
                 announcement_id, announce_to, announcement_type,
@@ -852,10 +879,25 @@ app.post('/addAnnouncement', authenticateToken, async (req, res) => {
             announcement_timestamp, announcement_by
         ]);
 
+        // Notify all connected clients about the new announcement
+        clients.forEach(client => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify({
+                    announcement_id,
+                    announce_to,
+                    announcement_type,
+                    announcement_title,
+                    announcement_text,
+                    announcement_by,
+                    announcement_timestamp
+                }));
+            }
+        });
+
         res.status(201).json({ message: 'Announcement added successfully.' });
     } catch (error) {
-        console.error("Error adding announcement:", error); // Log the error
-        res.status(500).json({ message: 'Error adding announcement.', error: error.message }); // Include error message in response
+        console.error("Error adding announcement:", error);
+        res.status(500).json({ message: 'Error adding announcement.', error: error.message });
     }
 });
 
@@ -2191,7 +2233,7 @@ app.post('/add-grade', authenticateToken, async (req, res) => {
 });
   
 
-  app.get('/announcements/faculty', (req, res) => {
+app.get('/announcements/faculty', (req, res) => {
     const query = `
         SELECT announcement_id, announce_to, announcement_type,
                announcement_title, announcement_text,
@@ -2202,13 +2244,12 @@ app.post('/add-grade', authenticateToken, async (req, res) => {
         LIMIT 7
     `;
 
-    // Use the pool to query the database
     pool.query(query, (err, results) => {
         if (err) {
             console.error('Error fetching announcements:', err);
             return res.status(500).json({ error: 'Database query failed' });
         }
-        res.json(results.rows); // Ensure to return results.rows for proper formatting
+        res.json(results.rows);
     });
 });
 
@@ -3008,13 +3049,12 @@ app.get('/announcements/students', (req, res) => {
         LIMIT 7
     `;
 
-    // Use the pool to query the database
     pool.query(query, (err, results) => {
         if (err) {
             console.error('Error fetching announcements:', err);
             return res.status(500).json({ error: 'Database query failed' });
         }
-        res.json(results);
+        res.json(results.rows);
     });
 });
 

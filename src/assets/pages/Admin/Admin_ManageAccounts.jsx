@@ -6,7 +6,7 @@ import ManageAccounts_Sidebar from '../components/Admin/ManageAccounts/ManageAcc
 
 const Admin_ManageAccounts = () => {
   useEffect(() => {
-    document.title = "Admin - Manage Schedule";
+    document.title = "Admin - Manage Accounts";
   }, []);
 
 

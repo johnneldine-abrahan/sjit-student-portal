@@ -7,6 +7,8 @@ const EnrollmentQueue_List = () => {
   const [viewPopup, setViewPopup] = useState({ show: false, record: null });
   const [error, setError] = useState(null); // State to hold error messages
   const [successMessage, setSuccessMessage] = useState(null); // State to hold success messages
+  const [currentPage, setCurrentPage] = useState(1); // Current page for pagination
+  const recordsPerPage = 7; // Number of records to display per page
 
   const handleViewPopup = (record) => {
     setViewPopup({ show: true, record: record });
@@ -64,6 +66,26 @@ const EnrollmentQueue_List = () => {
     }
   };
 
+  // Calculate total pages
+  const totalPages = Math.ceil(students.length / recordsPerPage);
+
+  // Get current records to display
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = students.slice(indexOfFirstRecord, indexOfLastRecord);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   return (
     <div className="student-record-list">
       <div className="recordslist-container">
@@ -82,7 +104,7 @@ const EnrollmentQueue_List = () => {
             </tr>
           </thead>
           <tbody>
-            {students.map((record, index) => (
+            {currentRecords.map((record , index) => (
               <tr key={index}>
                 <td>{record.student_id}</td>
                 <td>{record.last_name}</td>
@@ -110,7 +132,7 @@ const EnrollmentQueue_List = () => {
           <div className="popup-view-student">
             <div className="popup-header">
               <h3>Confirm Payment</h3>
-              <button onClick={ handleClose}>Close</button>
+              <button onClick={handleClose}>Close</button>
             </div>
             <div className="popup-content">
               <p>
@@ -124,6 +146,28 @@ const EnrollmentQueue_List = () => {
             </div>
           </div>
         )}
+      </div>
+
+      <div className="button-container-pagination-student">
+        <div className="pagination-controls">
+          <button
+            className="btn-box-pagination-student"
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="btn-box-pagination-student"
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

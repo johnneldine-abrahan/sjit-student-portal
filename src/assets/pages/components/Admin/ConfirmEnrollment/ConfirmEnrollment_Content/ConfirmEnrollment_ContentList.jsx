@@ -6,6 +6,8 @@ const ConfirmEnrollment_ContentList = () => {
   const [viewPopup, setViewPopup] = useState({ show: false, record: null }); // State for popup
   const [loading, setLoading] = useState(true); // State for loading
   const [error, setError] = useState(null); // State for error messages
+  const [currentPage, setCurrentPage] = useState(1); // Current page for pagination
+  const recordsPerPage = 7; // Number of records to display per page
 
   const handleViewPopup = (record) => {
     setViewPopup({ show: true, record: record }); // Show the popup with selected record
@@ -31,7 +33,6 @@ const ConfirmEnrollment_ContentList = () => {
 
       const data = await response.json();
       console.log(data.message); // Log success message
-      // Optionally, you can refresh the student list after successful enrollment
       fetchStudents(); // Refresh the student list
     } catch (error) {
       setError(error.message); // Set error message
@@ -70,6 +71,26 @@ const ConfirmEnrollment_ContentList = () => {
     return <div>Error: {error}</div>; // Display error message if there is an error
   }
 
+  // Calculate total pages
+  const totalPages = Math.ceil(students.length / recordsPerPage);
+
+  // Get current records to display
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = students.slice(indexOfFirstRecord, indexOfLastRecord);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   return (
     <div className="student-record-list">
       <div className="recordslist-container">
@@ -86,9 +107,9 @@ const ConfirmEnrollment_ContentList = () => {
             </tr>
           </thead>
           <tbody>
-            {students.map((record, index) => (
+            {currentRecords.map((record, index) => (
               <tr key={index}>
-                <td>{record.student_id}</td>
+                <td >{record.student_id}</td>
                 <td>{record.last_name}</td>
                 <td>{record.first_name}</td>
                 <td>{record.middle_name}</td>
@@ -118,7 +139,7 @@ const ConfirmEnrollment_ContentList = () => {
             <div className="popup-view-student">
               <div className="popup-header">
                 <h3>Confirm Payment</h3>
- <button onClick={handleClose}>Close</button>
+                <button onClick={handleClose}>Close</button>
               </div>
               <div className="popup-content">
                 <p>
@@ -138,6 +159,28 @@ const ConfirmEnrollment_ContentList = () => {
             </div>
           </div>
         )}
+      </div>
+
+      <div className="button-container-pagination-student">
+        <div className="pagination-controls">
+          <button
+            className="btn-box-pagination-student"
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="btn-box-pagination-student"
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

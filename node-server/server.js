@@ -1692,6 +1692,26 @@ const generateEnrollmentId = (studentId) => {
     return `${studentId}_${randomNumber}`; // Combine student_id with an underscore and the random number
 };
 
+app.put('/enable/enroll', (req, res) => {
+    const { canEnroll } = req.body;
+
+    // Validate input
+    if (typeof canEnroll !== 'boolean') {
+        return res.status(400).json({ message: 'Invalid input. canEnroll must be a boolean.' });
+    }
+
+    // Update query to set can_enroll for all students
+    const sql = 'UPDATE studenttbl SET can_enroll = $1'; // Use $1 for parameterized queries in PostgreSQL
+    
+    pool.query(sql, [canEnroll], (error, results) => {
+        if (error) {
+            console.error('Error updating enrollment:', error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+        res.json({ message: 'Enrollment updated successfully for all students', affectedRows: results.rowCount }); // Use rowCount for PostgreSQL
+    });
+});
+
 app.post('/enroll', async (req, res) => {
     const { student_id, section_ids } = req.body; // Extract student_id and section_ids from request body
     const enrollment_date = new Date().toISOString().slice(0, 10);
@@ -3303,6 +3323,34 @@ app.get('/copy-of-grades', authenticateToken, async (req, res) => {
         res.json(response);
     } catch (error) {
         console.error('Error fetching grades:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+app.get('/check-enrollment-status', authenticateToken, async (req, res) => {
+    const userId = req.user.userId; // Retrieve user ID from authenticated request
+
+    try {
+        // Fetch student_id based on user_id
+        const studentResult = await pool.query(
+            'SELECT student_id, can_enroll FROM studenttbl WHERE user_id = $1',
+            [userId]
+        );
+
+        if (studentResult.rows.length === 0) {
+            return res.status(404).send('Student not found');
+        }
+
+        const { student_id, can_enroll } = studentResult.rows[0];
+
+        // Check the enrollment status
+        res.json({
+            student_id: student_id,
+            can_enroll: can_enroll
+        });
+    } catch (error) {
+        console.error('Error checking enrollment status:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

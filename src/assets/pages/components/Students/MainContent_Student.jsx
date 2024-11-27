@@ -9,6 +9,7 @@ import { GiInjustice } from "react-icons/gi";
 import { MdAnalytics } from "react-icons/md";
 import { IoMdPrint } from "react-icons/io";
 import { FiFilter } from "react-icons/fi";
+import { GiArchiveRegister } from "react-icons/gi";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import Certificate_of_Registration from "./Certificate_of_Registration/Certificate_of_Registration";
 import Subjects_and_Schedule from "./Subjects_and_Schedule/Subjects_and_Schedule";
@@ -16,6 +17,7 @@ import Grades_Students from "./Grades_Students/Grades_Students";
 import Payments from "./Payments/Payments";
 import Liabilities_Students from "./Liabilities_Students/Liabilities_Students";
 import Student_Reports from "./Student_Reports/Student_Reports";
+import Enroll from "./Enroll/Enroll";
 import PrintCopyofGrades from "./PrintCopyofGrades/PrintCopyofGrades";
 import { Carousel } from "react-responsive-carousel";
 import image1 from "../../../img/Faculty/Pinas.jpg";
@@ -48,7 +50,8 @@ const actionItems = [
     icon: <GiInjustice size={40} />,
     text: "Liabilities",
     content: Liabilities_Students,
-  },{
+  },
+  {
     icon: <MdAnalytics size={40} />,
     text: "Reports",
     content: Student_Reports,
@@ -58,9 +61,19 @@ const actionItems = [
     text: "Print Copy of Grades",
     content: PrintCopyofGrades,
   },
+  {
+    icon: <GiArchiveRegister size={40} />,
+    text: "Enroll",
+    content: Enroll,
+  },
 ];
 
-const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters }) => {
+const FilterModal = ({
+  setQuarter,
+  setSchoolYear,
+  setSemester,
+  onApplyFilters,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalSchoolYear, setModalSchoolYear] = useState("");
   const [modalSemester, setModalSemester] = useState("FIRST");
@@ -91,7 +104,11 @@ const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters })
     setQuarter(quarterState);
     setSchoolYear(modalSchoolYear);
     setSemester(modalSemester);
-    onApplyFilters({ schoolYear: modalSchoolYear, semester: modalSemester, quarter: quarterState });
+    onApplyFilters({
+      schoolYear: modalSchoolYear,
+      semester: modalSemester,
+      quarter: quarterState,
+    });
     setIsModalOpen(false);
     document.body.style.overflow = "auto"; // Enable scrolling
   };
@@ -108,9 +125,9 @@ const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters })
   useEffect(() => {
     const fetchSchoolYears = async () => {
       try {
-        const response = await axios.get('https://san-juan-institute-of-technology-backend.onrender.com/school_years');
+        const response = await axios.get("https://san-juan-institute-of-technology-backend.onrender.com/school_years");
         if (response.data.rows && Array.isArray(response.data.rows)) {
-          const years = response.data.rows.map(row => row.school_year);
+          const years = response.data.rows.map((row) => row.school_year);
           setSchoolYears(years);
           if (years.length > 0) {
             setDefaultSchoolYear(years[0]);
@@ -118,7 +135,7 @@ const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters })
           }
         }
       } catch (error) {
-        console.error('Error fetching school years:', error);
+        console.error("Error fetching school years:", error);
       }
     };
 
@@ -160,9 +177,14 @@ const FilterModal = ({ setQuarter, setSchoolYear, setSemester, onApplyFilters })
             <div className="modalBody">
               <form onSubmit={handleSubmit}>
                 <label>School Year:</label>
-                <select value={modalSchoolYear} onChange={handleSchoolYearChange}>
+                <select
+                  value={modalSchoolYear}
+                  onChange={handleSchoolYearChange}
+                >
                   {schoolYears.map((year, index) => (
-                    <option key={index} value={year}>{year}</option>
+                    <option key={index} value={year}>
+                      {year}
+                    </option>
                   ))}
                 </select>
 
@@ -239,7 +261,12 @@ const MainContent_Student = () => {
           Please click "Filter" button to change the current school year /
           semester
         </p>
-        <FilterModal setQuarter={setQuarter} setSchoolYear={setSchoolYear} setSemester={setSemester} onApplyFilters={handleApplyFilters} />
+        <FilterModal
+          setQuarter={setQuarter}
+          setSchoolYear={setSchoolYear}
+          setSemester={setSemester}
+          onApplyFilters={handleApplyFilters}
+        />
       </div>
 
       <div className="actionGrid">
@@ -248,7 +275,11 @@ const MainContent_Student = () => {
             key={index}
             icon={item.icon}
             text={item.text}
-            content={React.createElement(item.content, { quarter, schoolYear, semester })}
+            content={React.createElement(item.content, {
+              quarter,
+              schoolYear,
+              semester,
+            })}
           />
         ))}
       </div>

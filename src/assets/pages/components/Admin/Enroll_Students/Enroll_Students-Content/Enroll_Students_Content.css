@@ -309,3 +309,17 @@
 .subject-list {
   margin-top: 20px; /* adjust the value as needed */
 }
+
+.switch-container {
+  display: flex;
+  align-items: center; /* Aligns items vertically centered */
+  justify-content: center; /* Centers items horizontally */
+}
+
+.switch-title {
+  margin-right: 10px; /* Space between the title and the switch */
+  font-size: 16px; /* Change this value to your desired text size */
+  /* You can also add other text styles if needed */
+  font-weight: bold; /* Example: making the text bold */
+  color: #333; /* Example: changing the text color */
+}

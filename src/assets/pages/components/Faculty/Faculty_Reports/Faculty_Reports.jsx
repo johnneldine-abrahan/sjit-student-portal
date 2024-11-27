@@ -15,8 +15,7 @@ const Faculty_Reports = () => {
   const [gradeLevel, setGradeLevel] = useState("");
   const [section, setSection] = useState("");
   const [subject, setSubject] = useState("");
-  const [topPerformingStudents, setTopPerformingStudents] = useState([]);
-  const [lowPerformingStudents, setLowPerformingStudents] = useState([]);
+  const [allStudents, setAllStudents] = useState([]); // State for all students
   const [gradeDistributionData, setGradeDistributionData] = useState([]);
   const [averageGrade, setAverageGrade] = useState(null);
   const [insights, setInsights] = useState(null);
@@ -48,8 +47,8 @@ const Faculty_Reports = () => {
     fetchDropdownData();
   }, []);
 
-  // Fetch top-performing students based on selected filters
-  const fetchTopPerformingStudents = async () => {
+  // Fetch all students based on selected filters
+  const fetchAllStudents = async () => {
     try {
       const token = localStorage.getItem('token');
       const config = {
@@ -70,43 +69,9 @@ const Faculty_Reports = () => {
         }
       });
 
-      setTopPerformingStudents(response.data);
+      setAllStudents(response.data); // Set all students data
     } catch (error) {
-      console.error('Error fetching top-performing students:', error);
-    }
-  };
-
-  // Fetch low-performing students based on selected filters
-  const fetchLowPerformingStudents = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      };
-
-      const response = await axios.get('https://san-juan-institute-of-technology-backend.onrender.com/reports/grades', {
-        ...config,
-        params: {
-          school_year: selectedSchoolYear,
-          semester,
-          quarter,
-          grade_level: gradeLevel,
-          section,
-          subject
-        }
-      });
-
-      const reversedData = [...response.data].reverse();
-      const lowPerformers = reversedData.slice(0, 5).map((student, index) => ({
-        ...student,
-        rank: reversedData.length - index
-      }));
-
-      setLowPerformingStudents(lowPerformers);
-    } catch (error){
-      console.error('Error fetching low-performing students:', error);
+      console.error('Error fetching students:', error);
     }
   };
 
@@ -151,7 +116,7 @@ const Faculty_Reports = () => {
       const response = await axios.get('https://san-juan-institute-of-technology-backend.onrender.com/reports/grades/distribution', {
         ...config,
         params: {
-          school_year: selectedSchoolYear,
+ school_year: selectedSchoolYear,
           semester,
           quarter,
           grade_level: gradeLevel,
@@ -167,23 +132,20 @@ const Faculty_Reports = () => {
   };
 
   useEffect(() => {
-    setTopPerformingStudents([]);
-    setLowPerformingStudents([]);
+    setAllStudents([]); // Reset students data
     setGradeDistributionData([]);
     setAverageGrade(null);
     setInsights(null);
 
     if (selectedSchoolYear && semester && gradeLevel && section && subject && quarter) {
-      fetchTopPerformingStudents();
-      fetchLowPerformingStudents();
-      fetchGradeDistribution();
-      fetchInsights();
+      fetchAllStudents(); // Fetch all students
+      fetchGradeDistribution(); // Fetch grade distribution
+      fetchInsights(); // Fetch insights
     }
   }, [selectedSchoolYear, semester, gradeLevel, section, subject, quarter]);
 
   useEffect(() => {
     const calculateAverageGrade = async () => {
-      const allStudents = await fetchAllStudents(); // Fetch all students
       if (allStudents.length > 0) {
         const totalGrades = allStudents.reduce((acc, student) => acc + student.grade, 0);
         const average = totalGrades / allStudents.length;
@@ -192,12 +154,12 @@ const Faculty_Reports = () => {
         setAverageGrade(null); // Reset if no students are found
       }
     };
-  
-    if (selectedSchoolYear && semester && gradeLevel && section && subject && quarter) {
+
+    if (allStudents.length > 0) {
       calculateAverageGrade(); // Call the function to calculate average
     }
-  }, [selectedSchoolYear, semester, gradeLevel, section, subject, quarter]);
-  
+  }, [allStudents]);
+
   return (
     <div>
       <header className="headerFaculty-report">
@@ -271,13 +233,13 @@ const Faculty_Reports = () => {
                   {subject}
                 </option>
               ))}
- </select>
+            </select>
           </div>
         </div>
 
         <div className="reports-container">
           <div className="left-side">
-            <h2>Top Performing Students</h2>
+            <h2>All Students</h2>
             <table className="report-table-top">
               <thead>
                 <tr>
@@ -287,38 +249,12 @@ const Faculty_Reports = () => {
                 </tr>
               </thead>
               <tbody>
-                {topPerformingStudents.length > 0 ? (
-                  topPerformingStudents.slice(0, 10).map((student, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{student.full_name}</td>
-                      <td>{student.grade}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="3">No data available</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-
-            <h2>Low Performing Students</h2>
-            <table className="report-table-bottom">
-              <thead>
-                <tr>
-                  <th>Rank</th>
-                  <th>Student Name</th>
-                  <th>Grades</th>
-                </tr>
-              </thead>
-              <tbody>
-                {lowPerformingStudents.length > 0 ? (
-                  lowPerformingStudents.map((student, index) => (
-                    <tr key={index} style={{ fontWeight: student.grade <= 80 ? 'bold' : 'normal', color: student.grade <= 80 ? 'red' : 'black' }}>
-                      <td>{student.rank}</td>
-                      <td>{student.full_name}</td>
-                      <td>{student.grade}</td>
+                {allStudents.length > 0 ? (
+                  allStudents.map((student, index) => (
+                    <tr key={index} style={{ backgroundColor: index < 10 ? '#d1e7dd' : 'transparent' }}>
+                      <td style={{ fontWeight: index < 10 ? 'bold' : 'normal' }}>{index + 1}</td>
+                      <td style={{ fontWeight: index < 10 ? 'bold' : 'normal' }}>{student.full_name}</td>
+                      <td style={{ fontWeight: index < 10 ? 'bold' : 'normal' }}>{student.grade}</td>
                     </tr>
                   ))
                 ) : (
@@ -339,12 +275,12 @@ const Faculty_Reports = () => {
                     <p className="left-align">The lowest performing student in this class is <strong>{insights.lowestGrade.student}</strong></p>
                     
                     <div className="recommendations">
-                    <h4>Recommendations:</h4>
-                    <ul>
-                      {insights.recommendations.map((recommendation, index) => (
-                        <li key={index}>{recommendation}</li>
-                      ))}
-                    </ul>
+                      <h4>Recommendations:</h4>
+                      <ul>
+                        {insights.recommendations.map((recommendation, index) => (
+                          <li key={index}>{recommendation}</li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 ) : (

@@ -22,8 +22,10 @@ import Finance_TagLiabilities from "./assets/pages/Finance/Finance_TagLiabilitie
 import Finance_StudentRecords from "./assets/pages/Finance/Finance_StudentRecords";
 import Students_Dashboard from "./assets/pages/Students/Students_Dashboard";
 import Faculty_Dashboard from "./assets/pages/Faculty/Faculty_Dashboard";
+import MainContent_Faculty from "./assets/pages/components/Faculty/MainContent_Faculty";
 import Faculty_Reports from "./assets/pages/components/Faculty/Faculty_Reports/Faculty_Reports";
 import Student_Reports from "./assets/pages/components/Students/Student_Reports/Student_Reports";
+import Enroll from "./assets/pages/components/Students/Enroll/Enroll";
 
 const App = () => {
   return (
@@ -45,13 +47,15 @@ const App = () => {
         <Route path="/registrar/confirm-enrollment" element={<Registrar_ConfirmEnrollment />} />
         <Route path="/registrar/archive" element={<Registrar_Archive />} />
         <Route path="/finance/dashboard" element={<Finance_Dashboard />} />
-        <Route path="/finance/enrollment-queue" element={<Finance_EnrollmentQueue />} />
+        <Route path="finance/enrollment-queue" element={<Finance_EnrollmentQueue />} />
         <Route path="/finance/tag-liabilities" element={<Finance_TagLiabilities />} />
         <Route path="/finance/student-records" element={<Finance_StudentRecords />} />
         <Route path="/student/dashboard" element={<Students_Dashboard />} />
         <Route path="/faculty/dashboard" element={<Faculty_Dashboard />} />
+        <Route path="/" element={<MainContent_Faculty />} />
         <Route path="/faculty/reports" element={<Faculty_Reports />} />
         <Route path="/student/reports" element={<Student_Reports />} />
+        <Route path="/student/enroll" element={<Enroll />} />
       </Routes>
     </Router>
   );

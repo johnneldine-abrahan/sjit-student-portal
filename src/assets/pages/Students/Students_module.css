@@ -390,3 +390,8 @@ ul.thumbs.animated {
 .notificationItem {
   cursor: pointer; /* Indicate that the item is clickable */
 }
+
+.disabled {
+  opacity: 0.5; /* Make it look faded */
+  pointer-events: none; /* Disable pointer events */
+}

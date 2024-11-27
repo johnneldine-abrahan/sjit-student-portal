@@ -1,6 +1,50 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Component } from "react";
 import "./Enroll_Students_Content.css";
 import axios from "axios";
+import Switch from "react-switch"; // Import the Switch component
+
+class SwitchExample extends Component {
+  constructor() {
+    super();
+    // Retrieve the switch state from localStorage or default to false
+    const storedChecked = localStorage.getItem("switchChecked") === "true";
+    this.state = { checked: storedChecked };
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(checked) {
+    // Update the state
+    this.setState({ checked });
+    // Store the new state in localStorage
+    localStorage.setItem("switchChecked", checked);
+
+    // Make the API call to update the can_enroll status
+    axios.put('https://san-juan-institute-of-technology-backend.onrender.com/enable/enroll', { canEnroll: checked })
+      .then(response => {
+        console.log(response.data.message);
+      })
+      .catch(error => {
+        console.error('Error updating enrollment status:', error);
+      });
+  }
+
+  render() {
+    return (
+      <div className="switch-container">
+        <h1 className="switch-title">Enable Enroll for Students</h1>
+        <Switch
+          onChange={this.handleChange}
+          checked={this.state.checked}
+          onColor="#150f57" // Color when the switch is on
+          offColor="#ccc" // Color when the switch is off
+          handleDiameter={20} // Diameter of the switch handle
+          uncheckedIcon={false} // Disable the unchecked icon
+          checkedIcon={false} // Disable the checked icon
+        />
+      </div>
+    );
+  }
+}
 
 const Enroll_Students_ContentHeader = (props) => {
   const [popup, setPopup] = useState({
@@ -62,12 +106,6 @@ const Enroll_Students_ContentHeader = (props) => {
       fetchStudents(gradeLevel, value);
     } else if (name === "select-student") {
       setSelectedStudent(value);
-      setFormData({ ...formData, [name]: value });
-    }
-
-    if (name === "select-student") {
-      setSelectedStudent(value);
-      console.log("Selected Student:", selectedStudent); // Add this line to verify the selected student
       setFormData({ ...formData, [name]: value });
     }
   };
@@ -140,6 +178,9 @@ const Enroll_Students_ContentHeader = (props) => {
     <div className="admin-enroll-header">
       <h1 className="header-title">Enroll Students</h1>
       <div className="admin-enroll-activity">
+        <div>
+          <SwitchExample />
+        </div>
         <button
           type="submit"
           className="select-btn"
@@ -178,7 +219,7 @@ const Enroll_Students_ContentHeader = (props) => {
                     />
                     Junior Highschool
                   </label>
-                <label>
+                  <label>
                     <input
                       type="checkbox"
                       name="program"
@@ -254,7 +295,7 @@ const Enroll_Students_ContentHeader = (props) => {
                   </label>
                 </div>
                 <div className="input-box">
-                  <label>
+                  < label>
                     Select Student
                     <select
                       name="select-student"
@@ -274,8 +315,8 @@ const Enroll_Students_ContentHeader = (props) => {
                     </select>
                   </label>
                 </div>
-                <div class="buttons">
-                  <button type="submit" class="btn-box" name="add" id="add" onClick={handleDoneClick}>
+                <div className="buttons">
+                  <button type="submit" className="btn-box" name="add" id="add" onClick={handleDoneClick}>
                     Done
                   </button>
                 </div>

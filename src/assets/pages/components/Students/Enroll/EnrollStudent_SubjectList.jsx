@@ -134,7 +134,7 @@ const EnrollStudent_SubjectsList = ({ gradeLevel, strand, studentId, semester, s
         return;
       }
 
-      const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/enroll", {
+      const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/enroll-student-ver", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

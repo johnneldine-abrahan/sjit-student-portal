@@ -1757,26 +1757,6 @@ app.get('/getSectionsAndSchedules/:subject_id', async (req, res) => {
     }
 });
 
-app.put('/enable/enroll', (req, res) => {
-    const { canEnroll } = req.body;
-
-    // Validate input
-    if (typeof canEnroll !== 'boolean') {
-        return res.status(400).json({ message: 'Invalid input. canEnroll must be a boolean.' });
-    }
-
-    // Update query to set can_enroll for all students
-    const sql = 'UPDATE studenttbl SET can_enroll = $1'; // Use $1 for parameterized queries in PostgreSQL
-    
-    pool.query(sql, [canEnroll], (error, results) => {
-        if (error) {
-            console.error('Error updating enrollment:', error);
-            return res.status(500).json({ message: 'Internal server error' });
-        }
-        res.json({ message: 'Enrollment updated successfully for all students', affectedRows: results.rowCount }); // Use rowCount for PostgreSQL
-    });
-});
-
 // Function to generate enrollment_id as "student_id + random number"
 const generateEnrollmentId = (studentId) => {
     const randomNumber = Math.floor(Math.random() * 10000); // Generate a random 4-digit number
@@ -1854,6 +1834,77 @@ app.post('/enroll', async (req, res) => {
 
             await client.query(insertQuery, values); // Insert the record into the database
         }
+
+        await client.query('COMMIT');
+        res.status(200).json({ message: 'Enrollment successfully queued' });
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error(error.message || error);
+        res.status(500).json({ error: error.message || 'Enrollment queueing failed' });
+    } finally {
+        client.release();
+    }
+});
+
+app.post('/enroll-student-ver', async (req, res) => {
+    const { student_id, section_ids } = req.body; // Extract student_id and section_ids from request body
+    const enrollment_date = new Date().toISOString().slice(0, 10);
+    const payment_status = 'Pending';
+
+    // Validate input
+    if (!student_id || !section_ids || !Array.isArray(section_ids) || section_ids.length === 0) {
+        return res.status(400).json({ error: 'Invalid input data' });
+    }
+
+    const client = await pool.connect();
+
+    try {
+        await client.query('BEGIN');
+
+        // Check if the student_id exists in the studenttbl
+        const studentCheckQuery = 'SELECT 1 FROM studenttbl WHERE student_id = $1';
+        const studentResult = await client.query(studentCheckQuery, [student_id]);
+
+        if (studentResult.rowCount === 0) {
+            throw new Error('Student ID does not exist');
+        }
+
+        // Check if all section_ids exist in the sectiontbl
+        const sectionCheckQuery = `
+            SELECT section_id FROM sectiontbl WHERE section_id = ANY($1::text[])
+        `;
+        const sectionResult = await client.query(sectionCheckQuery, [section_ids]);
+
+        // Extract found section IDs from the database
+        const foundSectionIds = sectionResult.rows.map(row => row.section_id);
+
+        // Check for missing section IDs
+        const missingSectionIds = section_ids.filter(section_id => !foundSectionIds.includes(section_id));
+
+        if (missingSectionIds.length > 0) {
+            throw new Error(`The following section IDs do not exist: ${missingSectionIds.join(', ')}`);
+        }
+
+        // Insert enrollment record for each valid section
+        for (let section_id of section_ids) {
+            const enrollment_id = generateEnrollmentId(student_id); // Generate unique enrollment_id
+
+            const insertQuery = `
+                INSERT INTO enrollmenttbl (enrollment_id, student_id, section_id, payment_status, enrollment_date)
+                VALUES ($1, $2, $3, $4, $5)
+            `;
+            const values = [enrollment_id, student_id, section_id, payment_status, enrollment_date];
+
+            await client.query(insertQuery, values); // Insert the record into the database
+        }
+
+        // Update student status and can_enroll fields in studenttbl
+        const updateStudentQuery = `
+            UPDATE studenttbl
+            SET student_status = 'Not Enrolled', can_enroll = FALSE
+            WHERE student_id = $1
+        `;
+        await client.query(updateStudentQuery, [student_id]);
 
         await client.query('COMMIT');
         res.status(200).json({ message: 'Enrollment successfully queued' });

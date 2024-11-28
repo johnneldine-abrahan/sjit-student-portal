@@ -1598,6 +1598,70 @@ app.get('/students/details', async (req, res) => {
     }
 });
 
+// Students will enroll ----------------------------------------------------------------------------
+
+app.get('/students-enroll', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user?.userId; // Safely access userId from req.user
+
+        if (!userId) {
+            return res.status(400).json({ error: 'Invalid user or unauthorized access' });
+        }
+
+        // Query to get student details using user_id
+        const studentQuery = `
+            SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) AS full_name,
+                   student_id, grade_level, strand, profile, program, student_status
+            FROM studenttbl
+            WHERE user_id = $1
+        `;
+
+        // Query to get the latest school_year and semester
+        const sectionQuery = `
+            SELECT school_year, semester
+            FROM sectiontbl
+            ORDER BY school_year DESC, semester DESC
+            LIMIT 1
+        `;
+
+        // Execute both queries concurrently
+        const [studentResult, sectionResult] = await Promise.all([
+            pool.query(studentQuery, [userId]),
+            pool.query(sectionQuery)
+        ]);
+
+        // Validate student details
+        if (studentResult.rows.length === 0) {
+            console.error('No student found for the given user ID:', userId);
+            return res.status(404).json({ error: 'Student not found' });
+        }
+
+        const studentData = studentResult.rows[0];
+
+        // Convert profile image to base64, if present
+        const base64Profile = studentData.profile ? studentData.profile.toString('base64') : null;
+
+        // Validate school_year and semester
+        if (sectionResult.rows.length === 0) {
+            console.warn('No school year or semester data found.');
+            return res.status(404).json({ error: 'School year and semester data not found' });
+        }
+
+        const { school_year, semester } = sectionResult.rows[0];
+
+        // Respond with student details and the latest school year/semester
+        res.json({
+            ...studentData,
+            profile: base64Profile,
+            school_year,
+            semester
+        });
+    } catch (error) {
+        console.error('Error fetching student details:', error.message);
+        res.status(500).json({ error: 'An internal server error occurred' });
+    }
+});
+
 app.get('/subjectsPreview', async (req, res) => {
     try {
         const gradeLevel = req.query.gradeLevel; // Get the grade level from query parameters
@@ -1649,9 +1713,10 @@ app.get('/subjectsPreview', async (req, res) => {
 
 app.get('/getSectionsAndSchedules/:subject_id', async (req, res) => {
     const { subject_id } = req.params;
+    const { semester, school_year } = req.query; // Get semester and school_year from query parameters
 
     try {
-        const result = await pool.query(`
+        const query = `
             SELECT
                 s.section_id,
                 s.section_name,
@@ -1672,9 +1737,15 @@ app.get('/getSectionsAndSchedules/:subject_id', async (req, res) => {
             JOIN scheduletbl sc
             ON s.section_id = sc.section_id
             WHERE s.subject_id = $1
+              AND s.semester = $2  -- Filter by semester
+              AND s.school_year = $3  -- Filter by school year
               AND s.section_status = 'Active'  -- Filter for active sections
             GROUP BY s.section_id, s.section_name, s.semester, s.school_year, s.program, s.strand, s.faculty_name, s.grade_level, s.slot
-        `, [subject_id]);
+        `;
+
+        const params = [subject_id, semester, school_year];
+
+        const result = await pool.query(query, params);
 
         // Log the fetched data to the console
         console.log("Fetched data:", result.rows);
@@ -1684,6 +1755,26 @@ app.get('/getSectionsAndSchedules/:subject_id', async (req, res) => {
         console.error("Error fetching sections and schedules:", error);
         res.status(500).json({ message: "Error fetching sections and schedules." });
     }
+});
+
+app.put('/enable/enroll', (req, res) => {
+    const { canEnroll } = req.body;
+
+    // Validate input
+    if (typeof canEnroll !== 'boolean') {
+        return res.status(400).json({ message: 'Invalid input. canEnroll must be a boolean.' });
+    }
+
+    // Update query to set can_enroll for all students
+    const sql = 'UPDATE studenttbl SET can_enroll = $1'; // Use $1 for parameterized queries in PostgreSQL
+    
+    pool.query(sql, [canEnroll], (error, results) => {
+        if (error) {
+            console.error('Error updating enrollment:', error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+        res.json({ message: 'Enrollment updated successfully for all students', affectedRows: results.rowCount }); // Use rowCount for PostgreSQL
+    });
 });
 
 // Function to generate enrollment_id as "student_id + random number"

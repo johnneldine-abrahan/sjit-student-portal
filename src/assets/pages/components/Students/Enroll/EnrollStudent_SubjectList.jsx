@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types"; // Import PropTypes for prop validation
 import "./Enroll.css";
 
-const EnrollStudent_SubjectsList = ({ gradeLevel, strand, studentId }) => {
-  const [subjects, setSubjects] = useState([]); // Current subjects to enroll
-  const [originalSubjects, setOriginalSubjects] = useState([]); // Original subjects for maintaining order
-  const [addedSubjects, setAddedSubjects] = useState([]); // State for added subjects
+const EnrollStudent_SubjectsList = ({ gradeLevel, strand, studentId, semester, schoolYear }) => {
+  const [subjects, setSubjects] = useState([]);
+  const [originalSubjects, setOriginalSubjects] = useState([]);
+  const [addedSubjects, setAddedSubjects] = useState([]);
   const [viewMode, setViewMode] = useState("list");
   const [popup, setPopup] = useState({
     show: false,
@@ -13,64 +13,45 @@ const EnrollStudent_SubjectsList = ({ gradeLevel, strand, studentId }) => {
     sectionsAndSchedules: [],
   });
 
-  // Sample subjects data for demonstration
   useEffect(() => {
-    const sampleSubjects = [
-      { subject_id: 1, subject_name: "Mathematics" },
-      { subject_id: 2, subject_name: "Science" },
-      { subject_id: 3, subject_name: "History" },
-    ];
-    setSubjects(sampleSubjects);
-    setOriginalSubjects(sampleSubjects);
-  }, []);
+    const fetchSubjects = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:3000/subjectsPreview?gradeLevel=${gradeLevel}&strand=${strand}`
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setSubjects(data || []);
+        setOriginalSubjects(data || []);
+      } catch (error) {
+        console.error("Error fetching subjects:", error);
+      }
+    };
 
-  const handlePopup = (record) => {
-    // Sample sections and schedules data for demonstration
-    const sampleSectionsAndSchedules = [
-      {
-        section_name: "A",
-        grade_level: 10,
-        schedules: [
-          {
-            day: "Monday",
-            start_time: "08:00",
-            end_time: "09:30",
-            room: "101",
-          },
-          {
-            day: "Wednesday",
-            start_time: "08:00",
-            end_time: "09:30",
-            room: "101",
-          },
-        ],
-        faculty_name: "Mr. Smith",
-      },
-      {
-        section_name: "B",
-        grade_level: 10,
-        schedules: [
-          {
-            day: "Tuesday",
-            start_time: "10:00",
-            end_time: "11:30",
-            room: "102",
-          },
-          {
-            day: "Thursday",
-            start_time: "10:00",
-            end_time: "11:30",
-            room: "102",
-          },
-        ],
-        faculty_name: "Ms. Johnson",
-      },
-    ];
-    setPopup({
-      show: true,
-      record: record,
-      sectionsAndSchedules: sampleSectionsAndSchedules,
-    });
+    if (gradeLevel) {
+      fetchSubjects();
+    }
+  }, [gradeLevel, strand]);
+
+  const handlePopup = async (record) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/getSectionsAndSchedules/${record.subject_id}?semester=${semester}&school_year=${schoolYear}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      setPopup({
+        show: true,
+        record: record,
+        sectionsAndSchedules: data || [],
+      });
+    } catch (error) {
+      console.error("Error fetching sections and schedules:", error);
+    }
   };
 
   const handleClose = () => {
@@ -138,6 +119,45 @@ const EnrollStudent_SubjectsList = ({ gradeLevel, strand, studentId }) => {
     }
   };
 
+  const handleQueueEnrollment = async () => {
+    try {
+      const section_ids = addedSubjects.map(
+        (subject) => subject.sectionAndSchedule.section_id
+      );
+      console.log({
+        student_id: studentId,
+        section_ids: section_ids,
+      });
+
+      if (!studentId || section_ids.length === 0) {
+        alert("Student ID or section IDs are missing.");
+        return;
+      }
+
+      const response = await fetch("http://localhost:3000/enroll", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          student_id: studentId,
+          section_ids: section_ids,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const result = await response.json();
+      alert(result.message);
+    } catch (error) {
+      console.error("Error during enrollment:", error);
+      alert("Enrollment failed. Please try again.");
+    }
+    window.location.reload();
+  };
+
   return (
     <div className="subject-list">
       <div className="view-toggle">
@@ -196,7 +216,7 @@ const EnrollStudent_SubjectsList = ({ gradeLevel, strand, studentId }) => {
             </thead>
             <tbody>
               {Array.isArray(addedSubjects) && addedSubjects.length > 0 ? (
-                addedSubjects.map((addedSubject, index) => (
+                addedSubjects.map((addedSubject) => (
                   <tr key={addedSubject.subject.subject_id}>
                     <td>{addedSubject.subject.subject_id}</td>
                     <td>{addedSubject.subject.subject_name}</td>
@@ -250,7 +270,7 @@ const EnrollStudent_SubjectsList = ({ gradeLevel, strand, studentId }) => {
               <button
                 type="submit"
                 className="queue"
-                onClick={() => alert("Queue functionality not implemented")}
+                onClick={handleQueueEnrollment}
               >
                 Queue
               </button>
@@ -339,9 +359,11 @@ const EnrollStudent_SubjectsList = ({ gradeLevel, strand, studentId }) => {
 };
 
 EnrollStudent_SubjectsList.propTypes = {
-  gradeLevel: PropTypes.number,
-  strand: PropTypes.string,
-  studentId: PropTypes.number,
+  gradeLevel: PropTypes.number.isRequired,
+  strand: PropTypes.string.isRequired,
+  studentId: PropTypes.number.isRequired,
+  semester: PropTypes.string.isRequired,
+  schoolYear: PropTypes.string.isRequired,
 };
 
 export default EnrollStudent_SubjectsList;

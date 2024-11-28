@@ -6,14 +6,14 @@ import Enroll_Student_Preview from './Enroll_Student_Preview';
 
 const Enroll_Students_Content = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [studentId, setStudentId] = useState(null); // State to hold student_id
+  const [studentId, setStudentId] = useState(null);
 
   const handleStudentSelected = (studentDetails) => {
     setSelectedStudent(studentDetails);
   };
 
   const handleStudentIdChange = (id) => {
-    setStudentId(id); // Update the studentId state
+    setStudentId(id);
   };
 
   return (
@@ -24,7 +24,9 @@ const Enroll_Students_Content = () => {
         <Enroll_SubjectsList 
           gradeLevel={selectedStudent.grade_level} 
           strand={selectedStudent.strand} 
-          studentId={studentId} // Pass studentId to Enroll_SubjectsList
+          studentId={studentId} 
+          semester={selectedStudent.semester} // Pass semester to Enroll_SubjectsList
+          schoolYear={selectedStudent.school_year} // Pass school_year to Enroll_SubjectsList
         />
       )}
     </div>

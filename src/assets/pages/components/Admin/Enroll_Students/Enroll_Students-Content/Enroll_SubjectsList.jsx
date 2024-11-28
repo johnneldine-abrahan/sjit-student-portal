@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./Enroll_Students_Content.css";
 
-const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
-  const [subjects, setSubjects] = useState([]); // Current subjects to enroll
-  const [originalSubjects, setOriginalSubjects] = useState([]); // Original subjects for maintaining order
-  const [addedSubjects, setAddedSubjects] = useState([]); // State for added subjects
+const Enroll_SubjectsList = ({ gradeLevel, strand, studentId, semester, schoolYear }) => {
+  const [subjects, setSubjects] = useState([]);
+  const [originalSubjects, setOriginalSubjects] = useState([]);
+  const [addedSubjects, setAddedSubjects] = useState([]);
   const [viewMode, setViewMode] = useState("list");
   const [popup, setPopup] = useState({
     show: false,
@@ -16,14 +16,14 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
     const fetchSubjects = async () => {
       try {
         const response = await fetch(
-          `https://san-juan-institute-of-technology-backend.onrender.com/subjectsPreview?gradeLevel=${gradeLevel}&strand=${strand}`
+          `http://localhost:3000/subjectsPreview?gradeLevel=${gradeLevel}&strand=${strand}`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
         setSubjects(data || []);
-        setOriginalSubjects(data || []); // Store the original subjects
+        setOriginalSubjects(data || []);
       } catch (error) {
         console.error("Error fetching subjects:", error);
       }
@@ -37,7 +37,7 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
   const handlePopup = async (record) => {
     try {
       const response = await fetch(
-        `https://san-juan-institute-of-technology-backend.onrender.com/getSectionsAndSchedules/${record.subject_id}`
+        `http://localhost:3000/getSectionsAndSchedules/${record.subject_id}?semester=${semester}&school_year=${schoolYear}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -81,38 +81,32 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
   }, [popup.show]);
 
   const handleAddSubject = (subject, sectionAndSchedule) => {
-    // Add the subject to the addedSubjects state
     setAddedSubjects((prevAddedSubjects) => [
       ...prevAddedSubjects,
       { subject, sectionAndSchedule },
     ]);
 
-    // Remove the subject from the subjects state
     setSubjects((prevSubjects) =>
       prevSubjects.filter(
         (prevSubject) => prevSubject.subject_id !== subject.subject_id
       )
     );
 
-    // Close the popup
     handleClose();
   };
 
   const handleRemoveSubject = (subjectId) => {
-    // Find the subject that is being removed
     const subjectToRemove = addedSubjects.find(
       (addedSubject) => addedSubject.subject.subject_id === subjectId
     );
 
     if (subjectToRemove) {
-      // Remove the subject from the addedSubjects state
       setAddedSubjects((prevAddedSubjects) =>
         prevAddedSubjects.filter(
           (addedSubject) => addedSubject.subject.subject_id !== subjectId
         )
       );
 
-      // Add the subject back to the subjects state while maintaining original order
       setSubjects((prevSubjects) => {
         const newSubjects = [...prevSubjects, subjectToRemove.subject];
         return originalSubjects.filter((originalSubject) =>
@@ -139,7 +133,7 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
         return;
       }
 
-      const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/enroll", {
+      const response = await fetch("http://localhost:3000/enroll", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -154,7 +148,7 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
         throw new Error("Network response was not ok");
       }
 
-      const result = await response.json();
+      const result = await response.json ();
       alert(result.message);
     } catch (error) {
       console.error("Error during enrollment:", error);
@@ -215,7 +209,7 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId }) => {
                 <th>Subject Name</th>
                 <th>Section</th>
                 <th>Schedule</th>
-                <th> Professor</th>
+                <th>Professor</th>
                 <th>Action</th>
               </tr>
             </thead>

@@ -24,7 +24,7 @@ const Enroll = () => {
         const token = localStorage.getItem("token");
         const config = { headers: { Authorization: `Bearer ${token}` } };
 
-        const response = await axios.get("http://localhost:3000/students-enroll", config);
+        const response = await axios.get("https://san-juan-institute-of-technology-backend.onrender.com/students-enroll", config);
         setStudentData(response.data);
       } catch (err) {
         console.error("Error fetching student data:", err);

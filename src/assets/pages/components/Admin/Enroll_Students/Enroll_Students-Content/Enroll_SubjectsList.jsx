@@ -16,7 +16,7 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId, semester, schoolYe
     const fetchSubjects = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/subjectsPreview?gradeLevel=${gradeLevel}&strand=${strand}`
+          `https://san-juan-institute-of-technology-backend.onrender.com/subjectsPreview?gradeLevel=${gradeLevel}&strand=${strand}`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -37,7 +37,7 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId, semester, schoolYe
   const handlePopup = async (record) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/getSectionsAndSchedules/${record.subject_id}?semester=${semester}&school_year=${schoolYear}`
+        `https://san-juan-institute-of-technology-backend.onrender.com/getSectionsAndSchedules/${record.subject_id}?semester=${semester}&school_year=${schoolYear}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -133,7 +133,7 @@ const Enroll_SubjectsList = ({ gradeLevel, strand, studentId, semester, schoolYe
         return;
       }
 
-      const response = await fetch("http://localhost:3000/enroll", {
+      const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/enroll", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -2697,8 +2697,8 @@ app.get('/class-insights', authenticateToken, async (req, res) => {
 
         const insights = {
             averageGrade: 0,
-            highestGrade: { value: -Infinity, student: '' }, // Initialize to very low
-            lowestGrade: { value: Infinity, student: '' },   // Initialize to very high
+            highestGrade: { value: -Infinity, student: '' },
+            lowestGrade: { value: Infinity, student: '' },
             weakStudents: [],
             strongStudents: [],
             recommendations: []
@@ -2725,7 +2725,7 @@ app.get('/class-insights', authenticateToken, async (req, res) => {
             }
         });
 
-        insights.averageGrade = (totalGrades / gradesData.length).toFixed(2); // Calculate average
+        insights.averageGrade = (totalGrades / gradesData.length).toFixed(2);
 
         // Recommendations based on the performance of the class
         if (insights.weakStudents.length > 0) {
@@ -2737,7 +2737,7 @@ app.get('/class-insights', authenticateToken, async (req, res) => {
         if (insights.strongStudents.length > 0) {
             insights.recommendations.push(
                 'Encourage high-performing students to help their peers, as peer tutoring can be beneficial for both parties.'
- );
+            );
         }
 
         if (insights.averageGrade < 85) {
@@ -2746,7 +2746,175 @@ app.get('/class-insights', authenticateToken, async (req, res) => {
             );
         }
 
-        // Additional recommendations pool
+        // Subject-specific recommendations
+        const subjectRecommendations = {
+            'Filipino 7': [
+                'Incorporate age-appropriate Filipino literature to enhance language skills.',
+                'Encourage participation in Filipino language activities to improve fluency.',
+                'Utilize multimedia resources to make learning more engaging and relatable.'
+            ],
+            'Filipino 8': [
+                'Focus on developing comprehension skills through diverse texts.',
+                'Incorporate creative writing exercises to foster expression.',
+                'Encourage group discussions to enhance verbal communication skills.'
+            ],
+            'Filipino 9': [
+                'Promote critical thinking through literature analysis and discussions.',
+                'Integrate technology in assignments to improve digital literacy.',
+                'Facilitate peer review sessions to enhance editing skills.'
+            ],
+            'Filipino 10': [
+                'Prepare students for advanced writing through composition techniques.',
+                'Encourage research projects that require critical analysis of texts.',
+                'Promote public speaking through presentations and debates.'
+            ],
+            'English 7': [
+                'Promote reading comprehension through diverse literature selections.',
+                'Implement writing workshops to enhance students’ writing skills.',
+                'Encourage participation in English-speaking competitions to build confidence.'
+            ],
+            'English 8': [
+                'Focus on developing critical thinking through literature analysis.',
+                'Incorporate creative writing exercises to foster expression.',
+                'Utilize group discussions to enhance verbal communication skills.'
+            ],
+            'English 9': [
+                'Encourage students to explore various genres of literature.',
+                'Integrate technology in writing assignments to improve digital literacy.',
+                'Facilitate peer review sessions to enhance editing skills.'
+            ],
+            'English 10': [
+                'Prepare students for college-level writing through advanced composition techniques.',
+                'Encourage research projects that require critical analysis of texts.',
+                'Promote public speaking through presentations and debates.'
+            ],
+            'Math 7': [
+                'Use real-life applications of math to demonstrate its relevance.',
+                'Incorporate technology, such as math software, to aid learning.',
+                'Organize math clubs or competitions to foster a love for the subject.'
+            ],
+            'Math 8': [
+                'Encourage problem-solving through collaborative group work.',
+                'Utilize visual aids to enhance understanding of complex concepts.',
+                'Integrate games and activities to make learning fun.'
+            ],
+            'Math 9': [
+                'Focus on algebraic concepts and their applications in real life.',
+                'Encourage students to create their own math problems to enhance understanding.',
+                'Utilize online resources for additional practice and support.'
+            ],
+            'Math 10': [
+                'Prepare students for advanced topics such as calculus and statistics.',
+                'Encourage critical thinking through challenging problem sets.',
+                'Integrate technology to explore mathematical concepts interactively.'
+            ],
+            'Science 7': [
+                'Encourage hands-on experiments to make scientific concepts more tangible.',
+                'Integrate current scientific discoveries into lessons to spark interest.',
+                'Organize field trips to science museums or nature reserves for experiential learning.'
+            ],
+            'Science 8': [
+                'Focus on the scientific method and its application in experiments.',
+                'Encourage group projects to foster collaboration and teamwork.',
+                'Utilize multimedia resources to enhance understanding of scientific concepts.'
+            ],
+            'Science 9': [
+                'Promote inquiry-based learning through research projects.',
+                'Integrate technology to explore scientific phenomena interactively.',
+                'Encourage discussions on current scientific issues to enhance critical thinking.'
+            ],
+            'Science 10': [
+                'Prepare students for advanced topics in biology, chemistry, and physics.',
+                'Encourage independent research projects to foster curiosity.',
+                'Utilize simulations and models to explain complex scientific concepts.'
+            ],
+            'TLE 7': [
+                'Provide workshops on practical skills related to TLE subjects.',
+                'Encourage project-based learning to apply skills in real-world scenarios.',
+                'Invite industry professionals to share insights and experiences.'
+            ],
+            'TLE 8': [
+                'Focus on developing technical skills through hands-on activities.',
+                'Encourage teamwork through group projects and presentations.',
+                'Integrate technology to enhance learning experiences.'
+            ],
+            'TLE 9': [
+                'Promote entrepreneurship through business-related projects.',
+                'Encourage students to explore various career paths in TLE fields.',
+                'Utilize real-world scenarios to apply learned skills.'
+            ],
+            'TLE 10': [
+                'Prepare students for advanced skills in their chosen TLE fields.',
+                'Encourage independent projects to foster creativity and innovation.',
+                'Integrate community service projects to apply skills in real-world contexts.'
+            ],
+            'Araling Panlipunan 7': [
+                'Incorporate local history and culture into lessons to make them more relevant.',
+                'Encourage debates and discussions on current events to enhance critical thinking.',
+                'Utilize documentaries and films to provide visual context to historical events.'
+            ],
+            'Araling Panlipunan 8': [
+                'Focus on the importance of civic engagement and social responsibility.',
+                'Encourage research projects on historical events and figures to deepen understanding.',
+                'Utilize role-playing activities to explore historical scenarios'
+            ],
+            'Araling Panlipunan 9': [
+                'Promote critical analysis of historical events and their impact on society.',
+                'Encourage discussions on contemporary issues related to history.',
+                'Integrate technology to research and present historical topics.'
+            ],
+            'Araling Panlipunan 10': [
+                'Prepare students for advanced topics in social studies and governance.',
+                'Encourage independent research on significant historical movements.',
+                'Utilize simulations to understand political processes and systems.'
+            ],
+            'MAPEH 7': [
+                'Encourage participation in school performances or art exhibits to showcase talents.',
+                'Integrate physical activities into lessons to promote a healthy lifestyle.',
+                'Provide opportunities for students to explore various art forms.'
+            ],
+            'MAPEH 8': [
+                'Focus on developing skills in music, arts, and physical education.',
+                'Encourage teamwork through group performances and projects.',
+                'Utilize technology to enhance learning in music and arts.'
+            ],
+            'MAPEH 9': [
+                'Promote appreciation for different art forms through exposure and practice.',
+                'Encourage participation in sports and physical activities for health.',
+                'Integrate discussions on the importance of arts in culture and society.'
+            ],
+            'MAPEH 10': [
+                'Prepare students for advanced skills in music, arts, and physical education.',
+                'Encourage independent projects that showcase creativity and talent.',
+                'Utilize community resources to enhance learning experiences in MAPEH.'
+            ],
+            'Edukasyon sa Pagpapakatao 7': [
+                'Facilitate discussions on moral dilemmas to enhance ethical reasoning.',
+                'Encourage community service projects to foster social responsibility.',
+                'Incorporate role-playing activities to develop empathy and understanding.'
+            ],
+            'Edukasyon sa Pagpapakatao 8': [
+                'Focus on developing critical thinking and decision-making skills.',
+                'Encourage discussions on personal values and ethics.',
+                'Utilize case studies to explore real-life moral issues.'
+            ],
+            'Edukasyon sa Pagpapakatao 9': [
+                'Promote self-awareness and personal development through reflective activities.',
+                'Encourage community involvement to enhance social responsibility.',
+                'Integrate discussions on global issues and their ethical implications.'
+            ],
+            'Edukasyon sa Pagpapakatao 10': [
+                'Prepare students for leadership roles through skills development.',
+                'Encourage independent projects that promote social change.',
+                'Utilize community resources to enhance learning about citizenship and ethics.'
+            ],
+        };
+
+        if (subjectRecommendations[subject_name]) {
+            insights.recommendations.push(...subjectRecommendations[subject_name]);
+        }
+
+        // Expanded additional recommendations
         const additionalRecommendations = [
             'Encourage students to form study groups to foster collaboration.',
             'Incorporate more interactive learning methods to engage students.',
@@ -2755,7 +2923,15 @@ app.get('/class-insights', authenticateToken, async (req, res) => {
             'Organize workshops or seminars on effective study techniques.',
             'Implement regular assessments to monitor student progress.',
             'Create a positive learning environment that encourages questions and discussions.',
-            'Offer incentives for improvement to motivate students.'
+            'Offer incentives for improvement to motivate students.',
+            'Encourage students to set personal academic goals and track their progress.',
+            'Integrate mindfulness and stress management techniques into the curriculum.',
+            'Promote the use of educational apps and platforms for additional practice.',
+            'Facilitate parent-teacher meetings to discuss student progress and strategies.',
+            'Encourage students to participate in extracurricular activities to enhance skills.',
+            'Utilize peer mentoring programs to support student learning.',
+            'Incorporate project-based learning to apply knowledge in real-world contexts.',
+            'Encourage students to reflect on their learning experiences and outcomes.'
         ];
 
         // Randomly add up to 3 additional recommendations
@@ -2768,6 +2944,508 @@ app.get('/class-insights', authenticateToken, async (req, res) => {
         res.json({ gradesData, insights });
     } catch (err) {
         console.error('Error fetching class insights:', err);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.get('/student-recommendations', authenticateToken, async (req, res) => {
+    const { full_name, school_year, semester, quarter, grade_level, section_name, subject_name } = req.query;
+
+    if (!full_name || !school_year || !semester || !quarter || !grade_level || !section_name || !subject_name) {
+        return res.status(400).json({ message: 'full_name, school_year, semester, quarter, grade_level, section_name, and subject_name are required.' });
+    }
+
+    try {
+        // Fetching the student's grades for the specified criteria
+        const gradesQuery = `
+            SELECT
+                gr.grade,
+                CONCAT(st.last_name, ', ', st.first_name, ' ', st.middle_name) AS full_name
+            FROM
+                gradestbl gr
+            JOIN teachingload_tbl tl ON gr.teachingload_id = tl.teachingload_id
+            JOIN sectiontbl sec ON tl.section_id = sec.section_id
+            JOIN subjecttbl sub ON sec.subject_id = sub.subject_id
+            JOIN enrollmenttbl en ON sec.section_id = en.section_id AND gr.student_id = en.student_id
+            JOIN studenttbl st ON en.student_id = st.student_id
+            WHERE
+                CONCAT(st.last_name, ', ', st.first_name, ' ', st.middle_name) = $1
+                AND sec.school_year = $2
+                AND sec.semester = $3
+                AND gr.quarter = $4
+                AND sec.grade_level = $5
+                AND sec.section_name = $6
+                AND sub.subject_name = $7
+        `;
+
+        const gradesResult = await pool.query(gradesQuery, [full_name, school_year, semester, quarter, grade_level, section_name, subject_name]);
+
+        if (gradesResult.rows.length === 0) {
+            return res.status(404).json({ message: 'No grades found for the specified student and criteria.' });
+        }
+
+        const studentData = gradesResult.rows[0];
+        const grade = studentData.grade;
+
+        // Subject-specific recommendations
+        const subjectRecommendations = {
+            'Filipino 7': [
+                'Engage with Filipino literature to enhance your language skills.',
+                'Practice speaking in Filipino with friends or family to improve fluency.',
+                'Watch Filipino films or shows with subtitles to improve listening skills.',
+                'Write short stories or poems in Filipino to boost creativity and expression.',
+                'Listen to Filipino music and analyze the lyrics for deeper understanding.',
+                'Participate in Filipino cultural events to appreciate heritage.',
+                'Use language learning apps to practice vocabulary and grammar.',
+                'Read newspapers or magazines in Filipino to stay updated on current events.',
+                'Create a vocabulary journal to track new words and phrases.',
+                'Conduct interviews with elders about their experiences and stories.'
+            ],
+            'Filipino 8': [
+                'Focus on developing comprehension skills through diverse texts.',
+                'Participate in Filipino language activities to enhance your skills.',
+                'Join a Filipino book club to discuss literature and share insights.',
+                'Write book reports to summarize and analyze what you read.',
+                'Engage in role-playing exercises to practice conversational Filipino.',
+                'Create presentations on significant themes in Filipino literature.',
+                'Explore Filipino folklore and myths to understand cultural values.',
+                'Conduct research on contemporary Filipino authors and their works.',
+                'Utilize online resources and forums to discuss language learning.',
+                'Engage in debates on relevant social issues in Filipino.'
+            ],
+            'Filipino 9': [
+                'Promote critical thinking through literature analysis and discussions.',
+                'Utilize multimedia resources to make learning more engaging.',
+                'Conduct interviews with Filipino authors or poets to gain different perspectives.',
+                'Create presentations on significant themes in Filipino literature.',
+                'Analyze the impact of historical events on Filipino literature.',
+                'Write essays comparing different literary works.',
+                'Participate in poetry readings to develop public speaking skills.',
+                'Explore the influence of regional languages on Filipino literature.',
+                'Create a digital portfolio of literary analyses and projects.',
+                'Engage in community service projects that promote the Filipino language.'
+            ],
+            'Filipino 10': [
+                'Encourage research projects that require critical analysis of texts.',
+                'Promote public speaking through presentations and debates.',
+                'Explore the historical context of Filipino literature to deepen understanding.',
+                'Write reviews of books or articles to practice analytical writing skills.',
+                'Participate in literary competitions to showcase writing skills.',
+                'Analyze the role of literature in social movements.',
+                'Create a blog to discuss and critique Filipino literature.',
+                'Host discussions on the relevance of literature in contemporary society.',
+                'Explore adaptations of Filipino literature in film and theater.',
+                'Conduct workshops on creative writing in Filipino.'
+            ],
+            'English 7': [
+                'Read a variety of genres to improve comprehension and vocabulary.',
+                'Practice writing essays to enhance your writing skills.',
+                'Listen to audiobooks to improve listening and pronunciation.',
+                'Participate in creative writing exercises to stimulate imagination.',
+                'Engage in book discussions to share insights and opinions.',
+                'Create a reading log to track books read and lessons learned.',
+                'Write letters to authors to express thoughts on their works.',
+                'Explore poetry and write original poems to express emotions.',
+                'Use graphic organizers to outline essays and stories.',
+                'Join a public speaking club to develop communication skills.'
+            ],
+            'English 8': [
+                'Focus on developing critical thinking through literature analysis.',
+                'Participate in discussions to enhance verbal communication skills.',
+                'Write book reports to summarize and analyze what you read.',
+                'Engage in peer reviews to learn from others’ writing styles.',
+                'Explore different writing styles and techniques through workshops.',
+                'Create multimedia presentations on literary themes.',
+                'Analyze character development in novels and plays.',
+                'Conduct research on authors and their historical contexts.',
+                'Participate in local writing contests to gain experience.',
+                'Host a literary-themed event to encourage community engagement.'
+            ],
+            'English 9': [
+                'Explore various genres of literature to broaden your understanding.',
+                'Integrate technology in writing assignments to improve skills.',
+                'Attend workshops on public speaking to build confidence.',
+                'Create a blog to express thoughts and share writing with a wider audience.',
+                'Analyze the use of literary devices in different texts.',
+                'Write a short story or play and share it with the class.',
+                'Conduct interviews with peers about their reading experiences.',
+                'Explore the impact of literature on society and culture.',
+                'Create a reading challenge to encourage diverse reading habits.',
+                'Discuss the role of language in shaping identity and culture.'
+            ],
+            'English 10': [
+                'Prepare for college-level writing through advanced composition techniques.',
+                'Engage in research projects that require critical analysis.',
+                'Participate in writing competitions to challenge your skills.',
+                'Explore literary theory to deepen your understanding of texts.',
+                'Create a portfolio of writing samples to showcase your skills.',
+                'Analyze the relationship between literature and historical events.',
+                'Host a literary salon to discuss various works and themes.',
+                'Write analytical essays on contemporary issues reflected in literature.',
+                'Explore adaptations of classic literature in modern media.',
+                'Conduct peer workshops to provide feedback on writing projects.'
+            ],
+            'Math 7': [
+                'Utilize real-life applications of math to demonstrate its relevance.',
+                'Incorporate technology, such as math software, to aid learning.',
+                'Play math-based games to reinforce concepts in a fun way.',
+                'Create math journals to track problem-solving processes and reflections.',
+                'Conduct surveys and analyze data to practice statistics.',
+                'Explore geometry through art projects to visualize concepts.',
+                'Engage in math challenges to promote critical thinking.',
+                'Use manipulatives to understand fractions and decimals.',
+                'Collaborate on group projects to solve complex problems.',
+                'Discuss the history of mathematics and its impact on society.'
+            ],
+            'Math 8': [
+                'Encourage problem-solving through collaborative group work.',
+                'Integrate games and activities to make learning fun.',
+                'Use visual aids and manipulatives to illustrate complex concepts.',
+                'Conduct math scavenger hunts to apply math skills in real-world contexts.',
+                'Explore algebra through real-life scenarios and applications.',
+                'Create math-related projects that require research and presentation.',
+                'Analyze patterns and sequences in nature and art.',
+                'Host math competitions to foster a spirit of challenge.',
+                'Discuss the importance of math in various careers.',
+                'Utilize online resources for additional practice and support.'
+            ],
+            'Math 9': [
+                'Focus on algebraic concepts and their applications in real life.',
+                'Utilize online resources for additional practice and support.',
+                'Explore mathematical modeling to solve real-world problems.',
+                'Encourage students to create their own math problems and solutions.',
+                'Analyze graphs and data to understand trends and predictions.',
+                'Conduct experiments to explore probability and statistics.',
+                'Discuss the role of mathematics in technology and engineering.',
+                'Create a math portfolio to showcase projects and learning.',
+                'Engage in peer tutoring to reinforce understanding of concepts.',
+                'Explore the connections between math and art through geometry.'
+            ],
+            'Math 10': [
+                'Prepare students for advanced topics such as calculus and statistics.',
+                'Encourage critical thinking through challenging problem sets.',
+                'Introduce real-world case studies to apply mathematical concepts.',
+                'Host math competitions to foster a spirit of challenge and collaboration.',
+                'Explore the applications of calculus in various fields.',
+                'Discuss the importance of statistics in research and decision-making.',
+                'Create projects that require the application of mathematical theories.',
+                'Analyze financial literacy concepts, such as budgeting and investing.',
+                'Engage in discussions about the ethics of mathematical modeling.',
+                'Collaborate on interdisciplinary projects that integrate math with other subjects.'
+            ],
+            'Science 7': [
+                'Engage in hands-on experiments to make scientific concepts more tangible.',
+                'Integrate current scientific discoveries into lessons to spark interest.',
+                'Visit science museums or nature centers to enhance learning experiences.',
+                'Create science journals to document experiments and observations.',
+                'Explore the scientific method through inquiry-based projects.',
+                'Discuss environmental issues and their scientific implications.',
+                'Conduct research on famous scientists and their contributions.',
+                'Participate in science fairs to showcase student projects.',
+                'Analyze the impact of technology on scientific advancements.',
+                'Explore the connections between science and everyday life.'
+            ],
+            'Science 8': [
+                'Focus on the scientific method and its application in experiments.',
+                'Encourage group projects to foster collaboration and teamwork.',
+                'Incorporate field trips to explore scientific phenomena in real life.',
+                'Conduct science demonstrations to illustrate complex concepts.',
+                'Explore the principles of physics through hands-on activities.',
+                'Discuss the importance of scientific literacy in society.',
+                'Create models to represent biological systems and processes.',
+                'Engage in discussions about ethical considerations in science.',
+                'Analyze the role of science in addressing global challenges.',
+                'Explore careers in science and technology fields.'
+            ],
+            'Science 9': [
+                'Promote inquiry-based learning through research projects.',
+                'Integrate technology to explore scientific phenomena interactively.',
+                'Encourage students to present their research findings to the class.',
+                'Explore the impact of human activities on ecosystems.',
+                'Conduct experiments to understand chemical reactions and properties.',
+                'Discuss the importance of renewable energy sources.',
+                'Analyze data from scientific studies to draw conclusions.',
+                'Create presentations on current scientific advancements.',
+                'Explore the connections between science and health.',
+                'Engage in community service projects related to environmental science.'
+            ],
+            'Science 10': [
+                'Prepare for higher-level science courses by focusing on critical analysis.',
+                'Encourage participation in science fairs or competitions to enhance learning.',
+                'Discuss ethical considerations in scientific research and advancements.',
+                'Create a portfolio of scientific experiments and findings over the year.',
+                'Explore the role of technology in scientific research and innovation.',
+                'Analyze case studies of significant scientific discoveries.',
+                'Engage in discussions about the impact of science on society and culture.',
+                'Conduct experiments to explore advanced topics in physics and chemistry.',
+                'Collaborate on interdisciplinary projects that integrate science with other subjects.',
+                'Explore career opportunities in various scientific fields and their societal contributions.'
+            ],
+            'Araling Panlipunan 7': [
+                'Explore local history to connect students with their heritage.',
+                'Encourage discussions on current events to foster civic awareness.',
+                'Create timelines of significant historical events to visualize progress.',
+                'Incorporate role-playing activities to understand historical perspectives.',
+                'Conduct research on local leaders and their contributions to society.',
+                'Analyze the impact of geography on historical developments.',
+                'Explore cultural practices and traditions in different regions.',
+                'Engage in community service projects to promote civic responsibility.',
+                'Discuss the importance of understanding history in shaping the future.',
+                'Create presentations on the influence of historical events on modern society.'
+            ],
+            'Araling Panlipunan 8': [
+                'Integrate geography with history to provide a comprehensive understanding.',
+                'Utilize multimedia resources to make lessons more engaging.',
+                'Conduct research projects on local leaders and their contributions.',
+                'Encourage debates on historical events to develop critical thinking.',
+                'Explore the impact of colonialism on Philippine history.',
+                'Analyze the role of culture in shaping national identity.',
+                'Create a documentary project on significant historical events.',
+                'Discuss the importance of civic engagement in a democratic society.',
+                'Explore the connections between history and current social issues.',
+                'Engage in community discussions about local history and heritage.'
+            ],
+            'Araling Panlipunan 9': [
+                'Promote critical thinking through debates on historical events.',
+                'Encourage research on significant figures in Philippine history.',
+                'Create presentations on the impact of historical events on modern society.',
+                'Explore the influence of culture on historical developments.',
+                'Analyze the role of social movements in shaping history.',
+                'Discuss the importance of understanding historical context in current events.',
+                'Conduct interviews with community members about their historical experiences.',
+                'Create a timeline of significant events in Philippine history.',
+                'Explore the connections between history and geography.',
+                'Engage in service-learning projects that relate to historical themes.'
+            ],
+            'Araling Panlipunan 10': [
+                'Focus on contemporary issues and their historical context.',
+                'Encourage community involvement through service-learning projects.',
+                'Analyze case studies of social movements to understand their impact.',
+                'Discuss the role of government and citizenship in a democratic society.',
+                'Explore the significance of human rights in history and current events.',
+                'Create a project on the impact of globalization on local cultures.',
+                'Engage in discussions about the importance of civic education.',
+                'Analyze the role of media in shaping public opinion and history.',
+                'Explore the connections between economics and historical developments.',
+                'Conduct research on the contributions of Filipinos in global history.'
+            ],
+            'TLE 7': [
+                'Engage in practical activities to develop skills in various trades.',
+                'Encourage creativity through projects that require design and execution.',
+                'Explore different career paths related to TLE subjects.',
+                'Host workshops with professionals to provide real-world insights.',
+                'Create a portfolio of projects to showcase skills and creativity.',
+                'Participate in community service projects that utilize TLE skills.',
+                'Analyze the importance of entrepreneurship in local economies.',
+                'Explore the role of technology in various trades and crafts.',
+                'Conduct research on innovations in TLE fields.',
+                'Engage in discussions about the future of work and skills needed.'
+            ],
+            'TLE 8': [
+                'Promote entrepreneurship through business plan development.',
+                'Integrate technology in TLE projects to enhance learning.',
+                'Create a mock business to practice management and marketing skills.',
+                'Encourage students to present their projects to a panel for feedback.',
+                'Explore the importance of sustainability in TLE practices.',
+                'Conduct research on successful entrepreneurs and their journeys.',
+                'Analyze the impact of technology on traditional trades.',
+                'Engage in community projects that promote local businesses.',
+                'Discuss the role of innovation in TLE fields.',
+                'Create a business portfolio to showcase entrepreneurial skills.'
+            ],
+            'TLE 9': [
+                'Focus on advanced skills in specific trades or crafts.',
+                'Encourage collaboration on projects to foster teamwork.',
+                'Participate in community service projects to apply TLE skills.',
+                'Explore innovations in technology related to TLE fields.',
+                'Conduct workshops to develop specialized skills in various trades.',
+                'Analyze market trends to understand consumer needs and preferences.',
+                'Create a project that addresses a community issue using TLE skills.',
+                'Engage in discussions about the ethics of business practices.',
+                'Explore the role of craftsmanship in cultural heritage.',
+                'Develop a portfolio showcasing completed projects and skills acquired.'
+            ],
+            'TLE 10': [
+                'Prepare students for real-world applications of their skills.',
+                'Encourage participation in competitions to showcase their talents.',
+                'Develop a portfolio of projects to demonstrate skills and creativity.',
+                'Invite industry experts to share insights on current trends and practices.',
+                'Analyze the importance of networking in professional development.',
+                'Explore the impact of globalization on local trades and industries.',
+                'Conduct research on emerging technologies in TLE fields.',
+                'Engage in community service projects that utilize advanced TLE skills.',
+                'Discuss the significance of lifelong learning in trades and crafts.',
+                'Create a business plan for a startup idea to practice entrepreneurship.'
+            ],
+            'MAPEH 7': [
+                'Encourage participation in various physical activities to promote health.',
+                'Integrate music and arts into lessons to enhance creativity.',
+                'Organize school events to showcase student talents in arts and sports.',
+                'Explore the cultural significance of different art forms and music genres.',
+                'Participate in workshops to learn new skills in music and arts.',
+                'Discuss the importance of physical fitness in overall well-being.',
+                'Create a project that combines music and visual arts.',
+                'Engage in community service through arts and sports activities.',
+                'Analyze the impact of music on emotions and culture.',
+                'Explore the history of various sports and their cultural significance.'
+            ],
+            'MAPEH 8': [
+                'Focus on the importance of health and fitness in daily life.',
+                'Encourage students to explore different forms of artistic expression.',
+                'Create fitness challenges to promote active lifestyles.',
+                'Incorporate discussions on the impact of arts on society.',
+                'Participate in local arts and sports events to showcase talents.',
+                'Explore the connections between music, dance, and cultural identity.',
+                'Conduct research on influential artists and their contributions.',
+                'Engage in collaborative projects that combine different art forms.',
+                'Discuss the role of sports in promoting teamwork and discipline.',
+                'Create a portfolio of artistic works and fitness achievements.'
+            ],
+            'MAPEH 9': [
+                'Promote teamwork through group sports and activities.',
+                'Encourage students to create their own artistic projects.',
+                'Explore the history of various music genres and their cultural impact.',
+                'Organize talent shows to celebrate student creativity and skills.',
+                'Discuss the importance of mental health and wellness in sports.',
+                'Analyze the role of arts in community development and identity.',
+                'Engage in workshops to learn about different dance styles.',
+                'Create a project that promotes health awareness in the community.',
+                'Explore the connections between physical education and academic performance.',
+                'Conduct research on the benefits of arts education in schools.'
+            ],
+            'MAPEH 10': [
+                'Prepare students for lifelong fitness and wellness habits.',
+                'Encourage participation in community arts and sports events.',
+                'Discuss the role of arts in personal and community identity.',
+                'Explore career opportunities in the fields of arts and physical education.',
+                'Analyze the impact of sports on social issues and community building.',
+                'Create a project that combines physical fitness and artistic expression.',
+                'Engage in discussions about the importance of cultural heritage in arts.',
+                'Explore the connections between health, fitness, and academic success.',
+                'Conduct workshops on leadership skills through sports.',
+                'Create a portfolio showcasing artistic and athletic achievements.'
+            ],
+            'Edukasyon sa Pagpapakatao 7': [
+                'Engage in discussions about values and ethics in daily life.',
+                'Encourage community service to foster empathy and social responsibility.',
+                'Create projects that promote kindness and respect in the community.',
+                'Explore the importance of cultural diversity and inclusion.',
+                'Discuss the role of family and community in personal development.',
+                'Analyze case studies of ethical dilemmas in society.',
+                'Engage in role-playing activities to understand different perspectives.',
+                'Create a vision board to set personal goals and aspirations.',
+                'Explore the significance of emotional intelligence in relationships.',
+                'Conduct research on influential figures in social justice.'
+            ],
+            'Edukasyon sa Pagpapakatao 8': [
+                'Promote self-awareness and personal development through reflection.',
+                'Encourage participation in activities that promote social justice.',
+                'Discuss the impact of personal choices on community well-being.',
+                'Create a vision board to set personal goals and aspirations.',
+                'Explore the importance of communication skills in relationships.',
+                'Analyze the role of empathy in conflict resolution.',
+                'Engage in community service projects that address social issues.',
+                'Conduct workshops on leadership and teamwork skills.',
+                'Explore the significance of mental health awareness in personal development.',
+                'Discuss the importance of responsible decision-making in everyday life.'
+            ],
+            'Edukasyon sa Pagpapakatao 9': [
+                'Focus on the importance of relationships and communication skills.',
+                'Encourage students to explore their roles in society.',
+                'Organize workshops on conflict resolution and effective communication.',
+                'Discuss the significance of mental health and well-being.',
+                'Create projects that promote community engagement and service.',
+                'Analyze the impact of social media on personal relationships.',
+                'Engage in discussions about ethical decision-making in various scenarios.',
+                'Explore the importance of cultural competence in diverse communities.',
+                'Conduct research on the role of youth in social change.',
+                'Create a personal development plan to set future goals.'
+            ],
+            'Edukasyon sa Pagpapakatao 10': [
+                'Prepare students for responsible citizenship and community involvement.',
+                'Encourage critical thinking about social issues and personal values.',
+                'Create action plans for community improvement projects.',
+                'Explore the role of youth in shaping future societal values.',
+                'Discuss the importance of civic engagement in a democratic society.',
+                'Analyze case studies of successful social movements.',
+                'Engage in discussions about the impact of globalization on local cultures.',
+                'Conduct research on the contributions of individuals to social justice.',
+                'Create a portfolio of community service activities and reflections.',
+                'Explore the significance of lifelong learning in personal and professional growth.'
+            ]
+        };
+
+        // Get subject-specific recommendations
+        const subjectSpecificRecommendations = subjectRecommendations[subject_name] || [];
+        const selectedSubjectRecommendations = [];
+
+        // Randomly select 2-3 subject-specific recommendations
+        const numberOfSubjectRecommendations = Math.min(3, subjectSpecificRecommendations.length);
+        for (let i = 0; i < numberOfSubjectRecommendations; i++) {
+            const randomIndex = Math.floor(Math.random() * subjectSpecificRecommendations.length);
+            selectedSubjectRecommendations.push(subjectSpecificRecommendations[randomIndex]);
+            subjectSpecificRecommendations.splice(randomIndex, 1); // Remove to avoid duplicates
+        }
+
+        // Add a general recommendation based on the grade
+        let generalRecommendations = [];
+        if (grade < 75) {
+            generalRecommendations = [
+                'I recommend seeking help from teachers or tutors to improve understanding in this subject.',
+                'Participating in study groups can enhance your learning experience.',
+                'Utilizing online resources and educational platforms for additional practice would be beneficial.',
+                'Consider setting aside specific times each week for focused study sessions.',
+                'Try to break down complex topics into smaller, manageable parts to better understand them.',
+                'Establish a consistent study routine to build good habits.',
+                'Use visual aids like charts and diagrams to help with understanding difficult concepts.'
+            ];
+        } else if (grade >= 75 && grade < 85) {
+            generalRecommendations = [
+                'You are doing well, but I suggest reviewing your notes regularly for better retention.',
+                'Consider attending review sessions or extra classes for a deeper understanding of the material.',
+                'Engaging with classmates for group study can help clarify difficult topics.',
+                'Make use of flashcards for important terms and concepts to aid memorization.',
+                'Set specific goals for each study session to stay focused and productive.',
+                'Explore additional resources like online courses or tutorials to reinforce learning.',
+                'Practice past exam papers to familiarize yourself with the format and types of questions you may encounter.'
+            ];
+            } else if (grade >= 85 && grade < 90) {
+            generalRecommendations = [
+                'Great job! Keep up the good work and maintain your study habits.',
+                'I encourage you to help your peers who may be struggling with the subject.',
+                'Challenging yourself with advanced materials can further enhance your understanding.',
+                'Consider exploring additional resources, like documentaries or podcasts related to your subjects.',
+                'Participate in extracurricular activities related to your interests to deepen your knowledge.',
+                'Set aside time for self-reflection on your learning process to identify areas for improvement.',
+                'Engage in discussions with teachers to gain deeper insights into the subject matter.'
+            ];
+        } else if (grade >= 90) {
+            generalRecommendations = [
+                'Excellent work! Continue to challenge yourself and explore advanced topics.',
+                'Consider taking on leadership roles in group projects or study sessions to develop your skills.',
+                'Participating in competitions or extracurricular activities related to this subject can be very rewarding.',
+                'Think about mentoring younger students or peers in subjects you excel in.',
+                'Explore opportunities for internships or research projects to apply your knowledge in real-world scenarios.',
+                'Stay curious and seek out new learning experiences beyond the classroom.',
+                'Network with professionals in your field of interest to gain insights and guidance.'
+            ];
+        }
+
+        // Randomly select 2-3 general recommendations
+        const selectedGeneralRecommendations = [];
+        const numberOfGeneralRecommendations = Math.min(3, generalRecommendations.length);
+        for (let i = 0; i < numberOfGeneralRecommendations; i++) {
+            const randomIndex = Math.floor(Math.random() * generalRecommendations.length);
+            selectedGeneralRecommendations.push(generalRecommendations[randomIndex]);
+            generalRecommendations.splice(randomIndex, 1); // Remove to avoid duplicates
+        }
+
+        // Combine selected subject-specific and general recommendations
+        const allRecommendations = [...selectedSubjectRecommendations, ...selectedGeneralRecommendations].filter(Boolean);
+
+        res.json({ student: full_name, grade, recommendations: allRecommendations });
+    } catch (err) {
+        console.error('Error fetching student recommendations:', err);
         res.status(500).json({ message: 'Internal server error' });
     }
 });

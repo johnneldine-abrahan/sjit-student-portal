@@ -4,6 +4,7 @@ import "./Faculty_Reports.css";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import logo from "/src/assets/img/LandingPage/NavBar/logo.png";
 import GradeDistributionChart from "./GradeDistributionChart";
+import GradeDistributionChart2 from "./GradeDistributionChart2";
 import axios from "axios";
 
 const Faculty_Reports = () => {
@@ -15,10 +16,14 @@ const Faculty_Reports = () => {
   const [gradeLevel, setGradeLevel] = useState("");
   const [section, setSection] = useState("");
   const [subject, setSubject] = useState("");
-  const [allStudents, setAllStudents] = useState([]); // State for all students
+  const [allStudents, setAllStudents] = useState([]);
   const [gradeDistributionData, setGradeDistributionData] = useState([]);
   const [averageGrade, setAverageGrade] = useState(null);
   const [insights, setInsights] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [remarks, setRemarks] = useState("");
+  const [selectedFullName, setSelectedFullName] = useState(""); // Add this line
+  const [errorMessage, setErrorMessage] = useState(""); // State for error messages
 
   const handleBackButtonClick = () => {
     navigate("/faculty/dashboard");
@@ -41,13 +46,13 @@ const Faculty_Reports = () => {
         setDropdownData(response.data);
       } catch (error) {
         console.error('Error fetching dropdown data:', error);
+        setErrorMessage("Failed to load dropdown data.");
       }
     };
 
     fetchDropdownData();
   }, []);
 
-  // Fetch all students based on selected filters
   const fetchAllStudents = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -69,13 +74,13 @@ const Faculty_Reports = () => {
         }
       });
 
-      setAllStudents(response.data); // Set all students data
+      setAllStudents(response.data);
     } catch (error) {
       console.error('Error fetching students:', error);
+      setErrorMessage("Failed to load student data.");
     }
   };
 
-  // Fetch insights based on selected filters
   const fetchInsights = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -100,10 +105,10 @@ const Faculty_Reports = () => {
       setInsights(response.data.insights);
     } catch (error) {
       console.error('Error fetching insights:', error);
+      setErrorMessage("Failed to load insights.");
     }
   };
 
-  // Fetch grade distribution based on selected filters
   const fetchGradeDistribution = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -116,7 +121,7 @@ const Faculty_Reports = () => {
       const response = await axios.get('https://san-juan-institute-of-technology-backend.onrender.com/reports/grades/distribution', {
         ...config,
         params: {
- school_year: selectedSchoolYear,
+          school_year: selectedSchoolYear,
           semester,
           quarter,
           grade_level: gradeLevel,
@@ -128,19 +133,50 @@ const Faculty_Reports = () => {
       setGradeDistributionData(response.data);
     } catch (error) {
       console.error('Error fetching grade distribution:', error);
+      setErrorMessage("Failed to load grade distribution data.");
+    }
+  };
+
+  const fetchRemarks = async (fullName) => {
+    try {
+      const token = localStorage.getItem('token');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+
+      const response = await axios.get('https://san-juan-institute-of-technology-backend.onrender.com/student-recommendations', {
+        ...config,
+        params: {
+          full_name: fullName,
+          school_year: selectedSchoolYear,
+          semester,
+          quarter,
+          grade_level: gradeLevel,
+          section_name: section,
+          subject_name: subject
+        }
+      });
+
+      setRemarks(response.data.recommendations.join('\n'));
+    } catch (error) {
+      console.error('Error fetching remarks:', error);
+      setErrorMessage("Failed to load remarks.");
     }
   };
 
   useEffect(() => {
-    setAllStudents([]); // Reset students data
+    setAllStudents([]);
     setGradeDistributionData([]);
     setAverageGrade(null);
     setInsights(null);
+    setErrorMessage(""); // Reset error message
 
     if (selectedSchoolYear && semester && gradeLevel && section && subject && quarter) {
-      fetchAllStudents(); // Fetch all students
-      fetchGradeDistribution(); // Fetch grade distribution
-      fetchInsights(); // Fetch insights
+      fetchAllStudents();
+      fetchGradeDistribution();
+      fetchInsights();
     }
   }, [selectedSchoolYear, semester, gradeLevel, section, subject, quarter]);
 
@@ -151,14 +187,31 @@ const Faculty_Reports = () => {
         const average = totalGrades / allStudents.length;
         setAverageGrade(average.toFixed(2));
       } else {
-        setAverageGrade(null); // Reset if no students are found
+        setAverageGrade(null);
       }
     };
 
     if (allStudents.length > 0) {
-      calculateAverageGrade(); // Call the function to calculate average
+      calculateAverageGrade();
     }
   }, [allStudents]);
+
+  const handleViewRemarks = (fullName) => {
+    setShowPopup(true);
+    setSelectedFullName(fullName); // Add this line
+    fetchRemarks(fullName);
+    
+    // Disable scrolling
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+    setRemarks("");
+    
+    // Enable scrolling
+    document.body.style.overflow = 'auto';
+  };
 
   return (
     <div>
@@ -173,6 +226,7 @@ const Faculty_Reports = () => {
       </header>
 
       <div className="faculty-report-main-content">
+        {errorMessage && <div className="error-message">{errorMessage}</div>}
         <div className="header-with-dropdowns">
           <h1>Faculty Reports</h1>
           <div className="dropdowns-container">
@@ -227,7 +281,7 @@ const Faculty_Reports = () => {
             </select>
 
             <select className="report-dropdown" key={5} onChange={(e) => setSubject(e.target.value)}>
-              <option value="">Subject</option>
+              <option value ="">Subject</option>
               {dropdownData.subjects && dropdownData.subjects.map((subject, index) => (
                 <option key={index} value={subject}>
                   {subject}
@@ -246,6 +300,7 @@ const Faculty_Reports = () => {
                   <th>Rank</th>
                   <th>Student Name</th>
                   <th>Grade</th>
+                  <th>Remarks</th>
                 </tr>
               </thead>
               <tbody>
@@ -255,11 +310,19 @@ const Faculty_Reports = () => {
                       <td style={{ fontWeight: index < 10 ? 'bold' : 'normal' }}>{index + 1}</td>
                       <td style={{ fontWeight: index < 10 ? 'bold' : 'normal' }}>{student.full_name}</td>
                       <td style={{ fontWeight: index < 10 ? 'bold' : 'normal' }}>{student.grade}</td>
+                      <td style={{ fontWeight: index < 10 ? 'bold' : 'normal' }}>
+                        <button 
+                          onClick={() => handleViewRemarks(student.full_name)} 
+                          style={{ border: 'none', background: 'none', padding: 0, cursor: 'pointer', color: 'Blue' }}
+                        >
+                          View Remarks
+                        </button>
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="3">No data available</td>
+                    <td colSpan="4">No data available</td>
                   </tr>
                 )}
               </tbody>
@@ -295,9 +358,36 @@ const Faculty_Reports = () => {
               <h2>Grade Distribution</h2>
               <GradeDistributionChart data={gradeDistributionData} />
             </div>
+            <div className="grid-item">
+              <h2>Grade Distribution</h2>
+              <GradeDistributionChart2 data={gradeDistributionData} />
+            </div>
           </div>
         </div>
       </div>
+
+      {showPopup && (
+        <div className="modalOverlay">
+          <div className="modal">
+            <div className="modalHeader">
+              <span className="modalTitle">Remarks for {selectedFullName}</span>
+              <button
+                className="modalCloseButton"
+                onClick={closePopup}
+              >
+                Close
+              </button>
+            </div>
+            <div className="modalBody">
+              <ul className="recommendations-list">
+                {remarks.split('\n').map((recommendation, index) => (
+                  <li key={index}>{recommendation}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1975,7 +1975,7 @@ app.put('/students/:student_id/payment-status', async (req, res) => {
   app.get('/students/paid', async (req, res) => {
     try {
         const query = `
-            SELECT 
+            SELECT DISTINCT ON (s.student_id)
                 s.student_id,
                 s.last_name,
                 s.first_name,
@@ -1986,11 +1986,7 @@ app.put('/students/:student_id/payment-status', async (req, res) => {
             JOIN studenttbl s ON e.student_id = s.student_id
             WHERE e.payment_status = $1
             AND s.student_status = $2
-            AND e.enrollment_date = (
-                SELECT MAX(enrollment_date)
-                FROM enrollmenttbl
-                WHERE student_id = e.student_id
-            )
+            ORDER BY s.student_id, e.enrollment_date DESC
         `;
         const values = ['Paid', 'Not Enrolled'];
 

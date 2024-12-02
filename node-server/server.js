@@ -1986,7 +1986,7 @@ app.put('/students/:student_id/payment-status', async (req, res) => {
             JOIN studenttbl s ON e.student_id = s.student_id
             WHERE e.payment_status = $1
             AND s.student_status = $2
-            AND e.payment_date = (
+            AND e.enrollment_date = (
                 SELECT MAX(enrollment_date)
                 FROM enrollmenttbl
                 WHERE student_id = e.student_id

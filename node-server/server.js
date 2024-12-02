@@ -2635,6 +2635,101 @@ app.get('/reports/grades/distribution', authenticateToken, (req, res) => {
     });
 });
 
+app.get('/reports/grades/rating', authenticateToken, (req, res) => {
+    const { school_year, semester, quarter, grade_level, section, subject } = req.query;
+    const userId = req.user.userId; // Extract user ID from the token
+
+    // Fetch faculty ID based on user ID
+    const facultyQuery = `SELECT faculty_id FROM facultytbl WHERE user_id = $1`;
+
+    pool.query(facultyQuery, [userId], (facultyError, facultyResult) => {
+        if (facultyError) {
+            console.error('Error fetching faculty ID:', facultyError);
+            return res.status(500).json({ error: facultyError.message });
+        }
+
+        if (facultyResult.rowCount === 0) {
+            return res.status(404).json({ message: 'Faculty not found' });
+        }
+
+        const facultyId = facultyResult.rows[0].faculty_id;
+
+        // Main query to fetch student grades
+        const gradesQuery = `
+            SELECT gr.grade
+            FROM gradestbl gr
+            JOIN teachingload_tbl tl ON gr.teachingload_id = tl.teachingload_id
+            JOIN sectiontbl sec ON tl.section_id = sec.section_id
+            JOIN subjecttbl sub ON sec.subject_id = sub.subject_id
+            JOIN enrollmenttbl en ON sec.section_id = en.section_id AND gr.student_id = en.student_id
+            WHERE
+                tl.faculty_id = $1
+                AND sec.school_year = $2
+                AND sec.semester = $3
+                AND gr.quarter = $4
+                AND sec.grade_level = $5
+                AND sec.section_name = $6
+                AND sub.subject_name = $7
+                AND sub.subject_name != 'HOMEROOM';
+        `;
+
+        const queryParams = [
+            facultyId,
+            school_year,
+            semester,
+            quarter,
+            grade_level,
+            section,
+            subject
+        ];
+
+        pool.query(gradesQuery, queryParams, (gradesError, gradesResult) => {
+            if (gradesError) {
+                console.error('Error fetching grades:', gradesError);
+                return res.status(500).json({ error: gradesError.message });
+            }
+
+            if (gradesResult.rowCount === 0) {
+                return res.status(404).json({ message: 'No grades found for the given filters' });
+            }
+
+            // Prepare data for grade distribution
+            const performanceCounts = {
+                "Outstanding": 0,
+                "Very Satisfactory": 0,
+                "Satisfactory": 0,
+                "Fairly Satisfactory": 0,
+                "Did Not Meet Expectations": 0,
+            };
+
+            gradesResult.rows.forEach(row => {
+                const grade = Math.round(parseFloat(row.grade)); // Round grades to the nearest whole number
+
+                // Categorize the grade
+                if (grade >= 90 && grade <= 100) {
+                    performanceCounts["Outstanding"]++;
+                } else if (grade >= 85 && grade < 90) {
+                    performanceCounts["Very Satisfactory"]++;
+                } else if (grade >= 80 && grade < 85) {
+                    performanceCounts["Satisfactory"]++;
+                } else if (grade >= 75 && grade < 80) {
+                    performanceCounts["Fairly Satisfactory"]++;
+                } else {
+                    performanceCounts["Did Not Meet Expectations"]++;
+                }
+            });
+
+            // Convert the performance counts object to an array for easier processing
+            const distributionArray = Object.keys(performanceCounts).map(label => ({
+                label: label,
+                count: performanceCounts[label]
+            }));
+
+            res.json(distributionArray);
+        });
+    });
+});
+
 app.get('/class-insights', authenticateToken, async (req, res) => {
     const { school_year, semester, quarter, grade_level, section_name, subject_name } = req.query;
     const user_id = req.user.userId;

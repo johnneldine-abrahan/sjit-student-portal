@@ -4,7 +4,7 @@ import "./Faculty_Reports.css";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import logo from "/src/assets/img/LandingPage/NavBar/logo.png";
 import GradeDistributionChart from "./GradeDistributionChart";
-import GradeDistributionChart2 from "./GradeDistributionChart2";
+import RatingDistributionChart from "./RatingDistributionChart";
 import axios from "axios";
 
 const Faculty_Reports = () => {
@@ -18,12 +18,13 @@ const Faculty_Reports = () => {
   const [subject, setSubject] = useState("");
   const [allStudents, setAllStudents] = useState([]);
   const [gradeDistributionData, setGradeDistributionData] = useState([]);
+  const [ratingDistributionData, setRatingDistributionData] = useState([]); // New state for rating distribution data
   const [averageGrade, setAverageGrade] = useState(null);
   const [insights, setInsights] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [remarks, setRemarks] = useState("");
-  const [selectedFullName, setSelectedFullName] = useState(""); // Add this line
-  const [errorMessage, setErrorMessage] = useState(""); // State for error messages
+  const [selectedFullName, setSelectedFullName] = useState(""); 
+  const [errorMessage, setErrorMessage] = useState(""); 
 
   const handleBackButtonClick = () => {
     navigate("/faculty/dashboard");
@@ -116,7 +117,7 @@ const Faculty_Reports = () => {
         headers: {
           Authorization: `Bearer ${token}`
         }
-      };
+ };
 
       const response = await axios.get('https://san-juan-institute-of-technology-backend.onrender.com/reports/grades/distribution', {
         ...config,
@@ -134,6 +135,34 @@ const Faculty_Reports = () => {
     } catch (error) {
       console.error('Error fetching grade distribution:', error);
       setErrorMessage("Failed to load grade distribution data.");
+    }
+  };
+
+  const fetchRatingDistribution = async () => { // New function to fetch rating distribution
+    try {
+      const token = localStorage.getItem('token');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+
+      const response = await axios.get('https://san-juan-institute-of-technology-backend.onrender.com/reports/grades/rating', {
+        ...config,
+        params: {
+          school_year: selectedSchoolYear,
+          semester,
+          quarter,
+          grade_level: gradeLevel,
+          section,
+          subject
+        }
+      });
+
+      setRatingDistributionData(response.data); // Set the rating distribution data
+    } catch (error) {
+      console.error('Error fetching rating distribution:', error);
+      setErrorMessage("Failed to load rating distribution data.");
     }
   };
 
@@ -169,6 +198,7 @@ const Faculty_Reports = () => {
   useEffect(() => {
     setAllStudents([]);
     setGradeDistributionData([]);
+    setRatingDistributionData([]); // Reset rating distribution data
     setAverageGrade(null);
     setInsights(null);
     setErrorMessage(""); // Reset error message
@@ -177,6 +207,7 @@ const Faculty_Reports = () => {
       fetchAllStudents();
       fetchGradeDistribution();
       fetchInsights();
+      fetchRatingDistribution(); // Call the new fetch function
     }
   }, [selectedSchoolYear, semester, gradeLevel, section, subject, quarter]);
 
@@ -198,7 +229,7 @@ const Faculty_Reports = () => {
 
   const handleViewRemarks = (fullName) => {
     setShowPopup(true);
-    setSelectedFullName(fullName); // Add this line
+    setSelectedFullName(fullName); 
     fetchRemarks(fullName);
     
     // Disable scrolling
@@ -241,7 +272,7 @@ const Faculty_Reports = () => {
 
             <select className="report-dropdown" key={1} onChange={(e) => setSemester(e.target.value)}>
               <option value="">Semester</option>
-              <option value="FIRST">FIRST</option>
+              < option value="FIRST">FIRST</option>
               <option value="SECOND">SECOND</option>
             </select>
 
@@ -281,7 +312,7 @@ const Faculty_Reports = () => {
             </select>
 
             <select className="report-dropdown" key={5} onChange={(e) => setSubject(e.target.value)}>
-              <option value ="">Subject</option>
+              <option value="">Subject</option>
               {dropdownData.subjects && dropdownData.subjects.map((subject, index) => (
                 <option key={index} value={subject}>
                   {subject}
@@ -347,7 +378,7 @@ const Faculty_Reports = () => {
                     </div>
                   </div>
                 ) : (
-                  <p>No insights and recommendations available.</p>
+                  <p>No insights and recommendations available.</ p>
                 )}
               </div>
             </div>  
@@ -359,8 +390,8 @@ const Faculty_Reports = () => {
               <GradeDistributionChart data={gradeDistributionData} />
             </div>
             <div className="grid-item">
-              <h2>Grade Distribution</h2>
-              <GradeDistributionChart2 data={gradeDistributionData} />
+              <h2>Rating Distribution</h2>
+              <RatingDistributionChart data={ratingDistributionData} /> {/* Pass the rating distribution data */}
             </div>
           </div>
         </div>

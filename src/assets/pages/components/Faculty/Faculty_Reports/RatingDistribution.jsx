@@ -10,7 +10,7 @@ import {
   Bar,
 } from "recharts";
 
-const GradeDistributionChart = ({ data }) => {
+const RatingDistributionChart = ({ data }) => {
   return (
     <div>
       <BarChart width={700} height={300} data={data}>
@@ -25,4 +25,4 @@ const GradeDistributionChart = ({ data }) => {
   );
 };
 
-export default GradeDistributionChart;
+export default RatingDistributionChart;

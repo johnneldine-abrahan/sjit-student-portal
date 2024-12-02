@@ -1981,7 +1981,8 @@ app.put('/students/:student_id/payment-status', async (req, res) => {
                 s.first_name,
                 s.middle_name,
                 s.grade_level,
-                'Paid' AS payment_status
+                'Paid' AS payment_status,
+                e.enrollment_date
             FROM enrollmenttbl e
             JOIN studenttbl s ON e.student_id = s.student_id
             WHERE e.payment_status = $1

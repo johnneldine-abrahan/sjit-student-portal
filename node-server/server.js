@@ -1987,13 +1987,18 @@ app.put('/students/:student_id/payment-status', async (req, res) => {
             JOIN studenttbl s ON e.student_id = s.student_id
             WHERE e.payment_status = $1
             AND s.student_status = $2
+            AND NOT EXISTS (
+                SELECT 1 
+                FROM enrollmenttbl e2 
+                WHERE e2.student_id = s.student_id 
+                AND e2.payment_status = 'Pending'
+            )
             ORDER BY s.student_id, e.enrollment_date DESC
         `;
         const values = ['Paid', 'Not Enrolled'];
 
         const result = await pool.query(query, values);
 
-        // Send the merged student details and payment statuses as a response
         res.status(200).json(result.rows);
     } catch (error) {
         console.error('Error fetching students:', error);

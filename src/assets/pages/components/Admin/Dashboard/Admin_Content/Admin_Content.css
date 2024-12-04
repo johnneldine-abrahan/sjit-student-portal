@@ -79,3 +79,10 @@
     font-size: 24px;
     color: #150f57;
 }
+
+.dropdown-container {
+    display: flex; /* Use flexbox to align items */
+    justify-content: flex-end; /* Align items to the right */
+    gap: 10px; /* Space between dropdowns */
+    margin-top: 10px; /* Optional: space above the dropdowns */
+  }

@@ -211,6 +211,63 @@ app.get('/profile', authenticateToken, (req, res) => {
 
 // For card ----------------------------------------------------------------------------------
 
+app.get('/students/status/:grade_level/:strand?', (req, res) => {
+    const gradeLevel = req.params.grade_level;
+    const strand = req.params.strand || null; // Default to null if strand is not provided
+
+    // Prepare the base query
+    let query = `
+        SELECT student_status, COUNT(*) AS count
+        FROM studenttbl
+        WHERE grade_level = $1
+    `;
+
+    // Determine if strand should be included in the query
+    const queryParams = [gradeLevel];
+
+    // Check if grade_level is in the range of 7-10
+    if (strand && !(gradeLevel >= 7 && gradeLevel <= 10)) {
+        query += ` AND strand = $2`;
+        queryParams.push(strand);
+    }
+
+    query += ` GROUP BY student_status`;
+
+    pool.query(query, queryParams, (error, results) => {
+        if (error) {
+            console.error('Database query error:', error);
+            return res.status(500).json({ error: 'Database query failed' });
+        }
+
+        // Log the results for debugging
+        console.log('Query results:', results);
+
+        // Prepare the response
+        const response = {
+            grade_level: gradeLevel,
+            strand: strand,
+            enrolled_count: 0,
+            not_enrolled_count: 0
+        };
+
+        // Access the rows property of the results
+        const rows = results.rows;
+
+        // Check if rows is an array and process it
+        if (Array.isArray(rows)) {
+            rows.forEach(row => {
+                if (row.student_status === 'Enrolled') {
+                    response.enrolled_count = parseInt(row.count, 10); // Convert count to integer
+                } else if (row.student_status === 'Not Enrolled') {
+                    response.not_enrolled_count = parseInt(row.count, 10); // Convert count to integer
+                }
+            });
+        }
+
+        res.json(response);
+    });
+});
+
 app.get('/count-enrolled-students', async (req, res) => {
     try {
         const query = `SELECT COUNT(*) AS enrolled_count FROM studenttbl WHERE student_status = 'Enrolled'`;

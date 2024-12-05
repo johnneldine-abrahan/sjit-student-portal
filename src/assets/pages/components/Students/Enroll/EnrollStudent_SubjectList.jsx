@@ -13,6 +13,7 @@ const EnrollStudent_SubjectsList = ({ gradeLevel, strand, studentId, semester, s
     record: null,
     sectionsAndSchedules: [],
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSubjects = async () => {

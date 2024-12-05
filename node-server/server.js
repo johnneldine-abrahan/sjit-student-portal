@@ -1770,9 +1770,10 @@ app.get('/subjectsPreview', async (req, res) => {
 
 app.get('/getSectionsAndSchedules/:subject_id', async (req, res) => {
     const { subject_id } = req.params;
+    const { semester, school_year } = req.query; // Get semester and school_year from query parameters
 
     try {
-        const result = await pool.query(`
+        const query = `
             SELECT
                 s.section_id,
                 s.section_name,
@@ -1793,9 +1794,15 @@ app.get('/getSectionsAndSchedules/:subject_id', async (req, res) => {
             JOIN scheduletbl sc
             ON s.section_id = sc.section_id
             WHERE s.subject_id = $1
+              AND s.semester = $2  -- Filter by semester
+              AND s.school_year = $3  -- Filter by school year
               AND s.section_status = 'Active'  -- Filter for active sections
             GROUP BY s.section_id, s.section_name, s.semester, s.school_year, s.program, s.strand, s.faculty_name, s.grade_level, s.slot
-        `, [subject_id]);
+        `;
+
+        const params = [subject_id, semester, school_year];
+
+        const result = await pool.query(query, params);
 
         // Log the fetched data to the console
         console.log("Fetched data:", result.rows);

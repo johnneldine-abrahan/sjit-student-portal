@@ -121,8 +121,6 @@ const EnrollStudent_SubjectsList = ({ gradeLevel, strand, studentId, semester, s
   };
 
   const handleQueueEnrollment = async () => {
-    const navigate = useNavigate();
-  
     try {
       const section_ids = addedSubjects.map(
         (subject) => subject.sectionAndSchedule.section_id
@@ -131,12 +129,12 @@ const EnrollStudent_SubjectsList = ({ gradeLevel, strand, studentId, semester, s
         student_id: studentId,
         section_ids: section_ids,
       });
-  
+
       if (!studentId || section_ids.length === 0) {
         alert("Student ID or section IDs are missing.");
         return;
       }
-  
+
       const response = await fetch("https://san-juan-institute-of-technology-backend.onrender.com/enroll-student-ver", {
         method: "POST",
         headers: {
@@ -147,16 +145,13 @@ const EnrollStudent_SubjectsList = ({ gradeLevel, strand, studentId, semester, s
           section_ids: section_ids,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-  
+
       const result = await response.json();
       alert(result.message);
-  
-      // Navigate to the student dashboard after a successful enrollment
-      navigate("/student/dashboard");
     } catch (error) {
       console.error("Error during enrollment:", error);
       alert("Enrollment failed. Please try again.");
@@ -275,7 +270,7 @@ const EnrollStudent_SubjectsList = ({ gradeLevel, strand, studentId, semester, s
               <button
                 type="submit"
                 className="queue"
-                onClick={handleQueueEnrollment}
+                onClick={() => {handleQueueEnrollment(); navigate("/student/dashboard")}}
               >
                 Queue
               </button>

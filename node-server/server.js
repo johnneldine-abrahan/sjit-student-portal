@@ -4257,7 +4257,8 @@ app.get('/copy-of-grades', authenticateToken, async (req, res) => {
                 g.quarter,
                 sec.faculty_name,
                 sub.subject_id,
-                sub.subject_name
+                sub.subject_name,
+                sec.section_name
             FROM 
                 studenttbl s
             JOIN 
@@ -4296,7 +4297,8 @@ app.get('/copy-of-grades', authenticateToken, async (req, res) => {
             program: program,
             faculty_name: row.faculty_name,
             subject_id: row.subject_id,
-            subject_name: row.subject_name
+            subject_name: row.subject_name,
+            section_name: row.section_name
         }));
 
         res.json(response);

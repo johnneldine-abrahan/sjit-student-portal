@@ -48,7 +48,8 @@ export default function GradeReport({ schoolYear, semester, quarter }) {
             academicYear: firstGrade.school_year,
             program: firstGrade.program,
             semester: firstGrade.semester,
-            yearLevel: firstGrade.grade_level
+            yearLevel: firstGrade.grade_level,
+            section_name: firstGrade.section_name
           });
           setGrades(data);
           calculateGeneralAverage(data); // Calculate average after fetching grades

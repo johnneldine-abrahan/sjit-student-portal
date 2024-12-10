@@ -139,7 +139,7 @@ export default function GradeReport({ schoolYear, semester, quarter }) {
                       <td>{grade.subject_name}</td>
                       <td>1</td>
                       <td>{grade.grade}</td>
-                      <td>{grade.grade_level} {grade.section}</td>
+                      <td>{grade.section_name}</td>
                       <td>{grade.faculty_name}</td>
                     </tr>
                   ))}

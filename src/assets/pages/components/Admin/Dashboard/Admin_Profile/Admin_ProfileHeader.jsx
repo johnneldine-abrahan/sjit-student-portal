@@ -9,8 +9,9 @@ const Admin_ProfileHeader = () => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState({ show: false, message: '' });
-  const [profileImage, setProfileImage] = useState(Profile); // State for profile image
-  const fileInputRef = useRef(null); // Ref for the file input
+  const [profileImage, setProfileImage] = useState(Profile);
+  const [userProfile, setUserProfile] = useState({ first_name: '', last_name: '', user_id: '', password: '' });
+  const fileInputRef = useRef(null);
 
   const handleLogout = () => {
     setIsModalOpen({ show: true, message: 'Are you sure you want to log out?' });
@@ -28,7 +29,7 @@ const Admin_ProfileHeader = () => {
   };
 
   const handleProfilePictureClick = () => {
-    fileInputRef.current.click(); // Trigger the file input click
+    fileInputRef.current.click();
   };
 
   const handleFileChange = (event) => {
@@ -36,9 +37,90 @@ const Admin_ProfileHeader = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfileImage(reader.result); // Update the profile image state
+        setProfileImage(reader.result);
       };
-      reader.readAsDataURL(file); // Read the file as a data URL
+      reader.readAsDataURL(file);
+    }
+  };
+
+  useEffect(() => {
+    if (isModalOpen.show) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isModalOpen.show]);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await fetch('https://san-juan-institute-of-technology-backend.onrender.com/user/profile/fetch', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch user profile');
+        }
+
+        const data = await response.json();
+        setUserProfile(data);
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+
+    if (showPopup) {
+      fetchUserProfile();
+    }
+  }, [showPopup]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUserProfile((prevProfile) => ({
+      ...prevProfile,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const body = {
+        first_name: userProfile.first_name,
+        last_name: userProfile.last_name,
+      };
+
+      // Only include password if it's not empty
+      if (userProfile.password) {
+        body.password = userProfile.password;
+      }
+
+      const response = await fetch('https://san-juan-institute-of-technology-backend.onrender.com/user/profile/update', {
+        method:
+        'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update profile');
+      }
+
+      const result = await response.json();
+      alert(result.message); // Show success message as an alert
+      setShowPopup(false); // Close the popup after successful update
+    } catch (error) {
+      console.error('Error updating user profile:', error);
     }
   };
 
@@ -75,39 +157,35 @@ const Admin_ProfileHeader = () => {
               <button className="close-button" onClick={() => setShowPopup(false)}>Close</button>
             </div>
             <div className="popup-content">
-              <form onSubmit={(e) => {
-                e.preventDefault();
-                console.log('Form submitted:');
-                setShowPopup(false); // Close the popup after submitting
-              }}>
+              <form onSubmit={handleSubmit}>
                 <div className='change-profile' onClick={handleProfilePictureClick}>
                   <img src={profileImage} alt="Profile" className="profile-image" />
                   <input
                     type="file"
                     ref={fileInputRef}
-                    style={{ display: 'none' }} // Hide the file input
+                    style={{ display: 'none' }}
                     onChange={handleFileChange}
-                    accept="image/*" // Accept only image files
+                    accept="image/*"
                   />
                 </div>
                 <div className="first-row">
                   <div className="input-box">
-                    <label>First Name <input disabled type='text' name='first_name' /></label>
+                    <label>First Name <input type='text' name='first_name' value={userProfile.first_name} onChange={handleInputChange} /></label>
                   </div>
                   <div className='input-box'>
-                    <label>Last Name <input disabled type='text' name='last_name' /></label>
+                    <label>Last Name <input type='text' name='last_name' value={userProfile.last_name} onChange={handleInputChange} /></label>
                   </div>
                 </div>
                 <div className='second-row'>
                   <div className='input-box'>
-                    <label>Username <input disabled type='text' name='username' /></label>
+                    <label>User ID <input disabled type='text' name='user_id' value={userProfile.user_id} /></label>
                   </div>
                   <div className='input-box'>
-                    <label>Password <input type='text' name='password' /></label>
+                    <label>Password <input type='password' name='password' value={userProfile.password} onChange={handleInputChange} /></label>
                   </div>
                 </div>
                 <div className='buttons'>
-                  <button type="submit" className="btn-box " name="add" id="add">Done</button>
+                  <button type="submit" className="btn-box" name="add" id="add">Done</button>
                 </div>
               </form>
             </div>

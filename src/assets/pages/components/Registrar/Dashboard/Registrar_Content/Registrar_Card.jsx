@@ -50,10 +50,6 @@ const Registrar_Card = () => {
     {
       title: 'Faculty Members',
       number: activeFacultyCount // Use the fetched count
-    },
-    {
-      title: 'Active Users',
-      number: '78' // Static value for now
     }
   ];
 

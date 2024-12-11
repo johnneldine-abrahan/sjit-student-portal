@@ -1,17 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./ManageSchedule_Content.css";
-import { BiEditAlt } from "react-icons/bi";
 import { FaRegEye } from "react-icons/fa";
-import { FiTrash } from "react-icons/fi";
-import { RiAddLargeFill } from "react-icons/ri";
 
 const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
   const [popup, setPopup] = useState({
-    show: false,
-    record: null,
-  });
-
-  const [editPopup, setEditPopup] = useState({
     show: false,
     record: null,
   });
@@ -27,16 +19,9 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
     setSelectedSections(selectedIds);
   }, [selectedIds, setSelectedSections]);
 
-  const handlePopup = (record) => {
-    setPopup({
-      show: true,
-      record: record,
-    });
-  };
-
-  const handleEditPopup = async (record) => {
+  const handlePopup = async (record) => {
     console.log("Editing record:", record);
-    setEditPopup({
+    setPopup({
       show: true,
       record: record,
     });
@@ -80,10 +65,6 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
 
   const handleClose = () => {
     setPopup({
-      show: false,
-      record: null,
-    });
-    setEditPopup({
       show: false,
       record: null,
     });
@@ -180,12 +161,12 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
 
   useEffect(() => {
     // Disable scroll when popups are open
-    if (popup.show || editPopup.show) {
+    if (popup.show) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
     }
-  }, [popup, editPopup]);
+  }, [popup]);
 
   const totalPages = Math.ceil(sectionsData.length / itemsPerPage);
   const currentSections = sectionsData.slice(
@@ -261,13 +242,6 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
                   >
                     <FaRegEye size={20} />
                   </span>
-                  <button
-                    className="edit-button"
-                    onClick={() => handleEditPopup(record)}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    <BiEditAlt size={20} />
-                  </button>
                 </td>
               </tr>
             ))}
@@ -279,383 +253,334 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
         )}
         {popup.show && (
           <div className="popup-manage-schedule">
-            <div className="popup-header">
-              <h3>View Details</h3>
-              <button onClick={handleClose}>Close</button>
-            </div>
-            <div className="popup-content">
-              <p>Section: {popup.record.section_name}</p>
-              <p>Subject: {popup.record.subject_name}</p>
-              <p>Semester: {popup.record.semester}</p>
-              <p>School Year: {popup.record.school_year}</p>
-              <p>Strand: {popup.record.strand}</p>
-              <p>Instructor: {popup.record.faculty_name}</p>
-            </div>
+          <div className="popup-header">
+            <h3>Edit Section</h3>
+            <button onClick={handleClose}>Close</button>
           </div>
-        )}
+          <div className="popup-content">
+            <form>
+              <div className="first-row">
+                <div className="grade-level">
+                  <label>Select Program </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="program"
+                      value="Junior Highschool"
+                      checked={formData.program === "Junior Highschool"}
+                      onChange={handleCheckboxChangeProgram}
+                      disabled
+                    />
+                    Junior Highschool
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="program"
+                      value="Senior Highschool"
+                      checked={formData.program === "Senior Highschool"}
+                      onChange={handleCheckboxChangeProgram}
+                      disabled
+                    />
+                    Senior Highschool
+                  </label>
+                </div>
+              </div>
 
-        {editPopup.show && (
-          <div className="popup-blurred-background" onClick={handleClose} />
-        )}
-        {editPopup.show && (
-          <div className="popup-manage-schedule">
-            <div className="popup-header">
-              <h3>Edit Section</h3>
-              <button onClick={handleClose}>Close</button>
-            </div>
-            <div className="popup-content">
-              <form>
-                <div className="first-row">
-                  <div className="grade-level">
-                    <label>Select Program </label>
+              <div className="second-row">
+                <div className="grade-level">
+                  <div className="second-row">
+                    <label>Select Semester</label>
                     <label>
                       <input
-                        type="checkbox"
-                        name="program"
-                        value="Junior Highschool"
-                        checked={formData.program === "Junior Highschool"}
-                        onChange={handleCheckboxChangeProgram}
+                        type="radio"
+                        name="semester"
+                        value="FIRST"
+                        checked={formData.semester === "FIRST"}
+                        onChange={handleSemesterChange}
                         disabled
                       />
-                      Junior Highschool
+                      FIRST
                     </label>
                     <label>
                       <input
-                        type="checkbox"
-                        name="program"
-                        value="Senior Highschool"
-                        checked={formData.program === "Senior Highschool"}
-                        onChange={handleCheckboxChangeProgram}
+                        type="radio"
+                        name="semester"
+                        value="SECOND"
+                        checked={formData.semester === "SECOND"}
+                        onChange={handleSemesterChange}
                         disabled
                       />
-                      Senior Highschool
+                      SECOND
                     </label>
                   </div>
                 </div>
+              </div>
 
-                <div className="second-row">
-                  <div className="grade-level">
-                    <div className="second-row">
-                      <label>Select Semester</label>
-                      <label>
-                        <input
-                          type="radio"
-                          name="semester"
-                          value="FIRST"
-                          checked={formData.semester === "FIRST"}
-                          onChange={handleSemesterChange}
-                          disabled
-                        />
-                        FIRST
-                      </label>
-                      <label>
-                        <input
-                          type="radio"
-                          name="semester"
-                          value="SECOND"
-                          checked={formData.semester === "SECOND"}
-                          onChange={handleSemesterChange}
-                          disabled
-                        />
-                        SECOND
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="first-row">
-                  <div className="input-box">
-                    <label>Grade Level</label>
-                    {formData.program === "Junior Highschool" ? (
-                      <select
-                        name="gradeLevel"
-                        value={formData.gradeLevel}
-                        onChange={handleFormDataChange}
-                        disabled
-                      >
-                        <option value=""></option>
-                        <option value="7">Grade 7</option>
-                        <option value="8">Grade 8</option>
-                        <option value="9">Grade 9</option>
-                        <option value="10">Grade 10</option>
-                      </select>
-                    ) : formData.program === "Senior Highschool" ? (
-                      <select
-                        name="gradeLevel"
-                        value={formData.gradeLevel}
-                        onChange={handleFormDataChange}
-                        disabled
-                      >
-                        <option value=""></option>
-                        <option value="11">Grade 11</option>
-                        <option value="12">Grade 12</option>
-                      </select>
-                    ) : (
-                      <select
-                        name="gradeLevel"
-                        value={formData.gradeLevel}
-                        onChange={handleFormDataChange}
-                      >
-                        <option value=""></option>
-                      </select>
-                    )}
-                  </div>
-
-                  <div className="input-box">
-                    <label>Strand</label>
+              <div className="first-row">
+                <div className="input-box">
+                  <label>Grade Level</label>
+                  {formData.program === "Junior Highschool" ? (
                     <select
-                      name="strand"
-                      value={formData.strand}
+                      name="gradeLevel"
+                      value={formData.gradeLevel}
                       onChange={handleFormDataChange}
                       disabled
                     >
                       <option value=""></option>
-                      <option value="Science, Technology, Engineering and Mathematics (STEM)">
-                        Science, Technology, Engineering and Mathematics (STEM)
-                      </option>
-                      <option value="Accountancy, Business and Management (ABM)">
-                        Accountancy, Business and Management (ABM)
-                      </option>
-                      <option value="Humanities and Social Sciences (HUMSS)">
-                        Humanities and Social Sciences (HUMSS)
-                      </option>
-                      <option value="TVL - Industrial Arts (TVL-IA)">
-                        TVL - Industrial Arts (TVL-IA)
-                      </option>
-                      <option value="TVL - Home Economics (TVL-HE)">
-                        TVL - Home Economics (TVL-HE)
-                      </option>
-                      <option value="TVL - Information Communications Technology (TVL-ICT)">
-                        TVL - Information Communications Technology (TVL-ICT)
-                      </option>
+                      <option value="7">Grade 7</option>
+                      <option value="8">Grade 8</option>
+                      <option value="9">Grade 9</option>
+                      <option value="10">Grade 10</option>
                     </select>
-                  </div>
+                  ) : formData.program === "Senior Highschool" ? (
+                    <select
+                      name="gradeLevel"
+                      value={formData.gradeLevel}
+                      onChange={handleFormDataChange}
+                      disabled
+                    >
+                      <option value=""></option>
+                      <option value="11">Grade 11</option>
+                      <option value="12">Grade 12</option>
+                    </select>
+                  ) : (
+                    <select
+                      name="gradeLevel"
+                      value={formData.gradeLevel}
+                      onChange={handleFormDataChange}
+                    >
+                      <option value=""></option>
+                    </select>
+                  )}
                 </div>
 
-                <div className="second-row">
-                  <div className="input-box">
-                    <label>
-                      Section
-                      <input
-                        type="text"
-                        value={formData.section}
-                        name="section"
-                        onChange={handleFormDataChange}
-                        disabled
-                      />
-                    </label>
-                  </div>
+                <div className="input-box">
+                  <label>Strand</label>
+                  <select
+                    name="strand"
+                    value={formData.strand}
+                    onChange={handleFormDataChange}
+                    disabled
+                  >
+                    <option value=""></option>
+                    <option value="Science, Technology, Engineering and Mathematics (STEM)">
+                      Science, Technology, Engineering and Mathematics (STEM)
+                    </option>
+                    <option value="Accountancy, Business and Management (ABM)">
+                      Accountancy, Business and Management (ABM)
+                    </option>
+                    <option value="Humanities and Social Sciences (HUMSS)">
+                      Humanities and Social Sciences (HUMSS)
+                    </option>
+                    <option value="TVL - Industrial Arts (TVL-IA)">
+                      TVL - Industrial Arts (TVL-IA)
+                    </option>
+                    <option value="TVL - Home Economics (TVL-HE)">
+                      TVL - Home Economics (TVL-HE)
+                    </option>
+                    <option value="TVL - Information Communications Technology (TVL-ICT)">
+                      TVL - Information Communications Technology (TVL-ICT)
+                    </option>
+                  </select>
+                </div>
+              </div>
 
-                  <div className="input-box">
-                    <label>
-                      School Year
-                      <input
-                        type="text"
-                        value={formData.schoolyear}
-                        name="schoolyear"
-                        onChange={handleFormDataChange}
-                        disabled
-                      />
-                    </label>
-                  </div>
+              <div className="second-row">
+                <div className="input-box">
+                  <label>
+                    Section
+                    <input
+                      type="text"
+                      value={formData.section}
+                      name="section"
+                      onChange={handleFormDataChange}
+                      disabled
+                    />
+                  </label>
                 </div>
 
-                <div className="second-row">
-                  <div className="input-box">
-                    <label>Subject</label>
+                <div className="input-box">
+                  <label>
+                    School Year
                     <input
                       type="text"
-                      name="subjectName"
-                      value={formData.subjectName}
+                      value={formData.schoolyear}
+                      name="schoolyear"
                       onChange={handleFormDataChange}
-                      placeholder="Subject Name"
                       disabled
                     />
-                  </div>
+                  </label>
+                </div>
+              </div>
 
-                  <div className="input-box">
-                    <label>Subject ID</label>
-                    <input
-                      type="text"
-                      name="subjectId"
-                      value={formData.subjectId}
-                      onChange={handleFormDataChange}
-                      placeholder="Subject ID"
-                      disabled
-                    />
-                  </div>
+              <div className="second-row">
+                <div className="input-box">
+                  <label>Subject</label>
+                  <input
+                    type="text"
+                    name="subjectName"
+                    value={formData.subjectName}
+                    onChange={handleFormDataChange}
+                    placeholder="Subject Name"
+                    disabled
+                  />
                 </div>
 
-                <div className="second-row">
-                  <div className="input-box">
-                    <label>Faculty</label>
-                    <input
-                      type="text"
-                      name="facultyName"
-                      value={formData.facultyName}
-                      onChange={handleFormDataChange}
-                      placeholder="Faculty Name"
-                      disabled
-                    />
-                  </div>
-                  <div className="input-box">
-                    <label>Faculty ID</label>
-                    <input
-                      type="text"
-                      name="facultyId"
-                      value={formData.facultyId}
-                      onChange={handleFormDataChange}
-                      placeholder="Faculty ID"
-                      disabled
-                    />
-                  </div>
+                <div className="input-box">
+                  <label>Subject ID</label>
+                  <input
+                    type="text"
+                    name="subjectId"
+                    value={formData.subjectId}
+                    onChange={handleFormDataChange}
+                    placeholder="Subject ID"
+                    disabled
+                  />
                 </div>
+              </div>
 
-                <div style={{ marginTop: 20 }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                    <thead>
-                      <tr>
-                        <th
-                          style={{ border: "1px solid black", padding: "8px" }}
+              <div className="second-row">
+                <div className="input-box">
+                  <label>Faculty</label>
+                  <input
+                    type="text"
+                    name="facultyName"
+                    value={formData.facultyName}
+                    onChange={handleFormDataChange}
+                    placeholder="Faculty Name"
+                    disabled
+                  />
+                </div>
+                <div className="input-box">
+                  <label>Faculty ID</label>
+                  <input
+                    type="text"
+                    name="facultyId"
+                    value={formData.facultyId}
+                    onChange={handleFormDataChange}
+                    placeholder="Faculty ID"
+                    disabled
+                  />
+                </div>
+              </div>
+
+              <div style={{ marginTop: 20 }}>
+                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                  <thead>
+                    <tr>
+                      <th
+                        style={{ border: "1px solid black", padding: "8px" }}
+                      >
+                        Day
+                      </th>
+                      <th
+                        style={{ border: "1px solid black", padding: "8px" }}
+                      >
+                        Start Time
+                      </th>
+                      <th
+                        style={{ border: "1px solid black", padding: "8px" }}
+                      >
+                        End Time
+                      </th>
+                      <th
+                        style={{ border: "1px solid black", padding: "8px" }}
+                      >
+                        Room
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {tableData.map((row, index) => (
+                      <tr key={index}>
+                        <td
+                          style={{
+                            border: "1px solid black",
+                            padding: "8px",
+                          }}
                         >
-                          Day
-                        </th>
-                        <th
-                          style={{ border: "1px solid black", padding: "8px" }}
+                          <select
+                            name="day"
+                            value={row.day}
+                            onChange={(e) => handleScheduleChange(e, index)}
+                            disabled
+                          >
+                            <option value=""></option>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                          </select>
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid black",
+                            padding: "8px",
+                          }}
                         >
-                          Start Time
-                        </th>
-                        <th
-                          style={{ border: "1px solid black", padding: "8px" }}
+                          <input
+                            type="time"
+                            name="startTime"
+                            value={row.startTime}
+                            onChange={(e) => handleScheduleChange(e, index)}
+                            disabled
+                          />
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid black",
+                            padding: "8px",
+                          }}
                         >
-                          End Time
-                        </th>
-                        <th
-                          style={{ border: "1px solid black", padding: "8px" }}
+                          <input
+                            type="time"
+                            name="endTime"
+                            value={row.endTime}
+                            onChange={(e) => handleScheduleChange(e, index)}
+                            disabled
+                          />
+                        </td>
+                        <td
+                          style={{
+                            border: "1px solid black",
+                            padding: "8px",
+                          }}
                         >
-                          Room
-                        </th>
-                        <th
-                          style={{ border: "1px solid black", padding: "8px" }}
-                        >
-                          Action
-                        </th>
+                          <input
+                            type="text"
+                            name="room"
+                            value={row.room}
+                            onChange={(e) => handleScheduleChange(e, index)}
+                            disabled
+                          />
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {tableData.map((row, index) => (
-                        <tr key={index}>
-                          <td
-                            style={{
-                              border: "1px solid black",
-                              padding: "8px",
-                            }}
-                          >
-                            <select
-                              name="day"
-                              value={row.day}
-                              onChange={(e) => handleScheduleChange(e, index)}
-                            >
-                              <option value=""></option>
-                              <option value="Monday">Monday</option>
-                              <option value="Tuesday">Tuesday</option>
-                              <option value="Wednesday">Wednesday</option>
-                              <option value="Thursday">Thursday</option>
-                              <option value="Friday">Friday</option>
-                            </select>
-                          </td>
-                          <td
-                            style={{
-                              border: "1px solid black",
-                              padding: "8px",
-                            }}
-                          >
-                            <input
-                              type="time"
-                              name="startTime"
-                              value={row.startTime}
-                              onChange={(e) => handleScheduleChange(e, index)}
-                            />
-                          </td>
-                          <td
-                            style={{
-                              border: "1px solid black",
-                              padding: "8px",
-                            }}
-                          >
-                            <input
-                              type="time"
-                              name="endTime"
-                              value={row.endTime}
-                              onChange={(e) => handleScheduleChange(e, index)}
-                            />
-                          </td>
-                          <td
-                            style={{
-                              border: "1px solid black",
-                              padding: "8px",
-                            }}
-                          >
-                            <input
-                              type="text"
-                              name="room"
-                              value={row.room}
-                              onChange={(e) => handleScheduleChange(e, index)}
-                            />
-                          </td>
-                          <td
-                            style={{
-                              border: "1px solid black",
-                              padding: "8px",
-                            }}
-                          >
-                            <div className="actions">
-                              <button
-                                type="button"
-                                className="delete-btn"
-                                onClick={() => handleDeleteRow(index)}
-                                disabled={index === 0}
-                              >
-                                <FiTrash className="actions-ico" />
-                              </button>
-                              <button
-                                type="button"
-                                className="add-btn"
-                                onClick={handleAddRow}
-                              >
-                                <RiAddLargeFill className="actions-ico" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-                <div className="third-row">
-                  <div className="input-box">
-                    <label>
-                      Slot
-                      <input
-                        type="text"
-                        value={formData.slot}
-                        name="slot"
-                        onChange={handleFormDataChange}
-                      />
-                    </label>
-                  </div>
+              <div className="third-row">
+                <div className="input-box">
+                  <label>
+                    Slot
+                    <input
+                      type="text"
+                      value={formData.slot}
+                      name="slot"
+                      onChange={handleFormDataChange}
+                      disabled
+                    />
+                  </label>
                 </div>
-
-                <div className="buttons">
-                  <button type="submit" className="btn-box" name="add" id="add">
-                    Done
-                  </button>
-                </div>
-              </form>
-            </div>
+              </div>
+            </form>
           </div>
+        </div>
         )}
+        
         <div className="button-container-pagination-student">
           <div className="pagination-controls">
             <button

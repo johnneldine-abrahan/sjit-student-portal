@@ -14,6 +14,7 @@
   gap: 20px;
 }
 
+
 .add-subjectnsection-btn {
   background-color: #150f57;
   color: #fff;
@@ -23,7 +24,7 @@
   cursor: pointer;
   border: 0;
   outline: 0;
-  display: inline;
+  
   align-items: center;
   justify-content: center;
 }
@@ -79,9 +80,16 @@
   pointer-events: auto;
   z-index: 1;
 }
+.sched-table  {
+  width: 100%;
+  border-collapse: collapse;
+}
 
 .add-subject-link {
+  display: flex;
   color: #000000;
+  align-items: center;
+  justify-content: center;
 }
 
 .add-subject-link:hover {

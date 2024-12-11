@@ -43,16 +43,17 @@ const Admin_ProfileHeader = () => {
   };
 
   useEffect(() => {
-    if (isModalOpen.show) {
+    // Disable scrollbar when either the popup or modal is open
+    if (showPopup || isModalOpen.show) {
       document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = 'unset'; // Reset overflow when modal is closed
+      document.body.style.overflow = 'unset'; // Reset overflow when both are closed
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = 'unset'; // Cleanup on unmount
     };
-  }, [isModalOpen.show]);
+  }, [showPopup, isModalOpen.show]);
 
   return (
     <div className="admin-p_header">

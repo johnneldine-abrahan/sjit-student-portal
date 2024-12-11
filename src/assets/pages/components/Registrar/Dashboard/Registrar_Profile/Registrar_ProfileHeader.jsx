@@ -67,6 +67,19 @@ const Registrar_ProfileHeader = () => {
     }
   };
 
+  useEffect(() => {
+    // Disable scrollbar when either the popup or modal is open
+    if (showPopup || isModalOpen.show) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset'; // Reset overflow when both are closed
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset'; // Cleanup on unmount
+    };
+  }, [showPopup, isModalOpen.show]);
+
   return (
     <div className="Registrar-p_header">
       <h2 className='profile-title'>Profile</h2>

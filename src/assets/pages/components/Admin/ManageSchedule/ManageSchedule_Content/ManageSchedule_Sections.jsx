@@ -254,7 +254,7 @@ const ManageSchedule_Sections = ({ setSelectedSections, sectionsData }) => {
         {popup.show && (
           <div className="popup-manage-schedule">
           <div className="popup-header">
-            <h3>Edit Section</h3>
+            <h3>View Section Details</h3>
             <button onClick={handleClose}>Close</button>
           </div>
           <div className="popup-content">

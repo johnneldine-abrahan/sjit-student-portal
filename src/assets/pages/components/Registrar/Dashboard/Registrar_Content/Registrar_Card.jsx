@@ -3,6 +3,7 @@ import './Registrar_Content.css';
 
 const Registrar_Card = () => {
   const [enrolledCount, setEnrolledCount] = useState(0); // State for enrolled students count
+  const [notEnrolledCount, setNotEnrolledCount] = useState(0); // State for not enrolled students count
   const [activeFacultyCount, setActiveFacultyCount] = useState(0); // State for active faculty count
 
   // Fetch data from the API
@@ -15,6 +16,13 @@ const Registrar_Card = () => {
         }
         const enrolledData = await enrolledResponse.json();
         setEnrolledCount(enrolledData.enrolledCount); // Update state with enrolled count
+
+        const notEnrolledResponse = await fetch('https://san-juan-institute-of-technology-backend.onrender.com/count-not-enrolled-students');
+        if (!notEnrolledResponse.ok) {
+          throw new Error('Failed to fetch not enrolled students count');
+        }
+        const notEnrolledData = await notEnrolledResponse.json();
+        setNotEnrolledCount(notEnrolledData.notEnrolledCount); // Update state with not enrolled count
 
         const facultyResponse = await fetch('https://san-juan-institute-of-technology-backend.onrender.com/count-active-faculty');
         if (!facultyResponse.ok) {
@@ -34,6 +42,10 @@ const Registrar_Card = () => {
     {
       title: 'Enrolled Students',
       number: enrolledCount // Use the fetched count
+    },
+    {
+      title: 'Not Enrolled',
+      number: notEnrolledCount // Use the fetched count
     },
     {
       title: 'Faculty Members',

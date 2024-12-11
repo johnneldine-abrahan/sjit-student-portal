@@ -294,6 +294,19 @@ app.get('/count-active-faculty', async (req, res) => {
     }
 });
 
+app.get('/count-not-enrolled-students', async (req, res) => {
+    try {
+        const query = `SELECT COUNT(*) AS not_enrolled_count FROM studenttbl WHERE student_status != 'Enrolled'`;
+        const result = await pool.query(query);
+        const count = result.rows[0].not_enrolled_count;
+
+        res.json({ notEnrolledCount: count });
+    } catch (error) {
+        console.error('Error fetching not enrolled students count:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 // REGISTER STUDENT FUNCTIONS --------------------------------------------------------------
 

@@ -8,30 +8,29 @@ const info_details = [
     number: "0", // Initial value, will be updated from the API
   },
   {
-    title: "Faculty Members",
+    title: "Not Enrolled",
     number: "0", // Initial value, will be updated from the API
   },
   {
-    title: "Active Users",
-    number: "78",
+    title: "Faculty Members",
+    number: "0",
   },
 ];
 
 const Admin_Card = () => {
   const [enrolledCount, setEnrolledCount] = useState(0);
+  const [notEnrolledCount, setNotEnrolledCount] = useState(0);
   const [activeFacultyCount, setActiveFacultyCount] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
   const [popupContent, setPopupContent] = useState(null);
-
-  // State for dropdown selections
   const [selectedGrade, setSelectedGrade] = useState("");
   const [selectedStrand, setSelectedStrand] = useState("");
-  const [gradeData, setGradeData] = useState({}); // State to store grade data
+  const [gradeData, setGradeData] = useState({});
 
   const fetchStudentStatusData = async (gradeLevel, strand = null) => {
     try {
       const response = await fetch(
-        `https://san-juan-institute-of-technology-backend.onrender.com/students/status/${gradeLevel}/${strand}`
+        `http://localhost:3000/students/status/${gradeLevel}/${strand}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -45,50 +44,49 @@ const Admin_Card = () => {
   };
 
   useEffect(() => {
-    const fetchEnrolledCount = async () => {
+    const fetchCounts = async () => {
       try {
-        const response = await fetch(
+        const enrolledResponse = await fetch(
           "https://san-juan-institute-of-technology-backend.onrender.com/count-enrolled-students"
         );
-        if (!response.ok) {
+        if (!enrolledResponse.ok) {
           throw new Error("Network response was not ok");
         }
-        const data = await response.json();
-        setEnrolledCount(data.enrolledCount);
-      } catch (error) {
-        console.error("Error fetching enrolled students count:", error);
-      }
-    };
+        const enrolledData = await enrolledResponse.json();
+        setEnrolledCount(enrolledData.enrolledCount);
 
-    const fetchActiveFacultyCount = async () => {
-      try {
-        const response = await fetch(
+        const notEnrolledResponse = await fetch(
+          "https://san-juan-institute-of-technology-backend.onrender.com/count-not-enrolled-students"
+        );
+        if (!notEnrolledResponse.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const notEnrolledData = await notEnrolledResponse.json();
+        setNotEnrolledCount(notEnrolledData.notEnrolledCount); // Use the correct key
+
+        const facultyResponse = await fetch(
           "https://san-juan-institute-of-technology-backend.onrender.com/count-active-faculty"
         );
-        if (!response.ok) {
+        if (!facultyResponse.ok) {
           throw new Error("Network response was not ok");
         }
-        const data = await response.json();
-        setActiveFacultyCount(data.activeFacultyCount);
+        const facultyData = await facultyResponse.json();
+        setActiveFacultyCount(facultyData.activeFacultyCount);
       } catch (error) {
-        console.error("Error fetching active faculty count:", error);
+        console.error("Error fetching counts:", error);
       }
     };
 
-    fetchEnrolledCount();
-    fetchActiveFacultyCount();
+    fetchCounts();
   }, []);
 
   useEffect(() => {
     if (showPopup) {
-      // Disable scrolling
       document.body.style.overflow = "hidden";
     } else {
-      // Enable scrolling
       document.body.style.overflow = "auto";
     }
 
-    // Cleanup function to reset overflow on component unmount
     return () => {
       document.body.style.overflow = "auto";
     };
@@ -117,7 +115,6 @@ const Admin_Card = () => {
   const handleClosePopup = () => {
     setShowPopup(false);
     setPopupContent(null);
-    // Reset dropdown selections when closing the popup
     setSelectedGrade("");
     setSelectedStrand("");
   };
@@ -127,7 +124,6 @@ const Admin_Card = () => {
     { name: "Not Enrolled", value: gradeData.not_enrolled_count || 0 },
   ];
 
-  // Determine if the strand select should be disabled
   const isStrandDisabled =
     selectedGrade &&
     parseInt(selectedGrade) >= 7 &&
@@ -139,7 +135,7 @@ const Admin_Card = () => {
         <div
           className="card"
           key={item.title}
-          onClick={() => handleCardClick(item)} // Show popup on card click
+          onClick={() => handleCardClick(item)}
         >
           <div className="card-title">
             <h2>{item.title}</h2>
@@ -150,6 +146,8 @@ const Admin_Card = () => {
                 ? enrolledCount
                 : item.title === "Faculty Members"
                 ? activeFacultyCount
+                : item.title === "Not Enrolled"
+                ? notEnrolledCount
                 : item.number}
             </h1>
           </div>
@@ -185,7 +183,7 @@ const Admin_Card = () => {
                   id="strand-select"
                   value={selectedStrand}
                   onChange={(e) => setSelectedStrand(e.target.value)}
-                  disabled={isStrandDisabled} // Disable strand select based on grade
+                  disabled={isStrandDisabled}
                 >
                   <option value="">Select Strand</option>
                   <option value="Science, Technology, Engineering and Mathematics (STEM)">

@@ -232,34 +232,51 @@ app.get('/user/profile/fetch', authenticateToken, async (req, res) => {
     }
 });
 
-app.put('/user/profile/update', authenticateToken, async (req, res) => {
-    const userId = req.user.userId; // Get userId from the token
-    const { first_name, last_name, password } = req.body; // Destructure the request body
-
-    // Validate input
-    if (!first_name || !last_name || !password) {
-        return res.status(400).json({ error: 'All fields are required' });
-    }
-
+app.get('/gen/profile/fetch', authenticateToken, async (req, res) => {
     try {
-        // Update query
-        const query = `
-            UPDATE accountstbl 
-            SET first_name = $1, last_name = $2, password = $3 
-            WHERE user_id = $4
-        `;
-        const values = [first_name, last_name, password, userId];
+        const userId = req.user.userId; // Use userId from the token
+        const query = 'SELECT first_name, last_name, user_id FROM accountstbl WHERE user_id = $1'; // Adjust table name and column names as necessary
+        const result = await pool.query(query, [userId]);
 
-        const result = await pool.query(query, values);
-
-        if (result.rowCount === 0) {
+        if (result.rows.length === 0) {
             return res.status(404).json({ error: 'User  not found' });
         }
 
-        res.status(200).json({ message: 'Profile updated successfully' });
+        const user = result.rows[0];
+        res.json({
+            first_name: user.first_name,
+            last_name: user.last_name,
+            user_id: user.user_id
+        });
     } catch (error) {
-        console.error('Error updating user profile:', error);
+        console.error('Error fetching user profile:', error);
         res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.put('/update-password', authenticateToken, async (req, res) => {
+    const userId = req.user.userId; // Use userId from the token
+    const { newPassword } = req.body;
+
+    if (!newPassword) {
+        return res.status(400).json({ message: 'New password is required' });
+    }
+
+    try {
+        // Update the password in the database without hashing
+        const result = await pool.query(
+            'UPDATE accountstbl SET password = $1 WHERE user_id = $2',
+            [newPassword, userId] // Directly use the new password
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'User  not found' });
+        }
+
+        res.status(200).json({ message: 'Password updated successfully' });
+    } catch (error) {
+        console.error('Error updating password:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 

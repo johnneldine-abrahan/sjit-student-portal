@@ -14,6 +14,12 @@ const Registrar_ProfileHeader = () => {
   });
   const [profileImage, setProfileImage] = useState(Profile); // Default profile image
   const fileInputRef = useRef(null); // Reference for file input
+  const [userData, setUserData] = useState({
+    first_name: '',
+    last_name: '',
+    user_id: '',
+    password: '',
+  });
 
   const handleLogout = () => {
     setIsModalOpen({
@@ -67,6 +73,62 @@ const Registrar_ProfileHeader = () => {
     }
   };
 
+  // Fetch user profile data when the component mounts
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await fetch('https://san-juan-institute-of-technology-backend.onrender.com/gen/profile/fetch', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch user profile');
+        }
+
+        const data = await response.json();
+        setUserData({
+          first_name: data.first_name,
+          last_name: data.last_name,
+          user_id: data.user_id,
+          password: '', // Initialize password as empty
+        });
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('https://san-juan-institute-of-technology-backend.onrender.com/update-password', {
+        method: 'PUT', 
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({ newPassword: userData.password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update password');
+      }
+
+      const result = await response.json();
+      console.log(result.message); // Handle success message
+      alert('Password updated successfully!'); // Show alert message
+      setShowPopup(false); // Close the popup after submitting
+    } catch (error) {
+      console.error('Error updating password:', error);
+      alert('Error updating password. Please try again.'); // Show error alert
+    }
+  };
+
   useEffect(() => {
     // Disable scrollbar when either the popup or modal is open
     if (showPopup || isModalOpen.show) {
@@ -100,11 +162,7 @@ const Registrar_ProfileHeader = () => {
               <button className="close-button" onClick={() => setShowPopup(false)}>Close</button>
             </div>
             <div className="popup-content">
-              <form onSubmit={(e) => {
-                e.preventDefault();
-                console.log('Form submitted:');
-                setShowPopup(false); // Close the popup after submitting
-              }}>
+              <form onSubmit={handleSubmit}>
                 <div className='change-profile' onClick={handleProfilePictureClick}>
                   <img src={profileImage} alt="Profile" className="profile-image" />
                   <input
@@ -117,19 +175,19 @@ const Registrar_ProfileHeader = () => {
                 </div>
                 <div className="first-row">
                   <div className="input-box">
-                    <label>First Name <input disabled type='text' name='first_name' /></label>
+                    <label>First Name <input disabled type='text' name='first_name' value={userData.first_name} /></label>
                   </div>
                   <div className='input-box'>
-                    <label>Last Name <input disabled type='text' name='last_name' /></label>
+                    <label>Last Name <input disabled type='text' name='last_name' value={userData.last_name} /></label>
                   </div>
                 </div>
 
                 <div className='second-row'>
                   <div className='input-box'>
-                    <label>Username <input disabled type='text' name='username' /></label>
+                    <label>User ID <input disabled type='text' name='user_id' value={userData.user_id} /></label>
                   </div>
                   <div className='input-box'>
-                    <label>Password <input type='text' name='password' /></label>
+                    <label>Password <input type='password' name='password' value={userData.password} onChange={(e) => setUserData({ ...userData, password: e.target.value })} /></label>
                   </div>
                 </div>
 

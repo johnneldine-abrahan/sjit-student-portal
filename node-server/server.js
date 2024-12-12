@@ -4420,6 +4420,35 @@ app.get('/check-enrollment-status', authenticateToken, async (req, res) => {
     }
 });
 
+app.get('/check-liabilities', authenticateToken, (req, res) => {
+    // Extract userId from the authenticated token
+    const userId = req.user.userId;
+
+    // SQL query to check for pending status in liabilitytbl
+    const query = `
+        SELECT status 
+        FROM liabilitytbl 
+        WHERE TRIM(student_id) = $1 
+        AND status = 'Pending';
+    `;
+
+    // Execute the query
+    pool.query(query, [userId], (error, results) => {
+        if (error) {
+            console.error('Database query error:', error.message); // Log only the error message
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+
+        // Check if any record has 'Pending' status
+        if (results.rowCount > 0) {
+            return res.json({ status: 'TRUE' }); // Return TRUE if a record exists
+        }
+
+        // Return FALSE if no record with 'Pending' status exists
+        return res.json({ status: 'FALSE' });
+    });
+});
+
 // Finance -----------------------------------------------------------------------------------------------
 
 app.get('/liab/school_years', (req, res) => {

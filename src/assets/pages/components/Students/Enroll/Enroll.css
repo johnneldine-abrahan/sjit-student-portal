@@ -118,23 +118,15 @@
 }
 /* */
 .popup-enroll {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1001;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  width: 1000px;
-  max-height: 80vh;
-  overflow: auto;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 20px;
 }
 
 .popup-enroll table {
   width: 100%;
   border-collapse: collapse;
+  text-transform: uppercase;
 }
 
 .popup-enroll td,
@@ -186,7 +178,6 @@
 .preview-details {
   display: flex;
   align-items: center;
-  flex-wrap: wrap; /* add this to wrap the content on smaller screens */
 }
 
 .user-profile-preview {
@@ -195,7 +186,6 @@
   border-radius: 10px;
   padding: 10px;
   display: flex;
-  flex: 1; /* add this to make the element flexible */
 }
 
 .profile-pic {
@@ -203,14 +193,12 @@
   border-radius: 50%;
   margin-left: 10px;
   width: 150px;
-  flex-shrink: 0; /* add this to prevent the image from shrinking */
 }
 
 .student-enroll-info {
   display: flex;
   margin-left: 20px;
   flex-direction: column;
-  flex: 1; /* add this to make the element flexible */
 }
 
 .student-enroll-info h2 {
@@ -313,94 +301,4 @@
 
 .subject-list {
   margin-top: 20px; /* adjust the value as needed */
-}
-/* add media queries to adjust the layout on smaller screens */
-@media (max-width: 768px) {
-.preview-details {
-  flex-direction: column; /* change the layout to column on smaller screens */
-}
-.user-profile-preview {
-  height: auto; /* adjust the height to fit the content */
-}
-.profile-pic {
-  margin: 10px auto; /* center the image on smaller screens */
-}
-.student-enroll-info {
-  margin: 10px; /* adjust the margin to fit the content */
-}
-}
-
-@media (max-width: 480px) {
-.profile-pic {
-  width: 100px; /* adjust the image size on smaller screens */
-}
-.student-enroll-info h2 {
-  font-size: 24px; /* adjust the font size on smaller screens */
-}
-}
-
-@media (max-width: 1200px) {
-.popup-enroll {
-  width: 90%;
-  max-height: 80vh;
-  overflow: auto;
-}
-}
-
-@media (max-width: 992px) {
-.popup-enroll {
-  width: 80%;
-  max-height: 80vh;
-  overflow: auto;
-}
-}
-
-@media (max-width: 768px) {
-.popup-enroll {
-  width: 70%;
-  max-height: 80vh;
-  overflow: auto;
-}
-}
-
-@media (max-width: 576px) {
-.popup-enroll {
-  width: 90%;
-  max-height: 80vh;
-  overflow: auto;
-}
-}
-
-@media (max-width: 480px) {
-.popup-enroll {
-  width: 100%;
-  max-height: 80vh;
-  overflow: auto;
-}
-.popup-enroll table {
-  font-size: 14px;
-}
-.popup-enroll th, .popup-enroll td {
-  padding: 8px;
-}
-}
-
-/* Make the table responsive on smaller screens */
-@media (max-width: 768px) {
-.enrollment-table, .subject-list table {
-  font-size: 14px;
-}
-.enrollment-table th, .enrollment-table td, .subject-list table th, .subject-list table td {
-  padding: 8px;
-}
-}
-
-/* Make the table responsive on even smaller screens */
-@media (max-width: 480px) {
-.enrollment-table, .subject-list table {
-  font-size: 12px;
-}
-.enrollment-table th, .enrollment-table td, .subject-list table th, .subject-list table td {
-  padding: 6px;
-}
 }

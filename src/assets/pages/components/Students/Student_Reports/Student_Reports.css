@@ -81,7 +81,7 @@
 /* Large screens (Desktops) */
 @media (min-width: 1200px) {
   .grid-item-insights-student {
-    flex-basis: 45%;
+    flex-basis: 1;
   }
   .chart-container {
     width: 100%;
@@ -95,7 +95,7 @@
 /* Medium screens (Laptops) */
 @media (min-width: 768px) and (max-width: 1199px) {
   .grid-item-insights-student {
-    flex-basis: 45%;
+    flex-basis: 1;
   }
   .chart-container {
     width: 100%;

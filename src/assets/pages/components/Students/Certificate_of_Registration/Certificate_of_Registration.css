@@ -74,6 +74,7 @@
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 1rem;
+  overflow-x: auto; /* Add horizontal overflow */
 }
 
 .course-table th,
@@ -81,6 +82,7 @@
   border: 1px solid #ccc;
   padding: 0.5rem;
   text-align: left;
+  word-break: break-word; /* Break long words */
 }
 
 .course-table th {
@@ -129,6 +131,61 @@
   margin-right: 5px;
 }
 
+/* Responsive Styles */
+
+/* Large screens (Desktops) */
+@media (min-width: 1200px) {
+  .certificate-container {
+    max-width: 80%;
+  }
+}
+
+/* Medium screens (Laptops) */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .certificate-container {
+    max-width: 90%;
+  }
+  .student-info {
+    grid-template-columns: 1fr 1fr;
+  }
+  .additional-info {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Small screens (Tablets) */
+@media (min-width: 480px) and (max-width: 767px) {
+  .certificate-container {
+    max-width: 95%;
+  }
+  .student-info {
+    grid-template-columns: 1fr;
+  }
+  .additional-info {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Extra small screens (Mobiles) */
+@media (max-width: 479px) {
+  .certificate-container {
+    max-width: 100%;
+    padding: 10px;
+  }
+  .student-info {
+    grid-template-columns: 1fr;
+  }
+  .additional-info {
+    grid-template-columns: 1fr;
+  }
+  .course-table {
+    font-size: 12px;
+  }
+  .print-button {
+    font-size: 14px;
+  }
+}
+
 /* Print Styles */
 @media print {
   @page {
@@ -142,7 +199,7 @@
 
   .certificate-container {
     position: relative;
-    width: 100%; /* Use the full width of the page */
+    width: 100%; /* Use the full width ```css
     height: 80%; /* Use the full height of the page */
     font-size: 10px; /* Adjust font size to fit content */
     box-sizing: border-box;
@@ -177,5 +234,27 @@
   }
   div.modalTitle {
     display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .course-table {
+    font-size: 14px; /* Reduce font size on small screens */
+  }
+  .course-table th,
+  .course-table td {
+    padding: 0.2rem; /* Reduce padding on small screens */
+  }
+}
+
+/* Responsive Course Table on Extra Small Screens */
+
+@media (max-width: 479px) {
+  .course-table {
+    font-size: 12px; /* Reduce font size on extra small screens */
+  }
+  .course-table th,
+  .course-table td {
+    padding: 0.1rem; /* Reduce padding on extra small screens */
   }
 }

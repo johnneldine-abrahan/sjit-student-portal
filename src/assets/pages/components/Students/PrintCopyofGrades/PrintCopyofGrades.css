@@ -72,12 +72,13 @@
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
+  font-size: 14px; /* Reduced font size */
 }
 
 .grades-table th,
 .grades-table td {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 5px; /* Reduced padding */
   text-align: center;
 }
 
@@ -101,6 +102,40 @@
   height: 100px;
   background-color: #f0f0f0;
 }
+
+/* Make the grade table responsive for smartphones */
+@media only screen and (max-width: 768px) {
+  .grades-table {
+    font-size: 12px; /* Reduced font size */
+  }
+
+  .grades-table th,
+  .grades-table td {
+    padding: 3px; /* Reduced padding */
+  }
+
+  .grades-table th:nth-child(1),
+  .grades-table td:nth-child(1) {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .grades-table {
+    font-size: 10px; /* Reduced font size */
+  }
+
+  .grades-table th,
+  .grades-table td {
+    padding: 2px; /* Reduced padding */
+  }
+
+  .grades-table th:nth-child(1),
+  .grades-table td:nth-child(1) {
+    display: none;
+  }
+}
+
 @media print {
   .button-container .btn-box {
     display: none;
@@ -119,7 +154,7 @@
     border: none;
     margin-top: 0; /* Remove top margin */
     overflow-x: visible;
-    overflow-y: visible; /* Allow horizontal overflow if necessary */
+    overflow-y: visible; /* 
     padding: 50px; /* Add some padding around the content */
   }
 

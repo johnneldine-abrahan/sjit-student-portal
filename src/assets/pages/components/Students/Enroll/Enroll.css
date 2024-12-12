@@ -1,304 +1,406 @@
 .admin-enroll_content {
-    width: 100%;
-  }
-  .enroll-student-main-content {
-    width: 100%;
-    padding: 40px;
-    padding-top: 20px;
-  }
-  .admin-enroll-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .GradeLevel label {
-    margin-right: 10px;
-  }
-  .GradeLevel {
-    margin-top: 10px;
-  }
-  .onQueue-section {
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
-  
-  .admin-enroll-activity {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  
-  .select-btn {
-    background-color: #150f57;
-    color: #fff;
-    padding: 10px 25px;
-    font-size: 18px;
-    border-radius: 26px;
-    cursor: pointer;
-    border: 0;
-    outline: 0;
-    display: inline;
-    align-items: center;
-    justify-content: center;
-  }
-  .setyr-btn {
-    background-color: #ffffff;
-    color: #0e0d0d;
-    padding: 10px 25px;
-    font-size: 18px;
-    border-radius: 26px;
-    cursor: pointer;
-    border: 1;
-    outline: 0;
-    display: inline;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .queue {
-    background-color: #150f57;
-    color: #fff;
-    padding: 10px 25px;
-    font-size: 18px;
-    border-radius: 26px;
-    cursor: pointer;
-    border: 0;
-    outline: 0;
-    display: inline;
-    align-items: center;
-    justify-content: center;
-  }
-  /* */
-  .subject-list {
-    flex-direction: column;
-    gap: 5px;
-    margin-top: 20px;
-  }
-  
-  .subject-list table {
-    width: 100%;
-    border-collapse: collapse;
-    text-transform: uppercase;
-  }
-  
-  .subject-list td,
-  .student-records th {
-    border-bottom: 1px solid #000000; /* Add border at the bottom only */
-    padding: 10px;
-    text-align: center;
-  }
-  
-  /* Disable hover effect for the header (thead tr) */
-  .subject-list thead tr:hover {
-    background-color: unset; /* Prevent hover color change */
-    cursor: default; /* Disable pointer cursor */
-  }
-  
-  /* Allow interaction with the checkbox in the header */
-  .subject-list th input[type="checkbox"] {
-    pointer-events: auto;
-    z-index: 1;
-  }
-  
-  .subject-list th input[type="checkbox"]:hover {
-    background-color: unset;
-    cursor: pointer;
-  }
-  
-  /* Row hover effect for tbody */
-  .subject-list tbody tr:hover {
-    background-color: #7b8bbc; /* Your desired hover color */
-    cursor: pointer;
-  }
-  
-  .subject-list tr.checked {
-    background-color: #7b8bbc; /* Your desired checked color */
-  }
-  /* */
-  .popup-enroll {
-    flex-direction: column;
-    gap: 5px;
-    margin-top: 20px;
-  }
-  
-  .popup-enroll table {
-    width: 100%;
-    border-collapse: collapse;
-    text-transform: uppercase;
-  }
-  
-  .popup-enroll td,
-  .popup-enroll th {
-    border-bottom: 1px solid #000000; /* Add border at the bottom only */
-    padding: 10px;
-    text-align: center;
-  }
-  
-  /* Disable hover effect for the header (thead tr) */
-  .popup-enroll thead tr:hover {
-    background-color: unset; /* Prevent hover color change */
-    cursor: default; /* Disable pointer cursor */
-  }
-  
-  /* Allow interaction with the checkbox in the header */
-  .popup-enroll th input[type="checkbox"] {
-    pointer-events: auto;
-    z-index: 1;
-  }
-  
-  .popup-enroll th input[type="checkbox"]:hover {
-    background-color: unset;
-    cursor: pointer;
-  }
-  
-  /* Row hover effect for tbody */
-  .popup-enroll tbody tr:hover {
-    background-color: #7b8bbc; /* Your desired hover color */
-    cursor: pointer;
-  }
-  
-  .popup-enroll tr.checked {
-    background-color: #7b8bbc; /* Your desired checked color */
-  }
-  /* */
-  .student-profile-preview {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    background-color: #dde6ed;
-    border-radius: 10px;
-    padding: 10px;
-    margin-top: 20px;
-    width: 100%;
-    flex: 1;
-  }
-  
-  .preview-details {
-    display: flex;
-    align-items: center;
-  }
-  
-  .user-profile-preview {
-    height: 85%;
-    background: #dde6ed;
-    border-radius: 10px;
-    padding: 10px;
-    display: flex;
-  }
-  
-  .profile-pic {
-    background: #fff;
-    border-radius: 50%;
-    margin-left: 10px;
-    width: 150px;
-  }
-  
-  .student-enroll-info {
-    display: flex;
-    margin-left: 20px;
-    flex-direction: column;
-  }
-  
-  .student-enroll-info h2 {
-    color: #150f57;
-    font-size: 32px;
-    text-transform: uppercase;
-  }
-  
-  .student-enroll-info .status {
-    text-transform: uppercase;
-    color: red;
-  }
-  
-  .popup-enroll {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1001;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    width: 1000px;
-    max-height: 80vh;
-    overflow: auto;
-  }
-  
-  .popup-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .popup-title {
-    color: #000;
-  }
-  
-  .popup-header h3 {
-    margin: 0;
-  }
-  
-  .popup-header button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .popup-enrollment {
-    padding: 20px;
-  }
-  
-  .popup-enrollment p {
-    margin: 0;
-    text-align: justify;
-  }
-  
-  .enrollment-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  .enrollment-table th,
-  .enrollment-table td {
-    padding: 12px;
-    border: 1px solid #ddd;
-    text-align: left;
-  }
-  
-  .enrollment-table th {
-    background-color: #f4f4f4;
-  }
-  
-  .enrollment-table td {
-    vertical-align: middle;
-  }
-  
-  .popup-enroll .btn-box {
-    background-color: #150f57;
-    color: #fff;
-    padding: 10px 25px;
-    font-size: 16px;
-    border-radius: 26px;
-    cursor: pointer;
-    border: 0;
-    outline: 0;
-    display: inline;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .popup-enroll .buttons {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 16px;
-  }
-  
-  .subject-list {
-    margin-top: 20px; /* adjust the value as needed */
-  }
+  width: 100%;
+}
+.enroll-student-main-content {
+  width: 100%;
+  padding: 40px;
+  padding-top: 20px;
+}
+.admin-enroll-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.GradeLevel label {
+  margin-right: 10px;
+}
+.GradeLevel {
+  margin-top: 10px;
+}
+.onQueue-section {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.admin-enroll-activity {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.select-btn {
+  background-color: #150f57;
+  color: #fff;
+  padding: 10px 25px;
+  font-size: 18px;
+  border-radius: 26px;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+  display: inline;
+  align-items: center;
+  justify-content: center;
+}
+.setyr-btn {
+  background-color: #ffffff;
+  color: #0e0d0d;
+  padding: 10px 25px;
+  font-size: 18px;
+  border-radius: 26px;
+  cursor: pointer;
+  border: 1;
+  outline: 0;
+  display: inline;
+  align-items: center;
+  justify-content: center;
+}
+
+.queue {
+  background-color: #150f57;
+  color: #fff;
+  padding: 10px 25px;
+  font-size: 18px;
+  border-radius: 26px;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+  display: inline;
+  align-items: center;
+  justify-content: center;
+}
+/* */
+.subject-list {
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 20px;
+}
+
+.subject-list table {
+  width: 100%;
+  border-collapse: collapse;
+  text-transform: uppercase;
+}
+
+.subject-list td,
+.student-records th {
+  border-bottom: 1px solid #000000; /* Add border at the bottom only */
+  padding: 10px;
+  text-align: center;
+}
+
+/* Disable hover effect for the header (thead tr) */
+.subject-list thead tr:hover {
+  background-color: unset; /* Prevent hover color change */
+  cursor: default; /* Disable pointer cursor */
+}
+
+/* Allow interaction with the checkbox in the header */
+.subject-list th input[type="checkbox"] {
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.subject-list th input[type="checkbox"]:hover {
+  background-color: unset;
+  cursor: pointer;
+}
+
+/* Row hover effect for tbody */
+.subject-list tbody tr:hover {
+  background-color: #7b8bbc; /* Your desired hover color */
+  cursor: pointer;
+}
+
+.subject-list tr.checked {
+  background-color: #7b8bbc; /* Your desired checked color */
+}
+/* */
+.popup-enroll {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  width: 1000px;
+  max-height: 80vh;
+  overflow: auto;
+}
+
+.popup-enroll table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.popup-enroll td,
+.popup-enroll th {
+  border-bottom: 1px solid #000000; /* Add border at the bottom only */
+  padding: 10px;
+  text-align: center;
+}
+
+/* Disable hover effect for the header (thead tr) */
+.popup-enroll thead tr:hover {
+  background-color: unset; /* Prevent hover color change */
+  cursor: default; /* Disable pointer cursor */
+}
+
+/* Allow interaction with the checkbox in the header */
+.popup-enroll th input[type="checkbox"] {
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.popup-enroll th input[type="checkbox"]:hover {
+  background-color: unset;
+  cursor: pointer;
+}
+
+/* Row hover effect for tbody */
+.popup-enroll tbody tr:hover {
+  background-color: #7b8bbc; /* Your desired hover color */
+  cursor: pointer;
+}
+
+.popup-enroll tr.checked {
+  background-color: #7b8bbc; /* Your desired checked color */
+}
+/* */
+.student-profile-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background-color: #dde6ed;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 20px;
+  width: 100%;
+  flex: 1;
+}
+
+.preview-details {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap; /* add this to wrap the content on smaller screens */
+}
+
+.user-profile-preview {
+  height: 85%;
+  background: #dde6ed;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  flex: 1; /* add this to make the element flexible */
+}
+
+.profile-pic {
+  background: #fff;
+  border-radius: 50%;
+  margin-left: 10px;
+  width: 150px;
+  flex-shrink: 0; /* add this to prevent the image from shrinking */
+}
+
+.student-enroll-info {
+  display: flex;
+  margin-left: 20px;
+  flex-direction: column;
+  flex: 1; /* add this to make the element flexible */
+}
+
+.student-enroll-info h2 {
+  color: #150f57;
+  font-size: 32px;
+  text-transform: uppercase;
+}
+
+.student-enroll-info .status {
+  text-transform: uppercase;
+  color: red;
+}
+
+.popup-enroll {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  width: 1000px;
+  max-height: 80vh;
+  overflow: auto;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.popup-title {
+  color: #000;
+}
+
+.popup-header h3 {
+  margin: 0;
+}
+
+.popup-header button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.popup-enrollment {
+  padding: 20px;
+}
+
+.popup-enrollment p {
+  margin: 0;
+  text-align: justify;
+}
+
+.enrollment-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.enrollment-table th,
+.enrollment-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.enrollment-table th {
+  background-color: #f4f4f4;
+}
+
+.enrollment-table td {
+  vertical-align: middle;
+}
+
+.popup-enroll .btn-box {
+  background-color: #150f57;
+  color: #fff;
+  padding: 10px 25px;
+  font-size: 16px;
+  border-radius: 26px;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+  display: inline;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-enroll .buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.subject-list {
+  margin-top: 20px; /* adjust the value as needed */
+}
+/* add media queries to adjust the layout on smaller screens */
+@media (max-width: 768px) {
+.preview-details {
+  flex-direction: column; /* change the layout to column on smaller screens */
+}
+.user-profile-preview {
+  height: auto; /* adjust the height to fit the content */
+}
+.profile-pic {
+  margin: 10px auto; /* center the image on smaller screens */
+}
+.student-enroll-info {
+  margin: 10px; /* adjust the margin to fit the content */
+}
+}
+
+@media (max-width: 480px) {
+.profile-pic {
+  width: 100px; /* adjust the image size on smaller screens */
+}
+.student-enroll-info h2 {
+  font-size: 24px; /* adjust the font size on smaller screens */
+}
+}
+
+@media (max-width: 1200px) {
+.popup-enroll {
+  width: 90%;
+  max-height: 80vh;
+  overflow: auto;
+}
+}
+
+@media (max-width: 992px) {
+.popup-enroll {
+  width: 80%;
+  max-height: 80vh;
+  overflow: auto;
+}
+}
+
+@media (max-width: 768px) {
+.popup-enroll {
+  width: 70%;
+  max-height: 80vh;
+  overflow: auto;
+}
+}
+
+@media (max-width: 576px) {
+.popup-enroll {
+  width: 90%;
+  max-height: 80vh;
+  overflow: auto;
+}
+}
+
+@media (max-width: 480px) {
+.popup-enroll {
+  width: 100%;
+  max-height: 80vh;
+  overflow: auto;
+}
+.popup-enroll table {
+  font-size: 14px;
+}
+.popup-enroll th, .popup-enroll td {
+  padding: 8px;
+}
+}
+
+/* Make the table responsive on smaller screens */
+@media (max-width: 768px) {
+.enrollment-table, .subject-list table {
+  font-size: 14px;
+}
+.enrollment-table th, .enrollment-table td, .subject-list table th, .subject-list table td {
+  padding: 8px;
+}
+}
+
+/* Make the table responsive on even smaller screens */
+@media (max-width: 480px) {
+.enrollment-table, .subject-list table {
+  font-size: 12px;
+}
+.enrollment-table th, .enrollment-table td, .subject-list table th, .subject-list table td {
+  padding: 6px;
+}
+}

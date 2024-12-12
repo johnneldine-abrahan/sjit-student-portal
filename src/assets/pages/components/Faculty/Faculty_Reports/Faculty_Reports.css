@@ -16,6 +16,7 @@
   object-position: center;
   width: 350px;
 }
+
 .header-with-dropdowns {
   display: flex; /* Use flexbox for alignment */
   align-items: center; /* Center items vertically */
@@ -32,12 +33,14 @@
   margin-right: 10px;
   width: auto; /* Space between dropdowns */
 }
+
 .headerFaculty-report {
   background-color: #7b8bbc;
   display: flex;
-
   padding: 10px 27px;
   width: 100%;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .back-button-faculty-report {
@@ -72,6 +75,7 @@
   width: 100%;
   border-collapse: collapse;
 }
+
 .report-table-bottom {
   width: 100%;
   border-collapse: collapse;
@@ -83,6 +87,7 @@
   padding: 8px;
   text-align: center;
 }
+
 .report-table-bottom th,
 .report-table-bottom td {
   border: 1px solid #ddd;
@@ -103,11 +108,12 @@
   border: 1px solid #ddd;
   text-align: center;
   display: flex; /* Use flexbox */
-  flex-direction: column; /* Stack items vertically */
+  flex-direction: column; /* Stack ```css
   justify-content: center; /* Center items vertically */
   align-items: center; /* Center items horizontally */
   width: 100%; /* Ensure it takes full width */
 }
+
 .grid-item-container-faculty {
   display: flex; /* Use flexbox to arrange items in a row */
   justify-content: space-between; /* Space between items */
@@ -125,61 +131,137 @@
   margin: 0 10px; /* Add some space between the two items */
 }
 
-.analytics{
+.analytics {
   margin-bottom: 15px;
 }
 
-.recommendations{
-margin-top: 15px;
+.recommendations {
+  margin-top: 15px;
 }
 
-.left-align{
-text-align: justify;
+.left-align {
+  text-align: justify;
 }
 
 .modalOverlay {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background-color: rgba(0, 0, 0, 0.5);
-z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
 
 .modal {
-position: fixed;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-z-index: 1001;
-background-color: #fff;
-padding: 20px;
-border-radius: 10px;
-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-overflow-y: auto;
+  position: fixed;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
 }
 
 .modalHeader {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding-bottom: 10px;
-border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
 }
 
 .modalTitle {
-font-size: 16px;
-font-weight: bold;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .modalCloseButton {
-background: none;
-border: none;
-cursor: pointer;
-padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
 }
 
 .modalBody {
-padding: 16px;
+  padding: 16px;
+}
+
+/* Responsive styles */
+
+@media (max-width: 768px) {
+  .reports-container {
+    grid-template-columns: 1fr; /* Change to one column */
+  }
+
+  .right-side {
+    grid-template-columns: 1fr; /* Change to one column */
+  }
+
+  .grid-item-container-faculty {
+    flex-direction: column; /* Stack items vertically */
+  }
+
+  .grid-item-insights-faculty,
+  .grid-item-reco-faculty {
+    margin: 10px 0; /* Add some space between the two items */
+  }
+
+  .faculty-report-main-content {
+    margin: 5px; /* Reduce margin on smaller screens */
+    padding: 0.5rem; /* Reduce padding on smaller screens */
+  }
+
+  .logo-faculty-report {
+    width: 200px; /* Reduce logo size on smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .reports-container {
+    gap: 10px; /* Reduce space between columns */
+  }
+
+  .right-side {
+    gap: 10px; /* Reduce space between grid items */
+  }
+
+  .grid-item {
+    padding: 10px; /* Reduce padding */
+  }
+
+  .grid-item-container-faculty {
+    padding: 10px; /* Reduce padding */
+  }
+
+  .grid-item-insights-faculty,
+  .grid-item-reco-faculty {
+    padding: 10px; /* Reduce padding */
+  }
+
+  .faculty-report-main-content {
+    margin: 2px; /* Reduce margin on even smaller screens */
+    padding: 0.2rem; /* Reduce padding on even smaller screens */
+  }
+
+  .logo-faculty-report {
+    width: 150px; /* Reduce logo size on even smaller screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .headerFaculty-report {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .headerFaculty-report {
+    padding: 10px;
+  }
 }

@@ -2,28 +2,27 @@
   padding: 20px;
 }
 
-.view-toggle{
+.view-toggle {
   display: flex;
   margin-bottom: 10px;
 }
 
-.view-toggle .left{
+.view-toggle .left {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
   width: 50%;
 }
 
-.view-toggle .right{
+.view-toggle .right {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   width: 50%;
 }
 
 .view-toggle button {
-
   padding: 8px 12px;
   cursor: pointer;
-  border: none
+  border: none;
 }
 
 .grade-list {
@@ -57,18 +56,38 @@
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  overflow-x: auto;
 }
 
-.grade-table th, .grade-table td {
+.grade-table th,
+.grade-table td {
   padding: 12px;
   border: 1px solid #ddd;
   text-align: left;
+  word-break: break-word;
 }
 
 .grade-table th {
   background-color: #f4f4f4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .grade-table td {
   vertical-align: middle;
+}
+
+/* Add this to make the table responsive on smaller screens */
+@media only screen and (max-width: 768px) {
+  .grade-table {
+    font-size: 14px;
+  }
+  .grade-table th,
+  .grade-table td {
+    padding: 8px;
+  }
+  .grade-table th {
+    max-width: 150px; /* adjust this value to your needs */
+  }
 }

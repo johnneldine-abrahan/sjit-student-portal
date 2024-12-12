@@ -18,6 +18,7 @@
   max-height: 80vh; /* Set the maximum height */
   overflow: auto; /* Add scroll when the form is too long */
 }
+
 .view-toggle {
   display: flex;
   margin-bottom: 10px;
@@ -93,6 +94,41 @@
 
 .schedule-table td {
   vertical-align: middle;
+}
+
+/* Responsive design for the schedule table */
+
+/* For small screens (max-width: 768px) */
+@media only screen and (max-width: 768px) {
+  .schedule-table {
+    font-size: small;
+  }
+  .schedule-table th,
+  .schedule-table td {
+    padding: 8px;
+  }
+}
+
+/* For extra small screens (max-width: 480px) */
+@media only screen and (max-width: 480px) {
+  .schedule-table {
+    font-size: x-small;
+  }
+  .schedule-table th,
+  .schedule-table td {
+    padding: 4px;
+  }
+}
+
+/* For very small screens (max-width: 320px) */
+@media only screen and (max-width: 320px) {
+  .schedule-table {
+    font-size: xx-small;
+  }
+  .schedule-table th,
+  .schedule-table td {
+    padding: 2px;
+  }
 }
 
 .modal::-webkit-scrollbar {

@@ -278,9 +278,9 @@ ul.thumbs.animated {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  overflow-y: auto;
-  max-height: 100vh;
-  max-width: 100vh;
+  max-width: 90vw; /* 90% of the viewport width */
+  max-height: 80vh;
+  overflow: auto;
 }
 
 .modalHeader {
@@ -367,7 +367,7 @@ ul.thumbs.animated {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 }
 
-.popup-content-notification{
+.popup-content-notification {
   padding: 20px;
 }
 
@@ -378,7 +378,6 @@ ul.thumbs.animated {
   padding-bottom: 10px;
   border-bottom: 1px solid #ddd;
 }
-
 
 .closeButton {
   background: none;
@@ -394,4 +393,110 @@ ul.thumbs.animated {
 .disabled {
   opacity: 0.5; /* Make it look faded */
   pointer-events: none; /* Disable pointer events */
+}
+
+/* For screens with a maximum width of 768px (e.g., tablets and small laptops) */
+@media only screen and (max-width: 768px) {
+  .studentHome {
+    padding-bottom: 30px;
+  }
+
+  .logo-student {
+    width: 250px;
+  }
+
+  .mainContent-Student {
+    margin-top: 40px;
+  }
+
+  .contentWrapper {
+    flex-direction: column;
+  }
+
+  .mainSection {
+    width: 100%;
+  }
+
+  .profileSidebar {
+    width: 100%;
+  }
+
+  .profileCard {
+    padding: 10px 15px;
+  }
+
+  .profileImage {
+    height: 120px;
+    width: 120px;
+  }
+
+  .actionGrid {
+    flex-direction: column;
+  }
+
+  .actionCard {
+    flex: 1 1 100%;
+    padding: 15px 20px;
+  }
+
+  .notificationSection {
+    padding: 15px 0;
+  }
+
+  .filterheader {
+    width: 70px;
+  }
+}
+
+/* For screens with a maximum width of 480px (e.g., mobile phones) */
+@media only screen and (max-width: 480px) {
+  .studentHome {
+    padding-bottom: 20px;
+  }
+
+  .logo-student {
+    width: 150px;
+  }
+
+  .mainContent-Student {
+    margin-top: 20px;
+  }
+
+  .contentWrapper {
+    flex-direction: column;
+  }
+
+  .mainSection {
+    width: 100%;
+  }
+
+  .profileSidebar {
+    width: 100%;
+  }
+
+  .profileCard {
+    padding: 5px 10px;
+  }
+
+  .profileImage {
+    height: 80px;
+    width: 80px;
+  }
+
+  .actionGrid {
+    flex-direction: column;
+  }
+
+  .actionCard {
+    flex: 1 1 100%;
+    padding: 10px 15px;
+  }
+
+  .notificationSection {
+    padding: 10px 0;
+  }
+
+  .filterheader {
+    width: 50px;
+  }
 }

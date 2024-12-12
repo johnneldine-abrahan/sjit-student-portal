@@ -294,7 +294,7 @@ ul.thumbs.animated {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  width: 1000px;
+  max-width: 90vw; /* 90% of the viewport width */
   max-height: 80vh;
   overflow: auto;
 }
@@ -474,7 +474,7 @@ ul.thumbs.animated {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 }
 
-.popup-content-notification{
+.popup-content-notification {
   padding: 20px;
 }
 
@@ -495,4 +495,276 @@ ul.thumbs.animated {
 
 .notificationItem {
   cursor: pointer; /* Indicate that the item is clickable */
+}
+
+@media only screen and (max-width: 768px) {
+  .mainContent-Student {
+    margin-top: 40px;
+  }
+
+  .contentWrapper {
+    flex-direction: column;
+  }
+
+  .mainSection {
+    width: 100%;
+  }
+
+  .profileSidebar {
+    width: 100%;
+  }
+
+  .actionGrid {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .actionCard {
+    flex: 1 1 calc(100% - 20px);
+  }
+
+  .carousel {
+    width: 100%;
+  }
+
+  .carousel img {
+    width: 100%;
+  }
+
+  .notificationSection {
+    margin-top: 10px;
+  }
+
+  .filterheader-section {
+    flex-direction: column;
+  }
+
+  .filter-section {
+    flex-direction: column;
+  }
+
+  .filterheader {
+    width: 100%;
+  }
+
+  .modal {
+    width: 90%;
+    max-height: 90vh;
+  }
+
+  .modal-logout {
+    width: 90%;
+    max-height: 90vh;
+  }
+
+  .popupContent-notification {
+    width: 90%;
+    max-height: 90vh;
+  }
+}
+
+/* For screens with a maximum width of 480px (mobile phones) */
+@media only screen and (max-width: 480px) {
+  .headerFaculty {
+    padding: 10px;
+  }
+
+  .logo-faculty {
+    width: 200px;
+  }
+
+  .userActions {
+    gap: 10px;
+  }
+
+  .mainContent-Student {
+    margin-top: 20px;
+  }
+
+  .contentWrapper {
+    padding: 0 10px;
+  }
+
+  .actionGrid {
+    gap: 10px;
+  }
+
+  .actionCard {
+    padding: 10px;
+  }
+
+  .carousel {
+    margin-top: 10px;
+  }
+
+  .carousel img {
+    border-radius: 10px;
+  }
+
+  .notificationSection {
+    margin-top: 5px;
+  }
+
+  .filterheader-section {
+    padding: 0 10px;
+  }
+
+  .filter-section {
+    padding: 0 10px;
+  }
+
+  .filterheader {
+    padding: 10px;
+  }
+
+  .modal {
+    padding: 10px;
+  }
+
+  .modal-logout {
+    padding: 10px;
+  }
+
+  .popupContent-notification {
+    padding: 10px;
+  }
+
+  .popup-content-notification {
+    padding: 10px;
+  }
+}
+
+/* For screens with a maximum width of 320px (smaller mobile phones) */
+@media only screen and (max-width: 320px) {
+  .headerFaculty {
+    padding: 5px;
+  }
+
+  .logo-faculty {
+    width: 150px;
+  }
+
+  .userActions {
+    gap: 5px;
+  }
+
+  .mainContent-Student {
+    margin-top: 10px;
+  }
+
+  .contentWrapper {
+    padding: 0 5px;
+  }
+
+  .actionGrid {
+    gap: 5px;
+  }
+
+  .actionCard {
+    padding: 5px;
+  }
+
+  .carousel {
+    margin-top: 5px;
+  }
+
+  .carousel img {
+    border-radius: 5px;
+  }
+
+  .notificationSection {
+    margin-top: 0;
+  }
+
+  .filterheader-section {
+    padding: 0 5px;
+  }
+
+  .filter-section {
+    padding: 0 5px;
+  }
+
+  .filterheader {
+    padding: 5px;
+  }
+
+  .modal {
+    padding: 5px;
+  }
+
+  .modal-logout {
+    padding: 5px;
+  }
+
+  .popupContent-notification {
+    padding: 5px;
+  }
+
+  .popup-content-notification {
+    padding: 5px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .actionGrid {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .actionCard {
+    flex: 1 1 calc(100% - 20px);
+  }
+}
+
+/* For screens with a maximum width of 480px (mobile phones) */
+@media only screen and (max-width: 480px) {
+  .actionGrid {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .actionCard {
+    flex: 1 1 calc(100% - 20px);
+    margin: 10px;
+  }
+}
+
+/* For screens with a maximum width of 320px (smaller mobile phones) */
+@media only screen and (max-width: 320px) {
+  .actionGrid {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .actionCard {
+    flex: 1 1 calc(100% - 10px);
+    margin: 5px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .filterheader-section {
+    flex-direction: column;
+  }
+
+  .filter-section {
+    flex-direction: column;
+  }
+
+  .filterheader {
+    width: 100%;
+    padding: 10px;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .filterheader {
+    padding: 5px;
+  }
+}
+
+@media only screen and (max-width: 320px) {
+  .filterheader {
+    padding: 3px;
+  }
 }

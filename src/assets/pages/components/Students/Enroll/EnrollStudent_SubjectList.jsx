@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types"; // Import PropTypes for prop validation
 import "./Enroll.css";
 
@@ -13,7 +12,6 @@ const EnrollStudent_SubjectsList = ({ gradeLevel, strand, studentId, semester, s
     record: null,
     sectionsAndSchedules: [],
   });
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSubjects = async () => {
@@ -171,7 +169,7 @@ const EnrollStudent_SubjectsList = ({ gradeLevel, strand, studentId, semester, s
       </div>
 
       {viewMode === "list" ? (
-        <table>
+        <table className="subject-added">
           <thead>
             <tr>
               <th>Subject ID</th>
@@ -271,7 +269,7 @@ const EnrollStudent_SubjectsList = ({ gradeLevel, strand, studentId, semester, s
               <button
                 type="submit"
                 className="queue"
-                onClick={() => {handleQueueEnrollment(); navigate("/student/dashboard")}}
+                onClick={handleQueueEnrollment}
               >
                 Queue
               </button>

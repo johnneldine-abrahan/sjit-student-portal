@@ -30,7 +30,7 @@ const Admin_Card = () => {
   const fetchStudentStatusData = async (gradeLevel, strand = null) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/students/status/${gradeLevel}/${strand}`
+        `https://san-juan-institute-of-technology-backend.onrender.com/students/status/${gradeLevel}/${strand}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
